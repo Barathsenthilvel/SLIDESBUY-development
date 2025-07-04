@@ -94,11 +94,11 @@
                                     <ul class="menu">
                                         <li>
                                             <a href="{{route('front.index')}}">home</a>
-                                      
+
                                         </li>
-                             
+
                                         <li><a href="contact.html">contact</a></li>
-                                    
+
                                          <li><a href="#!">Categories</a>
                                             <ul class="submenu-list">
                                                 @foreach($Category as $Category)
@@ -106,7 +106,7 @@
                                                 <li><a href="{{route('front.getCategory',[$Category->id])}}">{{$Category->category_name}}</a>
                                                 <ul>
                                                 @foreach($Category->subs as $subCategory)
-                                               
+
                                                 <li><a href="{{route('front.getCategory',[$Category->id,$subCategory->id])}}">{{$subCategory->category_name}}</a></li>
                                                 @endforeach
                                             </ul>
@@ -117,13 +117,13 @@
                                     </ul>
                                 </div>
                             </nav>
-    
+
                             <nav class="navbar p-0 mobile-menu position-static">
                                 <div class="header-menu position-static">
                                     <ul class="menu">
                                         <li class="active">
                                             <a href="#!">home</a>
-                                   
+
                                         </li>
                                         <li><a href="about.html">about</a></li>
 
@@ -190,7 +190,7 @@
                 </div>
             </div>
         </section>
-     
+
         <!-- end menu area -->
     </header>
     <!-- end header area -->
@@ -206,7 +206,7 @@
     <!-- end footer area -->
 
     <!-- start modal area -->
-   
+
     <!-- end modal area -->
 
     <!-- vendor js files -->
@@ -259,7 +259,7 @@
             $.ajax({
                 type: "GET",
                 url: url,
-                success:function(data){ 
+                success:function(data){
                     $('#cart_render').load('{{route('user.render.card')}}');
                 }
             });
@@ -272,7 +272,7 @@
                 type: "GET",
                 url: url,
                 data:{quantity:quantity},
-                success:function(data){ 
+                success:function(data){
                     $('#cart_render').load('{{route('user.render.card')}}');
                 }
             });
@@ -282,7 +282,7 @@
             $.ajax({
                 type: "GET",
                 url:'{{ route('user.remove.card',)}}/'+$(this).data('id'),
-                success:function(data){ 
+                success:function(data){
                     $('#cart_render').load('{{route('user.render.card')}}');
                 }
             });

@@ -146,7 +146,7 @@
                         <div class="gallery">
                             <a class="group1 fancybox" data-fancybox="gallery-images"
                                 href="#" data-title="Coffe Love">
-                                <img class="hvr-grow img-responsive" src="{{URL::asset('/assets/front/static/images/gallery/web-image-1.jpg')}}">
+                                {{-- <img class="hvr-grow img-responsive" src="{{URL::asset('/assets/front/static/images/gallery/web-image-1.jpg')}}"> --}}
                             </a>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
                         <div class="gallery">
                             <a class="group1 fancybox" data-fancybox="gallery-images"
                                 href="#" data-title="Coffe Love">
-                                <img class="hvr-grow img-responsive" src="{{URL::asset('/assets/front/static/images/gallery/web-image-2.jpg')}}">
+                                {{-- <img class="hvr-grow img-responsive" src="{{URL::asset('/assets/front/static/images/gallery/web-image-2.jpg')}}"> --}}
                             </a>
                         </div>
                     </div>

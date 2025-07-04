@@ -9,7 +9,23 @@
         <meta name="keywords" content="{{ $StoreConfig->Store_Meta_Keywords }}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" rel="icon">
-        <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
+
+           <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/images/logo/favicon-two.png">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome -->
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
+    <!-- Slick -->
+    <link rel="stylesheet" href="assets/css/slick.css">
+    <!-- magnific popup -->
+    <link rel="stylesheet" href="assets/css/magnific-popup.css">
+    <!-- line awesome -->
+    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
+    <!-- Main css -->
+    <link rel="stylesheet" href="assets/css/main.css">
+        {{-- <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/jquery.mCustomScrollbar.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/owl.carousel.css')}}" rel="stylesheet">
@@ -28,7 +44,7 @@
         <link href="{{URL::asset('assets/front/static/css/bootoast.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/toastr.css')}}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-       
+        --}}
        <!-- start script-->
        <script>
         !function(f,b,e,v,n,t,s)
@@ -45,10 +61,10 @@
         <noscript><img height="1" width="1" style="display:none"
         src="https://www.facebook.com/tr?id=698472925993707&ev=PageView&noscript=1"
         /></noscript>
-           
+
            <!--end script-->
-   
-   
+
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NB533LB60J"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NB533LB60J'); </script>
         <script>
             const firebaseConfig = {
@@ -60,7 +76,7 @@
             //   messagingSenderId: "989404442406",
             //   appId: "1:989404442406:web:f9b9e670fe921b28429be7",
             //   measurementId: "G-DN1BVLF8NJ"
-              
+
               apiKey: "AIzaSyCMrEwG66K3djlhw1Uk4WGqnxi7Rj0SURg",
               authDomain: "tuljamart.firebaseapp.com",
               projectId: "tuljamart",
@@ -70,7 +86,7 @@
               measurementId: "G-CJC7ZLD3DB"
             };
         </script>
-        <style>
+        {{-- <style>
         .prdname{
             min-height : unset;
         }
@@ -170,7 +186,7 @@
             .menu>div>ul>li{
                 margin: 12px;
             }
-        </style>
+        </style> --}}
      </head>
 <body>
         @include('front.includes.header')

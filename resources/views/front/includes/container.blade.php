@@ -25,7 +25,28 @@
     <link rel="stylesheet" href="assets/css/line-awesome.min.css">
     <!-- Main css -->
     <link rel="stylesheet" href="assets/css/main.css">
-        {{-- <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
+
+     <!-- Jquery js -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap Bundle Js -->
+    <script src="assets/js/boostrap.bundle.min.js"></script>
+    <!-- CountDown -->
+    <script src="assets/js/countdown.js"></script>
+    <!-- counter up -->
+    <script src="assets/js/counterup.min.js"></script>
+    <!-- Slick js -->
+    <script src="assets/js/slick.min.js"></script>
+    <!-- magnific popup -->
+    <script src="assets/js/jquery.magnific-popup.js"></script>
+    <!-- apex chart -->
+    <script src="assets/js/apexchart.js"></script>
+    <!-- marquee -->
+    <script src="assets/js/marquee.min.js"></script>
+
+    <!-- main js -->
+    <script src="assets/js/main.js"></script>
+
+        <!-- {{-- <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/jquery.mCustomScrollbar.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/owl.carousel.css')}}" rel="stylesheet">
@@ -44,7 +65,7 @@
         <link href="{{URL::asset('assets/front/static/css/bootoast.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/toastr.css')}}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        --}}
+        --}} -->
        <!-- start script-->
        <script>
         !function(f,b,e,v,n,t,s)
@@ -200,14 +221,14 @@
 
       {{-- @include('front.includes.footer.mobile_footer') --}}
     <div id="recaptcha-container" style="display:none"></div>
-    <script src="{{URL::asset('assets/front/static/js/jquery.min.js')}}"></script>
+    <!-- <script src="{{URL::asset('assets/front/static/js/jquery.min.js')}}"></script>
     <script src="{{URL::asset('assets/front/static/js/non-defered.js')}}"></script>
 	<script src="{{URL::asset('assets/front/static/js/defered.js')}}"></script>
 	<script src="{{URL::asset('assets/front/static/js/jquery.fancybox.min.js')}}"></script>
 	<script src="{{URL::asset('assets/front/static/js/main.js')}}"></script>
 	<script src="{{URL::asset('assets/front/static/js/bootoast.js')}}"></script>
     <script src="{{URL::asset('assets/front/static/js/toastr.min.js')}}"></script>
-    <script src="{{URL::asset('assets/front/static/js/myscript.js')}}"></script>
+    <script src="{{URL::asset('assets/front/static/js/myscript.js')}}"></script> -->
 
 
 

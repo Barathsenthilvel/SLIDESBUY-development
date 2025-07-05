@@ -250,10 +250,10 @@
                     <div class="footer-widget">
                         <h5 class="footer-widget__title">Policy</h5>
                         <ul class="footer-lists">
-                            <li><a href="{{route('front.Privacy_Policy')}}">Privacy Policy</a></li>
-                            <li><a href="{{route('front.Shipping_Policy')}}">Shipping Policy</a></li>
-                            <li><a href="{{route('front.TermsConditions')}}">Terms & Conditions</a></li>
-                            <li><a href="{{route('front.returnandcancle')}}">Returns, Exchange & Cancellation</a></li>
+                            <li><a href="{{route('front.Privacy_Policy')}}" class="footer-lists__link">Privacy Policy</a></li>
+                            <li><a href="{{route('front.Shipping_Policy')}}" class="footer-lists__link">Shipping Policy</a></li>
+                            <li><a href="{{route('front.TermsConditions')}}" class="footer-lists__link">Terms & Conditions</a></li>
+                            <li><a href="{{route('front.returnandcancle')}}" class="footer-lists__link">Returns, Exchange & Cancellation</a></li>
                         </ul>
                     </div>
                 </div>
@@ -263,8 +263,8 @@
                     <div class="footer-widget">
                         <h5 class="footer-widget__title">Company</h5>
                         <ul class="footer-lists">
-                            <li><a href="{{route('front.about')}}">About</a></li>
-                            <li><a href="{{route('front.Contact_Us')}}">Contact Us</a></li>
+                            <li><a href="{{route('front.about')}}" class="footer-lists__link">About</a></li>
+                            <li><a href="{{route('front.Contact_Us')}}" class="footer-lists__link">Contact Us</a></li>
                         </ul>
                     </div>
                 </div>
@@ -274,10 +274,10 @@
                     <div class="footer-widget">
                         <h5 class="footer-widget__title">Others</h5>
                         <ul class="footer-lists">
-                            <li><a href="{{route('front.FAQ')}}">FAQ</a></li>
-                            <li><a href="{{(Auth::check()) ? route('view.order') : route('front.loginBlade')}}">Track Order</a></li>
-                            <li><a href="{{route('front.Vendor')}}">Become a Vendor</a></li>
-                            <li><a target="_blank" href="{{route('admin.login')}}">Vendor Login</a></li>
+                            <li><a href="{{route('front.FAQ')}}" class="footer-lists__link">FAQ</a></li>
+                            <li><a href="{{(Auth::check()) ? route('view.order') : route('front.loginBlade')}}" class="footer-lists__link">Track Order</a></li>
+                            <li><a href="{{route('front.Vendor')}}" class="footer-lists__link">Become a Vendor</a></li>
+                            <li><a target="_blank" href="{{route('admin.login')}}" class="footer-lists__link">Vendor Login</a></li>
                         </ul>
                     </div>
                 </div>

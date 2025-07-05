@@ -53,7 +53,7 @@
 
                 <div class="popular-item-card__thumb">
                   <a href="{{ route('front.getCategory', $cat->Category_url) }}" class="link w-100">
-                    <img src="{{ URL::asset('/assets/media/banner/' . $cat->style_1) }}" alt="{{ $cat->category_name }}">
+                    <img src="{{asset('/assets/media/banner/' . $cat->style_1) }}" alt="{{ $cat->category_name }}">
                   </a>
 
                   <div class="product-item__bottom flx-between gap-2">

@@ -11,209 +11,220 @@
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/intlTelInput.min.js"></script>
-<section class="banner-section">
-	<div class="banner-inner">
-		<div class="homeslider">
-            <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
-			<div class="pagetitle-wraper">
-				<div class="container">
-					<div class="pagetitle">Login/Register</div>
-				</div>
-			</div>
-		</div>
 
-	</div>
-	<div class="banner-breadcrumb">
-  		<div class="container">
-  			<div class="row">
-  				<div class="col-md-12">
-  					<ul class="breadcrumb">
-					  <li><a href="{{ route('front.index') }}">Home</a></li>
-					  <li><a href="#">Login/Register</a></li>
-										</ul>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-	</section>
-<section class="register-section commonaccount-section contact">
-    <h3 style="text-align: center;color:#333333 !important"> Welcome to Tuljamart </h3>
-    <div class="container">
-		<div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
-			<div class="login-box">
-				<div class="login-navbar">
-					<ul class="nav-justified list-inline" role="tablist">
-						<li role="presentation" class="{{(isset($_GET['r']))?'':'active'}}" ><h4 style="text-align: center;color:#333333 !important">Login / Signup</h4></li>
-						<!--<li role="presentation" class="{{(isset($_GET['r']))?'active':''}}"><a href="#register" aria-controls="register" role="tab" data-toggle="tab" aria-expanded="true">Register</a></li>-->
-					</ul>
+<!--==================== Preloader Start ====================-->
+ <div class="loader-mask">
+  <div class="loader">
+      <div></div>
+      <div></div>
+  </div>
+</div>
+<!--==================== Preloader End ====================-->
 
-					<div class="tab-content">
-					    
-						<div role="tabpanel" class="tab-pane {{(isset($_GET['r']))?'':'active'}}" id="login">
-						    
-							<div class="loginform-wraper" >
-								<form id="formlogin" action="#" method="# name="">
-                                    @csrf
-                                    <div class="fieldset">
-                                        <div class="help-content" style="color:#333333 !important">
-                                           Please enter a 10 digit mobile number * 
-                                        </div>
-                                     </div>
-									<div class="fieldset">
-										<input type="tel" id="mobile" name="mobile" class="form-control" placeholder="Enter your mobile number" name="email" id="username" />
-									</div>
-									<div class="fieldset" id="otpdiv" style='display:none'>
-										<input type="text" maxlength="6" class="form-control" placeholder="Enter Your OTP" name="otp" id="otp" />
-									</div>
-									<div class="fieldset" style='display:none'>
-										<input type="password" class="form-control" placeholder="Password" name="password" id="pwd" />
-										<p class="forgotpwd-link"><a href="javascript:void(0);" data-toggle="modal" data-target="#forgotpassword" >Forgot password?</a></p>
-									</div>
-									<div class="formbtn-container">
-										<input type="button"  class="savebtn btn-block" data-isverifyotp="false" name="submit" id="submit" value="login with OTP" />
+<!--==================== Overlay Start ====================-->
+<div class="overlay"></div>
+<!--==================== Overlay End ====================-->
 
-										<div class="btnbelow-caption text-center" style="display:none">
-											<small>Don’t have account? <a href="#register" aria-controls="register" role="tab" data-toggle="tab" aria-expanded="false">Signup</a></small>
-										</div>
+<!--==================== Sidebar Overlay End ====================-->
+<div class="side-overlay"></div>
+<!--==================== Sidebar Overlay End ====================-->
 
-										<div class="or-divider text-center" style="display:none">
-											(or)
-										</div>
+<!-- ==================== Scroll to Top End Here ==================== -->
+<div class="progress-wrap">
+  <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+      <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+  </svg>
+</div>
+<!-- ==================== Scroll to Top End Here ==================== -->
 
-										<div class="social-loginwraper text-center" style="display:none">
-											<div class="sociallogin-caption">With your social network</div>
-											<ul class="list-inline">
-												<li>
-												<a href="#"><i class="fa fa-facebook"></i></a>
-												</li>
-												<li>
-												<a href="#">
-												    <img src="images/google-icon.png" class="img-responsive center-block" alt="logo">
-												</a>
-												</li>
-												<li>
-												<a href="#"><i class="fa fa-twitter"></i></a>
-												</li>
-												</ul>
-										</div>
+<!-- ==================== Mobile Menu Start Here ==================== -->
+<div class="mobile-menu d-lg-none d-block">
+    <button type="button" class="close-button"> <i class="las la-times"></i> </button>
+    <div class="mobile-menu__inner">
+        <a href="index.html" class="mobile-menu__logo">
+            <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+            <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="dark-version">
+        </a>
+        <div class="mobile-menu__menu">
 
-									</div>
-									<div class="help-content" id="editnoDiv" style="margin-top: 10px;display:none">
-                                           <a href="#" id="editno"> Click here </a> to Edit mobile number
-                                        </div>
-								</form>
-							</div>
-						</div>
-						<div role="tabpanel" class="tab-pane {{(isset($_GET['r']))?'active':''}}" id="register">
-							<div class="loginform-wraper" v-show="!otp" style="padding: 20px 0px;">
-								<form method="post" ref="form"  @submit="submit($event,this)" action="">
-								    @csrf
-								    <div class="fieldset">
-										<input type="text"  class="form-control"  required placeholder="Full Name" name="name" id="name">
-                                       
-									</div>
-									<div class="fieldset">
-										<input type="email" v-model="email" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required placeholder="Email" name="email" id="emailmob">
-                                        <small v-if="showvalise" style="color: red;padding-left: 15px;">Email Id already taken</small>
-									</div>
-                                    <div class="fieldset">
-                                        <select name="dialing" class="form-control" id="" @change="countrychange($event)" required Placeholder="Select Country">
-                                            <option value="">Select Country</option>
-                                            @foreach ( $Country as $country)
-                                            <option value="{{$country->dialing}}" data-dialing="{{ $country->dialing }}">{{$country->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-									<div class="fieldset">
-										<input type="text" v-model="Phone" class="form-control" name="Phone" pattern="[7-9]{1}[0-9]{9}" required placeholder="Mobile No" title="Phone number with 7-9 and remaing 9 digit with 0-9">
-										<small v-if="phonevalidation" style="color: red;padding-left: 15px;">Mobile No already taken</small>
-									</div>
-									<div class="fieldset">
-										<input type="password" class="form-control" minlength="6" v-model="pass" id="password" name="password" placeholder="Password *" required />
-									</div>
-									<div class="fieldset">
-										<input type="password" class="form-control" minlength="6"  v-model="confpass" id="confirmPassword" name="confirmPassword" placeholder="confirm Password *" required />
-									</div>
-									<div class="fieldset d-flex" style="display: flex;">
-									    <label style="width: 100%;">Enter Value @{{ num1 }}  + @{{ num2 }} = </label>
-										<input type="number" class="form-control"  v-model="enter_number"  required />
-									</div>
-									<div class="formbtn-container">
-										<input type="submit" class="savebtn btn-block" name="submit" id="submit" value="Register">
-										<div class="btnbelow-caption text-center">
-											<small>Already registered? <a href="#login" aria-controls="login" role="tab" data-toggle="tab" aria-expanded="false">Sign in</a></small>
-										</div>
-									</div>
-								</form>
-							</div>
-                            <div class="loginform-wraper" v-show="otp" style="padding: 20px 0px;">
-                                <div class="fieldset">
-                                    <p>Enter One time Password,<br>
-                                        We sent you the code to Mobile No
-                                        @{{dialing}} @{{ Phone}}</p>
+<ul class="nav-menu flx-align nav-menu--mobile">
+    <li class="nav-menu__item has-submenu">
+        <a href="javascript:void(0)" class="nav-menu__link">Home</a>
+        <ul class="nav-submenu">
+            <li class="nav-submenu__item">
+                <a href="index.html" class="nav-submenu__link"> Home One</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="index-two.html" class="nav-submenu__link"> Home Two</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="index-three.html" class="nav-submenu__link"> Home Three</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-menu__item has-submenu">
+        <a href="javascript:void(0)" class="nav-menu__link">Products</a>
+         <ul class="nav-submenu">
+            <li class="nav-submenu__item">
+                <a href="all-product.html" class="nav-submenu__link"> All Products</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="product-details.html" class="nav-submenu__link"> Product Details</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-menu__item has-submenu">
+        <a href="javascript:void(0)" class="nav-menu__link">Pages</a>
+         <ul class="nav-submenu">
+            <li class="nav-submenu__item">
+                <a href="profile.html" class="nav-submenu__link"> Profile</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="cart.html" class="nav-submenu__link"> Shopping Cart</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="cart-personal.html" class="nav-submenu__link"> Mailing Address</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="cart-payment.html" class="nav-submenu__link"> Payment Method</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="cart-thank-you.html" class="nav-submenu__link"> Preview Order</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="dashboard.html" class="nav-submenu__link"> Dashboard</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-menu__item has-submenu">
+        <a href="javascript:void(0)" class="nav-menu__link">Blog</a>
+         <ul class="nav-submenu">
+            <li class="nav-submenu__item">
+                <a href="blog.html" class="nav-submenu__link"> Blog</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="blog-details.html" class="nav-submenu__link"> Blog Details</a>
+            </li>
+            <li class="nav-submenu__item">
+                <a href="blog-details-sidebar.html" class="nav-submenu__link"> Blog Details Sidebar</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-menu__item">
+        <a href="contact.html" class="nav-menu__link">Contact</a>
+    </li>
+</ul>
+            <div class="header-right__inner d-lg-none my-3 gap-1 d-flex flx-align">
 
-                                </div>
-                                <div class="fieldset">
-                                    <input type="text" class="form-control" :disabled = "Checking" v-model="OTP" required placeholder="OTP" >
-                                    <p><span V-html="count"></span></p>
-                                </div>
-                                <div class="formbtn-container" v-if="!tryagain">
-									<button type="button" class="savebtn btn-block" :disabled="tryagain" @click="generateOTP()"  v-html="otpbutton"></button>
-                                </div>
-                            </div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+    <a href="register.html" class="btn btn-main pill">
+        <span class="icon-left icon">
+            <img src="assets/images/icons/user.svg" alt="">
+        </span>Create Account
+    </a>
+    <div class="language-select flx-align select-has-icon">
+        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
+        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
+        <select class="select py-0 ps-2 border-0 fw-500">
+            <option value="1">Eng</option>
+            <option value="2">Bn</option>
+            <option value="3">Eur</option>
+            <option value="4">Urd</option>
+        </select>
     </div>
-  </section>
-  <!--sticky footer ends-->
-        <div class="modal fade login-modal" id="forgotpassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-           <div class="modal-dialog modal-sm" role="document">
-              <div class="modal-content">
-                 <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <div class="login-box">
-                       <div class="login-navbar">
-                          <ul class="list-inline">
-                             <li><a class="active" href="javascript:void(0);">Forgot PIN</a></li>
-                          </ul>
-                       </div>
-                       <div class="loginform-wraper">
-                          <form method="post" action="{{route('front.forgot')}}"  class="" id="formforget">
-                              @csrf
-                             <div class="fieldset">
-                                <div class="help-content">
-                                   Enter Registered Email
-                                </div>
-                             </div>
-                             <div class="fieldset">
-                                <!--<div class="fieldset col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding:0px">-->
-                                <!--   <input type="number" class="form-control"  minlength="1" maxlength="4" required="required" value="91">-->
-                                <!--</div>-->
-                                <div class="fieldset col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding:0px">
-                                   <input name="email" type="email" class="form-control" placeholder="Email"required="required">
-                                </div>
-                             </div>
-                             <div class="formbtn-container">
-                                <input type="submit" class="savebtn btn-block" name="submit" id="submit" value="SUBMIT">
-                                <div class="btnbelow-caption" style="display:none">
-                                   <small class="pull-left">
-                                   <a href="javascript:void(0);" data-toggle="modal" data-target="#login-modal">Sign in</a>
-                                   </small>
-                                   <small class="pull-right">
-                                   Not a member? <a href="register.html" class="">Sign up</a>
-                                   </small>
-                                </div>
-                             </div>
-                          </form>
-                       </div>
-                    </div>
-                 </div>
-              </div>
-           </div>
+            </div>
         </div>
+    </div>
+</div>
+<!-- ==================== Mobile Menu End Here ==================== -->
+
+<!-- ================================== Account Page Start =========================== -->
+<section class="account d-flex">
+    <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
+    <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
+        <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
+        <div class="account-thumb">
+            <img src="assets/images/thumbs/banner-img.png" alt="">
+            <div class="statistics animation bg-main text-center">
+                <h5 class="statistics__amount text-white">50k</h5>
+                <span class="statistics__text text-white font-14">Customers</span>
+            </div>
+        </div>
+    </div>
+    <div class="account__right padding-t-120 flx-align">
+
+        <div class="dark-light-mode">
+             <!-- Light Dark Mode -->
+ <div class="theme-switch-wrapper position-relative">
+    <label class="theme-switch" for="checkbox">
+        <input type="checkbox" class="d-none" id="checkbox">
+        <span class="slider text-black header-right__button white-version">
+            <img src="assets/images/icons/sun.svg" alt="">
+        </span>
+        <span class="slider text-black header-right__button dark-version">
+            <img src="assets/images/icons/moon.svg" alt="">
+        </span>
+    </label>
+</div>
+        </div>
+
+        <div class="account-content">
+            <a href="index.html" class="logo mb-64">
+                <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
+            </a>
+            <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
+
+            <form action="#">
+                <div class="row gy-4">
+                    <div class="col-12">
+                        <label for="name" class="form-label mb-2 font-18 font-heading fw-600">Full Name</label>
+                        <div class="position-relative">
+                            <input type="text" class="common-input common-input--bg common-input--withIcon" id="name" placeholder="Your full name">
+                            <span class="input-icon"><img src="assets/images/icons/user-icon.svg" alt=""></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label for="email" class="form-label mb-2 font-18 font-heading fw-600">Email</label>
+                        <div class="position-relative">
+                            <input type="email" class="common-input common-input--bg common-input--withIcon" id="email" placeholder="infoname@mail.com">
+                            <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="your-password" class="form-label mb-2 font-18 font-heading fw-600">Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="common-input common-input--bg common-input--withIcon" id="your-password" placeholder="6+ characters, 1 Capital letter">
+                            <span class="input-icon toggle-password cursor-pointer" id="#your-password"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="common-check my-2">
+                            <input class="form-check-input" type="checkbox" name="checkbox" id="agree">
+                            <label class="form-check-label mb-0 fw-400 font-16 text-body" for="agree">I agree to the terms & conditions</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-main btn-lg w-100 pill"> Create An Account</button>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-light btn-lg-icon btn-lg w-100 pill">
+                            <span class="icon icon-left"><img src="assets/images/icons/google.svg" alt=""></span>
+                            Sign up with google
+                        </button>
+                    </div>
+                    <div class="col-sm-12 mb-0">
+                        <div class="have-account">
+                            <p class="text font-14">Already a member? <a class="link text-main text-decoration-underline  fw-500" href="login.html">Login</a></p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- ================================== Account Page End =========================== -->
+
 @endsection
 @push('script')
 <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
@@ -229,7 +240,7 @@ $(document).ready(function(){
       }
       $(this).val(value);
     });
-    
+
     $('#mobile').on('input', function () {
       let value = $(this).val().replace(/\D/g, '');
       if (value.length > 10) {
@@ -245,9 +256,9 @@ document.addEventListener("DOMContentLoaded", function () {
         initialCountry: "in",
         utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js"
     });
-    
+
     //initialize firebase library for captcha
-    
+
     function setupInvisibleRecaptcha() {
     firebase.initializeApp(firebaseConfig);
     if (!window.recaptchaVerifier) {
@@ -274,7 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Step 2: Call this on page load or before sending OTP
 setupInvisibleRecaptcha();
-    
+
 });
 
     const form = document.querySelector("#submit");
@@ -286,14 +297,14 @@ setupInvisibleRecaptcha();
           $('#submit').attr('data-isverifyotp') == 'true' ? verifyOTP(Mobnumber) : verifyUserandSendOTP(mobileNo)
           console.log('ddddddddddd => ',$('#submit').attr('data-isverifyotp'))
     });
-    
+
     const editno = document.querySelector("#editno");
         editno.addEventListener("click", function (e) {
          $('#mobile').attr('disabled',false);
          $('#otp').hide();
          $('#submit').val('Login with OTP')
     });
-    
+
 
 // const FireBase_init = function(){
 //             firebase.initializeApp(firebaseConfig);
@@ -335,7 +346,7 @@ var downloadTimer = null;
             OTP : function(data){
                 if(data.length >= 6){
                     this.Checking = true
-                    app.confirmationResult.confirm(data).then(function (result) { 
+                    app.confirmationResult.confirm(data).then(function (result) {
                         toastr["success"]("Registraing...");
                         app.formsubmit();
                     })
@@ -343,9 +354,9 @@ var downloadTimer = null;
                         toastr["error"]('Wrong OTP try again')
                         app.OTP = ''
                         app.Checking = false
-                        
+
                     })
-                    
+
                     // axios.get(`{{route('Otpverify')}}?otp=${app.OTP}`)
                     // .then(function (response) {
                     //     if(response.data.status){
@@ -473,14 +484,14 @@ var downloadTimer = null;
             }
         }
     });
-    
+
     let confirmationResult;
 
     function sendOTP(phoneNumber) {
         const dialCode = "+" + iti.getSelectedCountryData().dialCode;
         const fullmobNo   = dialCode+""+phoneNumber
         console.log('fullmobNo : ',fullmobNo)
-        
+
         let baseText = 'Sending OTP';
         let dotCount = 0;
 
@@ -489,7 +500,7 @@ var downloadTimer = null;
             let dots = '.'.repeat(dotCount);
             $('#submit').val(baseText + ' ' + dots);
         }, 500);
-        
+
         firebase.auth().signInWithPhoneNumber(fullmobNo, window.recaptchaVerifier)
             .then(function (result) {
                 console.log('result : ',result);
@@ -505,7 +516,7 @@ var downloadTimer = null;
                      toastr["error"]("Error while sending the OTP");
             });
     }
-    
+
     function verifyOTP(mobnumber){
         const code = document.getElementById("otp").value;
         confirmationResult.confirm(code).then(result => {
@@ -518,24 +529,24 @@ var downloadTimer = null;
             // $('#submit').attr('data-isverifyotp',false)
         });
     }
-    
+
     function verifyUserandSendOTP(mobNumber)
     {
         if(mobNumber.length < 10)
         {
-           toastr["error"]("Please enter your 10 digits mobile number");  
+           toastr["error"]("Please enter your 10 digits mobile number");
            return true;
         }
         // axios.get(`{{route('checkphone')}}?phone=${mobNumber}`)
         // .then(function (response) {
         //     if(response.data.status){
-               sendOTP(mobNumber);  
+               sendOTP(mobNumber);
             // }
         // })
         // .catch(function (error) {
         //     toastr["error"]("Something went wrong !!!");        })
     }
-    
+
     function loginUserService(payload)
     {
         let baseText = 'Verifying OTP';
@@ -546,12 +557,12 @@ var downloadTimer = null;
             let dots = '.'.repeat(dotCount);
             $('#submit').val(baseText + ' ' + dots);
         }, 500);
-        
+
         $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }});
-    
+
         $.ajax({
             method:"POST",
             url:"{{ route('login.mobile') }}",

@@ -1,6 +1,6 @@
 @extends('front.includes.container')
 @section('content')
-	<section class="banner-section">
+	<!-- <section class="banner-section">
 	<div class="banner-inner">
 		<div class="homeslider">
             <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
@@ -98,4 +98,4 @@
           </div>
       </div>
   </section>
-@endsection
+@endsection -->

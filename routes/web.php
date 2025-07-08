@@ -98,13 +98,23 @@ Route::get('/quickview/{id}', 'Front\ProductController@quickview')->name('quickv
 
 Route::get('/login', 'Front\UserController@index')->name('user.login');
 Route::post('/login', 'Front\UserController@login')->name('front.login');
-// Route::post('/register', 'Front\UserController@register')->name('user.register');
+Route::any('/register', 'Front\UserController@register')->name('user.register');
 Route::get('/logout', 'Front\UserController@logout')->name('user.logout');
 Route::get('/cart','Front\UserController@cart')->name('cart.user');
 Route::post('/profile','Front\UserController@updateProfile')->name('update.profile');
 Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('vieworder');
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
+
+Route::get('/verify-otp','Front\UserController@showOtpForm')->name('otp.form');
+Route::post('/verify-otp','Front\UserController@verifyOtp')->name('otp.verify');
+// Route::post('/send-otp', 'Front\SessionController@sendOtp')->name('send.otp');
+Route::post('/verify-otp', 'App\Http\Controllers\Front\SessionController@sendOtp')->name('sendOtp.otp');
+
+Route::post('/send-otp', 'App\Http\Controllers\Front\SessionController@sendOtp');
+
+Route::post('/verify-otp','Front\SessionController@verifyOtp')->name('verify.otp');
+
 
 //paymentcontroler
 Route::Post('/CustomerCancelOrder/{order}','Front\CheckoutController@CustomerCancelOrder')->name('view.CustomerCancelOrder');

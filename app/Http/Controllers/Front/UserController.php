@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Front;
-
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use App\Models\User;
+use App\Models\OtpVerification;
 use Illuminate\Http\Request;
 use Auth;
 use Validator;
@@ -164,81 +165,143 @@ class UserController extends Controller
       return response()->json(['errors'=>"Check Email And password !!"]);
 	}
 
-	 public function register(Request $request){
-    	$rules = [
-                  'email'   => 'required|email|unique:users,email,'.$request['email'],
-                  'password' => 'min:6|required|same:confirmPassword',
-                  'confirmPassword' => 'required|min:6'
-                ];
-      $customs = [
 
-            'email.required'   => 'Email field should be filled.',
-            'email.email'      => 'Email field should be maildid.',
-            'email.unique'      => 'Mail id already taken',
-            'password.required'   => 'Password field should be filled.',
-            'password.same'   => 'Password field same as Confirm Password.',
-            'password.min'        => 'Password field should contain minimum 6.',
-            'confirmPassword.required'   => 'Confirm Password field should be filled.',
-            'confirmPassword.min'        => 'Confirm Password field should contain minimum 6.'
-          ];
-        $validator = Validator::make($request->all(), $rules,$customs);
-        if ($validator->fails()) {
-          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+ public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'agree'    => 'accepted'
+        ]);
+// dd('coming')
+        // Store in session
+        Session::put('register_data', $request->only('name', 'email', 'password'));
+
+        // Generate OTP
+        $otp = rand(100000, 999999);
+
+        OtpVerification::updateOrCreate(
+            ['email' => $request->email],
+            ['otp' => $otp, 'expires_at' => now()->addMinutes(5)]
+        );
+
+        // Send OTP via mail (you need SMTP config)
+        Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
+            $message->to($request->email)->subject("OTP Verification");
+        });
+
+       return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
+
+    }
+
+    public function showOtpForm()
+    {
+      dd('SDSDSD');
+         return view('front.auth.otp-form'); /// Create otp.blade.php
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate(['otp' => 'required|digits:6']);
+
+        $data = Session::get('register_data');
+
+        $otpRecord = OtpVerification::where('email', $data['email'])
+            ->where('otp', $request->otp)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if ($otpRecord) {
+            User::create([
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+
+            Session::forget('register_data');
+            OtpVerification::where('email', $data['email'])->delete();
+
+            return redirect('login')->with('success', 'Account created successfully!');
+        } else {
+            return back()->with('error', 'Invalid or expired OTP.');
         }
-        $data=new User;
-        $data->name=$request['name'];
-        $data->email=$request['email'];
-        $data->Phone = $request['Phone'];
-        $data->password=\Hash::make($request['password']);
-        $data->email_verify = md5(time().$request->email);
-        $data->is_verify = 'Yes';
-        $data->dialing = str_replace('+','',$request->dialing);
-        $data->save();
-        Auth::guard('web')->attempt(['email' => $request['email'], 'password' => $request['password']]);
-        //Mail::to($request->email)->send(new RegisterMail(['token'=>$data->email_verify,'id'=>$data->id]));
-        $data1['msg'] = 'Account created login';
-        return response()->json($data1);
     }
-    public function verify($id,$token){
-      $data=User::where('id',$id)->where('email_verify',$token)->first();
-      if(!empty($data)){
-        $data->is_verify = 'Yes';
-        $data->email_verified_at = date('Y-m-d H:i:s');
-        $data->update();
-          return Redirect::to(route('front.index'));
-      }else{
-        return Redirect::to(route('front.index'));
-      }
+	//  public function register(Request $request){
+  //   	$rules = [
+  //                 'email'   => 'required|email|unique:users,email,'.$request['email'],
+  //                 'password' => 'min:6|required|same:confirmPassword',
+  //                 'confirmPassword' => 'required|min:6'
+  //               ];
+  //     $customs = [
 
-    }
-    public function forgotpassword(Request $request){
-      $email = $request->email;
+  //           'email.required'   => 'Email field should be filled.',
+  //           'email.email'      => 'Email field should be maildid.',
+  //           'email.unique'      => 'Mail id already taken',
+  //           'password.required'   => 'Password field should be filled.',
+  //           'password.same'   => 'Password field same as Confirm Password.',
+  //           'password.min'        => 'Password field should contain minimum 6.',
+  //           'confirmPassword.required'   => 'Confirm Password field should be filled.',
+  //           'confirmPassword.min'        => 'Confirm Password field should contain minimum 6.'
+  //         ];
+  //       $validator = Validator::make($request->all(), $rules,$customs);
+  //       if ($validator->fails()) {
+  //         return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+  //       }
+  //       $data=new User;
+  //       $data->name=$request['name'];
+  //       $data->email=$request['email'];
+  //       $data->Phone = $request['Phone'];
+  //       $data->password=\Hash::make($request['password']);
+  //       $data->email_verify = md5(time().$request->email);
+  //       $data->is_verify = 'Yes';
+  //       $data->dialing = str_replace('+','',$request->dialing);
+  //       $data->save();
+  //       Auth::guard('web')->attempt(['email' => $request['email'], 'password' => $request['password']]);
+  //       //Mail::to($request->email)->send(new RegisterMail(['token'=>$data->email_verify,'id'=>$data->id]));
+  //       $data1['msg'] = 'Account created login';
+  //       return response()->json($data1);
+  //   }
+  //   public function verify($id,$token){
+  //     $data=User::where('id',$id)->where('email_verify',$token)->first();
+  //     if(!empty($data)){
+  //       $data->is_verify = 'Yes';
+  //       $data->email_verified_at = date('Y-m-d H:i:s');
+  //       $data->update();
+  //         return Redirect::to(route('front.index'));
+  //     }else{
+  //       return Redirect::to(route('front.index'));
+  //     }
 
-      $mailTemplates = MailTemplate::where('template_name','2')->where('status','1')->first();
-      $data=User::where('email',$email)->first();
-      if(empty($data)){
-        return response()->json(['msg'=>'register first']);
-      }
-      $password = rand(1111111111,9999999999);
-      $mailContents=[
-          'title'=>$mailTemplates->subject_mail,
-          'body'=>$mailTemplates->content_mail,
-          'password'=>$password,
-          'footer'=>$mailTemplates->footer_mail,
-      ];
-      Mail::to($email)->bcc($mailTemplates->bcc_mail)->send(new AdminMails1($mailContents));
-      $data->password=\Hash::make($password);
-      $data->update();
-      return response()->json(['msg'=>'Password sent to your Email']);
-    }
-    public function cart(Request $request){
-      $Cart = new Cart();
-      $Cart->oldcard($request->session()->get('cart_'.Auth::user()->id));
-      return view('front.cart',compact('Cart'));
-    }
-    public function thankyou(){
-      return view('front.includes.Ajax.thankyou');
-  }
+  //   }
+  //   public function forgotpassword(Request $request){
+  //     $email = $request->email;
+
+  //     $mailTemplates = MailTemplate::where('template_name','2')->where('status','1')->first();
+  //     $data=User::where('email',$email)->first();
+  //     if(empty($data)){
+  //       return response()->json(['msg'=>'register first']);
+  //     }
+  //     $password = rand(1111111111,9999999999);
+  //     $mailContents=[
+  //         'title'=>$mailTemplates->subject_mail,
+  //         'body'=>$mailTemplates->content_mail,
+  //         'password'=>$password,
+  //         'footer'=>$mailTemplates->footer_mail,
+  //     ];
+  //     Mail::to($email)->bcc($mailTemplates->bcc_mail)->send(new AdminMails1($mailContents));
+  //     $data->password=\Hash::make($password);
+  //     $data->update();
+  //     return response()->json(['msg'=>'Password sent to your Email']);
+  //   }
+  //   public function cart(Request $request){
+  //     $Cart = new Cart();
+  //     $Cart->oldcard($request->session()->get('cart_'.Auth::user()->id));
+  //     return view('front.cart',compact('Cart'));
+  //   }
+  //   public function thankyou(){
+  //     return view('front.includes.Ajax.thankyou');
+  // }
   public function wishlist(){
     if(Auth::check()){
       $array = \explode(',',Auth::user()->wishlist);

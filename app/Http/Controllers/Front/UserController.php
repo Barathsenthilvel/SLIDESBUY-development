@@ -169,54 +169,71 @@ class UserController extends Controller
   return view('fornt.auth.login');
  }
 
- public function login(Request $request){
+//  public function login(Request $request){
 
-  $request->validate([
+//   $request->validate([
 
-    'email' => 'required|email',
-    'password' =>'required'
-  ]);
+//     'email' => 'required|email',
+//     'password' =>'required'
+//   ]);
 
-  $user = User::where('email',$request->email)->first();
+//   $user = User::where('email',$request->email)->first();
 
-  if($user && Hash::check($request->password,$user->password)){
+//   if($user && Hash::check($request->password,$user->password)){
 
-    Auth::login($user);
+//     Auth::login($user);
 
-    return redirect()->route('/home');
-  }
-  return back()->with('error','invalid creditionals');
- }
+//     return redirect()->route('/home');
+//   }
+//   return back()->with('error','invalid creditionals');
+//  }
 
-
- public function register(Request $request)
+ public function login(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-            'agree'    => 'accepted'
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required'
         ]);
-// dd('coming')
-        // Store in session
-        Session::put('register_data', $request->only('name', 'email', 'password'));
 
-        // Generate OTP
-        $otp = rand(100000, 999999);
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('dashboard');
+        }
 
-        OtpVerification::updateOrCreate(
-            ['email' => $request->email],
-            ['otp' => $otp, 'expires_at' => now()->addMinutes(5)]
-        );
-
-        // Send OTP via mail (you need SMTP config)
-        Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
-            $message->to($request->email)->subject("OTP Verification");
-        });
-// dd('sdsdsd');
-       return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
-// dd('dsdsd');
+        return back()->withErrors([
+            'email' => 'Invalid credentials.'
+        ]);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login.form');
+    }
+
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:5',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|confirmed|min:3',
+    ]);
+
+    // Generate OTP
+    $otp = rand(100000, 999999);
+
+    // Save data temporarily in session
+    Session::put('register_data', $request->only('name', 'email', 'password'));
+    Session::put('otp', $otp);
+    Session::put('otp_expires', now()->addMinutes(10));
+
+    // Send OTP to email
+    Mail::to($request->email)->send(new SendOtpMail($otp));
+
+    return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
+}
 
     public function showOtpForm()
 {

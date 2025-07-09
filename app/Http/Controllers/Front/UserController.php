@@ -129,41 +129,64 @@ class UserController extends Controller
       $Store = Storeconfiguration::findOrFail(1);
       return view('front.vieworder', compact('order','Store'));
   }
-    public function login(Request $request){
-      $Store = Storeconfiguration::findOrFail(1);
-      $data1['welcome'] = "Welcome to ".$Store->Store_Meta_Title;
-    	$rules = [
-                  'email'   => 'required|email',
-                  'password' => 'required|min:6'
-                ];
-      $customs = [
-            'email.required'   => 'Email field should be filled.',
-            'email.email'      => 'Email field should be maildid.',
-            'password.required'   => 'Password field should be filled.',
-            'password.min'        => 'Password field should contain minimum 6.'
-          ];
+  //   public function login(Request $request){
+  //     $Store = Storeconfiguration::findOrFail(1);
+  //     $data1['welcome'] = "Welcome to ".$Store->Store_Meta_Title;
+  //   	$rules = [
+  //                 'email'   => 'required|email',
+  //                 'password' => 'required|min:6'
+  //               ];
+  //     $customs = [
+  //           'email.required'   => 'Email field should be filled.',
+  //           'email.email'      => 'Email field should be maildid.',
+  //           'password.required'   => 'Password field should be filled.',
+  //           'password.min'        => 'Password field should contain minimum 6.'
+  //         ];
 
-        $validator = Validator::make($request->all(), $rules,$customs);
+  //       $validator = Validator::make($request->all(), $rules,$customs);
 
-        if ($validator->fails()) {
-          return response()->json(['errors'=>"Check Email And password !!"]);
-        }
-      if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
-        if(Auth::guard('web')->user()->is_verify != 'Yes'){
-          Auth::guard('web')->logout();
-          $data1['Msg'] = 'Your Email is not Verified!';
-          return response()->json($data1);
-        }
-        if(Auth::guard('web')->user()->status == 0){
-            Auth::guard('web')->logout();
-            return response()->json(['errors'=>"Your Account is Deactivate"]);
-        }
-        $data1['url'] = redirect()->back();
-        return response()->json($data1);
-      }
-      // if unsuccessful, then redirect back to the login with the form data
-      return response()->json(['errors'=>"Check Email And password !!"]);
-	}
+  //       if ($validator->fails()) {
+  //         return response()->json(['errors'=>"Check Email And password !!"]);
+  //       }
+  //     if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+  //       if(Auth::guard('web')->user()->is_verify != 'Yes'){
+  //         Auth::guard('web')->logout();
+  //         $data1['Msg'] = 'Your Email is not Verified!';
+  //         return response()->json($data1);
+  //       }
+  //       if(Auth::guard('web')->user()->status == 0){
+  //           Auth::guard('web')->logout();
+  //           return response()->json(['errors'=>"Your Account is Deactivate"]);
+  //       }
+  //       $data1['url'] = redirect()->back();
+  //       return response()->json($data1);
+  //     }
+  //     // if unsuccessful, then redirect back to the login with the form data
+  //     return response()->json(['errors'=>"Check Email And password !!"]);
+	// }
+ public function showLoginfrom(){
+
+  return view('fornt.auth.login');
+ }
+
+ public function login(Request $request){
+
+  $request->validate([
+
+    'email' => 'required|email',
+    'password' =>'required'
+  ]);
+
+  $user = User::where('email',$request->email)->first();
+
+  if($user && Hash::check($request->password,$user->password)){
+
+    Auth::login($user);
+
+    return redirect()->route('/home');
+  }
+  return back()->with('error','invalid creditionals');
+ }
 
 
  public function register(Request $request)

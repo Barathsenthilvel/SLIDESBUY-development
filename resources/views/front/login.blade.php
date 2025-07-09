@@ -222,7 +222,8 @@
 
         <div class="col-sm-12 mb-0">
             <div class="have-account">
-                <p class="text font-14">Already a member? <a class="link text-main text-decoration-underline fw-500" href="login.html">Login</a></p>
+                <p class="text font-14">Already a member? <a class="link text-main text-decoration-underline fw-500" href="{{ route('login.form') }}">Login</a>
+</p>
             </div>
         </div>
     </div>

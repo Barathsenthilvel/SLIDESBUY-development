@@ -96,8 +96,8 @@ Route::get('/loadreview/{id}', 'Front\ProductController@loadreview')->name('load
 Route::get('/quickview/{id}', 'Front\ProductController@quickview')->name('quickview');
 
 
-Route::get('/login', 'Front\UserController@index')->name('user.login');
-Route::post('/login', 'Front\UserController@login')->name('front.login');
+// Route::get('/login', 'Front\UserController@index')->name('user.login');
+// Route::post('/login', 'Front\UserController@login')->name('front.login');
 Route::any('/register', 'Front\UserController@register')->name('user.register');
 Route::get('/logout', 'Front\UserController@logout')->name('user.logout');
 Route::get('/cart','Front\UserController@cart')->name('cart.user');
@@ -105,6 +105,14 @@ Route::post('/profile','Front\UserController@updateProfile')->name('update.profi
 Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('vieworder');
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
+
+
+
+//new routes added
+
+Route::get('/login','Front\UserController@showLoginForm')->name('login.form');
+Route::post('/login', [UserController::class, 'login'])->name('login.submit');
+
 
 //otp =====>Routes
 Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');

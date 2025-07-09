@@ -190,16 +190,21 @@ class UserController extends Controller
         Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
             $message->to($request->email)->subject("OTP Verification");
         });
-
+// dd('sdsdsd');
        return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
-
+// dd('dsdsd');
     }
 
     public function showOtpForm()
-    {
-      dd('SDSDSD');
-         return view('front.auth.otp-form'); /// Create otp.blade.php
+{
+  dd('coming');
+    // Check if session exists before showing form
+    if (!Session::has('register_data')) {
+        return redirect()->route('register.form')->with('error', 'Session expired. Please register again.');
     }
+
+    return view('front.otpform'); // Make sure this Blade file exists
+}
 
     public function verifyOtp(Request $request)
     {

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Mail\AdminMails;
-
+use App\Http\Controllers\Front\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -106,15 +106,11 @@ Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('view
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
 
-Route::get('/verify-otp','Front\UserController@showOtpForm')->name('otp.form');
-Route::post('/verify-otp','Front\UserController@verifyOtp')->name('otp.verify');
-// Route::post('/send-otp', 'Front\SessionController@sendOtp')->name('send.otp');
-Route::post('/verify-otp', 'App\Http\Controllers\Front\SessionController@sendOtp')->name('sendOtp.otp');
-
-Route::post('/send-otp', 'App\Http\Controllers\Front\SessionController@sendOtp');
-
-Route::post('/verify-otp','Front\SessionController@verifyOtp')->name('verify.otp');
-
+//otp =====>Routes
+Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');
+// Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');
+Route::post('/send-otp','Front\UserController@sendOtp')->name('send.otp');
+Route::post('/verify-otp','Front\UserController@verifyOtp')->name('verify.otp');
 
 //paymentcontroler
 Route::Post('/CustomerCancelOrder/{order}','Front\CheckoutController@CustomerCancelOrder')->name('view.CustomerCancelOrder');

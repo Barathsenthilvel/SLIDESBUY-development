@@ -20,6 +20,9 @@
         </div>
     </div>
 
+<div class="col-12 d-flex justify-content-between align-items-center mt-2">
+    <a href="{{ route('password.request') }}" class="text-decoration-underline text-main fw-500">Forgot Password?</a>
+</div>
     <div class="col-12 mt-3">
         <button type="submit" class="btn btn-primary w-100">Login</button>
     </div>

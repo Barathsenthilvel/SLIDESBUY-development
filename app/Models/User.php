@@ -10,7 +10,7 @@ use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
 use App\Models\Pincode;
-
+use App\Notifications\ResetPasswordNotification;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -61,10 +61,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Address','user_id','id')->where('status',1);
     }
-    
+
     public function getContry(){
         $Country = Country::where('id',$this->country)->first();
-        
+
         if(!empty($Country)){
             return $Country->country_name;
         }else{
@@ -94,5 +94,11 @@ class User extends Authenticatable
         }else{
             return '';
         }
+    }
+
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

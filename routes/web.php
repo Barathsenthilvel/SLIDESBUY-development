@@ -120,6 +120,15 @@ Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');
 Route::post('/send-otp','Front\UserController@sendOtp')->name('send.otp');
 Route::post('/verify-otp','Front\UserController@verifyOtp')->name('verify.otp');
 
+
+//forget password==>
+
+Route::get('password/reset','Front\UserController@showLinkRequestForm')->name('password.request');
+Route::post('password/email','Front\UserController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}','Front\UserController@showResetForm')->name('password.reset');
+Route::post('password/reset','Front\UserController@reset')->name('password.update');
+
+
 //paymentcontroler
 Route::Post('/CustomerCancelOrder/{order}','Front\CheckoutController@CustomerCancelOrder')->name('view.CustomerCancelOrder');
 Route::Post('/CustomerCancelOrderSingle/{order}','Front\CheckoutController@CustomerCancelOrderSingle')->name('view.CustomerCancelOrderSingle');

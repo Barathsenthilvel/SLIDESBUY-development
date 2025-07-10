@@ -204,7 +204,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             // dd('sucessfully login');
-            return redirect()->route('home');
+             return redirect(url('/home'))->with('success', 'OTP sent to your email.');
         }
 
         return back()->withErrors([

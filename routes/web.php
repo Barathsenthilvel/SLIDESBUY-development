@@ -110,7 +110,7 @@ Route::get('/myorders','Front\UserController@order')->name('order');
 
 //new routes added
 
-Route::post('/sign-in','Front\UserController@signIn')->name('login.submit');
+Route::any('/sign-in','Front\UserController@signIn')->name('login.submit');
 Route::any('/login','Front\UserController@showLoginForm')->name('login.form');
 
 

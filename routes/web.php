@@ -96,7 +96,7 @@ Route::get('/loadreview/{id}', 'Front\ProductController@loadreview')->name('load
 Route::get('/quickview/{id}', 'Front\ProductController@quickview')->name('quickview');
 
 
-Route::get('/login', 'Front\UserController@index')->name('user.login');
+// Route::get('/login', 'Front\UserController@index')->name('user.login');
 // Route::post('/login', 'Front\UserController@login')->name('front.login');
 Route::any('/register', 'Front\UserController@register')->name('user.register');
 Route::get('/logout', 'Front\UserController@logout')->name('user.logout');
@@ -110,8 +110,8 @@ Route::get('/myorders','Front\UserController@order')->name('order');
 
 //new routes added
 
-Route::get('/sign-in','Front\UserController@showLoginForm')->name('login.form');
-Route::post('/login','Front\UserController@login')->name('login.submit');
+Route::post('/sign-in','Front\UserController@signIn')->name('login.submit');
+Route::any('/login','Front\UserController@showLoginForm')->name('login.form');
 
 
 //otp =====>Routes

@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use App\Models\OtpVerification;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+
 use App\Mail\SendOtpMail;
 use Validator;
 use App\Models\MailTemplate;
@@ -42,7 +43,7 @@ class UserController extends Controller
     public $perpage = 5;
     public function __construct()
     {
-      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm']]);
+      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn']]);
     }
 
 
@@ -193,7 +194,7 @@ class UserController extends Controller
 //   return back()->with('error','invalid creditionals');
 //  }
 
- public function login(Request $request)
+ public function signIn(Request $request)
     {
         $credentials = $request->validate([
             'email'    => 'required|email',
@@ -202,7 +203,8 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard');
+            // dd('sucessfully login');
+            return redirect()->route('home');
         }
 
         return back()->withErrors([

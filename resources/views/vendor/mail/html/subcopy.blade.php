@@ -1,5 +1,7 @@
-
+{{-- 
 @php echo $mails; die; @endphp
+
+@if(isset($mails))
 @switch($mails)
 @case (3)
 <table class="action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -197,4 +199,125 @@
     </table>
 @break
 @endswitch    
+ --}}
+@if(isset($mails))
+    @switch($mails)
+        @case(3)
+            <table class="action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tbody>
+                    <tr>
+                        <td width="305">
+                            <div style="width:315px;font-family:Arial,Helvetica,sans-serif">
+                                <p>
+                                    <br><br>
+                                    <span style="font-size:18px;padding:20px 0px 0px;color:rgb(0,83,159);font-weight:bold">
+                                        Thank you {{ ($order->first_name ?? '') . ' ' . ($order->last_name ?? '') }} for shopping with {{ $StoreConfig->Store_Meta_Title ?? 'Our Store' }}
+                                    </span>
+                                </p>
+                                <p style="margin:0px">
+                                    <span style="display:block;font-size:14px;margin-left:10px">Your order number is:</span>
+                                    <br>
+                                    <span style="font-size:18px;margin:10px 0px 15px 10px;color:rgb(1,1,1);font-weight:bold">
+                                        #{{ $StoreConfig->OrderIDPrefix ?? '' }}{{ $order->id ?? '' }}
+                                        <img src="https://secure.ap-tescoassets.com/UIAssets/MY/grocery/default/i/email/orderConfirmation/tick.png" alt="" width="19" height="20">
+                                    </span>
+                                </p>
+                                <p style="font-size:12px;border-top:1px solid #ccc;padding-top:15px;margin-left:10px">
+                                    Payment method:
+                                    <br>
+                                    <span style="font-weight:bold;display:block">&nbsp;&nbsp;&nbsp;&nbsp;{{ $order->payment_method ?? '' }}</span><br>
+                                </p>
+                                <div style="border-bottom:1px solid #ccc;padding-bottom:20px;margin-left:10px">
+                                    <p style="font-size:12px;padding:0px;margin:0px;color:rgb(0,0,0)">
+                                        telephone number: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ $order->phone ?? '' }}<br>
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
 
+                        <td width="282" align="right" valign="top">
+                            <div style="text-align:left;font-family:arial">
+                                <table width="282" style="font-family:Arial,Helvetica,sans-serif">
+                                    <tr>
+                                        <td>
+                                            <div style="width:282px">
+                                                <div style="padding:0px 10px 7px;border:1px solid #bababa;border-top:none;">
+                                                    <h2 style="margin:0;font-size:18px;font-weight:normal">Order Summary</h2>
+                                                </div>
+                                                <table bgcolor="#e3f4e1" style="width:100%;border:1px solid #bababa;border-top:none;">
+                                                    <tr>
+                                                        <td style="font-family:Arial,Helvetica,sans-serif">
+                                                            <div>
+                                                                <table style="margin:5px 5px 5px 10px">
+                                                                    <tr>
+                                                                        <td style="font-size:12px;padding-bottom:10px">Delivery Address:</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size:14px;margin:0px">
+                                                                            <strong>
+                                                                                {{ $order->apparment ?? '' }} {{ $order->street ?? '' }} {{ $order->city ?? '' }} {{ $order->state ?? '' }}<br>
+                                                                                {{ $order->post_code ? 'Post Code: ' . $order->post_code : '' }}<br>
+                                                                                {{ $order->phone ? 'Phone: ' . $order->phone : '' }}<br>
+                                                                                {{ $order->email ? 'Email: ' . $order->email : '' }}<br>
+                                                                            </strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table><br>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                                <table bgcolor="#e3f4e1" style="width:100%;border:1px solid #bababa;border-top:none;">
+                                                    <tr>
+                                                        <td style="font-family:Arial,Helvetica,sans-serif">
+                                                            <table style="width:100%;border-collapse:collapse">
+                                                                <tr>
+                                                                    <td style="font-size:14px;padding:10px">No of Items:</td>
+                                                                    <td style="font-size:14px;text-align:right;padding:10px">{{ $cart->totalitem ?? 0 }} Items</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="2"><hr style="margin:0 10px"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="padding:10px 0 0 10px;font-size:14px">Guide price:</td>
+                                                                    <td style="text-align:right;padding:10px;font-size:14px">{{ $cart->totalPrice ?? '0.00' }}</td>
+                                                                </tr>
+                                                                @if (!empty($cart->deliverycharge))
+                                                                    <tr>
+                                                                        <td style="padding:10px 0 0 10px;font-size:14px">Delivery:</td>
+                                                                        <td style="text-align:right;padding:10px;font-size:14px">{{ $cart->deliverycharge }}</td>
+                                                                    </tr>
+                                                                @endif
+                                                                <tr>
+                                                                    <td colspan="2"><hr style="margin:10px 10px 0"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="padding:10px;font-size:14px"><strong>Total:</strong></td>
+                                                                    <td style="text-align:right;padding:10px;font-size:14px"><strong>{{ $cart->grandTotal ?? '0.00' }}</strong></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            @break
+    @endswitch
+@else
+    {{-- Laravel default for password reset --}}
+    <table class="subcopy" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+            <td>
+                {{ Illuminate\Mail\Markdown::parse($slot ?? '') }}
+            </td>
+        </tr>
+    </table>
+@endif

@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\OtpVerification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Password;
 use App\Mail\SendOtpMail;
 use Validator;
 use App\Models\MailTemplate;
@@ -43,9 +43,36 @@ class UserController extends Controller
     public $perpage = 5;
     public function __construct()
     {
-      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn']]);
+      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn','showLinkRequestForm','sendResetLinkEmail','showResetForm'.'reset']]);
     }
 
+    public function showLinkRequestForm()
+{
+    return view('auth.email'); // Or your custom view
+}
+
+
+public function sendResetLinkEmail(Request $request)
+{
+    $request->validate(['email' => 'required|email']);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+}
+
+
+public function showResetForm(Request $request, $token)
+{
+    return view('auth.reset', [
+        'token' => $token,
+        'email' => $request->email
+    ]);
+}
 
     public function LoadLogin()
     {

@@ -123,10 +123,14 @@ Route::post('/verify-otp','Front\UserController@verifyOtp')->name('verify.otp');
 
 //forget password==>
 
+
+
 Route::get('password/reset','Front\UserController@showLinkRequestForm')->name('password.request');
 Route::post('password/email','Front\UserController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}','Front\UserController@showResetForm')->name('password.reset');
-Route::post('password/reset','Front\UserController@reset')->name('password.update');
+
+
+Route::get('password/reset/{token}','Front\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset','Front\ResetPasswordController@reset')->name('password.update');
 
 
 //paymentcontroler

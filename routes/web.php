@@ -96,7 +96,7 @@ Route::get('/loadreview/{id}', 'Front\ProductController@loadreview')->name('load
 Route::get('/quickview/{id}', 'Front\ProductController@quickview')->name('quickview');
 
 
-// Route::get('/login', 'Front\UserController@index')->name('user.login');
+Route::get('/login', 'Front\UserController@index')->name('user.login');
 // Route::post('/login', 'Front\UserController@login')->name('front.login');
 Route::any('/register', 'Front\UserController@register')->name('user.register');
 Route::get('/logout', 'Front\UserController@logout')->name('user.logout');
@@ -110,8 +110,8 @@ Route::get('/myorders','Front\UserController@order')->name('order');
 
 //new routes added
 
-Route::get('/login','Front\UserController@showLoginForm')->name('login.form');
-Route::post('/login', [UserController::class, 'login'])->name('login.submit');
+Route::get('/sign-in','Front\UserController@showLoginForm')->name('login.form');
+Route::post('/login','Front\UserController@login')->name('login.submit');
 
 
 //otp =====>Routes
@@ -216,7 +216,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/setting', 'Admin\LoginController@changePassword')->name('admin.changePassword');
   Route::post('/setting', 'Admin\LoginController@changingPassword')->name('admin.changingPassword');
   Route::post('/getSubCategory','Admin\CategoryController@getSubCategory')->name('getSubCategory');
-  
+
   Route::group(['prefix'=>'menu','middleware'=>'permissions:admin-menu'],function() {
   Route::get('/index', 'Admin\AdminMenuController@index')->name('admin-menu');
   Route::get('/create', 'Admin\AdminMenuController@create')->name('admin-menu-create')->middleware('permissions:admin-menu1');
@@ -226,7 +226,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/datatables', 'Admin\AdminMenuController@datatables')->name('admin-menu-datatables');
   Route::get('/status/{id1}/{id2}', 'Admin\AdminMenuController@status')->name('admin-menu-status')->middleware('permissions:admin-menu2');
   Route::get('/delete/{id}', 'Admin\AdminMenuController@destroy')->name('admin-menu-delete')->middleware('permissions:admin-menu3');
-    
+
     });
 
   Route::group(['prefix'=>'module','middleware'=>'permissions:admin-module'],function() {
@@ -238,7 +238,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/datatables', 'Admin\ModuleController@datatables')->name('admin-module-datatables');
   Route::get('/status/{id1}/{id2}', 'Admin\ModuleController@status')->name('admin-module-status')->middleware('permissions:admin-module2');
   Route::get('/delete/{id}', 'Admin\ModuleController@destroy')->name('admin-module-delete')->middleware('permissions:admin-module3');
-    
+
     });
 
   Route::group(['prefix'=>'menu-module','middleware'=>'permissions:admin-menu-module'],function() {
@@ -247,7 +247,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/edit/{id}', 'Admin\MenuModuleController@edit')->name('admin-menu-module-edit');
   Route::post('/edit/{id}', 'Admin\MenuModuleController@update')->name('admin-menu-module-update');
   Route::get('/delete/{id}', 'Admin\MenuModuleController@destroy')->name('admin-menu-module-delete');
-        
+
         });
 
 
@@ -260,7 +260,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/datatables', 'Admin\RoleController@datatables')->name('admin-role-datatables');
   Route::get('/status/{id1}/{id2}', 'Admin\RoleController@status')->name('admin-role-status')->middleware('permissions:admin-role2');
   Route::get('/delete/{id}', 'Admin\RoleController@destroy')->name('admin-role-delete')->middleware('permissions:admin-role3');
-	
+
 	});
 
   Route::group(['prefix'=>'permission','middleware'=>'permissions:admin-permission'],function() {
@@ -269,7 +269,7 @@ Route::prefix('admin')->group(function() {
   Route::get('/edit/{id}', 'Admin\PermissionController@edit')->name('admin-permission-edit')->middleware('permissions:admin-permission2');
   Route::post('/edit/{id}', 'Admin\PermissionController@update')->name('admin-permission-update');
   Route::get('/delete/{id}', 'Admin\PermissionController@destroy')->name('admin-permission-delete')->middleware('permissions:admin-permission3');
-		
+
 		});
 
     Route::group(['prefix'=>'user','middleware'=>'permissions:admin-user'],function() {
@@ -379,7 +379,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/delete/{id}', 'Admin\CityController@destroy')->name('admin-city-delete')->middleware('permissions:admin-city3');
     });
 
-    Route::group(['prefix'=>'pincode','middleware'=>'permissions:admin-pincode'],function() {   
+    Route::group(['prefix'=>'pincode','middleware'=>'permissions:admin-pincode'],function() {
     Route::get('/index', 'Admin\PincodeController@index')->name('admin-pincode');
     Route::get('/create', 'Admin\PincodeController@create')->name('admin-pincode-create')->middleware('permissions:admin-pincode1');
     Route::post('/create', 'Admin\PincodeController@store')->name('admin-pincode-store');
@@ -412,7 +412,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/delete/{id}', 'Admin\CategoryController@destroy')->name('admin-category-delete')->middleware('permissions:admin-category3');
     Route::post('/crop', 'Admin\CategoryController@cropimage')->name('admin-category-cropimage');
     });
-    
+
     Route::group(['prefix'=>'blog','middleware'=>'permissions:admin-blog'],function() {
     Route::get('/index', 'Admin\BlogController@index')->name('admin-blog')->middleware('permissions:admin-blog');
     Route::get('/create', 'Admin\BlogController@create')->name('admin-blog-create')->middleware('permissions:admin-blog1');
@@ -452,7 +452,7 @@ Route::prefix('admin')->group(function() {
         Route::post('/load', 'Admin\HomesliderController@load')->name('admin-homeslider-load');
 
     });
-    
+
     Route::group(['prefix'=>'homecate','middleware'=>'permissions:admin-homecat'],function() {
       Route::get('/index', 'Admin\HomecatController@index')->name('admin-homecat');
       Route::get('/create', 'Admin\HomecatController@create')->name('admin-homecat-create')->middleware('permissions:admin-homecat1');
@@ -465,7 +465,7 @@ Route::prefix('admin')->group(function() {
       Route::get('/product', 'Admin\HomecatController@product')->name('admin-homecat-product');
       Route::post('/load', 'Admin\HomecatController@load')->name('admin-homecat-load');
       });
-      
+
       Route::prefix('discount')->group(function() {
         Route::get('/index', 'Admin\DiscountController@index')->name('admin-discount')->middleware('permissions:admin-discount');
         Route::get('/create', 'Admin\DiscountController@create')->name('admin-discount-create')->middleware('permissions:admin-discount1');
@@ -478,7 +478,7 @@ Route::prefix('admin')->group(function() {
         Route::get('/product', 'Admin\DiscountController@product')->name('admin-discount-product');
         Route::post('/load', 'Admin\DiscountController@load')->name('admin-discount-load');
         });
-    
+
       Route::group(['prefix'=>'vendor','middleware'=>'permissions:admin-vendor'],function() {
       Route::get('/index', 'Admin\VendorController@index')->name('admin-vendor');
       Route::get('/create', 'Admin\VendorController@create')->name('admin-vendor-create')->middleware('permissions:admin-vendor1');
@@ -505,7 +505,7 @@ Route::prefix('admin')->group(function() {
           Route::post('/notes/{id}', 'Admin\OrderController@updatenotes')->name('admin-update-node');
           Route::post('/updateReject/{id}', 'Admin\OrderController@updateReject')->name('admin-updateReject-node');
           });
-          
+
         Route::prefix('return')->group(function() {
             Route::get('/index', 'Admin\ReturnController@index')->name('admin-return')->middleware('permissions:admin-return');
             Route::get('/datatables', 'Admin\ReturnController@datatables')->name('admin-datatables-return')->middleware('permissions:admin-datatables-return');
@@ -519,7 +519,7 @@ Route::prefix('admin')->group(function() {
             Route::GET('/history/{id}', 'Admin\ReturnController@history')->name('admin-history-return');
             Route::GET('/invoice/{id}', 'Admin\ReturnController@invoice')->name('admin-invoice-return');
         });
-          
+
           Route::prefix('review')->group(function() {
             Route::get('/index', 'Admin\ReviewController@index')->name('admin-review')->middleware('permissions:admin-review');
             Route::get('/datatables', 'Admin\ReviewController@datatables')->name('admin-review-datatables');
@@ -600,7 +600,7 @@ Route::prefix('admin')->group(function() {
     Route::post('/crop', 'Admin\ProductController@cropimage')->name('admin-product-cropimage')->middleware('permissions:admin-product1');
 
     });
-    
+
     Route::group(['prefix'=>'vendorProduct','middleware'=>'permissions:admin-productv2'],function() {
     Route::get('/index2', 'Admin\ProductController@index2')->name('admin-productv2')->middleware('permissions:admin-productv2');
     Route::get('/attribute-group', 'Admin\ProductController@attributeGroup')->name('admin-productv-group')->middleware('permissions:admin-productv21');
@@ -608,13 +608,13 @@ Route::prefix('admin')->group(function() {
     // Route::get('/create', 'Admin\ProductController@create')->name('admin-product-create');
     Route::post('/create', 'Admin\ProductController@store')->name('admin-productv-store')->middleware('permissions:admin-productv21');
     Route::Post('/datatables2', 'Admin\ProductController@datatables2')->name('admin-product-datatables2')->middleware('permissions:admin-productv2');
-    
+
     Route::get('/status/{id1}/{id2}', 'Admin\ProductController@status')->name('admin-productv-status')->middleware('permissions:admin-productv22');
     Route::get('/edit/{id}', 'Admin\ProductController@edit')->name('admin-productv-edit')->middleware('permissions:admin-productv22');
     Route::get('/delete/{id}', 'Admin\ProductController@destroy')->name('admin-productv-delete')->middleware('permissions:admin-productv23');
-    
+
     Route::post('/crop', 'Admin\ProductController@cropimage')->name('admin-productv-cropimage')->middleware('permissions:admin-productv2');
-     
+
     Route::post('/edit/{id}', 'Admin\ProductController@update')->name('admin-productv-update')->middleware('permissions:admin-productv22');
 
     });

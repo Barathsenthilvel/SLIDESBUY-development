@@ -1,4 +1,7 @@
-@php die('OTP Form View Loaded'); @endphp
+{{-- @php die('OTP Form View Loaded'); @endphp --}}
+
+@extends('front.includes.container')
+@section('content')
     <div class="container">
         <h2>Enter OTP</h2>
 

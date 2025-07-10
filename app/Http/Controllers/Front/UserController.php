@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\OtpVerification;
 use Illuminate\Http\Request;
 use Auth;
+use App\Mail\SendOtpMail;
 use Validator;
 use App\Models\MailTemplate;
 use App\Mail\ContactMails;
@@ -31,7 +32,9 @@ use App\Http\Controllers\Front\CartController;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 use Illuminate\Support\Facades\Redirect;
-
+// use App\Mail\SendOtpMail;
+// use Illuminate\Support\Facades\Mail;
+// use Illuminate\Support\Facades\Session;
 
 
 class UserController extends Controller
@@ -39,8 +42,10 @@ class UserController extends Controller
     public $perpage = 5;
     public function __construct()
     {
-      $this->middleware('auth',['except'=>['index','register','login','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo']]);
+      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm']]);
     }
+
+
     public function LoadLogin()
     {
       if(Auth::check()){
@@ -104,7 +109,7 @@ class UserController extends Controller
         return Redirect::back()->with('msg', 'Add to Cart');;
     }
     public function vieworder(Request $request,$id){
-        
+
         $order = Order::findOrFail($id);
         $Store = Storeconfiguration::findOrFail(1);
         $items = unserialize(bzdecompress(utf8_decode($order->card)));
@@ -164,10 +169,10 @@ class UserController extends Controller
   //     // if unsuccessful, then redirect back to the login with the form data
   //     return response()->json(['errors'=>"Check Email And password !!"]);
 	// }
- public function showLoginfrom(){
-
-  return view('fornt.auth.login');
- }
+        public function showLoginForm(){
+// dd('login page');
+        return view('front.signin');
+        }
 
 //  public function login(Request $request){
 
@@ -205,51 +210,93 @@ class UserController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login.form');
-    }
+    // public function logout(Request $request)
+    // {
+    //     Auth::logout();
+    //     $request->session()->invalidate();
+    //     $request->session()->regenerateToken();
+    //     return redirect()->route('login.form');
+    // }
+
+
 
 public function register(Request $request)
 {
+    // dd($request);
     $request->validate([
-        'name' => 'required|string|max:5',
+        'name' => 'required|string',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|confirmed|min:3',
+        'agree' => 'nullable'
     ]);
 
-    // Generate OTP
+    // dd($request->all());
     $otp = rand(100000, 999999);
-
-    // Save data temporarily in session
+    $otpExpiresAt = now()->addMinutes(10);
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
     Session::put('otp_expires', now()->addMinutes(10));
 
-    // Send OTP to email
-    Mail::to($request->email)->send(new SendOtpMail($otp));
-
-    return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
-}
-
-    public function showOtpForm()
-{
-  dd('coming');
-    // Check if session exists before showing form
-    if (!Session::has('register_data')) {
-        return redirect()->route('register.form')->with('error', 'Session expired. Please register again.');
+    try {
+        // dd('mail->send');
+        Mail::to($request->email)->send(new SendOtpMail($otp));
+         // Store OTP in the database
+        OtpVerification::updateOrCreate(
+            ['email' => $request->email], // if already exists, update
+            ['otp' => $otp, 'expires_at' => $otpExpiresAt]
+        );
+    }
+    catch (\Exception $e) {
+        // dd('error');
+        return back()->with('error', 'Failed to send OTP: ' . $e->getMessage());
     }
 
-    return view('front.otpform'); // Make sure this Blade file exists
+// dd('coming');
+// return "this is otpofrm";
+    return redirect(url('/otp-form'))->with('success', 'OTP sent to your email.');
+}
+
+// public function register(Request $request)
+// {
+//     $request->validate([
+//         'name' => 'required|string|max:5',
+//         'email' => 'required|email|unique:users,email',
+//         'password' => 'required|confirmed|min:3',
+//     ]);
+
+//     // Generate OTP
+//     $otp = rand(100000, 999999);
+
+//     // Save data temporarily in session
+//     Session::put('register_data', $request->only('name', 'email', 'password'));
+//     Session::put('otp', $otp);
+//     Session::put('otp_expires', now()->addMinutes(10));
+
+//     // Send OTP to email
+//     Mail::to($request->email)->send(new SendOtpMail($otp));
+
+//     return redirect()->route('otp.form')->with('success', 'OTP sent to your email.');
+// }
+
+public function showOtpForm()
+{
+    // dd(Session::get('register_data'));
+
+    if (!Session::has('register_data')) {
+        return redirect()->route('user.register')->with('error', 'Session expired. Please register again.');
+    }
+
+
+
+    return view('front.otpform');
 }
 
     public function verifyOtp(Request $request)
     {
         $request->validate(['otp' => 'required|digits:6']);
 
+
+        // dd($request);
         $data = Session::get('register_data');
 
         $otpRecord = OtpVerification::where('email', $data['email'])
@@ -257,6 +304,7 @@ public function register(Request $request)
             ->where('expires_at', '>', now())
             ->first();
 
+            // dd($otpRecord);
         if ($otpRecord) {
             User::create([
                 'name'     => $data['name'],
@@ -266,8 +314,9 @@ public function register(Request $request)
 
             Session::forget('register_data');
             OtpVerification::where('email', $data['email'])->delete();
-
-            return redirect('login')->with('success', 'Account created successfully!');
+// dd('coming to home');
+            // return redirect('login')->with('success', 'Account created successfully!');
+               return redirect(url('/login'))->with('success', 'Account created successfully!');
         } else {
             return back()->with('error', 'Invalid or expired OTP.');
         }
@@ -497,11 +546,11 @@ public function register(Request $request)
       session()->put('cart_return',$card);
       return view('front.returnorder',compact('card'));
   }
-  
+
   public function signOnWithMobileNo(Request $request)
   {
     $user = User::where('Phone',$request->mobile)->first();
-    
+
     if (!$user) {
          $user =  User::create(['Phone' => $request->mobile]);
     }
@@ -513,6 +562,6 @@ public function register(Request $request)
         'message' => 'Logged in successfully'
     ]);
   }
-  
+
 
 }

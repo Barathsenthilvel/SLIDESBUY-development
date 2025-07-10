@@ -175,6 +175,7 @@
             <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
 <!-- register form start -->
 <form action="{{ route('user.register') }}" method="POST">
+
     @csrf
     <div class="row gy-4">
         <div class="col-12">

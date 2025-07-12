@@ -1,6 +1,12 @@
 
 @extends('front.includes.container')
 @section('content')
+<style>
+    .is-invalid {
+    border: 1px solid red;
+}
+
+    </style>
 <section class="account d-flex">
     <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
@@ -65,7 +71,8 @@
     </div>
 </form> --}}
 
-<form method="POST" action="{{ route('login.submit') }}">
+<form  id="loginForm">
+<div id="loginError" style="color:red;"></div>
 
     @csrf
     <div class="row gy-4">
@@ -76,6 +83,7 @@
             <div class="position-relative">
                 <input type="email" name="email" class="common-input common-input--bg common-input--withIcon" placeholder="you@example.com" required>
                 <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
+                <div class="error-msg email-error mt-1 text-danger"></div>
             </div>
         </div>
 
@@ -84,6 +92,8 @@
             <div class="position-relative">
                 <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required>
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
+                        <div class="error-msg password-error mt-1 text-danger"></div>
+
             </div>
         </div>
 
@@ -105,3 +115,60 @@
 </section>
 
 @endsection
+<!-- Load jQuery first -->
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+<!-- Then your script -->
+<script>
+
+    jQuery(document).ready(function ($) {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault();
+
+            // Clear previous errors
+            $('.email-error').text('');
+            $('.password-error').text('');
+            $('input').removeClass('is-invalid');
+
+            let formData = $(this).serialize();
+
+            $.ajax({
+               url: "{{ route('login.submit') }}",// Update if your login route is different
+                method: 'POST',
+                data: formData,
+                success: function (res) {
+                    if (res.success) {
+                        window.location.href = '/home';
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        // Laravel validation errors
+                        let errors = xhr.responseJSON.errors;
+                        if (errors.email) {
+                            $('input[name="email"]').addClass('is-invalid');
+                            $('.email-error').text(errors.email[0]);
+                        }
+                        if (errors.password) {
+                            $('input[name="password"]').addClass('is-invalid');
+                            $('.password-error').text(errors.password[0]);
+                        }
+                    } else if (xhr.status === 401) {
+                        let response = xhr.responseJSON;
+                        if (response.field === 'email') {
+                            $('input[name="email"]').addClass('is-invalid');
+                            $('.email-error').text(response.message);
+                        } else if (response.field === 'password') {
+                            $('input[name="password"]').addClass('is-invalid');
+                            $('.password-error').text(response.message);
+                        }
+                    } else {
+                        alert('An unknown error occurred. Please try again.');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+

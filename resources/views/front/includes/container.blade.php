@@ -231,7 +231,7 @@
     <script src="{{URL::asset('assets/front/static/js/myscript.js')}}"></script> -->
 
 
-
+{{-- 
         <script>
            $(document).ready(function(){
 
@@ -244,12 +244,12 @@
                   arrows: false,
                   speed: 300,
                   autoplay:false,
-              });
-          /*mobile category slide ends*/
+              }); --}}
+          {{-- /*mobile category slide ends*/ --}}
 
-          });
-        </script>
-    <script>
+          {{-- });
+        </script> --}}
+    {{-- <script>
            $(window).scroll(function () {
         if ($('div.navbar-fixed-top').hasClass("shrink")) {
             $('.invert').show();
@@ -395,7 +395,7 @@ $('body').on('click','.btn-wishlist',function(e){
         @endforeach
     @endif
     </script>
-    @stack('script')
+    @stack('script') --}}
 </body>
 
 </html>

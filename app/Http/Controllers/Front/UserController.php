@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use App\Mail\SendOtpMail;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Models\MailTemplate;
 use App\Mail\ContactMails;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as Input;
 use App\Models\Cart;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
 use App\Mail\UserForgetMail;
@@ -220,24 +221,40 @@ public function showResetForm(Request $request, $token)
 //   }
 //   return back()->with('error','invalid creditionals');
 //  }
+public function signIn(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email'    => 'required|email',
+        'password' => 'required'
+    ]);
 
- public function signIn(Request $request)
-    {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            // dd('sucessfully login');
-             return redirect(url('/home'))->with('success', 'OTP sent to your email.');
-        }
-
-        return back()->withErrors([
-            'email' => 'Invalid credentials.'
-        ]);
+    if ($validator->fails()) {
+        return response()->json([
+            'errors' => $validator->errors()
+        ], 422);
     }
+
+    
+    // we check this email is there are not 
+    if (!User::where('email', $request->email)->exists()) {
+        return response()->json([
+            'field'   => 'email',
+            'message' => 'This email is not registered.',
+        ], 401);
+    }
+
+    // Attempt login
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json([
+            'field'   => 'password',
+            'message' => 'Invalid password.',
+        ], 401);
+    }
+
+    $request->session()->regenerate();
+
+    return response()->json(['success' => true]);
+}
 
     // public function logout(Request $request)
     // {
@@ -349,11 +366,8 @@ public function showOtpForm()
             return back()->with('error', 'Invalid or expired OTP.');
         }
     }
-
-    public function resendOtp(Request $request)
+public function resendOtp(Request $request)
 {
-  dd('dsdsdsd');
-    // Get the session data from registration step
     $registerData = session('register_data');
 
     if (!$registerData || !isset($registerData['email'])) {
@@ -366,22 +380,22 @@ public function showOtpForm()
     $email = $registerData['email'];
     $otp = rand(100000, 999999); // Generate new 6-digit OTP
 
-    // Store or update OTP in database
+    // Set expiration to 1 minute from now
+    $expiresAt = Carbon::now()->addMinutes(1);
+
+    // Store/update the OTP
     OtpVerification::updateOrCreate(
         ['email' => $email],
-        ['otp' => $otp, 'created_at' => now()]
+        ['otp' => $otp, 'created_at' => now(), 'expires_at' => $expiresAt]
     );
-
-    // Optional: Send the OTP via email or SMS
-    // Mail::to($email)->send(new OtpMail($otp));
 
     return response()->json([
         'success' => true,
         'message' => 'OTP resent successfully',
-        'otp' => $otp // Only for dev/testing; remove in production
+        'otp' => $otp, // remove in production
+        'expires_at' => $expiresAt->timestamp
     ]);
 }
-
 
 
 

@@ -76,6 +76,10 @@
                 <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
             </div>
         </div>
+        <div class="col-12 text-center mb-3">
+            <div id="timer" style="color: red; font-weight: bold;"></div>
+            <button type="button" id="resendOtpBtn" class="btn btn-link" style="display: none;">Resend OTP</button>
+        </div>
 
 
         <div class="col-12">
@@ -95,3 +99,53 @@
     </div>
 </section>
 @endsection
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+<script>
+  jQuery(document).ready(function ($) {
+        let duration = 60;
+        let timerInterval;
+
+        function startTimer(seconds) {
+            let time = seconds;
+
+            timerInterval = setInterval(function () {
+                if (time <= 0) {
+                    clearInterval(timerInterval);
+                    $('#timer').text("OTP expired.");
+                    $('#resendOtpBtn').show();
+                } else {
+                    $('#timer').text(`Time left: ${time}s`);
+                    time--;
+                }
+            }, 1000);
+        }
+
+        startTimer(duration);
+
+        $('#resendOtpBtn').click(function () {
+            $(this).text("Resending...").prop("disabled", true);
+
+            $.ajax({
+                url: "{{ route('resend.otp') }}",
+                method: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}' 
+                    },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#resendOtpBtn').hide().text("Resend OTP").prop("disabled", false);
+                        startTimer(duration);
+                    } else {
+                        alert(response.message);
+                        $('#resendOtpBtn').text("Resend OTP").prop("disabled", false);
+                    }
+                },
+                error: function () {
+                    alert("Something went wrong. Try again.");
+                    $('#resendOtpBtn').text("Resend OTP").prop("disabled", false);
+                }
+            });
+        });
+    });
+    </script>

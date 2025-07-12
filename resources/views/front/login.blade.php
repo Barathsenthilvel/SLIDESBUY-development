@@ -77,7 +77,7 @@
             </a>
             <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
 <!-- register form start -->
-<form action="{{ route('user.register') }}" method="POST">
+ <form id="registerForm" action="{{ route('user.register') }}" method="POST">
 
     @csrf
     <div class="row gy-4">
@@ -145,415 +145,78 @@
 <!-- ================================== Account Page End =========================== -->
 
 @endsection
-@push('script')
-<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-auth.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+
+<!-- Load jQuery first -->
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+<!-- Then jQuery Validation -->
+{{-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script> --}}
+
+
 <script>
+    // debugger
+jQuery(document).ready(function ($) {
+    $('#registerForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent form submission
 
+        let isValid = true;
+        let name = $('input[name="name"]').val().trim();
+        let email = $('input[name="email"]').val().trim();
+        let password = $('input[name="password"]').val();
+        let confirmPassword = $('input[name="password_confirmation"]').val();
+        let agree = $('#agree').is(':checked');
 
+        // Clear previous errors
+        $('.text-danger').remove();
 
-    document.querySelector("form").addEventListener("submit", function (e) {
-        // Get values
-        const email = document.querySelector('input[name="email"]').value;
-        const password = document.querySelector('input[name="password"]').value;
-        const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
-
-        // Regex for email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // Clear existing errors (optional if you're adding dynamically)
-        document.querySelectorAll('.client-error').forEach(el => el.remove());
-
-        let hasError = false;
-
-        // Check email format
-        if (email && !emailRegex.test(email)) {
-            showError('email', 'Please enter a valid email address');
-            hasError = true;
+        // Name validation
+        if (name === '') {
+            $('input[name="name"]').after('<small class="text-danger">Full name is required.</small>');
+            isValid = false;
         }
 
-        // Check password match
-        if (password && confirmPassword && password !== confirmPassword) {
-            showError('password_confirmation', 'Passwords do not match');
-            hasError = true;
+        // Email validation
+        if (email === '') {
+            $('input[name="email"]').after('<small class="text-danger">Email is required.</small>');
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            $('input[name="email"]').after('<small class="text-danger">Enter a valid email.</small>');
+            isValid = false;
         }
 
-        // If there's an error, prevent submission
-        if (hasError) {
-            e.preventDefault();
+        // Password validation
+        if (password.length < 6) {
+            $('input[name="password"]').after('<small class="text-danger">Password must be at least 6 characters.</small>');
+            isValid = false;
+        }
+
+        // Confirm password validation
+        if (confirmPassword !== password) {
+            $('input[name="password_confirmation"]').after('<small class="text-danger">Passwords do not match.</small>');
+            isValid = false;
+        }
+
+        // Terms & conditions checkbox
+        if (!agree) {
+            $('#agree').closest('.common-check').append('<small class="text-danger">You must agree to terms.</small>');
+            isValid = false;
+        }
+
+        // If all validations pass, submit the form
+        if (isValid) {
+            this.submit(); // or use AJAX if needed
         }
     });
 
-    function showError(fieldName, message) {
-        const field = document.querySelector(`input[name="${fieldName}"]`);
-        const errorEl = document.createElement('small');
-        errorEl.classList.add('text-danger', 'client-error');
-        errorEl.textContent = message;
-        field.parentNode.appendChild(errorEl);
+    // Email regex helper
+    function validateEmail(email) {
+        let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
     }
-
-
-$(document).ready(function(){
-    $('#otp').on('input', function () {
-      let value = $(this).val().replace(/\D/g, '');
-      if (value.length > 6) {
-        value = value.slice(0, 6);
-      }
-      $(this).val(value);
-    });
-
-    $('#mobile').on('input', function () {
-      let value = $(this).val().replace(/\D/g, '');
-      if (value.length > 10) {
-        value = value.slice(0, 10);
-      }
-      $(this).val(value);
-    });
-})
-let iti;
-document.addEventListener("DOMContentLoaded", function () {
-    const input = document.querySelector("#mobile");
-    iti = window.intlTelInput(input, {
-        initialCountry: "in",
-        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js"
-    });
-
-    //initialize firebase library for captcha
-
-    function setupInvisibleRecaptcha() {
-    firebase.initializeApp(firebaseConfig);
-    if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible',
-            'callback': function(response) {
-                // reCAPTCHA solved, will proceed with sending OTP
-                // console.log('reCAPTCHA solved: ', response);
-                //sendOTP(); // Optional: You can auto-trigger OTP here or use manual button
-            },
-            'expired-callback': function() {
-                console.warn('reCAPTCHA expired, resetting...');
-                toastr["error"]("reCAPTCHA expired. Please try again.");
-                window.recaptchaVerifier.clear();
-                setupInvisibleRecaptcha();
-            }
-        });
-
-        window.recaptchaVerifier.render().then(function(widgetId) {
-            window.recaptchaWidgetId = widgetId;
-        });
-    }
-}
-
-// Step 2: Call this on page load or before sending OTP
-setupInvisibleRecaptcha();
-
 });
-
-    const form = document.querySelector("#submit");
-    form.addEventListener("click", function (e) {
-          e.preventDefault();
-          const dialCode = "+" + iti.getSelectedCountryData().dialCode;
-          const mobileNo = $('#mobile').val();
-          let Mobnumber = mobileNo.startsWith(dialCode) ? mobileNo.slice(dialCode.length) : mobileNo;
-          $('#submit').attr('data-isverifyotp') == 'true' ? verifyOTP(Mobnumber) : verifyUserandSendOTP(mobileNo)
-          console.log('ddddddddddd => ',$('#submit').attr('data-isverifyotp'))
-    });
-
-    const editno = document.querySelector("#editno");
-        editno.addEventListener("click", function (e) {
-         $('#mobile').attr('disabled',false);
-         $('#otp').hide();
-         $('#submit').val('Login with OTP')
-    });
-
-
-// const FireBase_init = function(){
-//             firebase.initializeApp(firebaseConfig);
-//             window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-//                 'size': 'invisible',
-//                 'callback': (response) => {
-//                     // reCAPTCHA solved, allow signInWithPhoneNumber.
-//                     // onSignInSubmit();
-//                 }
-//             });
-//         }
-// FireBase_init()
-
-var downloadTimer = null;
-    var app = new Vue({
-        el : '#register',
-        data : {
-            otpbutton : 'Resend OTP',
-            otp : false,
-            tryagain : true,
-            OTP : '',
-            Checking : false,
-            Phone : '',
-            otpverifide : false,
-            pass : "",
-            confpass : '',
-            mesage : 'sec',
-            email : '',
-            showvalise  : false,
-            dialing : '',
-            count : '',
-            phonevalidation : false,
-            confirmationResult : null,
-            num1 : parseInt(Math. random() * (100 - 1)),
-            num2 : parseInt(Math. random() * (100 - 1)),
-            enter_number : '',
-        },
-        watch : {
-            OTP : function(data){
-                if(data.length >= 6){
-                    this.Checking = true
-                    app.confirmationResult.confirm(data).then(function (result) {
-                        toastr["success"]("Registraing...");
-                        app.formsubmit();
-                    })
-                    .catch(function (error) {
-                        toastr["error"]('Wrong OTP try again')
-                        app.OTP = ''
-                        app.Checking = false
-
-                    })
-
-                    // axios.get(`{{route('Otpverify')}}?otp=${app.OTP}`)
-                    // .then(function (response) {
-                    //     if(response.data.status){
-                    //         toastr["success"]("Registraing...");
-                    //         app.formsubmit();
-                    //     }else{
-                    //         toastr["error"]('Wrong OTP try again')
-                    //         app.OTP = ''
-                    //         app.Checking = false
-                    //     }
-                    // })
-                    // .catch(function (error) {
-                    // console.log(error);
-                    // });
-                }
-            },
-            email : function(data){
-                axios.get(`{{route('checkemail')}}?email=${data}`)
-                .then(function (response) {
-                    if(response.data.status){
-                        app.showvalise = true
-                    }else{
-                        app.showvalise = false
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
-            },
-            Phone : function(data){
-                axios.get(`{{route('checkphone')}}?phone=${data}`)
-                .then(function (response) {
-                    if(response.data.status){
-                        app.phonevalidation = true
-                    }else{
-                        app.phonevalidation = false
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
-            },
-        },
-        methods : {
-            countrychange(e){
-                console.log(e);
-                if(e.target.options.selectedIndex > -1) {
-                    this.dialing = e.target.options[e.target.options.selectedIndex].dataset.dialing
-                }
-            },
-            submit(e,obj){
-                this.Checking = false
-                e.preventDefault();
-                if(app.showvalise) { toastr["error"]('Email Id already taken'); return;  }
-                if(app.phonevalidation) { toastr["error"]('Mobile No already taken'); return;  }
-                if(this.pass != this.confpass){ toastr["error"]('Password Miss Match'); return;  }
-                if(this.num1 + this.num2 == parseInt(this.enter_number) ){
-                    console.log('formData : ',formData);
-
-                    app.formsubmit();
-                }else{
-                    this.num1 = parseInt(Math. random() * (100 - 1)),
-                    this.num2 = parseInt(Math. random() * (100 - 1)),
-                    toastr["error"]('Enter Correct value'); return;
-                }
-                // if(!this.otpverifide){
-                //     this.generateOTP();
-                // }
-            },
-            generateOTP(mobileNumber){
-                // var mobile = `${this.dialing.replace('+','')}${this.Phone}`
-                // axios.post(`{{route('generateOTP')}}?phone=${mobile}&_token={{ csrf_token() }}`)
-                const appVerifier = window.recaptchaVerifier;
-                const PhoneNumber = mobileNumber;
-                firebase.auth().signInWithPhoneNumber(PhoneNumber, appVerifier)
-                .then((confirmationResult)=>{
-                        app.start();
-                        app.tryagain = true
-                        app.confirmationResult = confirmationResult;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            start(){
-                this.otp = true
-                var cont = 100;
-                downloadTimer = setInterval(function(){
-                    if(cont <= 0){
-                        clearInterval(downloadTimer);
-                        app.count = 'Please click Resend OTP'
-                        app.tryagain = false
-                    }else{
-                        cont -= 1
-                        app.count = `You Will Receive With in ${cont} ${app.mesage}`
-                    }
-                },1000)
-            },
-            formsubmit(){
-                const formData = new FormData(this.$refs.form);
-                var url = this.$refs.form.action
-                console.log('formData : ',formData);
-                $.ajax({
-                    method:"POST",
-                    url:url,
-                    data:formData,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    success:function(data){
-                        if(data.msg){
-                            toastr["success"](data.msg);
-                            setTimeout(() => {  location.reload(); }, 500);
-
-                        }else{
-                            toastr["error"](errMessage(data));
-                            clearInterval(downloadTimer);
-                            app.otp = false
-                        }
-                    },
-                    error:function(erroe){
-                        alert("Something is wrong");
-                    }
-                });
-            }
-        }
-    });
-
-    let confirmationResult;
-
-    function sendOTP(phoneNumber) {
-        const dialCode = "+" + iti.getSelectedCountryData().dialCode;
-        const fullmobNo   = dialCode+""+phoneNumber
-        console.log('fullmobNo : ',fullmobNo)
-
-        let baseText = 'Sending OTP';
-        let dotCount = 0;
-
-        intervalId = setInterval(function () {
-            dotCount = (dotCount + 1) % 4;
-            let dots = '.'.repeat(dotCount);
-            $('#submit').val(baseText + ' ' + dots);
-        }, 500);
-
-        firebase.auth().signInWithPhoneNumber(fullmobNo, window.recaptchaVerifier)
-            .then(function (result) {
-                console.log('result : ',result);
-                confirmationResult = result;
-                clearInterval(intervalId);
-                $('#mobile').attr('disabled',true)
-                toastr["success"]("OTP has been sent Successfully!!!")
-                $('#otpdiv').show();
-                $('#submit').val('Verify OTP');
-                $('#submit').attr('data-isverifyotp',true)
-            }).catch(function (error) {
-                   console.log('error : ',error);
-                     toastr["error"]("Error while sending the OTP");
-            });
-    }
-
-    function verifyOTP(mobnumber){
-        const code = document.getElementById("otp").value;
-        confirmationResult.confirm(code).then(result => {
-            const user = result.user;
-            loginUserService(mobnumber)
-        }).catch(error => {
-            toastr["error"]("OTP incorrect try again");
-            $('#editnoDiv').show();
-            $('#otp').val('');
-            // $('#submit').attr('data-isverifyotp',false)
-        });
-    }
-
-    function verifyUserandSendOTP(mobNumber)
-    {
-        if(mobNumber.length < 10)
-        {
-           toastr["error"]("Please enter your 10 digits mobile number");
-           return true;
-        }
-        // axios.get(`{{route('checkphone')}}?phone=${mobNumber}`)
-        // .then(function (response) {
-        //     if(response.data.status){
-               sendOTP(mobNumber);
-            // }
-        // })
-        // .catch(function (error) {
-        //     toastr["error"]("Something went wrong !!!");        })
-    }
-
-    function loginUserService(payload)
-    {
-        let baseText = 'Verifying OTP';
-        let dotCount = 0;
-
-        verifyOTP = setInterval(function () {
-            dotCount = (dotCount + 1) % 4;
-            let dots = '.'.repeat(dotCount);
-            $('#submit').val(baseText + ' ' + dots);
-        }, 500);
-
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }});
-
-        $.ajax({
-            method:"POST",
-            url:"{{ route('login.mobile') }}",
-            data: {
-                mobile : payload
-            },
-            success:function(data){
-                if(data.status == 'success')
-                {
-                    clearInterval(verifyOTP);
-                    $('#submit').val('Verified');
-                   toastr["success"]("Login Successful!!!");
-                    setTimeout(function () {
-                        window.location.href = "{{ route('view.cart') }}";
-                    }, 2000);
-                }
-                else{
-                    $('#submit').val('Verify OTP')
-                    toastr["error"](data.message);
-                }
-
-            },
-            error:function(erroe){
-                $('#submit').val('Verify OTP')
-                alert("Something is wrong");
-            }
-          });
-    }
-
 </script>
-@endpush
+
+
+
+
+  

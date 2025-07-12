@@ -43,7 +43,7 @@ class UserController extends Controller
     public $perpage = 5;
     public function __construct()
     {
-      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn','showLinkRequestForm','sendResetLinkEmail','showResetForm'.'reset']]);
+      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn','showLinkRequestForm','sendResetLinkEmail','showResetForm','resendOtp','reset']]);
     }
 
     public function showLinkRequestForm()
@@ -251,13 +251,12 @@ public function showResetForm(Request $request, $token)
 
 public function register(Request $request)
 {
-    // dd($request);
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|confirmed|min:3',
-        'agree' => 'nullable'
-    ]);
+  $request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email',
+    'password' => 'required|confirmed|min:6',
+    'agree' => 'accepted',
+]);
 
     // dd($request->all());
     $otp = rand(100000, 999999);
@@ -350,6 +349,46 @@ public function showOtpForm()
             return back()->with('error', 'Invalid or expired OTP.');
         }
     }
+
+    public function resendOtp(Request $request)
+{
+  dd('dsdsdsd');
+    // Get the session data from registration step
+    $registerData = session('register_data');
+
+    if (!$registerData || !isset($registerData['email'])) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Session expired. Please register again.'
+        ]);
+    }
+
+    $email = $registerData['email'];
+    $otp = rand(100000, 999999); // Generate new 6-digit OTP
+
+    // Store or update OTP in database
+    OtpVerification::updateOrCreate(
+        ['email' => $email],
+        ['otp' => $otp, 'created_at' => now()]
+    );
+
+    // Optional: Send the OTP via email or SMS
+    // Mail::to($email)->send(new OtpMail($otp));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'OTP resent successfully',
+        'otp' => $otp // Only for dev/testing; remove in production
+    ]);
+}
+
+
+
+
+
+
+
+
 	//  public function register(Request $request){
   //   	$rules = [
   //                 'email'   => 'required|email|unique:users,email,'.$request['email'],

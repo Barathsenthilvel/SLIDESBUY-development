@@ -119,6 +119,7 @@ Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');
 // Route::get('/otp-form','Front\UserController@showOtpForm')->name('otp.form');
 Route::post('/send-otp','Front\UserController@sendOtp')->name('send.otp');
 Route::post('/verify-otp','Front\UserController@verifyOtp')->name('verify.otp');
+Route::post('/resend-otp','Front\UserController@resendOtp')->name('resend.otp');
 
 
 //forget password==>

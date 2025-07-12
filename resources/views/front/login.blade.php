@@ -38,104 +38,7 @@
 <!-- ==================== Scroll to Top End Here ==================== -->
 
 <!-- ==================== Mobile Menu Start Here ==================== -->
-<div class="mobile-menu d-lg-none d-block">
-    <button type="button" class="close-button"> <i class="las la-times"></i> </button>
-    <div class="mobile-menu__inner">
-        <a href="index.html" class="mobile-menu__logo">
-            <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-            <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="dark-version">
-        </a>
-        <div class="mobile-menu__menu">
 
-<ul class="nav-menu flx-align nav-menu--mobile">
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Home</a>
-        <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="index.html" class="nav-submenu__link"> Home One</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="index-two.html" class="nav-submenu__link"> Home Two</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="index-three.html" class="nav-submenu__link"> Home Three</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Products</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="all-product.html" class="nav-submenu__link"> All Products</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="product-details.html" class="nav-submenu__link"> Product Details</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Pages</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="profile.html" class="nav-submenu__link"> Profile</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart.html" class="nav-submenu__link"> Shopping Cart</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-personal.html" class="nav-submenu__link"> Mailing Address</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-payment.html" class="nav-submenu__link"> Payment Method</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-thank-you.html" class="nav-submenu__link"> Preview Order</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="dashboard.html" class="nav-submenu__link"> Dashboard</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Blog</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="blog.html" class="nav-submenu__link"> Blog</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="blog-details.html" class="nav-submenu__link"> Blog Details</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="blog-details-sidebar.html" class="nav-submenu__link"> Blog Details Sidebar</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item">
-        <a href="contact.html" class="nav-menu__link">Contact</a>
-    </li>
-</ul>
-            <div class="header-right__inner d-lg-none my-3 gap-1 d-flex flx-align">
-
-    <a href="register.html" class="btn btn-main pill">
-        <span class="icon-left icon">
-            <img src="assets/images/icons/user.svg" alt="">
-        </span>Create Account
-    </a>
-    <div class="language-select flx-align select-has-icon">
-        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
-        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
-        <select class="select py-0 ps-2 border-0 fw-500">
-            <option value="1">Eng</option>
-            <option value="2">Bn</option>
-            <option value="3">Eur</option>
-            <option value="4">Urd</option>
-        </select>
-    </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ==================== Mobile Menu End Here ==================== -->
 
 <!-- ================================== Account Page Start =========================== -->
 <section class="account d-flex">
@@ -181,23 +84,29 @@
         <div class="col-12">
             <label for="name" class="form-label mb-2 font-18 font-heading fw-600">Full Name</label>
             <div class="position-relative">
-                <input type="text" name="name" class="common-input common-input--bg common-input--withIcon" placeholder="Your full name" required>
+                <input type="text" name="name" class="common-input common-input--bg common-input--withIcon" placeholder="Your full name" >
                 <span class="input-icon"><img src="assets/images/icons/user-icon.svg" alt=""></span>
             </div>
+               @error('name')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
             <label for="email" class="form-label mb-2 font-18 font-heading fw-600">Email</label>
             <div class="position-relative">
-                <input type="email" name="email" class="common-input common-input--bg common-input--withIcon" placeholder="you@example.com" required>
+                <input type="email" name="email" class="common-input common-input--bg common-input--withIcon" placeholder="you@example.com" >
                 <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
             </div>
+             @error('email')
+        <small class="text-danger">{{ $message }}</small>
+    @enderror
         </div>
 
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required>
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" >
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
         </div>
@@ -205,7 +114,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Confirm Password</label>
             <div class="position-relative">
-                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" required>
+                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" >
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
         </div>
@@ -242,6 +151,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script>
+
+
+
+    document.querySelector("form").addEventListener("submit", function (e) {
+        // Get values
+        const email = document.querySelector('input[name="email"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
+
+        // Regex for email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Clear existing errors (optional if you're adding dynamically)
+        document.querySelectorAll('.client-error').forEach(el => el.remove());
+
+        let hasError = false;
+
+        // Check email format
+        if (email && !emailRegex.test(email)) {
+            showError('email', 'Please enter a valid email address');
+            hasError = true;
+        }
+
+        // Check password match
+        if (password && confirmPassword && password !== confirmPassword) {
+            showError('password_confirmation', 'Passwords do not match');
+            hasError = true;
+        }
+
+        // If there's an error, prevent submission
+        if (hasError) {
+            e.preventDefault();
+        }
+    });
+
+    function showError(fieldName, message) {
+        const field = document.querySelector(`input[name="${fieldName}"]`);
+        const errorEl = document.createElement('small');
+        errorEl.classList.add('text-danger', 'client-error');
+        errorEl.textContent = message;
+        field.parentNode.appendChild(errorEl);
+    }
+
+
 $(document).ready(function(){
     $('#otp').on('input', function () {
       let value = $(this).val().replace(/\D/g, '');

@@ -49,27 +49,53 @@ class UserController extends Controller
 
     public function showLinkRequestForm()
 {
-    return view('auth.email'); // Or your custom view
+    return view('front.auth.email'); // Or your custom view
 }
-
-
 public function sendResetLinkEmail(Request $request)
 {
     $request->validate(['email' => 'required|email']);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+    $user = User::where('email', $request->email)->first();
 
-    return $status === Password::RESET_LINK_SENT
-                ? back()->with(['status' => __($status)])
-                : back()->withErrors(['email' => __($status)]);
+    if (!$user) {
+        return response()->json([
+            'status' => false,
+            'message' => 'This email is not registered.'
+        ], 404);
+    }
+
+    // Check if requested within last 5 minutes
+    if ($user->password_requested_at && now()->diffInSeconds($user->password_requested_at) < 300) {
+        $remainingSeconds = 300 - now()->diffInSeconds($user->password_requested_at);
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Please wait before requesting again.',
+            'retry_after' => $remainingSeconds
+        ], 429); // 429 = Too Many Requests
+    }
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    if (in_array($status, [Password::RESET_LINK_SENT, 'passwords.sent'])) {
+        $user->update(['password_requested_at' => now()]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reset link sent. Please check your email.'
+        ]);
+    }
+
+    return response()->json([
+        'status' => false,
+        'message' => 'Unable to send reset link. Please try again later.'
+    ], 500);
 }
 
 
 public function showResetForm(Request $request, $token)
 {
-    return view('auth.reset', [
+    return view('front.auth.reset', [
         'token' => $token,
         'email' => $request->email
     ]);

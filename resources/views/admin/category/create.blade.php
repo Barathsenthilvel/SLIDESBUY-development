@@ -99,7 +99,9 @@
                                                             <textarea name="short_description" id="ktckeditor">{{old('short_description')}}</textarea>
                                                             <div class="fv-plugins-message-container"></div>
                                                          </div>
-                                                     </div>   
+                                                     </div>  
+                                                     
+                                                     
                                      <div class="form-group row">
                                          <label class="col-2 col-form-label">Category Style1
                                          <span class="text-danger">*</span></label>
@@ -125,7 +127,7 @@
                                                        </div>
                                                      </div> 
                                      
-                                     <div class="form-group row d-none">
+                                     <div class="form-group row ">
                                          <label class="col-2 col-form-label">Category Style3
                                          <span class="text-danger">*</span></label>
                                          <div class="col-3">

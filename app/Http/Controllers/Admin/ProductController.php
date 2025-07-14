@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+use Illuminate\Support\Facades\Input;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -349,16 +350,19 @@ class ProductController extends Controller
 
      public function store(Request $request){
          
+        dd($request->all());
+        
         $attributeValues=[];
         $requestData=$request->all();
-        $attributeTemplate=$requestData['attributeTemplate'];
+        $attributeTemplate=$requestData['attributeTemplate'] ?? 0;
      	$rules=[
      		'category'     => 'required',
-     		'basePrice'     => 'required',
+     		'basePrice'     => 'nullable',
      		'skuCode'     => 'required|unique:products,product_sku,'.$request->input('skuCode'),
 			'productTitle' => 'required|unique:products,product_title,'.$request->input('productTitle'),
             'image1' => 'required',
-            'productDescription' =>'required'
+            'productDescription' =>'required',
+            'attributeTemplate'   => 'required|numeric',
 		];
 
 		$customs=[
@@ -469,6 +473,118 @@ class ProductController extends Controller
     return response()->json($data1);
       }
 
+//     public function store(Request $request)
+// {
+//     $attributeValues = [];
+//     $requestData = $request->all();
+
+//     // Use null coalescing to prevent undefined key error
+//     $attributeTemplate = $requestData['attributeTemplate'] ?? 0;
+
+//     // Validation rules
+//     $rules = [
+//         'category'            => 'required',
+//         'basePrice'           => 'nullable',
+//         'skuCode'             => 'required|unique:products,product_sku',
+//         'productTitle'        => 'required|unique:products,product_title',
+//         'image1'              => 'required',
+//         'productDescription'  => 'required',
+//         'attributeTemplate'   => 'required|numeric',
+//     ];
+
+//     $customs = [
+//         'category.required'            => 'Category should be filled',
+//         'basePrice.required'           => 'Base Price should be filled',
+//         'skuCode.required'             => 'SKU  Code should be filled',
+//         'skuCode.unique'               => 'SKU  Code should be unique',
+//         'productTitle.required'        => 'Product Name should be filled',
+//         'productTitle.unique'          => 'Product Name already taken',
+//         'image1.required'              => 'Image 1 should be filled',
+//         'productDescription.required'  => 'Product Description should be filled',
+//         'attributeTemplate.required'   => 'Attribute Template should be selected',
+//     ];
+
+//     $validator = Validator::make($request->all(), $rules, $customs);
+
+//     if ($validator->fails()) {
+//         return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
+//     }
+
+//     // Image assignments
+//     $image1 = $request->image1;
+//     $image2 = $request->image2;
+//     $image3 = $request->image3;
+//     $image4 = $request->image4;
+//     $image5 = $request->image5;
+
+//     // Attribute value processing
+//     if ($attributeTemplate > 0) {
+//         $attributes = $requestData['attributes'] ?? [];
+//         if (is_array($attributes)) {
+//             foreach ($attributes as $key => $value) {
+//                 $getType = Attribute::findOrFail($key);
+//                 $getAttri = $getType->attribute_values;
+
+//                 if (is_array($value)) {
+//                     $attributeValues[] = $key . '-' . implode(',', $value);
+//                 } else {
+//                     $cleanedValue = strip_tags($value);
+//                     $existingValues = explode(',', $getAttri ?? '');
+
+//                     if (!in_array($cleanedValue, $existingValues)) {
+//                         $getType->attribute_values = $getAttri ? $getAttri . ',' . $cleanedValue : $cleanedValue;
+//                         $getType->save();
+//                     }
+//                     $attributeValues[] = $key . '-' . $cleanedValue;
+//                 }
+//             }
+//         }
+//     }
+
+//     $attribute_value = implode('|', $attributeValues);
+
+//     // Create Product
+//     $data = new Product;
+//     $data->category            = empty($requestData['category']) ? '' : implode('|', (array) $requestData['category']);
+//     $data->product_title       = $requestData['productTitle'];
+//     $data->slug                = Str::slug($requestData['productTitle'], '-');
+//     $data->product_base_price  = $requestData['basePrice'];
+//     $data->product_sku         = $requestData['skuCode'];
+//     $data->attribute_values    = $attributeTemplate > 0 ? $attribute_value : '';
+//     $data->tax                 = $requestData['tax'] ?? 0;
+//     $data->weight              = $requestData['weight'] ?? 0;
+//     $data->weight_unit         = $requestData['weightUnit'] ?? '';
+//     $data->product_description = $requestData['productDescription'];
+//     $data->trending            = isset($requestData['trending']) ? 'on' : 'off';
+//     $data->metadescription     = $requestData['metadescription'] ?? '';
+//     $data->metakeyword         = $requestData['metakeyword'] ?? '';
+//     $data->quantity            = empty($requestData['quantity']) ? 'unlimited' : $requestData['quantity'];
+//     $data->minquantity         = $requestData['minquantity'] ?? 1;
+//     $data->soldout             = isset($requestData['soldout']) ? 'on' : 'off';
+//     $data->metaname            = $requestData['metaname'] ?? '';
+//     $data->delivery_date       = $requestData['deliveryDate'] ?? null;
+//     $data->image1              = $image1;
+//     $data->image2              = $image2;
+//     $data->image3              = $image3;
+//     $data->image4              = $image4;
+//     $data->image5              = $image5;
+//     $data->similar_products    = empty($requestData['similarProducts']) ? '' : implode(',', (array) $requestData['similarProducts']);
+//     $data->related_products    = empty($requestData['relatedProducts']) ? '' : implode(',', (array) $requestData['relatedProducts']);
+//     $data->user_id             = Auth::user()->id;
+//     $data->attribute_map       = $attributeTemplate;
+//     $data->vendor              = $requestData['vendor'] ?? '';
+//     $data->manufacturerPrice   = $requestData['manufacturerPrice'] ?? 0;
+//     $data->manufacturerCode    = $requestData['manufacturerCode'] ?? '';
+//     $data->markup              = $requestData['markup'] ?? 0;
+//     $data->mrp                 = $requestData['mrp'] ?? 0;
+//     $data->mark_type           = $requestData['mark_type'] ?? '';
+//     $data->shipping_price      = $requestData['shipping_price'] ?? 0;
+//     $data->save();
+
+//     return response()->json(['msg' => 'New product Added Successfully.']);
+// }
+
+
 
       public function edit($id,Request $request){
         $getName = $request->route()->getName();
@@ -521,7 +637,7 @@ class ProductController extends Controller
         $attributeTemplate=$requestData['attributeTemplate'];
         $rules=[
             'category'     => 'required',
-            'basePrice'     => 'required',
+            'basePrice'     => 'nullable',
             'skuCode'     => 'required|unique:products,product_sku,'.$id,
             'productTitle' => 'required|unique:products,product_title,'.$id,
             'image1' => 'required',

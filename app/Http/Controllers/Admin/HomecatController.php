@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use App\Http\Controllers\Admin\Input;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -58,6 +58,8 @@ class HomecatController extends Controller
 		return view('admin.homecat.edit',compact('data','data1','product2'));
 	}
     public function store(Request $request){
+        // dd('sdsdsdsd');
+        // dd($request->all());
         $input = $request->all();
         $rules=[
             'title' => 'required|unique:homecats,title,'.$input['title'],

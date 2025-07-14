@@ -43,6 +43,24 @@ class ResetPasswordNotification extends Notification
             ->line('If you didn’t request a password reset, no further action is required.') // 🔸 Extra line
             ->salutation('Regards, Your App Team'); // 🔸 Closing
     }
+
+//     public function toMail($notifiable)
+// {
+//     return (new MailMessage)
+//         ->view('mails.password_reset', [
+//             'resetUrl' => $this->resetUrl($notifiable),
+//             'user' => $notifiable,
+//         ]);
+// }
+
+// protected function resetUrl($notifiable)
+// {
+//     return url(route('password.reset', [
+//         'token' => $this->token,
+//         'email' => $notifiable->getEmailForPasswordReset(),
+//     ], false));
+// }
+
 }
 
 

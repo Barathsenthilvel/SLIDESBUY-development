@@ -94,71 +94,39 @@ $wishlistcnt = 0;
         <div class="mobile-menu__menu">
 
 <ul class="nav-menu flx-align nav-menu--mobile">
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Home</a>
-        <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="index.html" class="nav-submenu__link"> Home One</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="index-two.html" class="nav-submenu__link"> Home Two</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="index-three.html" class="nav-submenu__link"> Home Three</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Products</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="all-product.html" class="nav-submenu__link"> All Products</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="product-details.html" class="nav-submenu__link"> Product Details</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Pages</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="profile.html" class="nav-submenu__link"> Profile</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart.html" class="nav-submenu__link"> Shopping Cart</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-personal.html" class="nav-submenu__link"> Mailing Address</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-payment.html" class="nav-submenu__link"> Payment Method</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="cart-thank-you.html" class="nav-submenu__link"> Preview Order</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="dashboard.html" class="nav-submenu__link"> Dashboard</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Blog</a>
-         <ul class="nav-submenu">
-            <li class="nav-submenu__item">
-                <a href="blog.html" class="nav-submenu__link"> Blog</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="blog-details.html" class="nav-submenu__link"> Blog Details</a>
-            </li>
-            <li class="nav-submenu__item">
-                <a href="blog-details-sidebar.html" class="nav-submenu__link"> Blog Details Sidebar</a>
-            </li>
-        </ul>
-    </li>
-    <li class="nav-menu__item">
-        <a href="contact.html" class="nav-menu__link">Contact</a>
-    </li>
+    @foreach($headMenu as $headmenus)
+        @foreach($headmenus['menu_name'] as $keys => $menuName)
+            @if($headmenus['menu_type'][$keys] == 1)
+                <li class="nav-menu__item">
+                    <a href="{{ route($headmenus['page_link'][$keys]) }}" class="nav-menu__link">{{ $menuName }}</a>
+                </li>
+            @else
+                <li class="nav-menu__item has-submenu">
+                    <a href="javascript:void(0)" class="nav-menu__link">{{ $menuName }}</a>
+                    <ul class="nav-submenu">
+                        @foreach($headmenus['page_link'][$keys] as $cateNames)
+                            @if(count($cateNames[1]) > 0 && $cateNames[0]->parent_category_id == 0)
+                                <li class="nav-submenu__item has-submenu">
+                                    <a href="javascript:void(0)" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
+                                    <ul class="nav-submenu">
+                                        @foreach($cateNames[1] as $subCat)
+                                            <li class="nav-submenu__item">
+                                                <a href="{{ route('front.getCategory', $subCat->Category_url) }}" class="nav-submenu__link">{{ $subCat->category_name }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @elseif(count($cateNames[1]) == 0 && $cateNames[0]->parent_category_id == 0)
+                                <li class="nav-submenu__item">
+                                    <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </li>
+            @endif
+        @endforeach
+    @endforeach
 </ul>
             <div class="header-right__inner d-lg-none my-3 gap-1 d-flex flx-align">
 

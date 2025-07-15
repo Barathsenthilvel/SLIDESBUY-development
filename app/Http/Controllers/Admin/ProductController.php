@@ -22,7 +22,7 @@ use DataTables;
 
 class ProductController extends Controller
 {
-    public function __construct() 
+    public function __construct()
     {
       $this->middleware('auth:webadmin');
     }
@@ -119,7 +119,7 @@ class ProductController extends Controller
             return $query->where('soldout','=',$search);
         })
         ->when($search[10],function($query,$search){
-        
+
             return $query->where('status','=',$search);
         })
         ->when($order,function($query,$order){
@@ -305,7 +305,7 @@ class ProductController extends Controller
      public function create(Request $request){
         $getName = $request->route()->getName();
         $pricing_type = Storeconfiguration::orderBy('id','desc')->pluck('pricing_type')->first();
-        if($getName == 'admin-product-create') $list = 'admin-product'; 
+        if($getName == 'admin-product-create') $list = 'admin-product';
         else $list = 'admin-productv2';
         $Product_last = Product::orderBy('id', 'DESC')->first();
      	$attributeTemplate=$request['radios2'];
@@ -318,7 +318,7 @@ class ProductController extends Controller
         ];
 
         $validator = Validator::make($request->all(), $rules,$customs);
-        
+
         if ($validator->fails()) {
           return redirect()->back()->withErrors($validator->getMessageBag()->toArray());
         }
@@ -348,247 +348,262 @@ class ProductController extends Controller
 
        }
 
-     public function store(Request $request){
-         
-        dd($request->all());
-        
-        $attributeValues=[];
-        $requestData=$request->all();
-        $attributeTemplate=$requestData['attributeTemplate'] ?? 0;
-     	$rules=[
-     		'category'     => 'required',
-     		'basePrice'     => 'nullable',
-     		'skuCode'     => 'required|unique:products,product_sku,'.$request->input('skuCode'),
-			'productTitle' => 'required|unique:products,product_title,'.$request->input('productTitle'),
-            'image1' => 'required',
-            'productDescription' =>'required',
-            'attributeTemplate'   => 'required|numeric',
-		];
+    //  public function store(Request $request){
 
-		$customs=[
-			'category.required' 	         => 'Category should be filled',
-			'basePrice.required' 	         => 'Base Price should be filled',
-			'skuCode.required' 	 	         => 'SKU  Code should be filled',
-			'skuCode.unique'               => 'SKU  Code should be unique',
-            'productTitle.required'          => 'Product Name should be filled',
-			'productTitle.unique'            => 'Product Name already taken',
-			'image1.required'                => 'Image 1 should be filled',
-            'productDescription.required'    => 'Product Description should be filled',
-		];
+    //     dd($request->all());
 
-		$validator = Validator::make($request->all(), $rules,$customs);
-        
-        if ($validator->fails()) {
-            $subCategory=Category::where('parent_category_id',$request->input('category'))->where('status','1')->get();
-          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
-        }
-        $image1 = $request->image1;
-        $image2 = $request->image2;
-        $image3 = $request->image3;
-        $image4 = $request->image4;
-        $image5 = $request->image5;
+    //     $attributeValues=[];
+    //     $requestData=$request->all();
+    //     $attributeTemplate=$requestData['attributeTemplate'] ?? 0;
+    //  	$rules=[
+    //  		'category'     => 'required',
+    //  		'basePrice'     => 'nullable',
+    //  		'skuCode'     => 'required|unique:products,product_sku,'.$request->input('skuCode'),
+	// 		'productTitle' => 'required|unique:products,product_title,'.$request->input('productTitle'),
+    //         'image1' => 'required',
+    //         'productDescription' =>'required',
+    //         'attributeTemplate'   => 'required|numeric',
+	// 	];
 
-       if($attributeTemplate > 0){
-            $attributes = $request['attributes'];
-            $attributeValues = [];
-            
-            if(is_array($attributes)){
-            foreach($attributes as $key =>$value){
-                if(is_array($value)){
-                    $attributeValues[]=$key.'-'.implode(',',$value);
-                }else{
-                    $getType=Attribute::findOrFail($key);
-                    $getAttri=$getType->attribute_values;
-                    if($getType->attribute_type == 2){
-                        if(empty($getAttri)){
-                            $getType->attribute_values=strip_tags($value);
+	// 	$customs=[
+	// 		'category.required' 	         => 'Category should be filled',
+	// 		'basePrice.required' 	         => 'Base Price should be filled',
+	// 		'skuCode.required' 	 	         => 'SKU  Code should be filled',
+	// 		'skuCode.unique'               => 'SKU  Code should be unique',
+    //         'productTitle.required'          => 'Product Name should be filled',
+	// 		'productTitle.unique'            => 'Product Name already taken',
+	// 		'image1.required'                => 'Image 1 should be filled',
+    //         'productDescription.required'    => 'Product Description should be filled',
+	// 	];
+
+	// 	$validator = Validator::make($request->all(), $rules,$customs);
+
+    //     if ($validator->fails()) {
+    //         $subCategory=Category::where('parent_category_id',$request->input('category'))->where('status','1')->get();
+    //       return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+    //     }
+    //     $image1 = $request->image1;
+    //     $image2 = $request->image2;
+    //     $image3 = $request->image3;
+    //     $image4 = $request->image4;
+    //     $image5 = $request->image5;
+
+    //    if($attributeTemplate > 0){
+    //         $attributes = $request['attributes'];
+    //         $attributeValues = [];
+
+    //         if(is_array($attributes)){
+    //         foreach($attributes as $key =>$value){
+    //             if(is_array($value)){
+    //                 $attributeValues[]=$key.'-'.implode(',',$value);
+    //             }else{
+    //                 $getType=Attribute::findOrFail($key);
+    //                 $getAttri=$getType->attribute_values;
+    //                 if($getType->attribute_type == 2){
+    //                     if(empty($getAttri)){
+    //                         $getType->attribute_values=strip_tags($value);
+    //                         $getType->save();
+    //                     }else{
+    //                     if(in_array(strip_tags($value),explode(',',$getAttri))){
+
+    //                     }else{
+    //                         $getType->attribute_values=$getAttri.','.strip_tags($value);
+    //                         $getType->save();
+    //                     }
+    //                     $attributeValues[]=$key.'-'.$value;
+
+    //                 }}else{
+    //                     if(empty($getAttri)){
+    //                         $getType->attribute_values=$value;
+    //                         $getType->save();
+    //                     }else{
+    //                     if(in_array($value,explode(',',$getAttri))){
+
+    //                     }else{
+    //                         $getType->attribute_values=$getAttri.','.$value;
+    //                         $getType->save();
+    //                     }
+    //                     $attributeValues[]=$key.'-'.$value;
+    //                 }
+
+    //                 }
+    //             }
+    //         }
+    //         }
+    //         $attribute_value=implode('|',$attributeValues);
+    //          }
+    //     $data=new Product;
+    //     $data->category=(empty($requestData['category']))?'':implode('|',(array)$requestData['category']);
+    //     $data->product_title=$requestData['productTitle'];
+    //     $data->slug = Str::slug($data->product_title,'-');
+    //     $data->product_base_price=$requestData['basePrice'];
+    //     $data->product_sku=$requestData['skuCode'];
+    //     $data->attribute_values=($attributeTemplate >0)?$attribute_value:'';
+    //     $data->tax=$requestData['tax'];
+    //     $data->weight=$requestData['weight'];
+    //     $data->weight_unit=$requestData['weightUnit'];
+    //     $data->product_description=$requestData['productDescription'];
+    //     $data->trending=(isset($requestData['trending']))?'on':'off';
+    //     $data->metadescription=$requestData['metadescription'];
+    //     $data->metakeyword=$requestData['metakeyword'];
+    //     $data->quantity=($requestData['quantity'] == "")?'unlimited':$requestData['quantity'];
+    //     $data->minquantity=$requestData['minquantity'];
+    //     $data->soldout=(isset($requestData['soldout'])?'on':'off');
+    //     $data->metaname=$requestData['metaname'];
+    //     $data->delivery_date=$requestData['deliveryDate'];
+    //     $data->image1=$image1;
+    //     $data->image2=$image2;
+    //     $data->image3=$image3;
+    //     $data->image4=$image4;
+    //     $data->image5=$image5;
+    //     $data->similar_products=(empty($requestData['similarProducts']))?'':implode(',',(array)$requestData['similarProducts']);
+    //     $data->related_products=(empty($requestData['relatedProducts']))?'':implode(',',(array)$requestData['relatedProducts']);
+    //     $data->user_id=Auth::user()->id;
+    //     $data->attribute_map=$requestData['attributeTemplate'];
+    //     $data->vendor = $requestData['vendor'];
+    //     $data->manufacturerPrice = $requestData['manufacturerPrice'];
+    //     $data->manufacturerCode = $requestData['manufacturerCode'];
+    //     $data->markup = $requestData['markup'];
+    //     $data->mrp = $requestData['mrp'];
+    //     $data->mark_type = $requestData['mark_type'];
+    //     $data->shipping_price = $requestData['shipping_price'];
+    //     $data->save();
+
+    //     $data1['msg'] = 'New product Added Successfully.';
+    // return response()->json($data1);
+    //   }
+public function store(Request $request){
+
+    $attributeValues = [];
+    $requestData = $request->all();
+
+    // COMMENTED: Attribute template logic
+    // $attributeTemplate = $requestData['attributeTemplate'];
+
+    $rules = [
+        'category'         => 'required',
+        'basePrice'        => 'nulable',
+        'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
+        'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
+        'image1'           => 'required',
+        'productDescription' => 'required'
+    ];
+
+    $customs = [
+        'category.required'         => 'Category should be filled',
+        'basePrice.required'        => 'Base Price should be filled',
+        'skuCode.required'          => 'SKU  Code should be filled',
+        'skuCode.unique'            => 'SKU  Code should be unique',
+        'productTitle.required'     => 'Product Name should be filled',
+        'productTitle.unique'       => 'Product Name already taken',
+        'image1.required'           => 'Image 1 should be filled',
+        'productDescription.required' => 'Product Description should be filled',
+    ];
+
+    $validator = Validator::make($request->all(), $rules, $customs);
+
+    if ($validator->fails()) {
+        $subCategory = Category::where('parent_category_id', $request->input('category'))
+                               ->where('status', '1')
+                               ->get();
+        return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
+    }
+
+    $image1 = $request->image1;
+    $image2 = $request->image2;
+    $image3 = $request->image3;
+    $image4 = $request->image4;
+    $image5 = $request->image5;
+
+    // COMMENTED OUT: Attribute logic block
+    /*
+    if ($attributeTemplate > 0) {
+        $attributes = $request['attributes'];
+        $attributeValues = [];
+
+        if (is_array($attributes)) {
+            foreach ($attributes as $key => $value) {
+                if (is_array($value)) {
+                    $attributeValues[] = $key . '-' . implode(',', $value);
+                } else {
+                    $getType = Attribute::findOrFail($key);
+                    $getAttri = $getType->attribute_values;
+
+                    if ($getType->attribute_type == 2) {
+                        if (empty($getAttri)) {
+                            $getType->attribute_values = strip_tags($value);
                             $getType->save();
-                        }else{
-                        if(in_array(strip_tags($value),explode(',',$getAttri))){
-
-                        }else{
-                            $getType->attribute_values=$getAttri.','.strip_tags($value);
-                            $getType->save();
+                        } else {
+                            if (!in_array(strip_tags($value), explode(',', $getAttri))) {
+                                $getType->attribute_values = $getAttri . ',' . strip_tags($value);
+                                $getType->save();
+                            }
                         }
-                        $attributeValues[]=$key.'-'.$value;
-
-                    }}else{
-                        if(empty($getAttri)){
-                            $getType->attribute_values=$value;
+                        $attributeValues[] = $key . '-' . $value;
+                    } else {
+                        if (empty($getAttri)) {
+                            $getType->attribute_values = $value;
                             $getType->save();
-                        }else{
-                        if(in_array($value,explode(',',$getAttri))){
-
-                        }else{
-                            $getType->attribute_values=$getAttri.','.$value;
-                            $getType->save();
+                        } else {
+                            if (!in_array($value, explode(',', $getAttri))) {
+                                $getType->attribute_values = $getAttri . ',' . $value;
+                                $getType->save();
+                            }
                         }
-                        $attributeValues[]=$key.'-'.$value;
-                    }
-
+                        $attributeValues[] = $key . '-' . $value;
                     }
                 }
             }
-            }
-            $attribute_value=implode('|',$attributeValues);
-             }
-        $data=new Product;
-        $data->category=(empty($requestData['category']))?'':implode('|',(array)$requestData['category']);
-        $data->product_title=$requestData['productTitle'];
-        $data->slug = Str::slug($data->product_title,'-');
-        $data->product_base_price=$requestData['basePrice'];
-        $data->product_sku=$requestData['skuCode'];
-        $data->attribute_values=($attributeTemplate >0)?$attribute_value:'';
-        $data->tax=$requestData['tax'];
-        $data->weight=$requestData['weight'];
-        $data->weight_unit=$requestData['weightUnit'];
-        $data->product_description=$requestData['productDescription'];
-        $data->trending=(isset($requestData['trending']))?'on':'off';
-        $data->metadescription=$requestData['metadescription'];
-        $data->metakeyword=$requestData['metakeyword'];
-        $data->quantity=($requestData['quantity'] == "")?'unlimited':$requestData['quantity'];
-        $data->minquantity=$requestData['minquantity'];
-        $data->soldout=(isset($requestData['soldout'])?'on':'off');
-        $data->metaname=$requestData['metaname'];
-        $data->delivery_date=$requestData['deliveryDate'];
-        $data->image1=$image1;
-        $data->image2=$image2;
-        $data->image3=$image3;
-        $data->image4=$image4;
-        $data->image5=$image5;
-        $data->similar_products=(empty($requestData['similarProducts']))?'':implode(',',(array)$requestData['similarProducts']);
-        $data->related_products=(empty($requestData['relatedProducts']))?'':implode(',',(array)$requestData['relatedProducts']);
-        $data->user_id=Auth::user()->id;
-        $data->attribute_map=$requestData['attributeTemplate'];
-        $data->vendor = $requestData['vendor'];
-        $data->manufacturerPrice = $requestData['manufacturerPrice'];
-        $data->manufacturerCode = $requestData['manufacturerCode'];
-        $data->markup = $requestData['markup'];
-        $data->mrp = $requestData['mrp'];
-        $data->mark_type = $requestData['mark_type'];
-        $data->shipping_price = $requestData['shipping_price'];
-        $data->save();
+        }
+        $attribute_value = implode('|', $attributeValues);
+    }
+    */
 
-        $data1['msg'] = 'New product Added Successfully.';
-    return response()->json($data1);
-      }
+    $data = new Product;
+    $data->category = (empty($requestData['category'])) ? '' : implode('|', (array)$requestData['category']);
+    $data->product_title = $requestData['productTitle'];
+    $data->slug = Str::slug($data->product_title, '-');
+    $data->product_base_price = '';
+    $data->product_sku = $requestData['skuCode'];
+    $data->attribute_values = ''; // Removed attribute_value based on template
+    $data->tax = '';
+    $data->weight = '';
+    $data->weight_unit = $requestData['weightUnit'];
+    $data->product_description = $requestData['productDescription'];
+    $data->trending = (isset($requestData['trending'])) ? 'on' : 'off';
+    $data->metadescription = $requestData['metadescription'];
+    $data->metakeyword = $requestData['metakeyword'];
+    $data->quantity ='';
+    $data->minquantity = '';
+    $data->soldout = (isset($requestData['soldout'])) ? 'on' : 'off';
+    $data->metaname = $requestData['metaname'];
+    $data->delivery_date = '';
+    $data->image1 = $image1;
+    $data->image2 = $image2;
+    $data->image3 = $image3;
+    $data->image4 = $image4;
+    $data->image5 = $image5;
+    $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
+    $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
+    $data->user_id = Auth::user()->id;
+    $data->attribute_map = ''; // Removed template map
+    $data->vendor = $requestData['vendor'];
+    $data->manufacturerPrice = '';
+    $data->manufacturerCode ='';
+    $data->markup = '';
+    $data->mrp = '';
+    $data->mark_type = '';
+    $data->shipping_price = '';
+    $data->save();
 
-//     public function store(Request $request)
-// {
-//     $attributeValues = [];
-//     $requestData = $request->all();
-
-//     // Use null coalescing to prevent undefined key error
-//     $attributeTemplate = $requestData['attributeTemplate'] ?? 0;
-
-//     // Validation rules
-//     $rules = [
-//         'category'            => 'required',
-//         'basePrice'           => 'nullable',
-//         'skuCode'             => 'required|unique:products,product_sku',
-//         'productTitle'        => 'required|unique:products,product_title',
-//         'image1'              => 'required',
-//         'productDescription'  => 'required',
-//         'attributeTemplate'   => 'required|numeric',
-//     ];
-
-//     $customs = [
-//         'category.required'            => 'Category should be filled',
-//         'basePrice.required'           => 'Base Price should be filled',
-//         'skuCode.required'             => 'SKU  Code should be filled',
-//         'skuCode.unique'               => 'SKU  Code should be unique',
-//         'productTitle.required'        => 'Product Name should be filled',
-//         'productTitle.unique'          => 'Product Name already taken',
-//         'image1.required'              => 'Image 1 should be filled',
-//         'productDescription.required'  => 'Product Description should be filled',
-//         'attributeTemplate.required'   => 'Attribute Template should be selected',
-//     ];
-
-//     $validator = Validator::make($request->all(), $rules, $customs);
-
-//     if ($validator->fails()) {
-//         return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
-//     }
-
-//     // Image assignments
-//     $image1 = $request->image1;
-//     $image2 = $request->image2;
-//     $image3 = $request->image3;
-//     $image4 = $request->image4;
-//     $image5 = $request->image5;
-
-//     // Attribute value processing
-//     if ($attributeTemplate > 0) {
-//         $attributes = $requestData['attributes'] ?? [];
-//         if (is_array($attributes)) {
-//             foreach ($attributes as $key => $value) {
-//                 $getType = Attribute::findOrFail($key);
-//                 $getAttri = $getType->attribute_values;
-
-//                 if (is_array($value)) {
-//                     $attributeValues[] = $key . '-' . implode(',', $value);
-//                 } else {
-//                     $cleanedValue = strip_tags($value);
-//                     $existingValues = explode(',', $getAttri ?? '');
-
-//                     if (!in_array($cleanedValue, $existingValues)) {
-//                         $getType->attribute_values = $getAttri ? $getAttri . ',' . $cleanedValue : $cleanedValue;
-//                         $getType->save();
-//                     }
-//                     $attributeValues[] = $key . '-' . $cleanedValue;
-//                 }
-//             }
-//         }
-//     }
-
-//     $attribute_value = implode('|', $attributeValues);
-
-//     // Create Product
-//     $data = new Product;
-//     $data->category            = empty($requestData['category']) ? '' : implode('|', (array) $requestData['category']);
-//     $data->product_title       = $requestData['productTitle'];
-//     $data->slug                = Str::slug($requestData['productTitle'], '-');
-//     $data->product_base_price  = $requestData['basePrice'];
-//     $data->product_sku         = $requestData['skuCode'];
-//     $data->attribute_values    = $attributeTemplate > 0 ? $attribute_value : '';
-//     $data->tax                 = $requestData['tax'] ?? 0;
-//     $data->weight              = $requestData['weight'] ?? 0;
-//     $data->weight_unit         = $requestData['weightUnit'] ?? '';
-//     $data->product_description = $requestData['productDescription'];
-//     $data->trending            = isset($requestData['trending']) ? 'on' : 'off';
-//     $data->metadescription     = $requestData['metadescription'] ?? '';
-//     $data->metakeyword         = $requestData['metakeyword'] ?? '';
-//     $data->quantity            = empty($requestData['quantity']) ? 'unlimited' : $requestData['quantity'];
-//     $data->minquantity         = $requestData['minquantity'] ?? 1;
-//     $data->soldout             = isset($requestData['soldout']) ? 'on' : 'off';
-//     $data->metaname            = $requestData['metaname'] ?? '';
-//     $data->delivery_date       = $requestData['deliveryDate'] ?? null;
-//     $data->image1              = $image1;
-//     $data->image2              = $image2;
-//     $data->image3              = $image3;
-//     $data->image4              = $image4;
-//     $data->image5              = $image5;
-//     $data->similar_products    = empty($requestData['similarProducts']) ? '' : implode(',', (array) $requestData['similarProducts']);
-//     $data->related_products    = empty($requestData['relatedProducts']) ? '' : implode(',', (array) $requestData['relatedProducts']);
-//     $data->user_id             = Auth::user()->id;
-//     $data->attribute_map       = $attributeTemplate;
-//     $data->vendor              = $requestData['vendor'] ?? '';
-//     $data->manufacturerPrice   = $requestData['manufacturerPrice'] ?? 0;
-//     $data->manufacturerCode    = $requestData['manufacturerCode'] ?? '';
-//     $data->markup              = $requestData['markup'] ?? 0;
-//     $data->mrp                 = $requestData['mrp'] ?? 0;
-//     $data->mark_type           = $requestData['mark_type'] ?? '';
-//     $data->shipping_price      = $requestData['shipping_price'] ?? 0;
-//     $data->save();
-
-//     return response()->json(['msg' => 'New product Added Successfully.']);
-// }
+    return response()->json(['msg' => 'New product Added Successfully.']);
+}
 
 
 
       public function edit($id,Request $request){
         $getName = $request->route()->getName();
-        if($getName == 'admin-product-edit') $list = 'admin-product'; 
+        if($getName == 'admin-product-edit') $list = 'admin-product';
         else $list = 'admin-productv2';
         $attributeValues=[];
         $attributeValues1=[];
@@ -604,8 +619,8 @@ class ProductController extends Controller
         $similarProduct=Product::where('status','1')->where('id','!=',$id)->get();
         $relatedProduct=Product::where('status','1')->where('id','!=',$id)->get();
         $vendor = Vendor::where('status','1')->get();
-        
-        
+
+
         if($attributeTemplate > 0){
         $mapGroup=MapGroup::where('status','1')->where('group_name',$attributeTemplate)->first();
             if($mapGroup){
@@ -619,7 +634,7 @@ class ProductController extends Controller
             $attributeValues[]=explode('-',$attriputesCombined);
             $attributeValues1[]=$attributeValues[$key][0];
             // array_shift($attributeValues[$key]);
-            // $attributeValues2[]=explode(',',$attributeValues[$key][0]);  
+            // $attributeValues2[]=explode(',',$attributeValues[$key][0]);
         }
         $attributeValues3=array_combine($attributeValues1, $attributeValues);
         // dd($attributeValues3);
@@ -634,7 +649,7 @@ class ProductController extends Controller
        public function update(Request $request,$id){
         $attributeValues=[];
         $requestData=$request->all();
-        $attributeTemplate=$requestData['attributeTemplate'];
+        // $attributeTemplate=$requestData['attributeTemplate'];
         $rules=[
             'category'     => 'required',
             'basePrice'     => 'nullable',
@@ -657,7 +672,7 @@ class ProductController extends Controller
 
 
         $validator = Validator::make($request->all(), $rules,$customs);
-        
+
         if ($validator->fails()) {
             $subCategory=Category::where('parent_category_id',$request->input('category'))->where('status','1')->get();
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
@@ -670,7 +685,7 @@ class ProductController extends Controller
         $image3 = $request->image3;
         $image4 = $request->image4;
         $image5 = $request->image5;
-
+/*
        if($attributeTemplate > 0){
             $attributes = $request['attributes'];
             $attributeValues = [];
@@ -687,33 +702,34 @@ class ProductController extends Controller
                                 $getType->save();
                             }else{
                             if(in_array(strip_tags($value),explode(',',$getAttri))){
-    
+
                             }else{
                                 $getType->attribute_values=$getAttri.','.strip_tags($value);
                                 $getType->save();
                             }
                             $attributeValues[]=$key.'-'.$value;
-    
+
                         }}else{
                             if(empty($getAttri)){
                                 $getType->attribute_values=$value;
                                 $getType->save();
                             }else{
                             if(in_array($value,explode(',',$getAttri))){
-    
+
                             }else{
                                 $getType->attribute_values=$getAttri.','.$value;
                                 $getType->save();
                             }
                             $attributeValues[]=$key.'-'.$value;
                         }
-    
+
                         }
                     }
                 }
             }
             $attribute_value=implode('|',$attributeValues);
         }
+        */
         $data->category=(empty($requestData['category']))?'':implode('|',(array)$requestData['category']);
         $data->product_title=$requestData['productTitle'];
         $data->slug = Str::slug($data->product_title,'-');
@@ -740,7 +756,8 @@ class ProductController extends Controller
         $data->similar_products=(empty($requestData['similarProducts']))?'':implode(',',(array)$requestData['similarProducts']);
         $data->related_products=(empty($requestData['relatedProducts']))?'':implode(',',(array)$requestData['relatedProducts']);
         $data->user_id=Auth::user()->id;
-        $data->attribute_map=$requestData['attributeTemplate'];
+        // $data->attribute_map=$requestData['attributeTemplate'];
+        $data->attribute_map = '';
         $data->vendor = $requestData['vendor'];
         $data->manufacturerPrice = $requestData['manufacturerPrice'];
         $data->manufacturerCode = $requestData['manufacturerCode'];
@@ -774,7 +791,7 @@ class ProductController extends Controller
     }
 
         public function cropimage(Request $request){
-            
+
             $data = $request->image;
             $image_array_1 = explode(";", $data);
             $image_array_2 = explode(",", $image_array_1[1]);
@@ -784,7 +801,7 @@ class ProductController extends Controller
         if($request->id !== "0"){
             $Product = Product::findOrFail($request->id);
             if($request->table_colum === 'image1'){
-                if($Product->image1 != null){ 
+                if($Product->image1 != null){
                     if (file_exists(public_path().'/assets/media/products/'.$Product->image1)) {
                         unlink(public_path().'/assets/media/products/'.$Product->image1);
                     }
@@ -792,7 +809,7 @@ class ProductController extends Controller
                 $Product->image1 = $imageName;
                 $Product->update();
             }elseif($request->table_colum === 'image2'){
-                if($Product->image2 != null){ 
+                if($Product->image2 != null){
                     if (file_exists(public_path().'/assets/media/products/'.$Product->image2)) {
                         unlink(public_path().'/assets/media/products/'.$Product->image2);
                     }
@@ -800,7 +817,7 @@ class ProductController extends Controller
                 $Product->image2 = $imageName;
                 $Product->update();
             }elseif($request->table_colum === 'image3'){
-                if($Product->image3 != null){ 
+                if($Product->image3 != null){
                     if (file_exists(public_path().'/assets/media/products/'.$Product->image3)) {
                         unlink(public_path().'/assets/media/products/'.$Product->image3);
                     }
@@ -808,16 +825,16 @@ class ProductController extends Controller
                 $Product->image3 = $imageName;
                 $Product->update();
             }elseif($request->table_colum === 'image4'){
-                if($Product->image4 != null){ 
+                if($Product->image4 != null){
                     if (file_exists(public_path().'/assets/media/products/'.$Product->image4)) {
                         unlink(public_path().'/assets/media/products/'.$Product->image4);
                     }
                 }
                 $Product->image4 = $imageName;
                 $Product->update();
-                
+
             }elseif($request->table_colum === 'image5'){
-                if($Product->image5 != null){ 
+                if($Product->image5 != null){
                     if (file_exists(public_path().'/assets/media/products/'.$Product->image5)) {
                         unlink(public_path().'/assets/media/products/'.$Product->image5);
                     }

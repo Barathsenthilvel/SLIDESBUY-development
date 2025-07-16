@@ -69,7 +69,7 @@ class HomecatController extends Controller
             'title.required'  => 'Title Name should be unique',
             'radios5.required' => 'Style should be selected'
          ];
-         $validator = Validator::make(Input::all(), $rules,$customs);
+         $validator = Validator::make($request->all(), $rules,$customs);
          if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
           }

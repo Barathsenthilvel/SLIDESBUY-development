@@ -36,20 +36,24 @@ class Product extends Model
     public function getStoredAttribute(){
         return ['offer'=>$this->offer];
     }
+
+
     public function productVendors(){
     	return $this->belongsTo('App\Models\Vendor','vendor')->where('status','1');
     }
-    public function getOurpriceAttribute(){
-        if($this->mark_type == 0) return $this->manufacturerPrice + $this->markup;
-        return $this->manufacturerPrice + ($this->manufacturerPrice/100)*$this->markup;
-    }
+
+
+    // public function getOurpriceAttribute(){
+    //     if($this->mark_type == 0) return $this->manufacturerPrice + $this->markup;
+    //     return $this->manufacturerPrice + ($this->manufacturerPrice/100)*$this->markup;
+    // }
     public function getDiscountmrpAttribute(){
         return $this->mrp-$this->ourprice;
     }
     public function getSaveingsAttribute(){
         return ['%'=>round(($this->mrp-$this->ourprice)/($this->mrp/100),2)." %",'save_amount'=>round($this->mrp - $this->ourprice,2)];
     }
-    
+
     public function getproductPrice(){
         if($this->vendor != null){
             $this->vendorobj = Vendor::where('id',$this->vendor)->first();
@@ -65,7 +69,7 @@ class Product extends Model
         if($this->store->include_tax != "Exclusive"){
             $this->producttax($this->Tax);
         }
-        
+
         return  (object)['specialOffer'=>$this->specialOffer,'VendorPrice'=>$this->VendorPrice,'producttaaAmount'=>round($producttaaAmount,2),'price'=>round($this->price,2),'offer'=>round($this->offer,2),'isoffer'=>$this->isoffer,'tax'=>$this->Tax,'discount'=>$this->discount,'CustomerGroup'=>$this->CustomerGroup,'Vendor'=>$this->vendorobj];
     }
 
@@ -82,11 +86,11 @@ class Product extends Model
             return $this->price;
         }
     }
-    
+
     function discount(){
         $date = today()->format('Y-m-d');
         $Discount = Discount::where('status',1)->where('product','LIKE',"%{$this->id}%")->where('expiry_date', '>=', $date)->first();
-        
+
         if(!empty($Discount)){
             $this->isoffer = true;
             $this->discount = $Discount;
@@ -95,21 +99,21 @@ class Product extends Model
            }else{
                $markup = $this->markup;
            }
-           
+
             if($Discount->type == 'RS'){
                 $this->offer = (float)$markup -(float)$Discount->number;
                 $this->specialOffer = $this->price - $this->offer;
             }else{
-                
+
                 $this->offer = ((float)$markup/100)*(float)$Discount->number;
                 $this->specialOffer = $this->price -$this->offer;
             }
-            
+
             $this->price = $this->price - $this->offer;
             $this->offer = number_format($this->offer, 2, '.', '');
         }
     }
-    
+
     function producttaaAmount(){
         $producttaaAmount = round($this->price);
         if(!empty($this->Tax)){
@@ -119,7 +123,7 @@ class Product extends Model
                 return (float)$this->Tax->tax_rate;
             }
         }
-        
+
         return 0;
     }
     function producttax($tax){
@@ -146,34 +150,34 @@ class Product extends Model
         }
         return ((float)($this->price/100)*$this->markup)+(float)$this->price;
     }
-    
+
     function reviewtotal(){
         $reviewtotal = 0;
         $total = 0;
         $Review = Review::where('product_id',$this->id)->get();
         foreach ($Review as $key => $value) {
             $reviewtotal += $value->rating;
-            $total =+1; 
+            $total =+1;
         }
         $reviewtotal =  (count($Review)>0?floatval(($reviewtotal/count($Review))*10)*2:0);
         $this->review = $reviewtotal;
-        
+
         unset($this->store);
-        
+
         $this->update();
         $reviewtotal=number_format((float)$reviewtotal, 1, '.', '');
         return (object)['reviewtotal'=>$reviewtotal,'total'=>count($Review)];
     }
 
     function CustomerGroup(){
-        
+
         if(Auth::check()){
             $user = Auth::user();
             $this->CustomerGroup = CustomerGroup::where('status',1)->where('id',$user->customer_type)->first();
                 if($this->CustomerGroup->id == 2){
                     $this->discount();
                     return $this->price;
-                }   
+                }
                 if($this->CustomerGroup->type == 1){
                     return (float)$this->price -((float)($this->price/100)*(float)$this->CustomerGroup->amount);
                 }else{

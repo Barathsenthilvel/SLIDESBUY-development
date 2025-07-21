@@ -1,7 +1,7 @@
 @extends('front.includes.container')
-@section('title',  $product->metaname)
+{{-- @section('title',  $product->metaname)
 @section('meta_keywords',$product->metakeyword)
-@section('meta_description', $product->metadescription)
+@section('meta_description', $product->metadescription) --}}
 @section('content')
 
 @php
@@ -22,33 +22,8 @@
     .common-section {
         padding: 70px 0 0 0;
     }
-    
+
 </style>
-<section class="banner-section">
-	<div class="banner-inner">
-		<div class="homeslider">
-            <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
-			<div class="pagetitle-wraper">
-				<div class="container">
-					<div class="pagetitle">{{ $product->product_title }}</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="banner-breadcrumb">
-  		<div class="container">
-  			<div class="row">
-  				<div class="col-md-12">
-  					<ul class="breadcrumb">
-					    <li><a href="{{ route('front.index') }}">Home</a></li>
-					    <li><a href="{{ route('front.getCategory') }}">Products</a></li>
-						<li><a href="javascript:void(0);">{{ $product->product_title }}</a></li>
-                    </ul>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-</section>
 
 
 
@@ -137,19 +112,19 @@
                                                 <i class=" {{($star >= 5)?'fa fa-star':'fa fa-star-o'}}"></i>
                                         </div>
 									</div>
-									<div class="detailsprice-wraper">
+									{{-- <div class="detailsprice-wraper">
 										<span class="actual-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $price->price }}</span>
-                                           
+
                                             <span class="original-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $product->mrp }}</span>
-                                           
+
                                             <span class="offer-percent">
                                                 ({{ $product->saveings['%'] }} Discount, you save  {{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $product->saveings['save_amount'] }}
-                                                 
+
                                                 @if($price->discount)
                                                     & Special Discount {{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ sprintf('%0.2f', $price->offer) }}
                                                 @endif)
-                                               
-                                                
+
+
                                                 <!--(@if(!empty($price->CustomerGroup))-->
                                                 <!--    @if($price->CustomerGroup->amount)-->
                                                 <!--    Prime Customer offer {{$price->CustomerGroup->amount}}{{($price->CustomerGroup->type == 1)?'%':'Rs'}} applied already-->
@@ -159,12 +134,12 @@
                                                 <!--    @else-->
                                                 <!--    For Prime Customer - Get 5% off-->
                                                 <!--@endif-->
-            
+
                                                 <!--@if(!empty($price->discount)) & Additional {{$price->discount->number}}{{($price->discount->type == '%')?'%':'Rs'}} off as a regular discount @endif )-->
                                             </span>
 										<div class="addi_text">* @if($price->tax) {{$StoreConfig->include_tax}} of {{$price->tax->tax_rate}}{{($price->tax->tax_type == 1)?" %":" -/Rs"}} @endif Tax and Shipping Charge may apply </div>
 										</br>
-										
+
                                         @if ($price->isoffer)
                                         @if(strtotime("+10 day") > strtotime("+1 day", strtotime($price->discount->expiry_date)))
                                         <div class="product-count addi_text">
@@ -173,7 +148,7 @@
                                          </div>
                                          @endif
 								        @endif
-									</div>
+									</div> --}}
 								</div>
 							</div>
 						</div>

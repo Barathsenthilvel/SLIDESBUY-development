@@ -50,17 +50,17 @@
                 <span class="actual-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $data->price }}</span>
                 <span class="original-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $discountProduct->mrp }}</span>
                 @if(false)
-                <span class="offer-percent">
+                {{-- <span class="offer-percent">
                     (@if(!empty($data->discount)){{$data->discount->number}}{{($data->discount->type == '%')?'%':'Rs'}} OFF @endif
                      @if(!empty($data->CustomerGroup) && $data->CustomerGroup->amount != 0) @if(!empty($data->discount)) & @endif {{$data->CustomerGroup->amount}}{{($data->CustomerGroup->type == 1)?'%':'Rs'}} OFF  @endif )
-                </span>
+                </span> --}}
                 @endif
                 @if(true)
-                <span class="offer-percent">
+                {{-- <span class="offer-percent">
                     You save {{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $discountProduct->mrp - $data->price }}
-                </span>
+                </span> --}}
                 @endif
-                
+
             </div>
         </div>
     </div>

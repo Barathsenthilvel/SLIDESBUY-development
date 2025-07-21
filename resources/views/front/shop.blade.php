@@ -80,8 +80,8 @@
                                                         name="rangeInput"></div>
                                                     <div>
                                                         <!--<input type="number" min="180" max="435"  oninput="validity.valid||(value='180');" id="min_price" name="min_price" class="price-range-field" />-->
-                                                        <input type="hidden" id="minval" value="{{$min}}" />
-                                                        <input type="hidden" id="maxval" value="{{$max+1}}" />
+                                                        {{-- <input type="hidden" id="minval" value="{{$min}}" />
+                                                        <input type="hidden" id="maxval" value="{{$max+1}}" /> --}}
                                                         <input type="number" id="min_price" name="min_price"
                                                             class="price-range-field"
                                                             onBlur="pricevaluechange(this.value,'min_price');" />

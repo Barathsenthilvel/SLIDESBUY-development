@@ -45,8 +45,8 @@
 
     <!-- main js -->
     <script src="assets/js/main.js"></script>
-
-        <!-- {{-- <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
+{{--
+      <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/jquery.mCustomScrollbar.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/owl.carousel.css')}}" rel="stylesheet">
@@ -64,8 +64,8 @@
         <link href="{{URL::asset('assets/front/static/css/jquery.fancybox.min.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/bootoast.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/toastr.css')}}" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        --}} -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
+
        <!-- start script-->
        <script>
         !function(f,b,e,v,n,t,s)
@@ -231,7 +231,7 @@
     <script src="{{URL::asset('assets/front/static/js/myscript.js')}}"></script> -->
 
 
-{{-- 
+{{--
         <script>
            $(document).ready(function(){
 

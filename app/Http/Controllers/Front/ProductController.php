@@ -15,7 +15,7 @@ use App\Models\Storeconfiguration;
 use App\Models\Order;
 
 class ProductController extends Controller{
-    
+
     public function __construct()
     {
 
@@ -44,6 +44,7 @@ public function item(Request $Request,$slug){
           $store = Storeconfiguration::where('id',1)->first();
         $date = today()->format('Y-m-d');
         $product = Product::where('slug',$slug)->where('status',1)->first();
+        // dd($product);
         $Review = Review::where('product_id',$product->id)->orderBy('id','desc')->get();
         if(Auth::check()){
             $reviewed = Review::where('product_id',$product->id)->where('user_id',Auth::user()->id)->get();
@@ -58,6 +59,7 @@ public function item(Request $Request,$slug){
         $relateproduct =  Product::where('status',1)->wherein('id',\explode(",",$product->related_products))->get();
         $similarproduct = Product::where('status',1)->wherein('id',\explode(",",$product->similar_products))->get();
         }
+
         return view('front.product',compact('product','Review','Discount','reviewed','relateproduct','similarproduct'));
     }
         public function quickview($id){
@@ -96,7 +98,7 @@ public function item(Request $Request,$slug){
         }
         return view('front.includes.review',compact('Review','reviewed'));
     }
-    
+
     public function likeCount(Request $request){
         $userid=$request['userid'];
         $prodid=$request['prodid'];
@@ -124,11 +126,11 @@ public function item(Request $Request,$slug){
             $likes=array_filter($likes);
             $dataCount=count($likes);
             return response()->json(['data'=>$dataCount]);
-                
+
             }
         }
     }
-    
+
      public function coffeeproduct(Request $request, $slug)
     {
 
@@ -180,13 +182,13 @@ public function item(Request $Request,$slug){
                 ->get();
             if(!is_null($product->category))
             {
-                
+
             $similarproduct = Product::where('status', 1)
                 ->whereIn('category', explode(",", $product->category))
                 ->get();
             }
         }
-       
+
         return view('front.coffeeproducts', compact(
             'product',
             'Review',

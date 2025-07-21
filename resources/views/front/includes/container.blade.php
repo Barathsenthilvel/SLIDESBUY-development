@@ -10,41 +10,41 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" rel="icon">
 
-           <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/images/logo/favicon-two.png">
+     <!-- Favicon -->
+<link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <!-- Slick -->
-    <link rel="stylesheet" href="assets/css/slick.css">
-    <!-- magnific popup -->
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <!-- line awesome -->
-    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
-    <!-- Main css -->
-    <link rel="stylesheet" href="assets/css/main.css">
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+<!-- Fontawesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
+<!-- Slick -->
+<link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
+<!-- Magnific Popup -->
+<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+<!-- Line Awesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/line-awesome.min.css') }}">
+<!-- Main CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
-     <!-- Jquery js -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap Bundle Js -->
-    <script src="assets/js/boostrap.bundle.min.js"></script>
-    <!-- CountDown -->
-    <script src="assets/js/countdown.js"></script>
-    <!-- counter up -->
-    <script src="assets/js/counterup.min.js"></script>
-    <!-- Slick js -->
-    <script src="assets/js/slick.min.js"></script>
-    <!-- magnific popup -->
-    <script src="assets/js/jquery.magnific-popup.js"></script>
-    <!-- apex chart -->
-    <script src="assets/js/apexchart.js"></script>
-    <!-- marquee -->
-    <script src="assets/js/marquee.min.js"></script>
+<!-- jQuery -->
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+<!-- Bootstrap Bundle JS -->
+<script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
+<!-- Countdown -->
+<script src="{{ asset('assets/js/countdown.js') }}"></script>
+<!-- Counter Up -->
+<script src="{{ asset('assets/js/counterup.min.js') }}"></script>
+<!-- Slick JS -->
+<script src="{{ asset('assets/js/slick.min.js') }}"></script>
+<!-- Magnific Popup -->
+<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
+<!-- Apex Chart -->
+<script src="{{ asset('assets/js/apexchart.js') }}"></script>
+<!-- Marquee -->
+<script src="{{ asset('assets/js/marquee.min.js') }}"></script>
+<!-- Main JS -->
+<script src="{{ asset('assets/js/main.js') }}"></script>
 
-    <!-- main js -->
-    <script src="assets/js/main.js"></script>
 {{--
       <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">

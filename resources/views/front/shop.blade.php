@@ -6,91 +6,6 @@
     var min = parseInt('{{$min}}');
     var max = parseInt('{{$max}}') +1;
 </script>
-<style>
-
-    /* filter style */
-    .filter-sidebar {
-    width: 100%;
-    max-width: 250px;
-    border: 1px solid #ddd;
-    padding: 16px;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.05);
-    font-family: Arial, sans-serif;
-}
-
-.filter-title {
-    font-size: 18px;
-    margin-bottom: 12px;
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 8px;
-}
-
-.filter-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.filter-group {
-    margin-bottom: 16px;
-}
-
-.filter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    margin-bottom: 8px;
-}
-
-.filter-header i {
-    font-size: 12px;
-}
-
-.filter-body {
-    padding-left: 4px;
-}
-
-.filter-option {
-    margin-bottom: 6px;
-}
-
-.filter-option input[type="checkbox"] {
-    margin-right: 6px;
-    cursor: pointer;
-}
-
-.filter-option label {
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.filter-footer {
-    margin-top: 20px;
-}
-
-.btn.btn-primary {
-    background-color: #ffa41c;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #111;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.btn.btn-primary:hover {
-    background-color: #f39c12;
-}
-
-</style>
         {{-- <section class="banner-section">
             <div class="banner-inner">
                 <div class="homeslider">
@@ -120,121 +35,197 @@
     <div class="container">
         <div class="row">
             {{-- Filter Sidebar --}}
-            <aside class="col-md-3 col-sm-4 col-xs-12 nopad sss1 sticky-wraper">
-                <div class="productlistaside" id="productlistaside">
-                    <form id="frmproductlistaside" name="frmproductlistaside" action="#">
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-                            {{-- Filter Header --}}
-                            {{-- <div class="filtersec mb-3">
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <h4 class="filtertrigger">Filters <span class="hidden-sm hidden-lg hidden-md"><i class="fa fa-caret-down"></i></span></h4>
-                                    </div>
-                                    <div class="col-xs-6 text-end">
-                                        <h4><a href="javascript:void(0);" class="filter-clean text-danger">Clear All</a></h4>
-                                    </div>
-                                </div>
-                            </div> --}}
-
-                            {{-- Unified Filter UI --}}
-                            <div class="filter-sidebar card shadow-sm p-3">
-                                {{-- Price Filter --}}
-                                <div class="mb-4">
-                                    <h6 class="mb-2">Price</h6>
-                                    <div class="price-range-block">
-                                        <div id="slider-range" class="price-filter-range" name="rangeInput"></div>
-                                        <div class="d-flex gap-2 align-items-center mt-2">
-                                            <input type="hidden" id="minval" value="{{ $min }}" />
-                                            <input type="number" id="max_price" name="max_price" class="form-control form-control-sm"
-                                                onBlur="pricevaluechange(this.value,'max_price');" placeholder="Max Price" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Category Filter --}}
-                                <div class="mb-4">
-                                    <h6 class="mb-2">Categories</h6>
-                                    <ul class="list-unstyled ms-1">
-                                        @foreach($categorys as $key=>$category)
-                                            <li class="mb-2">
-                                                <a class="text-dark fw-semibold" href="{{ route('front.getCategory', $category->Category_url) }}" data-id="{{ $category->id }}">
-                                                    {{ $category->category_name }}
-                                                </a>
-                                                @if(count($category->subs))
-                                                    <ul class="list-unstyled ms-3 mt-1">
-                                                        @foreach($category->subs as $subcats)
-                                                            <li>
-                                                                <a href="{{ route('front.getCategory', $subcats->Category_url) }}"
-                                                                class="text-muted sucategories" data-cat_id="{{ $category->id }}" data-id="{{ $subcats->id }}">
-                                                                    {{ $subcats->category_name }}
-                                                                </a>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                @endif
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-
-                                {{-- Dynamic Attribute Filters --}}
-                                <div class="mb-4">
-                                    <h6 class="mb-2">Filter by Attributes</h6>
-                                    @foreach($attributeValues as $key => $attribute)
-                                        @php $values = explode(',', $attribute->attribute_values); @endphp
-                                        @if(count($values) > 0)
-                                            <div class="mb-3">
-                                                <div class="fw-semibold mb-2">{{ $attribute->attribute_name }}</div>
-                                                @foreach($values as $val)
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="attr{{ $attribute->id }}-{{ $val }}"
-                                                            name="attr[]" value="{{ $attribute->id }}-{{ $val }}" data-id="{{ $attribute->id }}-{{ $val }}">
-                                                        <label class="form-check-label" for="attr{{ $attribute->id }}-{{ $val }}">
-                                                            {{ $val }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                {{-- Apply Filters --}}
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-warning w-100 fw-bold" onclick="fnAttrChanged()">Apply Filters</button>
-                                </div>
-                            </div>
+        <div class="col-xl-3 col-lg-4">
+                <!-- ===================== Filter Sidebar Start ============================= -->
+<div class="filter-sidebar">
+    <button type="button" class="filter-sidebar__close p-2 position-absolute end-0 top-0 z-index-1 text-body hover-text-main font-20 d-lg-none d-block"><i class="las la-times"></i></button>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Category</button>
+        <div class="filter-sidebar__content">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        All Categories <span class="qty">25489</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Site Template <span class="qty">12,501</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        WordPress <span class="qty">1258</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        UI Template <span class="qty">1520</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Templates Kits <span class="qty">210</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        eCommerce <span class="qty">158</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Marketing <span class="qty">178</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        CMS Template <span class="qty">122</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Muse Themes <span class="qty">450</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Blogging <span class="qty">155</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Courses <span class="qty">125</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Forums <span class="qty">35</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Rating</button>
+        <div class="filter-sidebar__content" style="">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="veiwAll">
+                            <label class="form-check-label" for="veiwAll"> View All</label>
                         </div>
-                    </form>
-                </div>
-            </aside>
+                        <span class="qty">(1859)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="oneStar">
+                            <label class="form-check-label" for="oneStar"> 1 Star and above</label>
+                        </div>
+                        <span class="qty">(785)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="twoStar">
+                            <label class="form-check-label" for="twoStar"> 2 Star and above</label>
+                        </div>
+                        <span class="qty">(1250)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="threeStar">
+                            <label class="form-check-label" for="threeStar"> 3 Star and above</label>
+                        </div>
+                        <span class="qty">(7580)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="fourStar">
+                            <label class="form-check-label" for="fourStar"> 4 Star and above</label>
+                        </div>
+                        <span class="qty">(1450)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="fiveStar">
+                            <label class="form-check-label" for="fiveStar"> 5 Star Rating</label>
+                        </div>
+                        <span class="qty">(2530)</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Date Updated</button>
+        <div class="filter-sidebar__content">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="anyDate">
+                            <label class="form-check-label" for="anyDate"> Any Date</label>
+                        </div>
+                        <span class="qty"> 5,203</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastYear">
+                            <label class="form-check-label" for="lastYear"> In the last year</label>
+                        </div>
+                        <span class="qty">1,258</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastMonth">
+                            <label class="form-check-label" for="lastMonth"> In the last month</label>
+                        </div>
+                        <span class="qty">2450</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="LastWeek">
+                            <label class="form-check-label" for="LastWeek"> In the last week</label>
+                        </div>
+                        <span class="qty">325</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastDay">
+                            <label class="form-check-label" for="lastDay"> In the last day</label>
+                        </div>
+                        <span class="qty">745</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- ===================== Filter Sidebar End ============================= -->
+            </div>
 
             {{-- Product List Section --}}
-            <div class="col-md-9 col-sm-8 col-xs-12 nopad sss2 productcontainer">
-                <div class="protitlesec mb-3">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-8 col-xs-6">
-                            {{-- Add optional results info --}}
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-6 text-end">
-                            <form id="frmsortby" class="form-inline text-right">
-                                <div class="form-group">
-                                    <label for="orderby">Sort by :</label>
-                                    <select name="orderby" id="orderby" class="form-control">
-                                        <option value="default" selected="selected">Default</option>
-                                        <option value="new">New</option>
-                                        <option value="top_rated">Top Rated</option>
-                                        <option value="H-L">High to Low</option>
-                                        <option value="L-H">Low to High</option>
-                                        <option value="A-Z">A to Z</option>
-                                        <option value="Z-A">Z to A</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-xl-9 col-lg-8 nopad sss2 productcontainer">
+                
 
                 <div id="renderproduct">
                     @include('front.product-list')

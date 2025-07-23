@@ -1,80 +1,3 @@
-<style>
-    .product-card {
-        border: 1px solid #eee;
-        border-radius: 8px;
-        padding: 15px;
-        transition: 0.3s;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    .product-card:hover {
-        box-shadow: 0 0 10px rgba(0,0,0,0.15);
-    }
-
-    .product-img {
-        width: 100%;
-        max-height: 220px;
-        object-fit: contain;
-        margin-bottom: 10px;
-    }
-
-    .product-title {
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 5px;
-        min-height: 40px;
-    }
-
-    .star-rated i {
-        color: #f5a623;
-        margin-right: 2px;
-    }
-
-    .price-block {
-        margin-top: 8px;
-    }
-
-    .actual-price {
-        font-size: 1.1rem;
-        color: #b12704;
-        font-weight: bold;
-    }
-
-    .original-price {
-        text-decoration: line-through;
-        color: #888;
-        margin-left: 8px;
-    }
-
-    .offer-percent {
-        color: #007600;
-        font-size: 0.9rem;
-        margin-top: 5px;
-    }
-
-    .action-buttons a {
-        display: inline-block;
-        margin-right: 8px;
-        padding: 5px 10px;
-        font-size: 0.9rem;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        background: #f8f9fa;
-        text-align: center;
-    }
-
-    .action-buttons a:hover {
-        background-color: #eee;
-    }
-
-    .wishlist-btn img {
-        width: 20px;
-    }
-</style>
 
 @php $array = []; @endphp
 @if (Auth::check())
@@ -93,7 +16,7 @@
         $star = $rev->reviewtotal / 20;
     @endphp
 
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    {{-- <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="product-card">
             <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}">
                 <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="product-img">
@@ -111,9 +34,9 @@
                 <span class="actual-price">{{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $data->price }}</span>
                 <span class="original-price">{{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $discountProduct->mrp }}</span>
 
-                <div class="offer-percent">
+                <div class="offer-percent"> --}}
                     {{-- You save {{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $discountProduct->mrp - $data->price }} --}}
-                </div>
+                {{-- </div>
             </div>
 
             <div class="action-buttons mt-3">
@@ -142,9 +65,169 @@
         <h2>No Product found</h2>
     </div>
 @endforelse
-</div>
+</div> --}}
 
 <!-- Pagination -->
-<div class="mt-4">
+{{-- <div class="mt-4">
     {!! $products->links() !!}
-</div>
+</div> --}}
+
+
+
+
+<!-- ======================== All Product Section Start ====================== -->
+<!-- ======================== All Product Section Start ====================== -->
+{{-- <section class="all-product padding-y-120">
+    <div class="container container-two">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Filter Tab -->
+                <div class="filter-tab gap-3 flx-between">
+                    <button type="button" class="filter-tab__button btn btn-outline-light pill d-flex align-items-center">
+                        <span class="icon icon-left">
+                            <img src="assets/images/icons/filter.svg" alt="">
+                        </span>
+                        <span class="font-18 fw-500">Filters</span>
+                    </button>
+
+                    <ul class="nav common-tab nav-pills mb-0 gap-lg-2 gap-1 ms-lg-auto" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-product-tab" data-bs-toggle="pill" data-bs-target="#pills-product" type="button" role="tab" aria-controls="pills-product" aria-selected="true">All Item</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestMatch-tab" data-bs-toggle="pill" data-bs-target="#pills-bestMatch" type="button" role="tab" aria-controls="pills-bestMatch" aria-selected="false">Best Match</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestRating-tab" data-bs-toggle="pill" data-bs-target="#pills-bestRating" type="button" role="tab" aria-controls="pills-bestRating" aria-selected="false">Best Rating</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false">Site Template</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestOffers-tab" data-bs-toggle="pill" data-bs-target="#pills-bestOffers" type="button" role="tab" aria-controls="pills-bestOffers" aria-selected="false">Best Offers</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestSelling-tab" data-bs-toggle="pill" data-bs-target="#pills-bestSelling" type="button" role="tab" aria-controls="pills-bestSelling" aria-selected="false">Best Selling</button>
+                        </li>
+                    </ul>
+
+                    <div class="list-grid d-flex align-items-center gap-2">
+                        <button class="list-grid__button list-button d-sm-flex d-none text-body"><i class="las la-list"></i></button>
+                        <button class="list-grid__button grid-button d-sm-flex d-none active text-body"><i class="las la-border-all"></i></button>
+                        <button class="list-grid__button sidebar-btn text-body d-lg-none d-flex"><i class="las la-bars"></i></button>
+                    </div>
+                </div>
+                <!-- Filter Form -->
+                <form action="#" class="filter-form pb-4">
+                    <div class="row gy-3">
+                        <div class="col-sm-4 col-xs-6">
+                            <div class="flx-between gap-1">
+                                <label for="tag" class="form-label font-16">Tag</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative">
+                                <input type="text" class="common-input border-gray-five common-input--withLeftIcon" id="tag" placeholder="Search By Tag...">
+                                <span class="input-icon input-icon--left"><img src="assets/images/icons/search-two.svg" alt=""></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-6">
+                            <div class="flx-between gap-1">
+                                <label for="Price" class="form-label font-16">Price</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative">
+                                <input type="text" class="common-input border-gray-five" id="Price" placeholder="$7 - $29">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="flx-between gap-1">
+                                <label for="time" class="form-label font-16">Time Frame</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative select-has-icon">
+                                <select id="time" class="common-input border-gray-five">
+                                    <option value="1">Now</option>
+                                    <option value="2">Yesterday</option>
+                                    <option value="3">1 Month Ago</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Product Content Area -->
+            <div class="col-xl-9 col-lg-8">
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-product" role="tabpanel" aria-labelledby="pills-product-tab" tabindex="0">
+                        <div class="row gy-4 list-grid-wrapper">
+                            <div class="col-xl-4 col-sm-6">
+                                <div class="product-item section-bg">
+                                    <div class="product-item__thumb d-flex">
+                                        <a href="product-details.html" class="link w-100">
+                                            <img src="assets/images/thumbs/product-img1.png" alt="" class="cover-img">
+                                        </a>
+                                        <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
+                                    </div>
+                                    <div class="product-item__content">
+                                        <h6 class="product-item__title">
+                                            <a href="product-details.html" class="link">SaaS dashboard digital products Title here</a>
+                                        </h6>
+                                        <div class="product-item__info flx-between gap-2">
+                                            <span class="product-item__author">
+                                                by
+                                                <a href="profile.html" class="link hover-text-decoration-underline"> themepix</a>
+                                            </span>
+                                            <div class="flx-align gap-2">
+                                                <h6 class="product-item__price mb-0">$120</h6>
+                                                <span class="product-item__prevPrice text-decoration-line-through">$259</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-item__bottom flx-between gap-2">
+                                            <div>
+                                                <span class="product-item__sales font-14 mb-2">1200 Sales</span>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <ul class="star-rating">
+                                                        <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
+                                                        <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
+                                                        <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
+                                                        <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
+                                                        <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
+                                                    </ul>
+                                                    <span class="star-rating__text text-heading fw-500 font-14">(16)</span>
+                                                </div>
+                                            </div>
+                                            <a href="product-details.html" class="btn btn-outline-light btn-sm pill">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Add more product cards as needed -->
+                        </div>
+
+                        <!-- Pagination Start -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination common-pagination">
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link flx-align gap-2 flex-nowrap" href="#">Next 
+                                        <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span> 
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- Pagination End -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> --}}
+
+<!-- ======================== All Product Section End ====================== -->
+
+

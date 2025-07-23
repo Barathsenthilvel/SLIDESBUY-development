@@ -6,201 +6,239 @@
     var min = parseInt('{{$min}}');
     var max = parseInt('{{$max}}') +1;
 </script>
+<style>
 
-<section class="banner-section">
-    <div class="banner-inner">
-        <div class="homeslider">
-            <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
-            <div class="pagetitle-wraper">
+    /* filter style */
+    .filter-sidebar {
+    width: 100%;
+    max-width: 250px;
+    border: 1px solid #ddd;
+    padding: 16px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+    font-family: Arial, sans-serif;
+}
+
+.filter-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-group {
+    margin-bottom: 16px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.filter-header i {
+    font-size: 12px;
+}
+
+.filter-body {
+    padding-left: 4px;
+}
+
+.filter-option {
+    margin-bottom: 6px;
+}
+
+.filter-option input[type="checkbox"] {
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.filter-option label {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-footer {
+    margin-top: 20px;
+}
+
+.btn.btn-primary {
+    background-color: #ffa41c;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn.btn-primary:hover {
+    background-color: #f39c12;
+}
+
+</style>
+        {{-- <section class="banner-section">
+            <div class="banner-inner">
+                <div class="homeslider">
+                    <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
+                    <div class="pagetitle-wraper">
+                        <div class="container">
+                            <div class="pagetitle">Products</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="banner-breadcrumb">
                 <div class="container">
-                    <div class="pagetitle">Products</div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="breadcrumb">
+                                <li><a href="{{ route('front.index') }}">Home</a></li>
+
+                                <li><a href="#">Products</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="banner-breadcrumb">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="breadcrumb">
-                        <li><a href="{{ route('front.index') }}">Home</a></li>
-
-                        <li><a href="#">Products</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
+        </section> --}}
 <section>
     <div class="container">
-        <aside class="col-md-3 col-sm-4 col-xs-12 nopad sss1 sticky-wraper">
-            <div class="productlistaside" id="productlistaside">
-                <form id="frmproductlistaside" name="frmproductlistaside" action="#">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="filtersec">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 filtersecc">
-                                    <h4 class="filtertrigger">Filters &nbsp; <span
-                                            class="hidden-sm hidden-lg hidden-md"><i
-                                                class="fa fa-caret-down"></i></span></h4>
+        <div class="row">
+            {{-- Filter Sidebar --}}
+            <aside class="col-md-3 col-sm-4 col-xs-12 nopad sss1 sticky-wraper">
+                <div class="productlistaside" id="productlistaside">
+                    <form id="frmproductlistaside" name="frmproductlistaside" action="#">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+                            {{-- Filter Header --}}
+                            {{-- <div class="filtersec mb-3">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <h4 class="filtertrigger">Filters <span class="hidden-sm hidden-lg hidden-md"><i class="fa fa-caret-down"></i></span></h4>
+                                    </div>
+                                    <div class="col-xs-6 text-end">
+                                        <h4><a href="javascript:void(0);" class="filter-clean text-danger">Clear All</a></h4>
+                                    </div>
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 filterseccc">
-                                    <h4>
-                                        <span class="saveandclear-wraper">
-                                            <a href="javascript:void(0);" class="filter-clean">Clear All</a>
-                                        </span>
-                                    </h4>
+                            </div> --}}
+
+                            {{-- Unified Filter UI --}}
+                            <div class="filter-sidebar card shadow-sm p-3">
+                                {{-- Price Filter --}}
+                                <div class="mb-4">
+                                    <h6 class="mb-2">Price</h6>
+                                    <div class="price-range-block">
+                                        <div id="slider-range" class="price-filter-range" name="rangeInput"></div>
+                                        <div class="d-flex gap-2 align-items-center mt-2">
+                                            <input type="hidden" id="minval" value="{{ $min }}" />
+                                            <input type="number" id="max_price" name="max_price" class="form-control form-control-sm"
+                                                onBlur="pricevaluechange(this.value,'max_price');" placeholder="Max Price" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 nopad collapsemenu-wraper">
-                            <div class="filter-title">
-                                <span class="filter-trigger">
-                                    <span class="filter-close"><i class="fa fa-angle-left"></i></span>
-                                    &nbsp; <span>Filters </span>
-                                </span>
-                                <span class="clear-filter pull-right"><a href="javascript:void(0);" class="filter-clean">Clear All</a></span>
-                            </div>
-                            <!---->
-                            <div class="pricerange-wraper">
-                                <ul class="collapsemenu">
-                                    <li>
-                                        <a class="firstlevel-collpase" href="#">Price</a>
-                                        <a aria-controls="pricefilter1" aria-expanded="true"
-                                            class="collapse-trigger" data-toggle="collapse" href="#pricefilter1"
-                                            role="button"></a>
-                                        <div aria-expanded="true" class="collapse in" id="pricefilter1" style="">
-                                            <div class="well">
-                                                <div class="price-range-block">
-                                                    <div id="slider-range" class="price-filter-range"
-                                                        name="rangeInput"></div>
-                                                    <div>
-                                                        <!--<input type="number" min="180" max="435"  oninput="validity.valid||(value='180');" id="min_price" name="min_price" class="price-range-field" />-->
-                                                        {{-- <input type="hidden" id="minval" value="{{$min}}" />
-                                                        <input type="hidden" id="maxval" value="{{$max+1}}" /> --}}
-                                                        <input type="number" id="min_price" name="min_price"
-                                                            class="price-range-field"
-                                                            onBlur="pricevaluechange(this.value,'min_price');" />
-
-                                                        <span>to</span>
-
-                                                        <!--<input type="number"  oninput="validity.valid||(value='180');" id="min_price" name="min_price" class="price-range-field" /> <span>to</span>  -->
-
-                                                        <input type="number" id="max_price" name="max_price"
-                                                            class="price-range-field"
-                                                            onBlur="pricevaluechange(this.value,'max_price');" />
-
-                                                        <!-- <input type="number" min="180" max="435" oninput="validity.valid||(value='435');" id="max_price" name="max_price" class="price-range-field" />-->
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                            <div class="categorylist-wraper">
-                                <ul class="collapsemenu">
-                                    @foreach($categorys as $key=>$categorys)
-                                    <li>
-                                        <a class="firstlevel-collpase Category" href="{{route('front.getCategory',$categorys->Category_url)}}"  data-id="{{$categorys->id}}">{{$categorys->category_name}}</a>
-                                        @if(count($categorys->subs))
-                                        <a aria-controls="collapseMenu1" aria-expanded="false"
-                                            class="collapse-trigger collapsed" data-toggle="collapse" href="#collapseMenu{{$key}}"
-                                            id="flexible-packaging" role="button"></a>
-                                        <div aria-expanded="false" class="collapse" id="collapseMenu{{ $key }}" style="">
-                                            <div class="well">
-                                                <ul class="collapse-submenu">
-                                                    @foreach($categorys->subs as $subcats)
-                                                    <li>
-                                                        <a href="{{route('front.getCategory',$subcats->Category_url)}}" class="sucategories" data-cat_id = "{{$categorys->id}}" data-id="{{$subcats->id}}">{{$subcats->category_name}}</a>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            <div class="filtermain-wraper">
-                                <ul class="collapsemenu">
-                                    @foreach($attributeValues as $key=>$attributeValues)
-                                        @if(count(explode(',',$attributeValues->attribute_values)) > 0)
-                                            <li>
-                                                <a class="firstlevel-collpase" href="#">{{$attributeValues->attribute_name}}</a>
-                                                <a aria-controls="blouse{{$key}}" aria-expanded="false" class="collapse-trigger collapsed"
-                                                    data-toggle="collapse" href="#blouse{{$key}}" role="button"></a>
-                                                <div aria-expanded="false" class="collapse" id="blouse{{$key}}" style="">
-                                                    <div class="well">
-                                                        @foreach(explode(',',$attributeValues->attribute_values) as $key2=>$values)
-                                                            <div class="filterlist">
-                                                                <div>
-                                                                    <input type="checkbox"
-                                                                        name="attr[]" id="{{$attributeValues->id}}-{{$values}}" data-id="{{$attributeValues->id}}-{{$values}}" value="{{$attributeValues->id}}-{{$values}}">
-                                                                    <label for="{{$attributeValues->id}}-{{$values}}">{{$values}}</label>
-                                                                </div>
-                                                            </div>
+                                {{-- Category Filter --}}
+                                <div class="mb-4">
+                                    <h6 class="mb-2">Categories</h6>
+                                    <ul class="list-unstyled ms-1">
+                                        @foreach($categorys as $key=>$category)
+                                            <li class="mb-2">
+                                                <a class="text-dark fw-semibold" href="{{ route('front.getCategory', $category->Category_url) }}" data-id="{{ $category->id }}">
+                                                    {{ $category->category_name }}
+                                                </a>
+                                                @if(count($category->subs))
+                                                    <ul class="list-unstyled ms-3 mt-1">
+                                                        @foreach($category->subs as $subcats)
+                                                            <li>
+                                                                <a href="{{ route('front.getCategory', $subcats->Category_url) }}"
+                                                                class="text-muted sucategories" data-cat_id="{{ $category->id }}" data-id="{{ $subcats->id }}">
+                                                                    {{ $subcats->category_name }}
+                                                                </a>
+                                                            </li>
                                                         @endforeach
-                                                    </div>
-                                                </div>
+                                                    </ul>
+                                                @endif
                                             </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+
+                                {{-- Dynamic Attribute Filters --}}
+                                <div class="mb-4">
+                                    <h6 class="mb-2">Filter by Attributes</h6>
+                                    @foreach($attributeValues as $key => $attribute)
+                                        @php $values = explode(',', $attribute->attribute_values); @endphp
+                                        @if(count($values) > 0)
+                                            <div class="mb-3">
+                                                <div class="fw-semibold mb-2">{{ $attribute->attribute_name }}</div>
+                                                @foreach($values as $val)
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="attr{{ $attribute->id }}-{{ $val }}"
+                                                            name="attr[]" value="{{ $attribute->id }}-{{ $val }}" data-id="{{ $attribute->id }}-{{ $val }}">
+                                                        <label class="form-check-label" for="attr{{ $attribute->id }}-{{ $val }}">
+                                                            {{ $val }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @endif
                                     @endforeach
-                                </ul>
+                                </div>
+
+                                {{-- Apply Filters --}}
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-warning w-100 fw-bold" onclick="fnAttrChanged()">Apply Filters</button>
+                                </div>
                             </div>
-
-                            <!---->
-                            <div class="filter-bottom">
-                                <span class="filterbot-single filter-result">
-                                    <span></span> <span> </span>
-                                </span>
-                                <span class="filterbot-single filter-apply ">
-                                    <a href="javascript:void(0);" onChange="fnAttrChanged();"
-                                        class="apply-btn text-center"><span>Apply</span></a>
-                                </span>
-
-                            </div>
-
                         </div>
-                    </div><!-- panel-group -->
-                </form>
-            </div>
+                    </form>
+                </div>
+            </aside>
 
-        </aside>
-
-        <div class="col-md-9 col-sm-8 col-xs-12 nopad sss2 productcontainer">
-
-            <div class="protitlesec">
-                <div class="row">
-                    <div class="col-md-8 col-sm-8 col-xs-2">
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-10">
-                        <form id="frmsortby" class="form-inline text-right">
-                            <div class="form-group">
-                                <label for="sel1">Sort by :</label>
-                                <select name="orderby" id="orderby" class="form-control">
-                                    <option value="default" selected="selected">Default</option>
-                                    <option value="new">New</option>
-                                    <option value="top_rated">Top Rated</option>
-                                    <option value="H-L">High to Low</option>
-                                    <option value="L-H">Low to High</option>
-                                    <option value="A-Z">A to Z</option>
-                                    <option value="Z-A">Z to A</option>
-                                </select>
-                            </div>
-                        </form>
+            {{-- Product List Section --}}
+            <div class="col-md-9 col-sm-8 col-xs-12 nopad sss2 productcontainer">
+                <div class="protitlesec mb-3">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-8 col-xs-6">
+                            {{-- Add optional results info --}}
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-6 text-end">
+                            <form id="frmsortby" class="form-inline text-right">
+                                <div class="form-group">
+                                    <label for="orderby">Sort by :</label>
+                                    <select name="orderby" id="orderby" class="form-control">
+                                        <option value="default" selected="selected">Default</option>
+                                        <option value="new">New</option>
+                                        <option value="top_rated">Top Rated</option>
+                                        <option value="H-L">High to Low</option>
+                                        <option value="L-H">Low to High</option>
+                                        <option value="A-Z">A to Z</option>
+                                        <option value="Z-A">Z to A</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div id="renderproduct">
-                @include('front.product-list')
+
+                <div id="renderproduct">
+                    @include('front.product-list')
+                </div>
             </div>
         </div>
     </div>

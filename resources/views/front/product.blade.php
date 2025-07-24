@@ -25,6 +25,242 @@
 
 </style>
 
+<!-- ======================== Breadcrumb Two Section Start ===================== -->
+<section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
+
+    <div class="breadcrumb-two">
+        <img src="assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
+        <div class="container container-two">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-two-content">
+    
+                        <ul class="breadcrumb-list flx-align gap-2 mb-2">
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <a href="index.html" class="breadcrumb-list__link text-body hover-text-main">Home</a>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <a href="all-product.html" class="breadcrumb-list__link text-body hover-text-main">Products</a>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__text">SaaS</span>
+                            </li>
+                        </ul>
+                        
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Quantum: SaaS Landing Page WordPress Theme</h3>
+    
+                        <div class="breadcrumb-content flx-align gap-3">
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="text">By <a href="#" class="link text-main fw-600">Oviousdev</a> </span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/cart-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/cart-white.svg" alt="" class="dark-version w-20">
+                                </span>
+                                <span class="text">158 sales</span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                </span>
+                                <span class="text">Recently Updated</span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                </span>
+                                <span class="text">Well Documented</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container container-two">
+        <div class="breadcrumb-tab flx-wrap align-items-start gap-lg-4 gap-2">
+            <ul class="nav tab-bordered nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="pills-product-details-tab" data-bs-toggle="pill" data-bs-target="#pills-product-details" type="button" role="tab" aria-controls="pills-product-details" aria-selected="true">Product Details</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="pills-rating-tab" data-bs-toggle="pill" data-bs-target="#pills-rating" type="button" role="tab" aria-controls="pills-rating" aria-selected="false">
+                    <span class="d-flex align-items-center gap-1">
+                        <span class="star-rating">
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                        </span>
+                        <span class="star-rating__text text-body"> 5.0</span>
+                        <span class="star-rating__text text-body"> (180)</span>
+                    </span>
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="false">Comments (50)</button>
+                </li>
+            </ul>
+            <div class="social-share">
+                <button type="button" class="social-share__button">
+                    <img src="assets/images/icons/share-icon.svg" alt="">
+                </button>
+                <div class="social-share__icons">
+                    <ul class="social-icon-list colorful-style">
+                        <li class="social-icon-list__item">
+                            <a href="https://www.facebook.com" class="social-icon-list__link text-body flex-center"><i class="fab fa-facebook-f"></i></a> 
+                        </li>
+                        <li class="social-icon-list__item">
+                            <a href="https://www.twitter.com" class="social-icon-list__link text-body flex-center"> <i class="fab fa-linkedin-in"></i></a>
+                        </li>
+                        <li class="social-icon-list__item">
+                            <a href="https://www.google.com" class="social-icon-list__link text-body flex-center"> <i class="fab fa-twitter"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+<!-- ======================== Breadcrumb Two Section End ===================== -->
+<!-- ======================= Product Details Section Start ==================== -->
+<div class="container">
+    <div class="row">
+        {{-- Left: Vertical Thumbnails --}}
+        <div class="col-md-2">
+            <div class="d-flex flex-column gap-2">
+                @foreach([1, 2, 3, 4] as $i)
+                    @php
+                        $image = 'image' . $i;
+                        $imagePath = 'assets/media/products/' . $product->$image;
+                    @endphp
+                    @if(!empty($product->$image) && file_exists(public_path($imagePath)))
+                        <a href="{{ asset($imagePath) }}" data-lightbox="product">
+                            <img src="{{ asset($imagePath) }}" class="img-fluid border rounded" alt="thumb-{{ $i }}">
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
+        {{-- Center: Main Preview Image and Buttons --}}
+        <div class="col-md-7">
+            @php
+                $mainImage = null;
+                foreach([1,2,3,4] as $i) {
+                    $img = 'image'.$i;
+                    $imgPath = 'assets/media/products/'.$product->$img;
+                    if (!empty($product->$img) && file_exists(public_path($imgPath))) {
+                        $mainImage = asset($imgPath);
+                        break;
+                    }
+                }
+            @endphp
+
+            <div class="mb-4">
+                @if($mainImage)
+                    <img src="{{ $mainImage }}" class="img-fluid rounded w-100" alt="Main Image">
+                @endif
+            </div>
+
+            <div class="d-flex gap-3">
+                <a href="#" class="btn btn-primary">Live Preview</a>
+                <a href="#" class="btn btn-outline-secondary screenshot-btn"
+                   data-images='[
+                       @php $first = true; @endphp
+                       @foreach([1,2,3,4] as $i)
+                           @php
+                               $img = 'image' . $i;
+                               $imgPath = 'assets/media/products/' . $product->$img;
+                           @endphp
+                           @if(!empty($product->$img) && file_exists(public_path($imgPath)))
+                               @if(!$first), @endif"{{ asset($imgPath) }}"
+                               @php $first = false; @endphp
+                           @endif
+                       @endforeach
+                   ]'>
+                   Screenshot
+                </a>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-muted">
+                    {{ $product->description ?? 'No description available.' }}
+                </p>
+            </div>
+        </div>
+
+        {{-- Right: Sidebar (Add to Cart, Price, Author Info) --}}
+        <div class="col-md-3">
+            <div class="product-sidebar section-bg p-3 rounded">
+                <h6 class="mb-2">Regular License</h6>
+                <h4 class="text-end mb-3">$1580.00</h4>
+
+                <ul class="list-unstyled mb-3">
+                    <li>✔ Quality verified</li>
+                    <li>✔ Use for a single project</li>
+                    <li>✔ Non-paying users only</li>
+                </ul>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="supportCheck">
+                    <label for="supportCheck" class="form-check-label">Extended support 12 month</label>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <del>$12</del>
+                    <strong>$7.25</strong>
+                </div>
+
+                <button class="btn btn-primary w-100 mb-3">Add To Cart</button>
+
+                <div class="author-box border-top pt-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="{{ asset('assets/images/thumbs/author-details-img.png') }}" class="rounded-circle" width="40" alt="">
+                        <div>
+                            <h6 class="mb-0">Oviousdev</h6>
+                            <small class="text-muted">⭐ 5.0</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-1 mt-2">
+                        @for($i = 1; $i <= 8; $i++)
+                            <img src="{{ asset('assets/images/thumbs/badge'.$i.'.png') }}" width="30" alt="badge">
+                        @endfor
+                    </div>
+
+                    <a href="profile.html" class="btn btn-outline-secondary w-100 mt-3">View Portfolio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================= Product Sidebar End ========================= -->
+
+<!-- ======================= Product Details Section End ==================== -->
+
+
+
+
+
+
+
+
+
 
 
 	<section>

@@ -15,62 +15,92 @@
         $rev = $discountProduct->reviewtotal();
         $star = $rev->reviewtotal / 20;
     @endphp
-
-    {{-- <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="product-card">
-            <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}">
-                <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="product-img">
+<div class="col-xl-4 col-sm-6">
+    <div class="product-item section-bg">
+        <div class="product-item__thumb d-flex">
+            <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
+                <img src="{{ $discountProduct->image1 ? URL::asset('/assets/media/products/' . $discountProduct->image1) : URL::asset('assets/images/thumbs/product-img1.png') }}"
+                     alt="{{ $discountProduct->product_title ?? 'Product Image' }}"
+                     class="cover-img">
             </a>
+            <button type="button"
+                    class="product-item__wishlist wishlist-btn {{ in_array($discountProduct->id, $array) ? 'added' : '' }}"
+                    data-id="{{ $discountProduct->id }}"
+                    data-container="body"
+                    data-toggle="popover"
+                    data-trigger="hover"
+                    data-placement="top"
+                    data-content="Wishlist">
+                <i class="fas fa-heart"></i>
+            </button>
+        </div>
 
-            <div class="product-title">{{ $discountProduct->product_title }}</div>
-
-            <div class="star-rated mb-2">
-                @for ($i = 1; $i <= 5; $i++)
-                    <i class="{{ $star >= $i ? 'fa fa-star' : 'fa fa-star-o' }}"></i>
-                @endfor
-            </div>
-
-            <div class="price-block">
-                <span class="actual-price">{{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $data->price }}</span>
-                <span class="original-price">{{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $discountProduct->mrp }}</span>
-
-                <div class="offer-percent"> --}}
-                    {{-- You save {{ $StoreConfig->currencysymbol() ?? 'Rs.' }} {{ $discountProduct->mrp - $data->price }} --}}
-                {{-- </div>
-            </div>
-
-            <div class="action-buttons mt-3">
-                <a href="#"
-                   class="cart-btn {{ $discountProduct->soldout != 'off' ? 'p-e-none' : '' }} common-btn btn-cart2"
-                   data-id="{{ $discountProduct->id }}"
-                   data-q="{{ $discountProduct->minquantity }}">
-                    {{ $discountProduct->soldout != 'off' ? 'Sold Out' : 'Add to Cart' }}
+        <div class="product-item__content">
+            <h6 class="product-item__title">
+                <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link">
+                    {{ $discountProduct->product_title ?? 'SaaS dashboard digital products Title here' }}
                 </a>
+            </h6>
 
-                <a href="#"
-                   class="wishlist-btn {{ in_array($discountProduct->id, $array) ? 'added' : '' }} common-btn btn-wishlist"
-                   data-id="{{ $discountProduct->id }}"
-                   data-container="body"
-                   data-toggle="popover"
-                   data-trigger="hover"
-                   data-placement="top"
-                   data-content="Wishlist">
-                    <img src="{{ URL::asset('assets/front/images/icons/wishlist.png') }}" alt="wishlist">
+            <div class="product-item__info flx-between gap-2">
+                <span class="product-item__author">
+                    by
+                    <a href="profile.html" class="link hover-text-decoration-underline">
+                        {{ $discountProduct->vendor->name ?? 'themepix' }}
+                    </a>
+                </span>
+                <div class="flx-align gap-2">
+                    <h6 class="product-item__price mb-0">
+                        ${{ $discountProduct->discount_price ?? '120' }}
+                    </h6>
+                    @if (!empty($discountProduct->price))
+                        <span class="product-item__prevPrice text-decoration-line-through">
+                            ${{ $discountProduct->price }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="product-item__bottom flx-between gap-2">
+                <div>
+                    <span class="product-item__sales font-14 mb-2">
+                        {{ $discountProduct->sales ?? '1200' }} Sales
+                    </span>
+                    <div class="d-flex align-items-center gap-1">
+                        <ul class="star-rating">
+                            @php $star = $discountProduct->average_rating ?? 5; @endphp
+                            @for ($i = 1; $i <= 5; $i++)
+                                <li class="star-rating__item font-11">
+                                    <i class="{{ $star >= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
+                                </li>
+                            @endfor
+                        </ul>
+                        <span class="star-rating__text text-heading fw-500 font-14">
+                            ({{ $discountProduct->review_count ?? '16' }})
+                        </span>
+                    </div>
+                </div>
+
+                <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}"
+                   class="btn btn-outline-light btn-sm pill">
+                    View
                 </a>
             </div>
         </div>
     </div>
+</div>
+
+
 @empty
     <div class="col-12 text-center mt-4">
         <h2>No Product found</h2>
     </div>
 @endforelse
-</div> --}}
 
 <!-- Pagination -->
-{{-- <div class="mt-4">
+<div class="mt-4">
     {!! $products->links() !!}
-</div> --}}
+</div>
 
 
 
@@ -214,8 +244,8 @@
                                 <li class="page-item"><a class="page-link" href="#">4</a></li>
                                 <li class="page-item"><a class="page-link" href="#">5</a></li>
                                 <li class="page-item">
-                                    <a class="page-link flx-align gap-2 flex-nowrap" href="#">Next 
-                                        <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span> 
+                                    <a class="page-link flx-align gap-2 flex-nowrap" href="#">Next
+                                        <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span>
                                     </a>
                                 </li>
                             </ul>

@@ -4,6 +4,28 @@
 @section('meta_description', $product->metadescription) --}}
 @section('content')
 
+
+<style>
+
+.btn-mainsss::before, .btn-mainsss::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: inherit;
+    background: var(--main-gradient);
+    z-index: -1;
+    transition: 0.2s linear;
+}
+
+.btn-mainsss {
+    background-color: hsl(var(--main)) !important;
+    border: transparent !important;
+    z-index: 1;
+}
+    </style>
 @php
     $price = $product->getproductPrice();
     $rev = $product->reviewtotal();
@@ -25,7 +47,9 @@
 
 </style>
 
-<!-- ======================== Breadcrumb Two Section Start ===================== -->
+
+
+{{-- breadcumn section start --}}
 <section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
 
     <div class="breadcrumb-two">
@@ -34,7 +58,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-12">
                     <div class="breadcrumb-two-content">
-    
+
                         <ul class="breadcrumb-list flx-align gap-2 mb-2">
                             <li class="breadcrumb-list__item font-14 text-body">
                                 <a href="index.html" class="breadcrumb-list__link text-body hover-text-main">Home</a>
@@ -52,9 +76,9 @@
                                 <span class="breadcrumb-list__text">SaaS</span>
                             </li>
                         </ul>
-                        
-                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Quantum: SaaS Landing Page WordPress Theme</h3>
-    
+
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">{{ $product->product_title }}SKU : {{$StoreConfig->productIdprefix}}-{{$product->product_sku}}</h3>
+
                         <div class="breadcrumb-content flx-align gap-3">
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="text">By <a href="#" class="link text-main fw-600">Oviousdev</a> </span>
@@ -81,7 +105,7 @@
                                 <span class="text">Well Documented</span>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -95,7 +119,7 @@
                   <button class="nav-link active" id="pills-product-details-tab" data-bs-toggle="pill" data-bs-target="#pills-product-details" type="button" role="tab" aria-controls="pills-product-details" aria-selected="true">Product Details</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="pills-rating-tab" data-bs-toggle="pill" data-bs-target="#pills-rating" type="button" role="tab" aria-controls="pills-rating" aria-selected="false">
+                  <button class="nav-link" id="pills-rating-tab" data-bs-toggle="pill" data-bs-target="#pills-rating" type="button" role="tab" aria-controls="pills-rating" aria-selected="false" tabindex="-1">
                     <span class="d-flex align-items-center gap-1">
                         <span class="star-rating">
                             <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
@@ -110,17 +134,17 @@
                   </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="false">Comments (50)</button>
+                  <button class="nav-link" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="false" tabindex="-1">Comments (50)</button>
                 </li>
             </ul>
             <div class="social-share">
                 <button type="button" class="social-share__button">
                     <img src="assets/images/icons/share-icon.svg" alt="">
                 </button>
-                <div class="social-share__icons">
+                <div class="social-share__icons left">
                     <ul class="social-icon-list colorful-style">
                         <li class="social-icon-list__item">
-                            <a href="https://www.facebook.com" class="social-icon-list__link text-body flex-center"><i class="fab fa-facebook-f"></i></a> 
+                            <a href="https://www.facebook.com" class="social-icon-list__link text-body flex-center"><i class="fab fa-facebook-f"></i></a>
                         </li>
                         <li class="social-icon-list__item">
                             <a href="https://www.twitter.com" class="social-icon-list__link text-body flex-center"> <i class="fab fa-linkedin-in"></i></a>
@@ -133,12 +157,18 @@
             </div>
         </div>
     </div>
-    
+
+</section>
+{{--  --}}
+
+
+
 </section>
 <!-- ======================== Breadcrumb Two Section End ===================== -->
 <!-- ======================= Product Details Section Start ==================== -->
-<div class="container">
-    <div class="row">
+<div class="product-details mt-32 padding-b-120">
+<div class="container container-two">
+    <div class="row gy-4">
         {{-- Left: Vertical Thumbnails --}}
         <div class="col-md-2">
             <div class="d-flex flex-column gap-2">
@@ -170,15 +200,17 @@
                 }
             @endphp
 
-            <div class="mb-4">
+            <div class="">
                 @if($mainImage)
                     <img src="{{ $mainImage }}" class="img-fluid rounded w-100" alt="Main Image">
                 @endif
             </div>
 
-            <div class="d-flex gap-3">
-                <a href="#" class="btn btn-primary">Live Preview</a>
-                <a href="#" class="btn btn-outline-secondary screenshot-btn"
+            <div class="product-details__buttons flx-align justify-content-center gap-3">
+                <a href="#" class="btn btn-mainsss d-inline-flex align-items-center gap-2 pill px-sm-5 justify-content-center">Live Preview
+            <img src="assets/images/icons/eye-outline.svg" alt="">
+        </a>
+                <a href="#" class="screenshot-btn btn btn-white pill px-sm-5"
                    data-images='[
                        @php $first = true; @endphp
                        @foreach([1,2,3,4] as $i)
@@ -206,8 +238,23 @@
         {{-- Right: Sidebar (Add to Cart, Price, Author Info) --}}
         <div class="col-md-3">
             <div class="product-sidebar section-bg p-3 rounded">
-                <h6 class="mb-2">Regular License</h6>
-                <h4 class="text-end mb-3">$1580.00</h4>
+                            <div class="product-sidebar__top position-relative flx-between gap-1">
+                        <button type="button" class="btn-has-dropdown font-heading font-18">Regular License</button>
+                        <div class="license-dropdown active">
+                            <div class="license-dropdown__item cursor-pointer mb-3 pb-3 border-bottom activeSelectItem">
+                                <h6 class="license-dropdown__title font-body mb-1 font-16">Regular License</h6>
+                                <p class="license-dropdown__desc font-13">Use, by you or one client, in a solitary finished result which end clients are not charged for. The complete cost incorporates the thing cost and a purchaser expense..</p>
+                            </div>
+                            <div class="license-dropdown__item cursor-pointer">
+                                <h6 class="license-dropdown__title font-body mb-1 font-16">Extended License</h6>
+                                <p class="license-dropdown__desc font-13">Use, by you or one client, in a solitary final result which end clients can be charged for. The all out cost incorporates the thing cost and a purchaser expense.</p>
+                            </div>
+                            <div class="mt-3 pt-2 border-top text-center ">
+                                <a href="#" class="link hover-text-decoration-underline font-14 text-main fw-500">View License Details</a>
+                            </div>
+                        </div>
+                        <h6 class="product-sidebar__title">$1580.00</h6>
+                    </div>
 
                 <ul class="list-unstyled mb-3">
                     <li>✔ Quality verified</li>
@@ -225,30 +272,148 @@
                     <strong>$7.25</strong>
                 </div>
 
-                <button class="btn btn-primary w-100 mb-3">Add To Cart</button>
+                <button class="btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5 mt-32">Add To Cart</button>
+                <div class="author-details">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="author-details__thumb flex-shrink-0">
+                                <img src="assets/images/thumbs/author-details-img.png" alt="">
+                            </div>
+                            <div class="author-details__content">
+                                <h6 class="author-details__name font-18 mb-2"><a href="profile.html" class="link hover-text-main">Oviousdev</a></h6>
 
-                <div class="author-box border-top pt-3">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <img src="{{ asset('assets/images/thumbs/author-details-img.png') }}" class="rounded-circle" width="40" alt="">
-                        <div>
-                            <h6 class="mb-0">Oviousdev</h6>
-                            <small class="text-muted">⭐ 5.0</small>
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="star-rating">
+                                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                                    </span>
+                                    <span class="star-rating__text text-body"> 5.0</span>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex flex-wrap gap-1 mt-2">
+                        <ul class="badge-list flx-align gap-2 mt-3">
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge1.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge2.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge3.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge4.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge5.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge6.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge7.png" alt="">
+                            </li>
+                            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
+                                <img src="assets/images/thumbs/badge8.png" alt="">
+                            </li>
+                        </ul>
+                        <a href="profile.html" class="btn btn-outline-light w-100 pill mt-32">View Portfolio</a>
+                    </div>
+                    {{-- <div class="d-flex flex-wrap gap-1 mt-2">
                         @for($i = 1; $i <= 8; $i++)
                             <img src="{{ asset('assets/images/thumbs/badge'.$i.'.png') }}" width="30" alt="badge">
                         @endfor
-                    </div>
+                    </div> --}}
 
-                    <a href="profile.html" class="btn btn-outline-secondary w-100 mt-3">View Portfolio</a>
+                                    <ul class="meta-attribute">
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Last Update</span>
+                                            <span class="details">Feb 21, 2024</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Published</span>
+                                            <span class="details">Feb 15, 2024</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Category</span>
+                                            <span class="details">Themes</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Widget Ready</span>
+                                            <span class="details">Yes</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">High Resolution</span>
+                                            <span class="details">Yes</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Copatible with</span>
+                                            <span class="details">
+                                                <a href="#" class="hover-text-decoration-underline">Contact Form 7,</a>
+                                                <a href="#" class="hover-text-decoration-underline"> Calendar,</a>
+                                                <a href="#" class="hover-text-decoration-underline"> Elementor,</a>
+                                                <a href="#" class="hover-text-decoration-underline"> Elementor Pro,</a>
+                                                <a href="#" class="hover-text-decoration-underline"> WooCommerce 8.x.x</a>
+                                            </span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">File size</span>
+                                            <span class="details">85 MB</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Framework</span>
+                                            <span class="details">Underscores</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Software Version</span>
+                                            <span class="details">
+                                                <a href="#" class="hover-text-decoration-underline">WordPress 6.3.x,</a>
+                                                <a href="#" class="hover-text-decoration-underline">WordPress 6.2.x,</a>
+                                                <a href="#" class="hover-text-decoration-underline">WordPress 6.1.x,</a>
+                                                <a href="#" class="hover-text-decoration-underline">WordPress 6.0.x,</a>
+                                                <a href="#" class="hover-text-decoration-underline">WordPress 5.9.x,</a>
+                                            </span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Marketplace Files
+                                                Included</span>
+                                            <span class="details">
+                                                <a href="#" class="hover-text-decoration-underline">PHP Files,</a>
+                                                <a href="#" class="hover-text-decoration-underline">CSS Files,</a>
+                                                <a href="#" class="hover-text-decoration-underline">SCSS Files,</a>
+                                                <a href="#" class="hover-text-decoration-underline">JS Files,</a>
+                                            </span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Layout</span>
+                                            <span class="details">Responsive</span>
+                                        </li>
+                                        <li class="meta-attribute__item">
+                                            <span class="name">Tags</span>
+                                            <span class="details">
+                                                <a href="#" class="hover-text-decoration-underline">theme,</a>
+                                                <a href="#" class="hover-text-decoration-underline">web design,</a>
+                                                <a href="#" class="hover-text-decoration-underline">minimal design,</a>
+                                                <a href="#" class="hover-text-decoration-underline">trendy,</a>
+                                                <a href="#" class="hover-text-decoration-underline">responsive,</a>
+                                                <a href="#" class="hover-text-decoration-underline">wordpress,</a>
+                                                <a href="#" class="hover-text-decoration-underline">saas,</a>
+                                                <a href="#" class="hover-text-decoration-underline">dashboard,</a>
+                                            </span>
+                                        </li>
+                                    </ul>
                 </div>
+
+
             </div>
         </div>
     </div>
 </div>
-
+</div>
+</div>
 <!-- ======================= Product Sidebar End ========================= -->
 
 <!-- ======================= Product Details Section End ==================== -->
@@ -263,294 +428,7 @@
 
 
 
-	<section>
-		<div class="container">
-			<div class="pro-details">
-				<div class="row">
-					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 nopad">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 productdetail-imgwraper">
-							<div class="col-lg-8 col-lg-offset-2 col-md-12 col-sm-12 col-xs-12 singleprd-sliderwraper">
-							<div class="singleprd-slider">
-                                @if(file_exists(public_path('assets/media/products/'.$product->image1)))
-								<div class="singleprd">
-									<a href="{{URL::asset('assets/media/products/'.$product->image1)}}" class="products imgBox" data-lightbox="product">
-									    <img src="{{URL::asset('assets/media/products/'.$product->image1)}}" class="img-responsive center-block" data-origin="{{URL::asset('assets/media/products/'.$product->image1)}}" lt="product">
-									</a>
-								</div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image2)))
-								<div class="singleprd">
-									<a href="{{URL::asset('assets/media/products/'.$product->image2)}}" class="products imgBox" data-lightbox="product">
-									    <img src="{{URL::asset('assets/media/products/'.$product->image2)}}" class="img-responsive center-block" data-origin="{{URL::asset('assets/media/products/'.$product->image2)}}" lt="product">
-									</a>
-								</div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image3)))
-								<div class="singleprd">
-									<a href="{{URL::asset('assets/media/products/'.$product->image3)}}" class="products imgBox" data-lightbox="product">
-									    <img src="{{URL::asset('assets/media/products/'.$product->image3)}}" class="img-responsive center-block" data-origin="{{URL::asset('assets/media/products/'.$product->image3)}}" lt="product">
-									</a>
-								</div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image4)))
-								<div class="singleprd">
-									<a href="{{URL::asset('assets/media/products/'.$product->image4)}}" class="products imgBox" data-lightbox="product">
-									    <img src="{{URL::asset('assets/media/products/'.$product->image4)}}" class="img-responsive center-block" data-origin="{{URL::asset('assets/media/products/'.$product->image4)}}" lt="product">
-									</a>
-								</div>
-                                @endif
-					         </div>
-							</div>
-							<div class="col-md-12 col-sm-12 col-xs-12 nopad thumbnailprd-slider">
-                                @if(file_exists(public_path('assets/media/products/'.$product->image1)))
-                                <div class="singleprd">
-                                    <div class="singleprd-inner">
-                                        <img class="img-responsive center-block" src="{{URL::asset('assets/media/products/'.$product->image1)}}" alt="product">
-                                    </div>
-                                </div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image2)))
-                                <div class="singleprd">
-                                    <div class="singleprd-inner">
-                                        <img class="img-responsive center-block" src="{{URL::asset('assets/media/products/'.$product->image2)}}" alt="product">
-                                    </div>
-                                </div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image3)))
-                                <div class="singleprd">
-                                    <div class="singleprd-inner">
-                                        <img class="img-responsive center-block" src="{{URL::asset('assets/media/products/'.$product->image3)}}" alt="product">
-                                    </div>
-                                </div>
-                                @endif
-                                @if(file_exists(public_path('assets/media/products/'.$product->image4)))
-                                <div class="singleprd">
-                                    <div class="singleprd-inner">
-                                        <img class="img-responsive center-block" src="{{URL::asset('assets/media/products/'.$product->image4)}}" alt="product">
-                                    </div>
-                                </div>
-                                @endif
-						    </div>
-					    </div>
-					</div>
 
-					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12  productright-wraper">
-						<div class="product-topdetails">
-							<div class="row">
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<div class="infotitle">
-										<h3><span>{{ $product->product_title }}<br><small>SKU : {{$StoreConfig->productIdprefix}}-{{$product->product_sku}}</small></span></h3>
-										<div class="star-rated">
-                                                <i class=" {{($star >= 1)?'fa fa-star':'fa fa-star-o'}}"></i>
-                                                <i class=" {{($star >= 2)?'fa fa-star':'fa fa-star-o'}}"></i>
-                                                <i class=" {{($star >= 3)?'fa fa-star':'fa fa-star-o'}}"></i>
-                                                <i class=" {{($star >= 4)?'fa fa-star':'fa fa-star-o'}}"></i>
-                                                <i class=" {{($star >= 5)?'fa fa-star':'fa fa-star-o'}}"></i>
-                                        </div>
-									</div>
-									{{-- <div class="detailsprice-wraper">
-										<span class="actual-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $price->price }}</span>
-
-                                            <span class="original-price">{{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $product->mrp }}</span>
-
-                                            <span class="offer-percent">
-                                                ({{ $product->saveings['%'] }} Discount, you save  {{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ $product->saveings['save_amount'] }}
-
-                                                @if($price->discount)
-                                                    & Special Discount {{($StoreConfig->currencysymbol())?$StoreConfig->currencysymbol():'Rs.'}} {{ sprintf('%0.2f', $price->offer) }}
-                                                @endif)
-
-
-                                                <!--(@if(!empty($price->CustomerGroup))-->
-                                                <!--    @if($price->CustomerGroup->amount)-->
-                                                <!--    Prime Customer offer {{$price->CustomerGroup->amount}}{{($price->CustomerGroup->type == 1)?'%':'Rs'}} applied already-->
-                                                <!--    @else-->
-                                                <!--        For Prime Customer - Get 5% off-->
-                                                <!--    @endif-->
-                                                <!--    @else-->
-                                                <!--    For Prime Customer - Get 5% off-->
-                                                <!--@endif-->
-
-                                                <!--@if(!empty($price->discount)) & Additional {{$price->discount->number}}{{($price->discount->type == '%')?'%':'Rs'}} off as a regular discount @endif )-->
-                                            </span>
-										<div class="addi_text">* @if($price->tax) {{$StoreConfig->include_tax}} of {{$price->tax->tax_rate}}{{($price->tax->tax_type == 1)?" %":" -/Rs"}} @endif Tax and Shipping Charge may apply </div>
-										</br>
-
-                                        @if ($price->isoffer)
-                                        @if(strtotime("+10 day") > strtotime("+1 day", strtotime($price->discount->expiry_date)))
-                                        <div class="product-count addi_text">
-                                            <label>Off Ends In :</label>
-                                             <p id="product-countdown"></p>
-                                         </div>
-                                         @endif
-								        @endif
-									</div> --}}
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 nopad prodec-wraper">
-							<div class="row">
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<div class="detailsprice-wraper">
-										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-6 nopad stock-wraper">
-											<div class="dettit">
-												Availability
-											</div>
-											<div class="detcnt">
-                                                @if ($product->soldout == 'off')
-												    <span class="text-green">In Stock</span>
-                                                @else
-                                                    <span style="color: red">Out Off Stock</span>
-                                                @endif
-											</div>
-                                            @php
-												$quantity = $product->minquantity;
-												if(!empty(session()->get('cart')->items)){
-													if(array_key_exists($product->id,session()->get('cart')->items)){
-														$quantity = session()->get('cart')->items[$product->id]['quantity'];
-													}
-												}
-											@endphp
-										</div>
-
-										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-6 nopad quantity">
-											<div class="quantity-button quantity-down">
-												-
-											</div><input id="prices1" min="{{$product->minquantity}}" max='{{$product->quantity}}' readonly onblur="checkminqty()" onchange="" onkeypress="return validateQty(event);" onmousemove="" step="{{$product->minquantity}}" type="number" value="{{$quantity}}">
-											<div class="quantity-button quantity-up">
-												+
-											</div>
-										</div>
-								<div class="col-lg-7 col-md-7 col-sm-8 col-xs-12 nopad categories-wraper">
-									<div class="product-dimensions-unit"></div>
-								</div>
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 nopad detailbtn-wraper">
-							        <ul class="list-inline">
-                                        <input type="hidden" id="id" value="{{ $product->id }}">
-								        <li><a href="" class="cart-btn common-btn {{($product->soldout != 'off')?'p-e-none':''}} btn-cart1" tabindex="0" data-toggle="tooltip" data-placement="top" title="{{($product->soldout != 'off')?'soldout':'Add to Cart'}}">{{($product->soldout != 'off')?'soldout':'Add to Cart'}}</a></li>
-								        <li>
-                                            <a data-id="{{$product->id}}" href="" id="productWish" class="wishlist-btn common-btn btn-wishlist {{(in_array($product->id,$array)?'added':'')}}" tabindex="0" data-toggle="tooltip" data-placement="top" title="Add to Wishlist">
-                                                <img class="img-responsive center-block"  src="{{URL::asset('assets/front/images/icons/wishlist.png')}}">
-                                            </a>
-                                        </li>
-                                        <li><a href="{{ url('/product/' . $product->slug) }}" class="cart-btn common-btn" tabindex="0" data-toggle="tooltip" data-placement="top" title="More Details">More Details</a></li>
-							        </ul>
-						        </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 productspec-wraper">
-							<!-- Nav tabs -->
-							  <ul class="nav nav-tabs" role="tablist">
-								<li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab" aria-expanded="false">Product Description</a></li>
-								{{-- <li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab" aria-expanded="true">FAQ</a></li> --}}
-							    <li role="presentation" ><a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab" aria-expanded="true">Review &amp; Rating</a></li>
-							  </ul>
-
-						  <!-- Tab panes -->
-						  <div class="tab-content">
-							<div role="tabpanel" class="tab-pane active" id="tab1">
-								<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 nopad">
-								<div class="content-para">
-								<h4 style="box-sizing: border-box; margin: 0px 0px 20px; padding: 0px; border: 0px; outline: 0px; font-variant-ligatures: normal; font-variant-caps: normal; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-stretch: inherit; line-height: 1.4; vertical-align: baseline; font-family: Poppins; font-size: 17px; font-style: normal; font-weight: 600; color: rgb(51, 51, 51); letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
-                                    {!! $product->product_description !!}
-                                </h4>
-                                        <br>
-                                            <div class="proc-attr">
-
-										<table class="table table-bordered">
-                                		<colgroup>
-                                			<col width="30%">
-                                			<col width="70%">
-                                		</colgroup>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p><strong>Weight</strong></p>
-                                                </td>
-                                                <td>
-                                                    <p>{{$product->weight}}</p>
-                                                </td>
-                                            </tr>
-                                            @foreach ($product->Methodattribute() as $attribute)
-                                            @php
-                                                if(empty($attribute[1])) continue;
-                                            @endphp
-                                            <tr>
-                                                <td>
-                                                    <p><strong>{{$attribute[0]}}</strong></p>
-                                                </td>
-                                                <td>
-                                                    <p>{{$attribute[1]}}</p>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                	</table>
-								                      </div>
-
-
-																	</div>
-								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="tab2">
-									<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 nopad">
-                    <div class="content-para">
-    								<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 nopad form-group">
-    								<div class="dettit">
-    											Is the lorem Ipsum?
-    											</div>
-    								<p>Most of our products are made to order, as we customize the product specially for you. We have an inventory of popular items with a wide range of products and customisation.</p>
-    								</div>
-    								<div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 nopad form-group">
-    								<div class="dettit">
-    											Is the lorem Ipsum?
-    											</div>
-    								<p>Most of our products are made to order, as we customize the product specially for you. We have an inventory of popular items with a wide range of products and customisation.</p>
-    								</div>
-
-
-    								</div>
-								</div>
-							</div>
-
-							<div role="tabpanel" class="tab-pane" id="tab3">
-                                @include('front.includes.review')
-							</div>
-
-
-						  </div>
-
-						</div>
-				</div>
-				@if(count($relateproduct)>0)
-    				@php
-    				    $obj1 = new \stdClass;
-    				    $obj1->{'title'} = 'Relared Product';
-    				    $discounts['product'] = $relateproduct;
-    				    $discounts['discount'] = $obj1;
-    				    $discounts['hideviewall'] = true;
-    				@endphp
-                        @include('front.includes.discount')
-                @endif
-                @if(count($similarproduct)>0)
-    				@php
-    				    $obj1 = new \stdClass;
-    				    $obj1->{'title'} = 'Similar Product';
-    				    $discounts['product'] = $similarproduct;
-    				    $discounts['discount'] = $obj1;
-    				    $discounts['hideviewall'] = true;
-    				@endphp
-                        @include('front.includes.discount')
-                @endif
-			</div>
-		</div>
-	</section>
 
 @endsection
 @push('script')

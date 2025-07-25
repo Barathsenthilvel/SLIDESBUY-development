@@ -45,6 +45,10 @@
 <!-- Main JS -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
+
+
+
+
 {{--
       <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">

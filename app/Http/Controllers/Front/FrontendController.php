@@ -51,7 +51,7 @@ class FrontendController extends Controller
         //                 }
         //                 break;
         //             }
-        
+
         $store = Storeconfiguration::where('id',1)->first();
 
         $discountProducts=[];
@@ -90,7 +90,7 @@ class FrontendController extends Controller
     }
 
     public function getCategory(Request $request,$slug=null,$slug1=null){
-        
+
       $cat = null;
       $subcat = null;
       $minprice = $request->min;
@@ -165,7 +165,7 @@ class FrontendController extends Controller
             }
             $max = Product::max('manufacturerPrice');
             $min = Product::min('manufacturerPrice');
-            
+
             // foreach ($temp as $key => $value) {
             //     unset($temp[$key]->temp_price);
             // }
@@ -261,9 +261,9 @@ class FrontendController extends Controller
           return $query->orderBy('product_title', 'DESC');
         }
       });
-      
+
       if($store->out_of_stock == 0){
-          
+
         $products=$Product->where('status', 1)->where('soldout','off')->get();
       }else{
         $products=$Product->where('status', 1)->get();
@@ -274,7 +274,7 @@ class FrontendController extends Controller
         //     $price = $value->getproductPrice();
         //     $products[$key]->temp_price = ($price->isoffer)?$price->offer:$price->price;
         // }
-        
+
     //     $products = (new Collection($products))->filter(function ($item) use($minprice,$maxprice) {
     //       return $item->temp_price >= (double)$minprice && $item->temp_price <= (double)$maxprice;
     //   });
@@ -284,7 +284,7 @@ class FrontendController extends Controller
         if($sort == 'L-H'){
           $products = (new Collection($products))->SortBy('manufacturerPrice');
         }
-        
+
         $offset = ($page - 1)*$perpage;
             $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage ,$page);
       return view('front.product-list',compact('products'));
@@ -411,5 +411,12 @@ class FrontendController extends Controller
         $User = User::where('phone',$request->phone)->first();
         if($User) return response()->json(['status'=>true]);
         return response()->json(['status'=>false]);
+    }
+
+
+
+    public function subscription(Request $request){
+
+        return view('front.subscription');
     }
 }

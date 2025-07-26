@@ -105,6 +105,7 @@ Route::post('/profile','Front\UserController@updateProfile')->name('update.profi
 Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('vieworder');
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
+Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
 
 
 

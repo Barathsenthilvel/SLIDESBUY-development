@@ -95,7 +95,10 @@ class User extends Authenticatable
             return '';
         }
     }
-
+public function subscriptions()
+{
+    return $this->hasMany(Subscription::class);
+}
 
     public function sendPasswordResetNotification($token)
     {

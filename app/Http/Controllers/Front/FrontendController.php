@@ -415,8 +415,8 @@ class FrontendController extends Controller
 
 
 
-    public function subscription(Request $request){
+    // public function subscription(Request $request){
 
-        return view('front.subscription');
-    }
+    //     return view('front.subscription');
+    // }
 }

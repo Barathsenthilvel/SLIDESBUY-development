@@ -105,9 +105,15 @@ Route::post('/profile','Front\UserController@updateProfile')->name('update.profi
 Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('vieworder');
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
-Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
+// Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
 
-
+//subscription forntend
+Route::middleware('auth')->group(function () {
+    Route::get('/subscribe','Front\SubscriptionController@showPlans')->name('front.subscription');
+    Route::post('/subscribe/{plan}','Front\SubscriptionController@subscribe')->name('subscribe.post');
+    Route::get('/subscription/{id}','Front\RazorpayPaymentController@show')->name('subscription.show');
+    Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
+});
 
 //new routes added
 
@@ -667,6 +673,10 @@ Route::prefix('admin')->group(function() {
         Route::get('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setupview');
         Route::post('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setup');
    });
+
+
+
+
 
          Route::prefix('plan')->group(function() {
           Route::get('/create', 'Admin\PlanController@create')->name('admin-plan-create');

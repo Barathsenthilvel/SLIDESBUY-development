@@ -1,7 +1,7 @@
 @extends('front.includes.container')
 @section('content')
 
-
+{{--
 <!-- ========================= Pricing Plan Section Start ============================ -->
 
 <section class="pricing padding-y-120 position-relative z-index-1">
@@ -344,7 +344,94 @@
         </div>
 
     </div>
-</section>
+</section> --}}
 
 <!-- ========================= Pricing Plan Section End ============================ -->
-@endsection
+
+
+
+
+
+<div class="container">
+    <h2 class="mb-4">Choose Your Subscription Plan</h2>
+
+    <div class="row">
+        @foreach($plans as $plan)
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header">{{ $plan->name }}</div>
+                    <div class="card-body">
+                        <p>Price: ₹{{ $plan->price }}</p>
+                        @if($plan->discount)
+                            <p>Discount:
+                                @if($plan->discount_type === 'percentage')
+                                    {{ $plan->discount }}% off
+                                @else
+                                    ₹{{ $plan->discount }} off
+                                @endif
+                            </p>
+                        @endif
+                        <p>Download Limit: {{ $plan->download_limit ?? 'Unlimited' }}</p>
+                        <p>Validity: {{ $plan->validity }} days</p>
+
+                        <button
+                            class="btn btn-primary pay-btn"
+                            data-id="{{ $plan->id }}"
+                            data-price="{{ $plan->price }}"
+                            data-name="{{ $plan->name }}"
+                        >Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    debugger
+jQuery(document).ready(function ($) {
+        $('.pay-btn').on('click', function(e) {
+            e.preventDefault();
+
+            let button = $(this);
+            let planId = button.data('id');
+            let amount = button.data('price') * 100; // in paise
+            let planName = button.data('name');
+
+            var options = {
+                "key": "{{ env('RAZORPAY_KEY') }}",
+                "amount": amount,
+                "currency": "INR",
+                "name": "Your Company Name",
+                "description": planName + " Plan",
+                "handler": function (response){
+                    $.ajax({
+                        url: "{{ route('razorpay.payment') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            plan_id: planId
+                        },
+                        success: function(res) {
+                            if(res.success){
+                                alert(res.message);
+                                window.location.href = res.redirect_url;
+                            } else {
+                                alert("Payment processed, but something went wrong.");
+                            }
+                        },
+                        error: function() {
+                            alert("Payment failed to process. Try again.");
+                        }
+                    });
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        });
+    });
+</script>
+

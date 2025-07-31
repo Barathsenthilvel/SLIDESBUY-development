@@ -10,13 +10,14 @@ class Subscription extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'plan_id',
-        'price',
-        'subscribed_at',
-        'expired_at',
+    'plan_id',
+    'razorpay_payment_id',
+    'price',
+    'discount_price',
+    'validity',
+    'valid_until',
+    'expired_at',
     ];
-
     public $timestamps = true;
 
     public function user()
@@ -28,5 +29,5 @@ class Subscription extends Model
     {
         return $this->belongsTo('App\Models\Plan', 'plan', 'id');
     }
-    
+
 }

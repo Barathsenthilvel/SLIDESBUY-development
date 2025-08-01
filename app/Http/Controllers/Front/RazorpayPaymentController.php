@@ -13,16 +13,19 @@ class RazorpayPaymentController extends Controller
 {
     public function show($planId)
     {
-        $plan =  Plan::findOrFail($planId);
+       $plan = Plan::findOrFail($planId);
         return view('front.newpayment', compact('plan'));
     }
 
 public function payment(Request $request)
 {
+    // dd('sdsdsd');
     $api = new \Razorpay\Api\Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
     $payment = $api->payment->fetch($request->razorpay_payment_id);
+    // dd( $payment);
     $plan = Plan::findOrFail($request->plan_id);
+    // dd($plan);
     $user = auth()->user();
 
     // Calculate discounted price

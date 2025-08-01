@@ -72,8 +72,10 @@
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
-                <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
+                {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version"> --}}
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version">
             </a>
             <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
 <!-- register form start -->
@@ -219,4 +221,4 @@ jQuery(document).ready(function ($) {
 
 
 
-  
+

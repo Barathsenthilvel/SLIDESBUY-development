@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\Banner;
 use App\Models\Homeslider;
 use App\Models\Category;
@@ -58,4 +59,33 @@ class SubscriptionController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'You subscribed to the ' . $plan->name . ' plan.');
     }
+
+
+
+
+public function success($id)
+{
+    // dd($id);
+    $subscription = Subscription::with('plan')->findOrFail($id);
+    // dd($subscription);
+    $plan = $subscription->plan;
+// dd( $plan);
+    $orderDetails = [
+        'order_no' => $subscription->id,
+        'order_status' => $subscription->payment_status,
+        'payment_method' => $subscription->payment_method,
+        'date' => $subscription->created_at->format('Y-m-d'),
+        'discount_price' => $subscription->discount_price,
+        'total' => $subscription->discount_price,
+    ];
+
+    // dd(  $orderDetails);
+
+    $productsPurchased = [
+        ['name' => $plan->name, 'price' => $plan->price],
+    ];
+    // dd($productsPurchased);
+
+    return view('front.subscription.success', compact('orderDetails', 'productsPurchased'));
+}
 }

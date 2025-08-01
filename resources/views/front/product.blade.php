@@ -50,7 +50,115 @@
 
 
 
+<section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
 
+    <div class="breadcrumb-two">
+        <img src="assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
+        <div class="container container-two">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-two-content">
+
+                        <ul class="breadcrumb-list flx-align gap-2 mb-2">
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <a href="index.html" class="breadcrumb-list__link text-body hover-text-main">Home</a>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <a href="all-product.html" class="breadcrumb-list__link text-body hover-text-main">Products</a>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__text">SaaS</span>
+                            </li>
+                        </ul>
+
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Quantum: SaaS Landing Page WordPress Theme</h3>
+
+                        <div class="breadcrumb-content flx-align gap-3">
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="text">By <a href="#" class="link text-main fw-600">Oviousdev</a> </span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/cart-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/cart-white.svg" alt="" class="dark-version w-20">
+                                </span>
+                                <span class="text">158 sales</span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                </span>
+                                <span class="text">Recently Updated</span>
+                            </div>
+                            <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
+                                <span class="icon">
+                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
+                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                </span>
+                                <span class="text">Well Documented</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container container-two">
+        <div class="breadcrumb-tab flx-wrap align-items-start gap-lg-4 gap-2">
+            <ul class="nav tab-bordered nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="pills-product-details-tab" data-bs-toggle="pill" data-bs-target="#pills-product-details" type="button" role="tab" aria-controls="pills-product-details" aria-selected="true">Product Details</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="pills-rating-tab" data-bs-toggle="pill" data-bs-target="#pills-rating" type="button" role="tab" aria-controls="pills-rating" aria-selected="false" tabindex="-1">
+                    <span class="d-flex align-items-center gap-1">
+                        <span class="star-rating">
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                            <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
+                        </span>
+                        <span class="star-rating__text text-body"> 5.0</span>
+                        <span class="star-rating__text text-body"> (180)</span>
+                    </span>
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="false" tabindex="-1">Comments (50)</button>
+                </li>
+            </ul>
+            <div class="social-share">
+                <button type="button" class="social-share__button">
+                    <img src="assets/images/icons/share-icon.svg" alt="">
+                </button>
+                <div class="social-share__icons left">
+                    <ul class="social-icon-list colorful-style">
+                        <li class="social-icon-list__item">
+                            <a href="https://www.facebook.com" class="social-icon-list__link text-body flex-center"><i class="fab fa-facebook-f"></i></a>
+                        </li>
+                        <li class="social-icon-list__item">
+                            <a href="https://www.twitter.com" class="social-icon-list__link text-body flex-center"> <i class="fab fa-linkedin-in"></i></a>
+                        </li>
+                        <li class="social-icon-list__item">
+                            <a href="https://www.google.com" class="social-icon-list__link text-body flex-center"> <i class="fab fa-twitter"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
 {{--  --}}
 
 <div class="product-details mt-32 padding-b-120">
@@ -211,7 +319,7 @@ jQuery(document).ready(function ($) {
         <ul class="comment-list">
             <li class="comment-list__item d-flex align-items-start gap-sm-4 gap-3">
                 <div class="comment-list__thumb flex-shrink-0">
-                    <img src="assets/images/thumbs/comment1.png" class="cover-img" alt="">
+                    <img src="{{ asset('assets/images/thumbs/comment1.png') }}" class="cover-img" alt="">
                 </div>
                 <div class="comment-list__content">
                     <div class="flx-between gap-2 align-items-start">
@@ -221,7 +329,7 @@ jQuery(document).ready(function ($) {
                         </div>
                         <a class="comment-list__reply fw-500 flx-align gap-2 hover-text-decoration-underline" href="#comment-box">
                             Reply
-                            <span class="icon"><img src="assets/images/icons/reply-icon.svg" alt=""></span>
+                            <span class="icon"><img src="{{ asset('assets/images/icons/reply-icon.svg') }}" alt=""></span>
                         </a>
                     </div>
                     <p class="comment-list__desc mt-3">Lorem ipsum dolor sit amet consectetur. Nec nunc pellentesque massa pretium. Quam sapien nec venenatis vivamus sed cras faucibus mi viverra. Quam faucibus morbi cras vitae neque. Necnunc pellentesque massa pretium.</p>
@@ -231,7 +339,7 @@ jQuery(document).ready(function ($) {
                 <ul class="comment-list comment-list--two">
                     <li class="comment-list__item d-flex align-items-start gap-sm-4 gap-3">
                         <div class="comment-list__thumb flex-shrink-0">
-                            <img src="assets/images/thumbs/comment2.png" class="cover-img" alt="">
+                            <img src="{{ asset('assets/images/thumbs/comment2.png') }}" class="cover-img" alt="">
                         </div>
                         <div class="comment-list__content">
                             <div class="flx-between gap-2 align-items-start">
@@ -241,7 +349,7 @@ jQuery(document).ready(function ($) {
                                 </div>
                                 <a class="comment-list__reply fw-500 flx-align gap-2 hover-text-decoration-underline" href="#comment-box">
                                     Reply
-                                    <span class="icon"><img src="assets/images/icons/reply-icon.svg" alt=""></span>
+                                    <span class="icon"><img src="{{ asset('assets/images/icons/reply-icon.svg') }}" alt=""></span>
                                 </a>
                             </div>
                             <p class="comment-list__desc mt-3">Lorem ipsum dolor sit amet consectetur. Nec nunc pellentesque massa pretium. Quam sapien nec venenatis vivamus sed cras faucibus.</p>
@@ -278,15 +386,15 @@ jQuery(document).ready(function ($) {
 
     <ul class="sidebar-list">
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300 mb-2">
-            <span class="icon"><img src="assets/images/icons/check-cirlce.svg" alt=""></span>
+            <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
             <span class="text">Quality verified</span>
         </li>
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300 mb-2">
-            <span class="icon"><img src="assets/images/icons/check-cirlce.svg" alt=""></span>
+            <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
             <span class="text">Use for a single project</span>
         </li>
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300">
-            <span class="icon"><img src="assets/images/icons/check-cirlce.svg" alt=""></span>
+            <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
             <span class="text">Non-paying users only</span>
         </li>
     </ul>
@@ -302,7 +410,7 @@ jQuery(document).ready(function ($) {
         </div>
     </div>
     <button type="button" class="btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5 mt-32">
-        <img src="assets/images/icons/add-to-cart.svg" alt="">
+        <img src="{{ asset('assets/images/icons/add-to-cart.svg') }}" alt="">
         Add To Cart
     </button>
 
@@ -310,7 +418,7 @@ jQuery(document).ready(function ($) {
     <div class="author-details">
         <div class="d-flex align-items-center gap-2">
             <div class="author-details__thumb flex-shrink-0">
-                <img src="assets/images/thumbs/author-details-img.png" alt="">
+                <img src="{{ asset('assets/images/thumbs/author-details-img.png') }}" alt="">
             </div>
             <div class="author-details__content">
                 <h6 class="author-details__name font-18 mb-2"><a href="profile.html" class="link hover-text-main">Oviousdev</a></h6>
@@ -330,28 +438,34 @@ jQuery(document).ready(function ($) {
 
         <ul class="badge-list flx-align gap-2 mt-3">
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge1.png" alt="">
+          <img src="{{ asset('assets/images/thumbs/badge1.png') }}" alt="">
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge2.png" alt="">
+                <img src="{{ asset('assets/images/thumbs/badge2.png') }} "alt="">
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge3.png" alt="">
+                   <img src="{{ asset('assets/images/thumbs/badge3.png') }} "alt="">
+
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge4.png" alt="">
+                  <img src="{{ asset('assets/images/thumbs/badge4.png') }} "alt="">
+
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge5.png" alt="">
+
+                 <img src="{{ asset('assets/images/thumbs/badge5.png') }} "alt="">
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge6.png" alt="">
+                <img src="{{ asset('assets/images/thumbs/badge6.png') }} "alt="">
+
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge7.png" alt="">
+
+                <img src="{{ asset('assets/images/thumbs/badge7.png') }} "alt="">
             </li>
             <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="assets/images/thumbs/badge8.png" alt="">
+
+                <img src="{{ asset('assets/images/thumbs/badge8.png') }} "alt="">
             </li>
         </ul>
         <a href="profile.html" class="btn btn-outline-light w-100 pill mt-32">View Portfolio</a>

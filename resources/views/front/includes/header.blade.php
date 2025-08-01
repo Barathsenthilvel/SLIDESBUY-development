@@ -7,20 +7,21 @@
     <!-- Title -->
     <title> Digital Market Place HTML Template</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/images/logo/favicon-two.png">
+<!-- Favicon -->
+<link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <!-- Slick -->
-    <link rel="stylesheet" href="assets/css/slick.css">
-    <!-- magnific popup -->
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <!-- line awesome -->
-    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
-    <!-- Main css -->
-    <link rel="stylesheet" href="assets/css/main.css">
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+<!-- Fontawesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
+<!-- Slick -->
+<link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
+<!-- Magnific popup -->
+<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+<!-- Line awesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/line-awesome.min.css') }}">
+<!-- Main css -->
+<link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
 </head>
 <style>
@@ -83,8 +84,11 @@ $wishlistcnt = 0;
     <button type="button" class="close-button"> <i class="las la-times"></i> </button>
     <div class="mobile-menu__inner">
         <a  href="{{ route('front.index') }}" class="mobile-menu__logo">
-            <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="white-version">
-            <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="dark-version">
+            {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="white-version"> --}}
+            {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="dark-version"> --}}
+
+            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="dark-version">
 
 
 
@@ -132,12 +136,12 @@ $wishlistcnt = 0;
 
     <a href="register.html" class="btn btn-main pill">
         <span class="icon-left icon">
-            <img src="assets/images/icons/user.svg" alt="">
+        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
         </span>Create Account
     </a>
     <div class="language-select flx-align select-has-icon">
-        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
-        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
+        <img src={{ asset('assets/images/icons/globe.svg') }} alt="" class="globe-icon white-version">
+        <img src={{ asset('assets/images/icons/globe-white.svg') }} alt="" class="globe-icon dark-version">
         <select class="select py-0 ps-2 border-0 fw-500">
             <option value="1">Eng</option>
             <option value="2">Bn</option>
@@ -185,10 +189,14 @@ $wishlistcnt = 0;
             <!-- Logo Start -->
             <div class="logo">
                 <a href="index.html" class="link white-version">
-                    <img src="assets/images/logo/slidesbuy.png" alt="Logo">
+                    {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
+                      <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+                   {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version"> --}}
                 </a>
                 <a href="index.html" class="link dark-version">
-                    <img src="assets/images/logo/slidesbuy.png" alt="Logo">
+                    {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
+                      {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version"> --}}
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version">
                 </a>
             </div>
             <!-- Logo End  -->
@@ -241,8 +249,8 @@ $wishlistcnt = 0;
             <!-- Header Right start -->
             <div class="header-right flx-align">
     <a href="cart.html" class="header-right__button cart-btn position-relative">
-        <img src="assets/images/icons/cart.svg" alt="" class="white-version">
-        <img src="assets/images/icons/cart-white.svg" alt="" class="dark-version">
+        <img src={{ asset('assets/images/icons/cart.svg') }} alt="" class="white-version">
+        <img src={{ asset('assets/images/icons/cart-white.svg') }} alt="" class="dark-version">
         <span class="qty-badge font-12">0</span>
     </a>
 
@@ -251,10 +259,10 @@ $wishlistcnt = 0;
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src={{ asset('assets/images/icons/sun.svg ') }}alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src={{ asset('assets/images/icons/moon.svg') }} alt="">
         </span>
     </label>
 </div>
@@ -298,8 +306,8 @@ $wishlistcnt = 0;
         </ul>
 
     <div class="language-select flx-align select-has-icon">
-        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
-        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
+        <img src= {{ asset('assets/images/icons/globe.svg') }} alt="" class="globe-icon white-version">
+        <img src={{ asset('assets/images/icons/globe-white.svg') }} alt="" class="globe-icon dark-version">
         <select class="select py-0 ps-2 border-0 fw-500">
             <option value="1">Eng</option>
             <option value="2">Bn</option>

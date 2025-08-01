@@ -1,4 +1,4 @@
-{{-- 
+{{--
 @php $array = []; @endphp
 @if (Auth::check())
     @php $array = explode(',', Auth::user()->wishlist); @endphp
@@ -90,7 +90,7 @@
         $rev = $discountProduct->reviewtotal();
         $star = $rev->reviewtotal / 20;
     @endphp
-    
+
 <div class="col-xl-4 col-sm-6">
     <div class="product-item section-bg">
         <div class="product-item__thumb d-flex">
@@ -191,7 +191,7 @@
         <div class="filter-tab gap-3 flx-between">
             <button type="button" class="filter-tab__button btn btn-outline-light pill d-flex align-items-center">
                 <span class="icon icon-left">
-                    <img src="assets/images/icons/filter.svg" alt="">
+                    <img src="{{ asset('assets/images/icons/filter.svg ') }}" alt="">
                 </span>
                 <span class="font-18 fw-500">Filters</span>
             </button>
@@ -234,7 +234,7 @@
                     </div>
                     <div class="position-relative">
                         <input type="text" class="common-input border-gray-five common-input--withLeftIcon" id="tag" placeholder="Search By Tag...">
-                        <span class="input-icon input-icon--left"><img src="assets/images/icons/search-two.svg" alt=""></span>
+                        <span class="input-icon input-icon--left"><img src="{{ asset('assets/images/icons/search-two.svg') }}" alt=""></span>
                     </div>
                 </div>
                 <div class="col-sm-4 col-xs-6">

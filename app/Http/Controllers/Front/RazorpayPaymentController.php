@@ -17,14 +17,11 @@ class RazorpayPaymentController extends Controller
         return view('front.newpayment', compact('plan'));
     }
 
-
 public function payment(Request $request)
 {
     $api = new \Razorpay\Api\Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
-    // Fetch the payment details
     $payment = $api->payment->fetch($request->razorpay_payment_id);
-
     $plan = Plan::findOrFail($request->plan_id);
     $user = auth()->user();
 
@@ -45,24 +42,25 @@ public function payment(Request $request)
     $subscription->discount_price = $discountedPrice;
     $subscription->validity = $plan->validity;
 
-    // Dynamic Fields
-    $subscription->payment_status = $payment->status ?? 'created'; // typically 'captured'
-    $subscription->payment_method = $payment->method ?? null; // like 'card', 'netbanking', etc.
-    $subscription->transaction_id = $payment->id ?? null; // razorpay_payment_id
+    $subscription->payment_status = $payment->status ?? 'created';
+    $subscription->payment_method = $payment->method ?? null;
+    $subscription->transaction_id = $payment->id ?? null;
     $subscription->started_at = now();
     $subscription->expired_at = now()->addDays($plan->validity);
     $subscription->is_active = true;
 
-    $subscription->created_at = now();
-    $subscription->updated_at = now();
     $subscription->save();
-dd($subscription);
+
+    // Redirect to success page with subscription ID
     return response()->json([
         'success' => true,
         'message' => 'Payment successful! Subscription activated.',
-        'redirect_url' => route('subscription.show', $plan->id),
+        'redirect_url' => route('subscription.success', ['id' => $subscription->id]),
     ]);
 }
+
+
+
 
 
 // public function payment(Request $request)

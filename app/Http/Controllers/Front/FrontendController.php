@@ -90,7 +90,7 @@ class FrontendController extends Controller
     }
 
     public function getCategory(Request $request,$slug=null,$slug1=null){
-
+// dd('sdsd');
       $cat = null;
       $subcat = null;
       $minprice = $request->min;

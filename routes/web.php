@@ -113,6 +113,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe/{plan}','Front\SubscriptionController@subscribe')->name('subscribe.post');
     Route::get('/subscription/{id}','Front\RazorpayPaymentController@show')->name('subscription.show');
     Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
+    //subscription get data
+    Route::get('/subscription/success/{id}','Front\SubscriptionController@success')->name('subscription.success');
+
 });
 
 //new routes added

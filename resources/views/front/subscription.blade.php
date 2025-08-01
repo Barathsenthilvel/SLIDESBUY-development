@@ -1,9 +1,9 @@
 @extends('front.includes.container')
 @section('content')
 
-{{--
-<!-- ========================= Pricing Plan Section Start ============================ -->
 
+<!-- ========================= Pricing Plan Section Start ============================ -->
+ @foreach($plans as $plan)
 <section class="pricing padding-y-120 position-relative z-index-1">
     <img src="assets/images/shapes/element1.png" alt="" class="element one">
     <img src="assets/images/gradients/pricing-gradient-bg.png" alt="" class="bg--gradient">
@@ -39,10 +39,10 @@
                 </span>
                 <span class="popular-badge d-none"></span>
             </div>
-            <h5 class="pricing-item__title mb-0 mt-2">Basic Plan</h5>
+            <h5 class="pricing-item__title mb-0 mt-2">{{ $plan->name }} Plan</h5>
         </div>
         <div class="pricing-item__content">
-            <h3 class="pricing-item__price mb-2"> $1599.00 <span class="text font-14 text-body font-body fw-400">/Per Month</span> </h3>
+            <h3 class="pricing-item__price mb-2"> ${{ $plan->price }} <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span> </h3>
             <p class="pricing-item__desc">Essential services to start your journey</p>
             <a href="#" class="btn btn-outline-light btn-lg pill w-100">Get Started</a>
         </div>
@@ -196,7 +196,7 @@
                 </span>
                 <span class="popular-badge d-none"></span>
             </div>
-            <h5 class="pricing-item__title mb-0 mt-2">Basic Plan</h5>
+            <h5 class="pricing-item__title mb-0 mt-2">{{ $plan->name }} Plan</h5>
         </div>
         <div class="pricing-item__content">
             <h3 class="pricing-item__price mb-2"> $1599.00 <span class="text font-14 text-body font-body fw-400">/Per Month</span> </h3>
@@ -340,18 +340,17 @@
     </div>
 </div>
 </div>
-            </div>
+      @endforeach
+           </div>
         </div>
 
     </div>
-</section> --}}
+</section>
 
 <!-- ========================= Pricing Plan Section End ============================ -->
 
 
-
-
-
+{{--
 <div class="container">
     <h2 class="mb-4">Choose Your Subscription Plan</h2>
 
@@ -379,59 +378,92 @@
                             data-id="{{ $plan->id }}"
                             data-price="{{ $plan->price }}"
                             data-name="{{ $plan->name }}"
+                            data-discount="{{ $plan->discount ?? 0 }}"
+                            data-discount-type="{{ $plan->discount_type ?? '' }}"
                         >Subscribe</button>
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
-</div>
+</div> --}}
+
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-    debugger
 jQuery(document).ready(function ($) {
-        $('.pay-btn').on('click', function(e) {
-            e.preventDefault();
+    $('.pay-btn').on('click', function(e) {
+        e.preventDefault();
 
-            let button = $(this);
-            let planId = button.data('id');
-            let amount = button.data('price') * 100; // in paise
-            let planName = button.data('name');
+        let button = $(this);
+        let planId = button.data('id');
+        let price = parseFloat(button.data('price'));
+        let planName = button.data('name');
+        let discount = parseFloat(button.data('discount')) || 0;
+        let discountType = button.data('discount-type') || '';
 
-            var options = {
-                "key": "{{ env('RAZORPAY_KEY') }}",
-                "amount": amount,
-                "currency": "INR",
-                "name": "Your Company Name",
-                "description": planName + " Plan",
-                "handler": function (response){
-                    $.ajax({
-                        url: "{{ route('razorpay.payment') }}",
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            plan_id: planId
-                        },
-                        success: function(res) {
-                            if(res.success){
-                                alert(res.message);
-                                window.location.href = res.redirect_url;
-                            } else {
-                                alert("Payment processed, but something went wrong.");
-                            }
-                        },
-                        error: function() {
-                            alert("Payment failed to process. Try again.");
+        // Calculate discounted price using your function
+        let discountedPrice = calculateDiscountedPrice(price, discountType, discount);
+
+        // Convert to paise for Razorpay
+        let amount = Math.round(discountedPrice * 100);
+
+        var options = {
+            "key": "{{ env('RAZORPAY_KEY') }}",
+            "amount": amount,
+            "currency": "INR",
+            "name": "Your Company Name",
+            "description": planName + " Plan",
+            "handler": function (response){
+                $.ajax({
+                    url: "{{ route('razorpay.payment') }}",
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        plan_id: planId
+                    },
+                    success: function(res) {
+                        if(res.success){
+                            alert(res.message);
+                            window.location.href = res.redirect_url;
+                        } else {
+                            alert("Payment processed, but something went wrong.");
                         }
-                    });
-                }
-            };
+                    },
+                    error: function() {
+                        alert("Payment failed to process. Try again.");
+                    }
+                });
+            }
+        };
 
-            var rzp = new Razorpay(options);
-            rzp.open();
-        });
+        var rzp = new Razorpay(options);
+        rzp.open();
     });
+});
+
+// Your discount calculation function
+function calculateDiscountedPrice(price, discountType, discount) {
+    if (!discount || discount <= 0) return price;
+
+    let flatDiscountPrice = price;
+    let percentageDiscountPrice = price;
+
+    if (discountType === 'flat') {
+        flatDiscountPrice = price - discount;
+    } else if (discountType === 'percentage') {
+        percentageDiscountPrice = price - (price * discount / 100);
+    }
+
+    // Pick the lesser of the two discount types (better deal for user)
+    let discountedPrice = Math.min(flatDiscountPrice, percentageDiscountPrice);
+
+    // Avoid negative price
+    if (discountedPrice < 0) discountedPrice = 0;
+
+    return discountedPrice;
+}
 </script>
+
 

@@ -9,7 +9,7 @@ class Subscription extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+   protected $fillable = [
     'plan_id',
     'razorpay_payment_id',
     'price',
@@ -17,17 +17,23 @@ class Subscription extends Model
     'validity',
     'valid_until',
     'expired_at',
-    ];
+    'payment_status',
+    'payment_method',
+    'transaction_id',
+    'user_id',
+    'started_at',
+    'is_active'
+];
     public $timestamps = true;
 
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User','user','id');
-    }
+public function user()
+{
+    return $this->belongsTo('App\Models\User', 'user_id'); // foreign key on Subscription table
+}
 
-    public function plan()
-    {
-        return $this->belongsTo('App\Models\Plan', 'plan', 'id');
-    }
+public function plan()
+{
+    return $this->belongsTo('App\Models\Plan', 'plan_id'); // foreign key on Subscription table
+}
 
 }

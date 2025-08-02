@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
 <!--end::Header-->
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -50,7 +50,7 @@
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
-                                            </div> 
+                                            </div>
                                              @php
                                              if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
                                                 $link=route('admin-productv-store');
@@ -66,13 +66,13 @@
                             <input type="hidden" id="url" name="url" value="{{$url}}">
                             <div class="card-body">
                                 @if (Auth::user()->is_vendor == null)
-                                
+
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Vendor<span class="text-danger">*</span></label>
                                 <div class="col-lg-4">
                                     <select class="form-control" id="vendor" name="vendor" >
                                         <option value="">Admin product</option>
-                                        @foreach($vendor as $v)                
+                                        @foreach($vendor as $v)
                                             <option data-productPrefix="{{$v->manufacturerID}}" data-vendorperscent="{{$v->vendorperscent}}" value="{{ $v->id }}">{{$v->name.' / '.$StoreConfig->VendorIDPrefix.'-'.sprintf("%'03d", $v->id)}}</option>
                                         @endforeach
                                     </select>
@@ -199,7 +199,7 @@
                             if(Auth::user()->is_vendor != null && $pricing_type == 'product'){
                                 $persenttest = App\Models\Vendor::findOrFail(Auth::user()->is_vendor);
                                 }
-                                
+
                             @endphp
 
                             @if($persenttest != null)
@@ -254,9 +254,9 @@
                                 <div class="col-lg-4 col-md-12">
                                     <span>This is {{ $StoreConfig->store_name }} Price, No need to Enter</span>
                                 </div>
-                            </div>                            
+                            </div>
                             @endif
-                        
+
 
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Code<span class="text-danger">*</span></label>
@@ -276,7 +276,7 @@
                                     <span>SKU is {{ $StoreConfig->store_name }}, Enter based on last SKU</span>
                                 </div>
                             </div>
-                            
+
                             @if($attributeTemplate >0)
                             <h3 class="card-title">Attribute</h3>
                             @foreach($processGroup as $processGroup)
@@ -502,7 +502,7 @@
                                     <label for="document">
                                         <input type="hidden" name="document" value="">
                                     </label>
-                                    <input type="file"  id="document" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
+                                    <input type="file" id="document" name="document" style="width:250px;padding:20px;border:2px dashed #222;" accept=".pdf,.ppt,.pptx">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -516,7 +516,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <h3 class="card-title">Pictures</h3>
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Image 1<span class="text-danger">*</span> </label>
@@ -578,11 +578,11 @@
                                     </span>
                                 </div>
                             </div>
-                           
+
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Similar Products</label>
 
-                                
+
                                 <div class="col-10">
                                     <select name="similarProducts[]" id="similarProducts" class="form-control" multiple="multiple">
                                         @foreach($similarProduct as $similarProduct)
@@ -595,7 +595,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Related Products</label>
 
-                                
+
                                 <div class="col-10">
                                     <select name="relatedProducts[]" id="relatedProducts" class="form-control" multiple="multiple">
                                         @foreach($relatedProduct as $relatedProduct)
@@ -625,7 +625,7 @@
 
 <!--end::Content-->
 <!--begin::Footer-->
-@endsection                     
+@endsection
 
 @push('script')
 <script>
@@ -680,7 +680,7 @@ $('#category').select2({
                 }
             }
             reader.readAsDataURL(event.target.files[0]);
-        
+
    });
 
    // Class definition
@@ -750,7 +750,7 @@ jQuery(document).ready(function() {
     }
     $("#tax").change(function(){
         if($('#tax').val() == ''){
-          $("#showtax").html('');  
+          $("#showtax").html('');
           return;
         }
         var retu =  ($(this).find(':selected').data('tax_type')==1)?'%':'₹';
@@ -782,13 +782,13 @@ jQuery(document).ready(function() {
           height:800
         }
       });
-    
+
       $('.upload_image').on('change', function(){
         objectB = this.parentElement;
         objectA = this;
         var reader = new FileReader();
         reader.onload = function (event) {
-            
+
           $image_crop.croppie('bind', {
             url: event.target.result
           }).then(function(){
@@ -798,7 +798,7 @@ jQuery(document).ready(function() {
         reader.readAsDataURL(this.files[0]);
         $('#uploadimageModal').modal('show');
       });
-    
+
       $('.crop_image').click(function(event){
           var id= $("#id").val();
           var url= $("#url").val();
@@ -811,7 +811,7 @@ jQuery(document).ready(function() {
                 url:url,
                 type: "POST",
                 data:{id:id,table_colum:table_colum,"image": response,"_token": "{{ csrf_token() }}"},
-                success:function(data){  
+                success:function(data){
                     objectB.children[0].children[0].src = response;
                     $('#uploadimageModal').modal('hide');
                     objectB.children[0].children[1].value = data['Name'];
@@ -826,7 +826,7 @@ jQuery(document).ready(function() {
             this.parentElement.parentElement.children[1].children[0].children[0].src="";
             this.parentElement.parentElement.children[1].children[0].children[1].value = "";
         });
-    });  
+    });
 </script>
 <script>
     ClassicEditor.create( document.querySelector( '#ktckeditor1' ) )

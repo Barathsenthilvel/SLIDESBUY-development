@@ -115,9 +115,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
     //subscription get data
     Route::get('/subscription/success/{id}','Front\SubscriptionController@success')->name('subscription.success');
+    Route::get('download/{product}', 'Front\ProductController@download')->name('download.product');
+    // routes/web.php
+// Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')->name('product.download');
 
 });
 
+Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')
+    ->middleware('auth')
+    ->name('product.download');
 //new routes added
 
 Route::any('/sign-in','Front\UserController@signIn')->name('login.submit');

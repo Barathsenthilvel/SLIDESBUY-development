@@ -409,12 +409,52 @@ jQuery(document).ready(function ($) {
             <h6 class="product-item__price mb-0 font-14 fw-500">$7.25</h6>
         </div>
     </div>
-    <button type="button" class="btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5 mt-32">
+    {{-- <button type="button" class="btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5 mt-32">
         <img src="{{ asset('assets/images/icons/add-to-cart.svg') }}" alt="">
         Add To Cart
+    </button> --}}
+    {{-- <div class="d-flex justify-content-center align-items-center gap-2 mt-5">
+    <button type="button" class="btn btn-primary w-50 w-sm-auto">
+        <img src="{{ asset('assets/images/icons/add-to-cart.svg') }}" alt="Add to Cart" class="me-2">
+        Add To Cart
     </button>
+    <button type="button" class="btn btn-primary w-50 w-sm-auto">Buy Now</button>
+    @auth
+        <a href="{{ asset('storage/' . $product->document) }}" class="btn btn-primary w-50 w-sm-auto" download>
+            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
+            Download
+        </a>
+    @endauth
+</div> --}}
 
-    <!-- Author Details Start-->
+@if (session('error'))
+    <div class="alert alert-danger text-center mt-3">
+        {{ session('error') }}
+    </div>
+@endif
+<div class="d-flex justify-content-center align-items-center gap-2 mt-5">
+    @if ($activeSubscription && $canDownload)
+    {{-- @dd($canDownload); --}}
+        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto">
+            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
+            Download
+        </a>
+
+    @elseif ($activeSubscription && $downloadLimitReached)
+    @dd($downloadLimitReached);
+        <div class="text-danger w-50 w-sm-auto text-center">
+            Your download limit has been reached. Please <a href="{{ route('subscription.renew') }}">renew</a> your subscription.
+        </div>
+
+    @else
+        <button type="button" class="btn btn-primary w-50 w-sm-auto">
+            Buy Now
+        </button>
+    @endif
+</div>
+
+
+    <!-- Author Details Start  http://127.0.0.1:8000/subscription/success/9-->
     <div class="author-details">
         <div class="d-flex align-items-center gap-2">
             <div class="author-details__thumb flex-shrink-0">

@@ -104,4 +104,9 @@ public function subscriptions()
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    public function subscriptionss()
+{
+    return $this->hasMany(Subscription::class, 'user_id');
+}
 }

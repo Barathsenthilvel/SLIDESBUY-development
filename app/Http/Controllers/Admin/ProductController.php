@@ -472,8 +472,27 @@ class ProductController extends Controller
     //     $data1['msg'] = 'New product Added Successfully.';
     // return response()->json($data1);
     //   }
+
+    public function download(Product $product)
+    {
+        dd($product);
+        // Check if the user is authorized to download (e.g., based on ownership or purchase)
+        if (!Auth::check() || !$this->authorizeDownload($product)) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Check if the file exists
+        $filePath = $product->document; // e.g., 'documents/filename.pdf'
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        // Serve the file for download
+        return Storage::disk('public')->download($filePath, $product->product_title . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
+    }
 public function store(Request $request){
 
+    // dd($request->all());
     $attributeValues = [];
     $requestData = $request->all();
 
@@ -486,6 +505,7 @@ public function store(Request $request){
         'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
         'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
         'image1'           => 'required',
+        'document' => 'required|file|mimes:pdf,ppt,pptx|max:10240',
         'productDescription' => 'required'
     ];
 
@@ -496,6 +516,9 @@ public function store(Request $request){
         'skuCode.unique'            => 'SKU  Code should be unique',
         'productTitle.required'     => 'Product Name should be filled',
         'productTitle.unique'       => 'Product Name already taken',
+        'document.required' => 'Document should be uploaded',
+            'document.mimes' => 'Document must be a PDF or PPT/PPTX file',
+            'document.max' => 'Document size must not exceed 10MB',
         'image1.required'           => 'Image 1 should be filled',
         'productDescription.required' => 'Product Description should be filled',
     ];
@@ -508,6 +531,15 @@ public function store(Request $request){
                                ->get();
         return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
     }
+
+    // Handle document upload
+        $documentPath = null;
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $documentPath = $file->store('documents', 'public'); // Store in storage/app/public/documents
+        }
+
+
 
     $image1 = $request->image1;
     $image2 = $request->image2;
@@ -583,6 +615,7 @@ public function store(Request $request){
     $data->image3 = $image3;
     $data->image4 = $image4;
     $data->image5 = $image5;
+    $data->document = $documentPath;
     $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
     $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
     $data->user_id = Auth::user()->id;

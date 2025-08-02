@@ -31,9 +31,8 @@ public function user()
     return $this->belongsTo('App\Models\User', 'user_id'); // foreign key on Subscription table
 }
 
-public function plan()
-{
-    return $this->belongsTo('App\Models\Plan', 'plan_id'); // foreign key on Subscription table
+public function plan() {
+    return $this->belongsTo(Plan::class, 'plan_id');
 }
 
 }

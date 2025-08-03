@@ -88,4 +88,9 @@ public function success($id)
 
     return view('front.subscription.success', compact('orderDetails', 'productsPurchased'));
 }
+
+
+
+
+
 }

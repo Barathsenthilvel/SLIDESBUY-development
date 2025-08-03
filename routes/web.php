@@ -118,6 +118,18 @@ Route::middleware('auth')->group(function () {
     Route::get('download/{product}', 'Front\ProductController@download')->name('download.product');
     // routes/web.php
 // Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')->name('product.download');
+    Route::get('/my-account','Front\AccountController@index')->name('account.profile');
+    Route::post('/logout', 'Front\AccountController@destroy')->name('logout');
+Route::post('/account/update','Front\AccountController@update')->name('account.update');
+
+
+Route::post('/update-password','Front\AccountController@changePassword')->name('password.change');
+// Route::get('/my-downloads','Front\AccountController@userDownloads')->name('user.downloads');
+Route::get('/download-file/{product}', 'Front\AccountController@download')->name('download.file');
+
+// Example route for writing a review for a product
+Route::get('/write-review/{product}', 'Front\ReviewController@create')->name('product.review.create');
+
 
 });
 

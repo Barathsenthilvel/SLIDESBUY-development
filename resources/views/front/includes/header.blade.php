@@ -140,14 +140,43 @@ $wishlistcnt = 0;
         </span>Create Account
     </a>
     <div class="language-select flx-align select-has-icon">
-        <img src={{ asset('assets/images/icons/globe.svg') }} alt="" class="globe-icon white-version">
-        <img src={{ asset('assets/images/icons/globe-white.svg') }} alt="" class="globe-icon dark-version">
-        <select class="select py-0 ps-2 border-0 fw-500">
-            <option value="1">Eng</option>
-            <option value="2">Bn</option>
-            <option value="3">Eur</option>
-            <option value="4">Urd</option>
-        </select>
+       <div class="user-profile">
+            <button class="user-profile__button flex-align">
+                <span class="user-profile__thumb">
+                    <img src="assets/images/thumbs/user-profile.png" class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown show">
+                <li class="sidebar-list__item">
+                    <a href="dashboard-profile.html" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="assets/images/icons/sidebar-icon2.svg" alt="" class="icon">
+                            <img src="assets/images/icons/sidebar-icon-active2.svg" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-list__item">
+                    <a href="setting.html" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="assets/images/icons/sidebar-icon10.svg" alt="" class="icon">
+                            <img src="assets/images/icons/sidebar-icon-active10.svg" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a href="login.html" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="assets/images/icons/sidebar-icon13.svg" alt="" class="icon">
+                            <img src="assets/images/icons/sidebar-icon-active13.svg" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
             </div>
         </div>
@@ -269,7 +298,7 @@ $wishlistcnt = 0;
 
     <div class="header-right__inner gap-3 flx-align d-lg-flex d-none">
          <ul class="">
-          @if(!Auth::check())
+          {{-- @if(!Auth::check())
             <li>
                     <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
                     <span class="icon-left icon">
@@ -280,7 +309,7 @@ $wishlistcnt = 0;
           @else
             <li> <a  href="javascript:void(0);">! Hai {{ auth()->user()->name }}</a></li>
             <li> <a href="{{route('user.logout')}}"> <i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
-            @endif
+            @endif --}}
 
              <li class="text-center">
                                 <!-- <a data-toggle="tooltip" title="Wishlist"
@@ -306,14 +335,24 @@ $wishlistcnt = 0;
         </ul>
 
     <div class="language-select flx-align select-has-icon">
-        <img src= {{ asset('assets/images/icons/globe.svg') }} alt="" class="globe-icon white-version">
-        <img src={{ asset('assets/images/icons/globe-white.svg') }} alt="" class="globe-icon dark-version">
-        <select class="select py-0 ps-2 border-0 fw-500">
-            <option value="1">Eng</option>
-            <option value="2">Bn</option>
-            <option value="3">Eur</option>
-            <option value="4">Urd</option>
-        </select>
+        <div class="user-profile">
+            <button class="user-profile__button flex-align">
+                <span class="user-profile__thumb">
+                    <img src="assets/images/thumbs/user-profile.png" class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown show">
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}">
+                        <span class="sidebar-list__icon">
+                            <img src="assets/images/icons/sidebar-icon2.svg" alt="" class="icon">
+                            <img src="assets/images/icons/sidebar-icon-active2.svg" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
     </div>
     <button type="button" class="toggle-mobileMenu d-lg-none"> <i class="las la-bars"></i> </button>

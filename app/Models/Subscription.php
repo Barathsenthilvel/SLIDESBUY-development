@@ -25,7 +25,7 @@ class Subscription extends Model
     'is_active'
 ];
     public $timestamps = true;
-
+protected $dates = ['expired_at'];
 public function user()
 {
     return $this->belongsTo('App\Models\User', 'user_id'); // foreign key on Subscription table

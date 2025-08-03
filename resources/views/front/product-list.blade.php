@@ -1,4 +1,52 @@
 {{--
+
+<style>
+    .custom-badge {
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+        color: #fff;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.3px;
+    }
+
+    .custom-badge.paid {
+        background: linear-gradient(135deg, #0066cc, #3399ff); /* Blue gradient for Paid */
+    }
+
+    .custom-badge.discount {
+        background: linear-gradient(135deg, #00bcd4, #4dd0e1); /* Teal gradient for Discounted */
+        color: #002b40;
+    } --}}
+
+
+    <style>
+    .custom-badge {
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-block;
+        color: #fff;
+        letter-spacing: 0.3px;
+        /* text-transform: uppercase; */
+    }
+
+    .custom-badge.paid {
+        background: linear-gradient(135deg, #1e3c72, #2a5298); /* Deep Blue */
+        box-shadow: 0 0 6px rgba(30, 60, 114, 0.4);
+    }
+
+    .custom-badge.free {
+        background: linear-gradient(135deg, #00b09b, #96c93d); /* Fresh green */
+        box-shadow: 0 0 6px rgba(0, 176, 155, 0.4);
+    }
+</style>
+
+
+{{--
 @php $array = []; @endphp
 @if (Auth::check())
     @php $array = explode(',', Auth::user()->wishlist); @endphp
@@ -309,9 +357,14 @@
                             </a>
                         </span>
                         <div class="flx-align gap-2">
-                            <h6 class="product-item__price mb-0">
-                                ${{ $discountProduct->discount_price ?? 'paid' }}
+                           <h6 class="product-item__price mb-0">
+                           <span class="custom-badge {{ $discountProduct->discount_price ? 'Free' : 'paid' }}">
+    {{ $discountProduct->discount_price ? 'Free' : 'paid' }}
+</span>
+
+
                             </h6>
+
                             @if (!empty($discountProduct->price))
                                 <span class="product-item__prevPrice text-decoration-line-through">
                                     ${{ $discountProduct->price }}

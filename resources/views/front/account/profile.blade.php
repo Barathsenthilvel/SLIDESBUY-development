@@ -1,27 +1,40 @@
 @extends('front.includes.container')
 @section('content')
 <!-- Toastr CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-  {{-- <pre>{{ dd($downloads) }}</pre> --}}
- <div class="container">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    <style>
+    /* Make all table text black */
+    .table-custom tbody tr {
+        color: #000;
+    }
+
+    /* Grey background for even rows */
+    .table-custom tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+        </style>
+<div class="container">
     <h4>My Account</h4>
     <div class="row">
         <div class="col-md-3">
-           <div class="list-group">
+            <div class="list-group">
                 <a href="#" class="list-group-item" data-target="#downloads">My Downloads</a>
-                <a href="#" class="list-group-item " data-target="#subscriptions">Subscriptions (1)</a>
+                <a href="#" class="list-group-item" data-target="#subscriptions">Subscriptions (1)</a>
                 <a href="#" class="list-group-item active" data-target="#profile">Profile Update</a>
                 <a href="{{ route('logout') }}" class="list-group-item">Log Out</a>
             </div>
         </div>
 
         <div class="col-md-9">
-
             <div id="tab-content">
                 <div id="downloads" class="tab-pane" style="display: none;">
-                    {{-- start --}}
+                    <!-- Downloads content -->
+                      {{-- start --}}
 
-                    <table class="table">
+                    <table class="table table-custom">
                             <thead>
                                 <tr>
                                     <th>File ID / Title</th>
@@ -69,12 +82,15 @@
 
 
                     {{-- End --}}
+                   {{--  --}}
                 </div>
 
                 <div id="subscriptions" class="tab-pane" style="display: none;">
-                    <!-- Subscriptions content here (currently visible) -->
-                    <div class="container bg-grey" style="background: red;">
-                         <table class="table">
+                    <!-- Subscriptions content -->
+                    <p>My Subscriptions content here</p>
+                    {{--  --}}
+                     <div class="container bg-grey" >
+                         <table class="table table-custom">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -87,122 +103,104 @@
                                 </tr>
                             </thead>
                                         <tbody>
-                                            @foreach($downloads as $key => $download)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $download->subscription->transaction_id ?? 'N/A' }}</td>
-                                                <td>{{ $download->subscription->plan->name ?? 'N/A' }}</td>
-                                                <td>{{ $download->subscription->plan->download_limit ?? 'N/A' }}</td>
-                                                <td>₹{{ $download->subscription->plan->price ?? '0' }}</td>
-                                                <td>{{ optional($download->subscription->created_at)->format('d M Y') }}</td>
-                                                <td>
-                                                        {{ $download->subscription && $download->subscription->expired_at
-                                                            ? \Carbon\Carbon::parse($download->subscription->expired_at)->format('d M Y')
-                                                            : 'N/A'
-                                                        }}
-                                                    </td>
-                                                    </tr>
-                                                @endforeach
+                                         @foreach($uniqueSubscriptions as $key => $subscription)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $subscription->transaction_id ?? 'N/A' }}</td>
+                                            <td>{{ $subscription->plan->name ?? 'N/A' }}</td>
+                                            <td>{{ $subscription->plan->download_limit ?? 'N/A' }}</td>
+                                            <td>₹{{ $subscription->plan->price ?? '0' }}</td>
+                                            <td>{{ optional($subscription->created_at)->format('d M Y') }}</td>
+                                            <td>{{ $subscription->expired_at ? \Carbon\Carbon::parse($subscription->expired_at)->format('d M Y') : 'N/A' }}</td>
+                                        </tr>
+                                        @endforeach
                                         </tbody>
                         </table>
                     </div>
-
-
                     {{--  --}}
                 </div>
-                <div id="profile" class="tab-pane"style="display: block;">
-                           {{-- <form method="POST" action="{{ route('account.update') }}"> --}}
-                @csrf
-                <div class="dashboard-card">
-                <div class="dashboard-card__header pb-0">
-                    <ul class="nav tab-bordered nav-pills" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link font-18 font-heading active" id="pills-personalInfo-tab" data-bs-toggle="pill" data-bs-target="#pills-personalInfo" type="button" role="tab" aria-controls="pills-personalInfo" aria-selected="true">Personal Info</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link font-18 font-heading" id="pills-changePassword-tab" data-bs-toggle="pill" data-bs-target="#pills-changePassword" type="button" role="tab" aria-controls="pills-changePassword" aria-selected="false" tabindex="-1">Change Password</button>
-                        </li>
-                    </ul>
-                </div>
 
-                <div class="profile-info-content">
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade active show" id="pills-personalInfo" role="tabpanel" aria-labelledby="pills-personalInfo-tab" tabindex="0">
-                           <form  id="update-profile-form" action="{{ route('account.update') }}" method="POST" autocomplete="off">
-                               @csrf
-                                @method('POST')
-                                <div class="row gy-4">
-                                    <div class="col-sm-6 col-xs-6">
-                                        <label for="fName" class="form-label mb-2 font-18 font-heading fw-600">First Name</label>
-                                        <input type="text" class="common-input border" name="name"  id="fName" value="{{ old('name', $user->name) }}" placeholder="First Name">
-                                    </div>
+                <div id="profile" class="tab-pane" style="display: block;">
+                        <h5>Profile Update</h5>
 
-                                    <div class="col-sm-6 col-xs-6">
-                                        <label for="phonee" class="form-label mb-2 font-18 font-heading fw-600">Phone Number</label>
-                                        <input type="tel" class="common-input border" id="phonee"  name="Phone"  value="{{ old('Phone', $user->Phone) }}" placeholder="Phone Number">
-                                    </div>
-                                    <div class="col-sm-6 col-xs-6">
-                                        <label for="emailAdddd" class="form-label mb-2 font-18 font-heading fw-600">Email Address</label>
-                                        <input type="email" class="common-input border" name="email"  id="emailAdddd" value="{{ old('email', $user->email) }}" placeholder="Email Address">
-                                    </div>
-                                    <div class="col-sm-12 text-end">
-                                        <button class="btn btn-main btn-lg pill mt-4"> Update Profile</button>
-                                    </div>
-                                </div>
-                            </form>
-                         </div>
+                        <!-- Inner Tabs Menu -->
+                        <ul class="nav nav-tabs mb-3" id="profileTabs">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active" data-target="#personal-info">Personal Info</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-target="#change-password">Change Password</a>
+                            </li>
+                        </ul>
 
-                        <div class="tab-pane fade" id="pills-changePassword" role="tabpanel" aria-labelledby="pills-changePassword-tab" tabindex="0">
-                         <form id="password-update-form" action="{{ route('password.change') }}" method="POST">
-    @csrf
-                                <div class="row gy-4">
-
-                                    {{-- <div class="col-12">
-                                      <label for="current-password" class="form-label mb-2 font-18 font-heading fw-600">Current Password</label>
-                                        <div class="position-relative">
-                                            <input type="password" class="common-input common-input--withIcon common-input--withLeftIcon "  name="current_password" id="current-password" placeholder="************">
-                                            <span class="input-icon input-icon--left"><img src="assets/images/icons/key-icon.svg" alt=""></span>
-                                            <span class="input-icon password-show-hide fas fa-eye la-eye-slash toggle-password-two" id="#current-password"></span>
+                        <!-- Inner Tabs Content -->
+                        <div class="tab-content">
+                            <div id="personal-info" class="inner-tab-pane" style="display: block;">
+                                <p>Personal Info form or content goes here.</p>
+                                <form id="update-profile-form" action="{{ route('account.update') }}" method="POST" autocomplete="off">
+                                        @csrf
+                                        @method('POST')
+                                        <div class="row gy-4">
+                                            <div class="col-sm-6 col-xs-6">
+                                                <label for="fName" class="form-label mb-2 font-18 font-heading fw-600">First Name</label>
+                                                <input type="text" class="common-input border" name="name" id="fName" value="{{ old('name', $user->name) }}" placeholder="First Name">
+                                            </div>
+                                            <div class="col-sm-6 col-xs-6">
+                                                <label for="phonee" class="form-label mb-2 font-18 font-heading fw-600">Phone Number</label>
+                                                <input type="tel" class="common-input border" id="phonee" name="Phone" value="{{ old('Phone', $user->Phone) }}" placeholder="Phone Number">
+                                            </div>
+                                            <div class="col-sm-6 col-xs-6">
+                                                <label for="emailAdddd" class="form-label mb-2 font-18 font-heading fw-600">Email Address</label>
+                                                <input type="email" class="common-input border" name="email" id="emailAdddd" value="{{ old('email', $user->email) }}" placeholder="Email Address">
+                                            </div>
+                                            <div class="col-sm-12 text-end">
+                                                <button class="btn btn-main btn-lg pill mt-4">Update Profile</button>
+                                            </div>
                                         </div>
-                                    </div> --}}
+                                    </form>
+                            </div>
 
+                            <div id="change-password" class="inner-tab-pane" style="display: none;">
+                                <p>Change Password form or content goes here.</p>
+
+                                                <form id="password-update-form" action="{{ route('password.change') }}" method="POST">
+                                @csrf
+                                <div class="row gy-4">
                                     <div class="col-sm-6 col-xs-6">
                                         <label for="new-password" class="form-label mb-2 font-18 font-heading fw-600">New Password</label>
                                         <div class="position-relative">
-                                            <input type="password" class="common-input common-input--withIcon common-input--withLeftIcon "  name="new_password" id="new-password" placeholder="************">
+                                            <input type="password" class="common-input common-input--withIcon common-input--withLeftIcon" name="new_password" id="new-password" placeholder="************">
                                             <span class="input-icon input-icon--left"><img src="assets/images/icons/lock-two.svg" alt=""></span>
                                             <span class="input-icon password-show-hide fas fa-eye toggle-password-two la-eye-slash" id="#new-password"></span>
                                         </div>
                                     </div>
-
                                     <div class="col-sm-6 col-xs-6">
-                                        <label for="confirm-password" class="form-label mb-2 font-18 font-heading fw-600">Current Password</label>
+                                        <label for="current-password" class="form-label mb-2 font-18 font-heading fw-600">Current Password</label>
                                         <div class="position-relative">
-                                            <input type="password" class="common-input common-input--withIcon common-input--withLeftIcon "name="current_password" id="current-password" placeholder="************">
+                                            <input type="password" class="common-input common-input--withIcon common-input--withLeftIcon" name="current_password" id="current-password" placeholder="************">
                                             <span class="input-icon input-icon--left"><img src="assets/images/icons/lock-two.svg" alt=""></span>
-                                            <span class="input-icon password-show-hide fas fa-eye toggle-password-two la-eye-slash" id="#confirm-password"></span>
+                                            <span class="input-icon password-show-hide fas fa-eye toggle-password-two la-eye-slash" id="#current-password"></span>
                                         </div>
                                         <small class="text-danger"></small>
                                     </div>
-
                                     <div class="col-sm-12 text-end">
-                                        <button class="btn btn-main btn-lg pill mt-4"> Update Password</button>
+                                        <button class="btn btn-main btn-lg pill mt-4">Update Password</button>
                                     </div>
                                 </div>
                             </form>
+                            </div>
                         </div>
-                    </div>
                 </div>
+
+                {{--  --}}
+
+
 
             </div>
-
-            </form>
-                </div>
-        </div>
-
         </div>
     </div>
 </div>
+
 @endsection
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -286,19 +284,37 @@ $('#password-update-form').on('submit', function(e) {
 $('.list-group-item').on('click', function (e) {
     e.preventDefault();
 
-    // Remove active class from all
+    // Remove 'active' class from all list items
     $('.list-group-item').removeClass('active');
 
-    // Add active class to clicked item
+    // Add 'active' to the clicked item
     $(this).addClass('active');
 
-    // Hide all tab panes
+    // Hide all tab content
     $('.tab-pane').hide();
 
-    // Show the targeted tab
+    // Show the corresponding tab
     var target = $(this).data('target');
     $(target).show();
 });
+
+$('#profileTabs .nav-link').on('click', function (e) {
+    e.preventDefault();
+
+    // Remove active class from all links
+    $('#profileTabs .nav-link').removeClass('active');
+
+    // Add active class to clicked link
+    $(this).addClass('active');
+
+    // Hide all inner-tab-panes
+    $('.inner-tab-pane').hide();
+
+    // Show the targeted inner tab
+    var target = $(this).data('target');
+    $(target).show();
+});
+
 
     });
 </script>

@@ -441,15 +441,24 @@ jQuery(document).ready(function ($) {
         </a>
 
     @elseif ($activeSubscription && $downloadLimitReached)
-    @dd($downloadLimitReached);
-        <div class="text-danger w-50 w-sm-auto text-center">
-            Your download limit has been reached. Please <a href="{{ route('subscription.renew') }}">renew</a> your subscription.
+    {{-- @dd($downloadLimitReached); --}}
+        <div class="text-danger w-100 w-sm-auto text-center">
+            Your download limit has been reached. Please renew your subscription.
+            <button type="button" class="btn btn-primary w-100 w-sm-auto">
+        Buy Now
+    </button>
         </div>
 
     @else
-        <button type="button" class="btn btn-primary w-50 w-sm-auto">
+        {{-- <button type="button" class="btn btn-primary w-50 w-sm-auto">
             Buy Now
-        </button>
+        </button> --}}
+        <a href="{{ route('front.subscription') }}">
+    <button type="button" class="btn btn-primary w-100 w-sm-auto">
+        Buy Now
+    </button>
+</a>
+
     @endif
 </div>
 

@@ -15,15 +15,15 @@ class AccountController extends Controller
 {
 
     public function userDownloads()
-{
-    $downloads = Downloads::with(['product', 'subscription']) // eager load relationships
-        ->where('user_id', Auth::id())
-        ->orderBy('created_at', 'desc')
-        ->get();
-        // dd($downloads);
+    {
+        $downloads = Downloads::with(['product', 'subscription']) // eager load relationships
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+            // dd($downloads);
 
-    return view('front.account.profile', compact('downloads'));
-}
+        return view('front.account.profile', compact('downloads'));
+    }
 
 
 
@@ -36,6 +36,7 @@ class AccountController extends Controller
         ->where('user_id', $user->id)
         ->orderBy('created_at', 'desc')
         ->get();
+    $uniqueSubscriptions = $downloads->pluck('subscription')->unique('id')->values();
 
     // Group downloads by product to get count and details
     $downloadsGrouped = $downloads->groupBy('product_id')->map(function ($items) {
@@ -58,7 +59,8 @@ class AccountController extends Controller
         'downloadsGrouped',
         'totalDownloaded',
         'downloadLimit',
-        'remainingDownloads'
+        'remainingDownloads',
+        'uniqueSubscriptions'
     ));
 }
 

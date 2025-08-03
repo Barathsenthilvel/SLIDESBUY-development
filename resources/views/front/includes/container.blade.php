@@ -9,6 +9,7 @@
         <meta name="keywords" content="{{ $StoreConfig->Store_Meta_Keywords }}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" rel="icon">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
      <!-- Favicon -->
 <link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">

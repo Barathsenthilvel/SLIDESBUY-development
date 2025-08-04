@@ -143,15 +143,15 @@ $wishlistcnt = 0;
        <div class="user-profile">
             <button class="user-profile__button flex-align">
                 <span class="user-profile__thumb">
-                    <img src="assets/images/thumbs/user-profile.png" class="cover-img" alt="">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
                 </span>
             </button>
             <ul class="user-profile-dropdown show">
                 <li class="sidebar-list__item">
                     <a href="dashboard-profile.html" class="sidebar-list__link">
                         <span class="sidebar-list__icon">
-                            <img src="assets/images/icons/sidebar-icon2.svg" alt="" class="icon">
-                            <img src="assets/images/icons/sidebar-icon-active2.svg" alt="" class="icon icon-active">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
                         </span>
                         <span class="text">Profile</span>
                     </a>
@@ -160,8 +160,8 @@ $wishlistcnt = 0;
                 <li class="sidebar-list__item">
                     <a href="setting.html" class="sidebar-list__link">
                         <span class="sidebar-list__icon">
-                            <img src="assets/images/icons/sidebar-icon10.svg" alt="" class="icon">
-                            <img src="assets/images/icons/sidebar-icon-active10.svg" alt="" class="icon icon-active">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active10.svg') }}" alt="" class="icon icon-active">
                         </span>
                         <span class="text">Settings</span>
                     </a>
@@ -169,8 +169,8 @@ $wishlistcnt = 0;
                 <li class="sidebar-list__item">
                     <a href="login.html" class="sidebar-list__link">
                         <span class="sidebar-list__icon">
-                            <img src="assets/images/icons/sidebar-icon13.svg" alt="" class="icon">
-                            <img src="assets/images/icons/sidebar-icon-active13.svg" alt="" class="icon icon-active">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active13.svg') }}" alt="" class="icon icon-active">
                         </span>
                         <span class="text">Logout</span>
                     </a>
@@ -298,7 +298,12 @@ $wishlistcnt = 0;
 
     <div class="header-right__inner gap-3 flx-align d-lg-flex d-none">
          <ul class="">
-          {{-- @if(!Auth::check())
+                {{-- <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
+                    <span class="icon-left icon">
+                        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
+                    </span>Login / Signup
+                    </a> --}}
+          @if(!Auth::check())
             <li>
                     <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
                     <span class="icon-left icon">
@@ -307,9 +312,25 @@ $wishlistcnt = 0;
                     </a>
             </li>
           @else
-            <li> <a  href="javascript:void(0);">! Hai {{ auth()->user()->name }}</a></li>
-            <li> <a href="{{route('user.logout')}}"> <i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
-            @endif --}}
+           <div class="user-profile">
+            <button class="user-profile__button flex-align">
+                <span class="user-profile__thumb">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown show">
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+            @endif
 
              <li class="text-center">
                                 <!-- <a data-toggle="tooltip" title="Wishlist"
@@ -333,27 +354,28 @@ $wishlistcnt = 0;
 
 
         </ul>
-
-    <div class="language-select flx-align select-has-icon">
+{{-- @auth
+    <div class="flx-align select-has-icon">
         <div class="user-profile">
             <button class="user-profile__button flex-align">
                 <span class="user-profile__thumb">
-                    <img src="assets/images/thumbs/user-profile.png" class="cover-img" alt="">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
                 </span>
             </button>
             <ul class="user-profile-dropdown show">
                 <li class="sidebar-list__item">
                     <a class="dropdown-item" href="{{ route('account.profile') }}">
                         <span class="sidebar-list__icon">
-                            <img src="assets/images/icons/sidebar-icon2.svg" alt="" class="icon">
-                            <img src="assets/images/icons/sidebar-icon-active2.svg" alt="" class="icon icon-active">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
                         </span>
                         <span class="text">Profile</span>
                     </a>
                 </li>
             </ul>
         </div>
-    </div>
+    </div> --}}
+    {{-- @endauth --}}
     </div>
     <button type="button" class="toggle-mobileMenu d-lg-none"> <i class="las la-bars"></i> </button>
 </div>

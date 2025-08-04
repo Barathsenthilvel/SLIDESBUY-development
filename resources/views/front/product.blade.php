@@ -25,6 +25,38 @@
     border: transparent !important;
     z-index: 1;
 }
+
+
+/* image resposnive */
+.ratio-container {
+    position: relative;
+    width: 100%;
+    max-width: 856px;
+    margin: auto;
+    aspect-ratio: 856 / 550;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ratio-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* badge button for free & paid */
+
+.custom-badge.paid {
+        background: linear-gradient(135deg, #1e3c72, #2a5298); /* Deep Blue */
+        box-shadow: 0 0 6px rgba(30, 60, 114, 0.4);
+    }
+
+    .custom-badge.free {
+        background: linear-gradient(135deg, #00b09b, #96c93d); /* Fresh green */
+        box-shadow: 0 0 6px rgba(0, 176, 155, 0.4);
+    }
+
     </style>
 @php
     $price = $product->getproductPrice();
@@ -49,11 +81,12 @@
 
 
 
-
+{{-- @dd($product); --}}
+{{-- @dd( $product->product_title ) --}}
 <section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
 
     <div class="breadcrumb-two">
-        <img src="assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
+        <img src="{{ asset('assets/images/gradients/breadcrumb-gradient-bg.png') }}" alt="" class="bg--gradient">
         <div class="container container-two">
             <div class="row justify-content-center">
                 <div class="col-lg-12">
@@ -77,7 +110,7 @@
                             </li>
                         </ul>
 
-                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Quantum: SaaS Landing Page WordPress Theme</h3>
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">{{ $product->slug }}: {{ $product->product_title }}</h3>
 
                         <div class="breadcrumb-content flx-align gap-3">
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
@@ -85,22 +118,22 @@
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">
-                                    <img src="assets/images/icons/cart-icon.svg" alt="" class="white-version">
-                                    <img src="assets/images/icons/cart-white.svg" alt="" class="dark-version w-20">
+                                    <img src="{{ asset('assets/images/icons/cart-icon.svg') }}" alt="" class="white-version">
+                                    <img src="{{ asset('assets/images/icons/cart-white.svg') }}" alt="" class="dark-version w-20">
                                 </span>
                                 <span class="text">158 sales</span>
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">
-                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
-                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                    <img src="{{ asset('assets/images/icons/check-icon.svg') }}" alt="" class="white-version">
+                                    <img src="{{ asset('assets/images/icons/check-icon-white.svg') }}" alt="" class="dark-version">
                                 </span>
                                 <span class="text">Recently Updated</span>
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">
-                                    <img src="assets/images/icons/check-icon.svg" alt="" class="white-version">
-                                    <img src="assets/images/icons/check-icon-white.svg" alt="" class="dark-version">
+                                    <img src="{{ asset('assets/images/icons/check-icon.svg') }}" alt="" class="white-version">
+                                    <img src="{{ asset('assets/images/icons/check-icon-white.svg') }}" alt="" class="dark-version">
                                 </span>
                                 <span class="text">Well Documented</span>
                             </div>
@@ -139,7 +172,7 @@
             </ul>
             <div class="social-share">
                 <button type="button" class="social-share__button">
-                    <img src="assets/images/icons/share-icon.svg" alt="">
+                    <img src="{{ asset('assets/images/icons/share-icon.svg') }}" alt="">
                 </button>
                 <div class="social-share__icons left">
                     <ul class="social-icon-list colorful-style">
@@ -172,15 +205,17 @@
     <div class="product-details">
 
         {{-- Main Image --}}
-        <div class="product-details__thumb">
-            <img id="mainImage"
-                 src="{{ asset('assets/media/products/' . $product->image1) }}"
-                 alt="Main Product"
-                 class="cover-img w-100">
-        </div>
+<div class="product-details__thumb ratio-container">
+    <img id="mainImage"
+         src="{{ asset('assets/media/products/' . $product->image1) }}"
+         alt="Main Product"
+         class="ratio-image">
+</div>
+
+
 
         {{-- Buttons --}}
-        <div class="product-details__buttons flx-align justify-content-center gap-3 mt-4">
+        <div class="product-details__buttons flx-align justify-content-center gap-3 ">
             <a href="{{ asset('assets/media/products/' . $product->image1) }}"
                id="livePreviewLink"
                class="btn btn-main d-inline-flex align-items-center gap-2 pill px-sm-5 justify-content-center"
@@ -381,7 +416,8 @@ jQuery(document).ready(function ($) {
                 <a href="#" class="link hover-text-decoration-underline font-14 text-main fw-500">View License Details</a>
             </div>
         </div>
-        <h6 class="product-sidebar__title">$1580.00</h6>
+        <h6 class="product-sidebar__title">  <span class="custom-badge ">Paid</span>
+</h6>
     </div>
 
     <ul class="sidebar-list">
@@ -427,40 +463,62 @@ jQuery(document).ready(function ($) {
     @endauth
 </div> --}}
 
+{{-- @if (Auth::check() && $downloadLimit > 0)
+    <div class="alert alert-info text-center">
+        <strong>Downloads:</strong>
+        Used {{ $downloadsUsed }} / {{ $downloadLimit }} |
+        Remaining: {{ $downloadsRemaining }}
+    </div>
+@endif --}}
+
+@if ($activeSubscription)
+    <div class="mb-3">
+        <label class="fw-bold">Downloads Left</label>
+        <div class="progress">
+            @php
+                $remaining = max($downloadLimit - $downloadsUsed, 0);
+                $percentage = $downloadLimit > 0 ? ($remaining / $downloadLimit) * 100 : 0;
+            @endphp
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $percentage }}%;">
+                {{ $remaining }} of {{ $downloadLimit }}
+            </div>
+        </div>
+    </div>
+@endif
+weightUnit
 @if (session('error'))
     <div class="alert alert-danger text-center mt-3">
         {{ session('error') }}
     </div>
 @endif
+
+{{-- @if ($activeSubscription && $totalDownloadLimit > 0)
+    <div class="text-center mt-4">
+        <p class="mb-0 fw-bold text-success">
+            Downloads Left: {{ $totalDownloadLimit - $downloadCount }} / {{ $totalDownloadLimit }}
+        </p>
+    </div>
+@endif --}}
+
 <div class="d-flex justify-content-center align-items-center gap-2 mt-5">
-    @if ($activeSubscription && $canDownload)
-    {{-- @dd($canDownload); --}}
-        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto">
+    @if ($activeSubscription && $downloadLimitReached)
+        <a href="{{ route('front.subscription') }}" class="btn btn-danger w-100 w-sm-auto mt-3">
+            Renew Subscription
+        </a>
+    @elseif ($activeSubscription && $canDownload)
+        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
             Download
         </a>
-
-    @elseif ($activeSubscription && $downloadLimitReached)
-    {{-- @dd($downloadLimitReached); --}}
-        <div class="text-danger w-100 w-sm-auto text-center">
-            Your download limit has been reached. Please renew your subscription.
-            <button type="button" class="btn btn-primary w-100 w-sm-auto">
-        Buy Now
-    </button>
-        </div>
-
     @else
-        {{-- <button type="button" class="btn btn-primary w-50 w-sm-auto">
+        <a href="{{ route('front.subscription') }}" class="btn btn-primary w-100 w-sm-auto mt-3">
             Buy Now
-        </button> --}}
-        <a href="{{ route('front.subscription') }}">
-    <button type="button" class="btn btn-primary w-100 w-sm-auto">
-        Buy Now
-    </button>
-</a>
-
+        </a>
     @endif
 </div>
+
+
+
 
 
     <!-- Author Details Start  http://127.0.0.1:8000/subscription/success/9-->
@@ -525,11 +583,11 @@ jQuery(document).ready(function ($) {
     <ul class="meta-attribute">
         <li class="meta-attribute__item">
             <span class="name">Last Update</span>
-            <span class="details">Feb 21, 2024</span>
+            <span class="details">{{ $product->updated_at }}</span>
         </li>
         <li class="meta-attribute__item">
             <span class="name">Published</span>
-            <span class="details">Feb 15, 2024</span>
+            <span class="details">{{ $product->created_at }}</span>
         </li>
         <li class="meta-attribute__item">
             <span class="name">Category</span>

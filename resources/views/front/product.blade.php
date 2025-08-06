@@ -266,27 +266,7 @@
 
 
     </div>
-<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-<script>
-jQuery(document).ready(function ($) {
-    $('.thumb-box').on('click', function () {
-        const $thumbBox = $(this);
-        const $thumbImg = $thumbBox.find('img');
-        const $mainImage = $('#mainImage');
-        const $livePreviewLink = $('#livePreviewLink');
 
-        const currentMainSrc = $mainImage.attr('src');
-        const newSrc = $thumbImg.attr('src');
-
-        // Swap main image and clicked thumbnail
-        $mainImage.attr('src', newSrc).show();
-        $thumbImg.attr('src', currentMainSrc);
-
-        // Update Live Preview link href
-        $livePreviewLink.attr('href', newSrc).css('display', 'inline-flex');
-    });
-});
-</script>
 
 
 @endif
@@ -674,290 +654,121 @@ weightUnit
 
 
 
-@endsection
-@push('script')
-<script src="{{URL::asset('assets/front/js/jquery.fancybox.min.js')}}"></script>
+
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script>
-    $(".detcateg").insertAfter(".detsocial");
-     $('.quantity').each(function () {
-          var spinner = $(this),
-              input = spinner.find('input[type="number"]'),
-              btnUp = spinner.find('.quantity-up'),
-              btnDown = spinner.find('.quantity-down'),
-              min = input.attr('min'),
-              max = input.attr('max'),
-              step = parseFloat(input.attr('step'));
-          //	console.log(step);
+jQuery(document).ready(function ($) {
 
-          btnUp.click(function () {
-              //console.log(step);
-              var oldValue = parseFloat(input.val());
-              if (oldValue >= max) {
-                  var newVal = oldValue;
-                  toastr["error"](`Only ${newVal} quantity available`);
-              } else {
-                  var newVal = oldValue + step;
-              }
-              spinner.find("input").val(newVal);
-              spinner.find("input").trigger("change");
-          });
+    // live privew & screenshot
+    $('.thumb-box').on('click', function () {
+        const $thumbBox = $(this);
+        const $thumbImg = $thumbBox.find('img');
+        const $mainImage = $('#mainImage');
+        const $livePreviewLink = $('#livePreviewLink');
 
-          btnDown.click(function () {
-              //	console.log(step);
-              var oldValue = parseFloat(input.val());
-              if (oldValue <= min) {
-                  var newVal = oldValue;
-              } else {
-                  var newVal = oldValue - step;
-              }
-              spinner.find("input").val(newVal);
-              spinner.find("input").trigger("change");
-          });
+        const currentMainSrc = $mainImage.attr('src');
+        const newSrc = $thumbImg.attr('src');
 
-      });
-debugger
+        // Swap main image and clicked thumbnail
+        $mainImage.attr('src', newSrc).show();
+        $thumbImg.attr('src', currentMainSrc);
 
-
-
-
-//       function swapWithMainImage(thumbBox) {
-//     const $thumbBox = $(thumbBox);
-//     const $thumbImg = $thumbBox.find('img');
-//     const $mainImage = $('#mainImage');
-//     const $livePreviewLink = $('#livePreviewLink');
-
-//     const currentMainSrc = $mainImage.attr('src');
-
-//     // Set main image from thumbnail
-//     $mainImage.attr('src', $thumbImg.attr('src')).show();
-
-//     // Update live preview link
-//     $livePreviewLink.attr('href', $thumbImg.attr('src')).css('display', 'inline-flex');
-
-//     // Swap thumbnail with previous main image
-//     if (currentMainSrc) {
-//         $thumbImg.attr('src', currentMainSrc);
-//     }
-// }
-
-
-
-     /*produtdeatil slider*/
-          $(".singleprd-slider").slick({
-              infinite: true,
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows: true,
-              fade: true,
-              speed: 300,
-              autoplay:false,
-              lazyLoad: 'ondemand',
-              asNavFor: '.thumbnailprd-slider',
-          });
-          $(".thumbnailprd-slider").slick({
-              slidesToScroll: 1,
-              slidesToShow: 6,
-              infinite: true,
-              arrows: false,
-              autoplay: false,
-              //dots:true,
-              vertical: false,
-              verticalSwiping: true,
-              //autoplaySpeed: 4000,
-              asNavFor: '.singleprd-slider',
-              focusOnSelect: true,
-              //centerMode: false,
-              responsive: [{
-                      breakpoint: 1024,
-                      settings: {
-                          slidesToShow: 6,
-                          slidesToScroll: 1
-                      }
-                  },
-                  {
-                      breakpoint: 767,
-                      settings: {
-
-                          slidesToShow: 4,
-                          vertical: false,
-                          slidesToScroll: 1
-                      }
-                  },
-                  {
-                      breakpoint: 480,
-                      settings: {
-                          slidesToShow: 3,
-                          vertical: false,
-                          slidesToScroll: 1
-                      }
-                  }
-              ]
-          });
-          /**/
-
-
-
-   // Remove active class from all thumbnail slides
-  $('.thumbnailprd-slider .slick-slide').removeClass('slick-active');
-  $('.thumbnailprd-slider .slick-slide').eq(0).addClass('slick-active');
-  $('.product_topline .slick-prev').prop('disabled', true);
-  $('.singleprd-slider').on('beforeChange', function (event, slick, currentSlide, nextSlide) {
-   var mySlideNumber = nextSlide;
-  //alert(slick.slideCount);
-  if(mySlideNumber==(slick.slideCount-1))
-  {
-     $('.product_topline .slick-next').prop('disabled', true);
-     $('.product_topline .slick-next').fadeOut(100);
-  }
-  else if(mySlideNumber==0)
-  {
-   $('.product_topline .slick-prev').prop('disabled', true);
-   $('.product_topline .slick-prev').fadeOut(100);
-  }
-  else
-  {
-   $('.product_topline .slick-next').prop('disabled', false);
-   $('.product_topline .slick-prev').prop('disabled', false);
-   $('.product_topline .slick-next').fadeIn(100);
-   $('.product_topline .slick-prev').fadeIn(100);
-  }
-
-   $('.thumbnailprd-slider .slick-slide').removeClass('slick-active');
-   $('.thumbnailprd-slider .slick-slide').eq(mySlideNumber).addClass('slick-active');
-});
-
-
-  if ($(window).width() > 767){
-      $('.imgBox').imgZoom({
-      boxWidth: 400,
-      boxHeight: 400,
-      marginLeft: 15,
-      });
-  }
-  //$('.products').fancybox();
-
-
-  $('.product_pagination li').click(function() {
-  $(this).addClass('active').siblings().removeClass('active');
-  return false;
-  });
-  /*sticky footer*/
-       var width = $(window).width();
-      var lastScrollTop = 0;
-      $(window).scroll(function(event) {;
-      var width = $(window).width();
-      if (width <= 767) {
-      function footer()
-      {
-              var st = $(this).scrollTop();
-               if (st > lastScrollTop){
-               $(".footer-nav").slideDown();
-               }
-               else {
-               $(".footer-nav").hide();
-               }
-               lastScrollTop = st;
-      }
-      footer();
-      }
-      });
-      /*sticky footer ends*/
-  </script>
-<script>
-
-$('body .countClick').click(function(e){
-e.preventDefault();
-    var userid={{(Auth::check())?Auth::id():0}};
-    var prodid={{$product->id}};
-    $.ajax({
-    method:"post",
-    url:'{{url('likes')}}',
-    data: {
-        "_token": "{{ csrf_token() }}",
-        userid: userid,
-        prodid:prodid
-        },
-    success:function(data){
-        console.log(data.data);
-        $('#likeCounts').text(data.data);
-
-            },
-    error:function(error){
-
-    }
-});
-});
-
-    $('body #star_rating i').click(function(e){
-		var star = $(this).data('star');
-		$('#rating').val(star);
-		$('body #star_rating i').each((i,e) =>{
-			if(e.dataset.star <= star){
-				e.classList.add("fa-star");
-				e.classList.remove("fa-star-o");
-			}else{
-				e.classList.remove("fa-star");
-				e.classList.add("fa-star-o");
-			}
-		})
+        // Update Live Preview link href
+        $livePreviewLink.attr('href', newSrc).css('display', 'inline-flex');
     });
-$('body #reviewSubmit').submit(function(e){
-e.preventDefault();
-const formData = new FormData(e.target);
-formData.set('rating', $("#rating").val());
-$.ajax({
-    method:"POST",
-    url:$(this).prop('action'),
-    data:formData,
-    cache: false,
-    processData: false,
-    contentType: false,
-    success:function(data){
-        $('#tab3').load('{{route('load.review',['id'=>$product->id])}}');
-    },
-    error:function(erroe){
 
-    }
+    // whislist
+
+      $(document).on('click', '.wishlist-btn', function () {
+        const button = $(this);
+        const productId = button.data('id');
+        const isActive = button.hasClass('active');
+        const action = isActive ? 'remove' : 'add';
+
+        $.ajax({
+            url: action === 'add' ? '{{ route("wishlist.add") }}' : '{{ route("wishlist.remove") }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                product_id: productId
+            },
+            success: function (response) {
+                if (response.status === 'added') {
+                    button.addClass('active').attr('title', 'Remove from Wishlist');
+                } else if (response.status === 'removed') {
+                    button.removeClass('active').attr('title', 'Add to Wishlist');
+                }
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    });
+
+
+
+
+
+
 });
-});
-$("#seerating").on('click',function() {
-    $('html,body').animate({ scrollTop: $("#see").offset().top},'slow');
-    $( "#see" ).trigger( "click" );
-
-});
-
-
-
-
-
-// Set the date we're counting down to
-
-var countDownDate = {{($price->discount)?strtotime("+1 day", strtotime($price->discount->expiry_date))*1000:strtotime("now")}};
-
-// Update the count down every 1 second
-var x = setInterval(function() {
-
-  // Get today's date and time
-  var now = new Date().getTime();
-
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
-
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  // Output the result in an element with id="demo"
-  document.getElementById("product-countdown").innerHTML = days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s ";
-
-  // If the count down is over, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("product-countdown").innerHTML = "EXPIRED";
-  }
-}, 1000);
 </script>
-@endpush
+
+@endsection
+{{--
+
+// $('body .countClick').click(function(e){
+// e.preventDefault();
+//     var userid={{(Auth::check())?Auth::id():0}};
+//     var prodid={{$product->id}};
+//     $.ajax({
+//     method:"post",
+//     url:'{{url('likes')}}',
+//     data: {
+//         "_token": "{{ csrf_token() }}",
+//         userid: userid,
+//         prodid:prodid
+//         },
+//     success:function(data){
+//         console.log(data.data);
+//         $('#likeCounts').text(data.data);
+
+//             },
+//     error:function(error){
+
+//     }
+// });
+// });
+
+    // $('body #star_rating i').click(function(e){
+	// 	var star = $(this).data('star');
+	// 	$('#rating').val(star);
+	// 	$('body #star_rating i').each((i,e) =>{
+	// 		if(e.dataset.star <= star){
+	// 			e.classList.add("fa-star");
+	// 			e.classList.remove("fa-star-o");
+	// 		}else{
+	// 			e.classList.remove("fa-star");
+	// 			e.classList.add("fa-star-o");
+	// 		}
+	// 	})
+    // });
+// $('body #reviewSubmit').submit(function(e){
+// e.preventDefault();
+// const formData = new FormData(e.target);
+// formData.set('rating', $("#rating").val());
+// $.ajax({
+//     method:"POST",
+//     url:$(this).prop('action'),
+//     data:formData,
+//     cache: false,
+//     processData: false,
+//     contentType: false,
+//     success:function(data){
+//         $('#tab3').load('{{route('load.review',['id'=>$product->id])}}');
+//     },
+//     error:function(erroe){
+
+//     }
+// });
+
+ --}}

@@ -334,13 +334,13 @@ $wishlistcnt = 0;
 
              <li class="text-center">
                                 <!-- <a data-toggle="tooltip" title="Wishlist"
-                                    href="{{(Auth::check()?route('wishlist'):route('front.loginBlade'))}}">
+                                    href="">
                                     <div>
                                         <div class="text-center" style="color:#560835;float:left;margin-top:2px;">
                                             Wishlist
                                         </div>
                                         <span class="wishlist-icon common-count">
-                                            <span class="cart-count wishlistcnt">{{$wishlistcnt}}</span>
+                                            {{-- <span class="cart-count wishlistcnt">{{$wishlistcnt}}</span> --}}
                                         </span>
                                     </div>
                                 </a>

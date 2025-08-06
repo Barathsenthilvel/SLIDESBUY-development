@@ -49,14 +49,14 @@
                                 </h3>
                                 <p class="pricing-item__desc">Essential services to start your journey</p>
                                <a href="#"
-   class="btn btn-outline-light btn-lg pill w-100 btn-primary pay-btn"
-   data-id="{{ $plan->id }}"
-   data-price="{{ $plan->price }}"
-   data-name="{{ $plan->name }}"
-   data-discount="{{ $plan->discount ?? 0 }}"
-   data-discount-type="{{ $plan->discount_type ?? '' }}">
-   Get Started
-</a>
+                                    class="btn btn-outline-light btn-lg pill w-100 btn-primary pay-btn"
+                                    data-id="{{ $plan->id }}"
+                                    data-price="{{ $plan->price }}"
+                                    data-name="{{ $plan->name }}"
+                                    data-discount="{{ $plan->discount ?? 0 }}"
+                                    data-discount-type="{{ $plan->discount_type ?? '' }}">
+                                    Get Started
+                                    </a>
 
                             </div>
                             <div class="pricing-item__lists">
@@ -132,9 +132,22 @@
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+    //   const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+
+
+
 jQuery(document).ready(function ($) {
     $('.pay-btn').on('click', function(e) {
         e.preventDefault();
+
+     var isAuthenticated = @json(Auth::check());
+
+            if (!isAuthenticated) {
+                // Show overlay or message if needed
+                alert("Please login to continue with the payment.");
+                window.location.href = "{{ route('front.loginBlade') }}";
+                return false; // Prevent further code
+            }
 
         let button = $(this);
         let planId = button.data('id');

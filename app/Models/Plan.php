@@ -23,4 +23,5 @@ class Plan extends Model
     {
         return $this->hasOne('App\Models\Subscription');
     }
+
 }

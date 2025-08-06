@@ -106,10 +106,10 @@ Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('view
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
 // Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
-
+ Route::get('/subscribe','Front\SubscriptionController@showPlans')->name('front.subscription');
 //subscription forntend
 Route::middleware('auth')->group(function () {
-    Route::get('/subscribe','Front\SubscriptionController@showPlans')->name('front.subscription');
+
     Route::post('/subscribe/{plan}','Front\SubscriptionController@subscribe')->name('subscribe.post');
     Route::get('/subscription/{id}','Front\RazorpayPaymentController@show')->name('subscription.show');
     Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
@@ -690,7 +690,7 @@ Route::prefix('admin')->group(function() {
 
    Route::prefix('subscription')->group(function() {
         Route::get('/', 'Admin\SubscriptionController@index')->name('admin-subscriptionlist');
-        Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
+        // Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
         Route::get('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setupview');
         Route::post('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setup');
    });
@@ -702,10 +702,12 @@ Route::prefix('admin')->group(function() {
          Route::prefix('plan')->group(function() {
           Route::get('/create', 'Admin\PlanController@create')->name('admin-plan-create');
           Route::post('/store', 'Admin\PlanController@store')->name('admin-plan-store');
-          Route::get('/datatables', 'Admin\PlanController@datatables')->name('admin-plan-datatable');
+          Route::get('/datatablesssss', 'Admin\PlanController@datatables')->name('admin-plan-datatable');
           Route::get('/edit/{id}', 'Admin\PlanController@edit')->name('admin-plans-edit');
           // Route::post('/update/{id}', 'Admin\PlanController@update')->name('admin-plan-update');
-          Route::get('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
+          Route::put('/update/{id}', 'Admin\PlanController@update')->name('admin-plans-update');
+          Route::any('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
+
         });
     });
 });

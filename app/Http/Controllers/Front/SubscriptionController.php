@@ -36,6 +36,7 @@ class SubscriptionController extends Controller
         // Fetch all plans from DB
         $plans = Plan::all();
 
+        // dd($plans);
         // Pass to Blade view
         return view('front.subscription', compact('plans'));
     }
@@ -43,7 +44,7 @@ class SubscriptionController extends Controller
     public function subscribe(Request $request, $planId)
     {
 
-        // dd($planId);
+        dd($planId);
         $plan = Plan::findOrFail($planId);
         $user = auth()->user();
 
@@ -65,7 +66,7 @@ class SubscriptionController extends Controller
 
 public function success($id)
 {
-    // dd($id);
+    dd($id);
     $subscription = Subscription::with('plan')->findOrFail($id);
     // dd($subscription);
     $plan = $subscription->plan;

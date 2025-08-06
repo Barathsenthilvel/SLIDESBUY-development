@@ -64,6 +64,7 @@ class RazorpayPaymentController extends Controller
 
 public function payment(Request $request)
 {
+  
     // Initialize Razorpay API
     $api = new \Razorpay\Api\Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 

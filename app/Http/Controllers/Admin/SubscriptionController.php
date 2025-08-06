@@ -26,7 +26,7 @@ class SubscriptionController extends Controller
                 return ++$i;
             })
             ->editColumn('user', function ($subscription) {
-                dd($subscription);
+                // dd($subscription);
                 return $subscription->user ? $subscription->user->name : 'N/A';
             })
             ->editColumn('plan', function ($subscription) {
@@ -51,7 +51,7 @@ class SubscriptionController extends Controller
 
     public function storeSubscription(Request $request)
     {
-       
+
     }
     public function create()
     {

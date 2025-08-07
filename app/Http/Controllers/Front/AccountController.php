@@ -65,6 +65,17 @@ class AccountController extends Controller
 }
 
 
+
+public function destroy(Request $request)
+{
+    Auth::guard('web')->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/home'); // or wherever you want to redirect
+}
+
 public function update(Request $request)
 {
     $request->validate([

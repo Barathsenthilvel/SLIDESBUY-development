@@ -14,7 +14,7 @@ use DataTables;
 
 class HomecatController extends Controller
 {
- 
+
     public function datatables()
     {
          $datas = Homecat::orderBy('id','desc')->get();
@@ -31,7 +31,7 @@ class HomecatController extends Controller
                             })
                             ->addColumn('action', function(Homecat $data) {
                                 return '<div class="action-list"><a href="' . route('admin-homecat-edit',$data->id) . '"><i class="fas fa-edit"></i>Edit</a><a href="' . route('admin-homecat-delete',$data->id) . '"  class="delete"><i class="fas fa-trash-alt"></i>Delete</a></div>';
-                            }) 
+                            })
                             ->rawColumns(['title','status','action'])
                             ->toJson(); //--- Returning Json Data To Client Side
     }
@@ -54,7 +54,7 @@ class HomecatController extends Controller
             }
         }
         $product2 = $ppp;
-        
+
 		return view('admin.homecat.edit',compact('data','data1','product2'));
 	}
     public function store(Request $request){
@@ -73,10 +73,10 @@ class HomecatController extends Controller
          if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
           }
-          
-          
+
+
           $input['styles']=$input['radios5'];
-          
+
           $data = "";
           foreach($request->category as $key=>$value){
               $data .= $value.','.$request->sort[$key].'|';
@@ -88,7 +88,7 @@ class HomecatController extends Controller
        return response()->json($data1);
     }
     public function update(Request $request,$id){
-
+// dd($id);
         $input = $request->all();
         $rules=[
             'title' => 'required|unique:homecats,title,'.$id,
@@ -98,11 +98,12 @@ class HomecatController extends Controller
             'title.required'  => 'Title Name should be unique',
             'radios5.required' => 'Style should be selected'
          ];
-         $validator = Validator::make(Input::all(), $rules,$customs);
+        $validator = Validator::make($request->all(), $rules, $customs);
+
          if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
           }
-          
+
           $data = "";
           foreach($request->category as $key=>$value){
               $data .= $value.','.$request->sort[$key].'|';
@@ -159,21 +160,21 @@ class HomecatController extends Controller
             $array = explode('|',$value['category']);
             foreach ($array as $key1 => $value1) {
                 $A = explode(',',$value1);
-                if(!empty($A[0])){ 
+                if(!empty($A[0])){
                     $array1[] = $A[0];
                     $array2[]=$A;
                 }
             }
             $sort = $this->sort($array2);
             $Category = Category::wherein('id',$array1)->limit(8)->get();
-            
+
             $Category = $this->Sortproduct($Category,$sort);
             $data[] = ['category'=>$Category,'Homecat'=>$value];
             $array2 = [];$array1 = [];
         }
         return $data;
     }
-    
+
         public function gethomeCategory2(){
         $Homecat = Homecat::where('status','1')->where('styles',2)->get();
         $data = [];
@@ -182,21 +183,21 @@ class HomecatController extends Controller
             $array = explode('|',$value['category']);
             foreach ($array as $key1 => $value1) {
                 $A = explode(',',$value1);
-                if(!empty($A[0])){ 
+                if(!empty($A[0])){
                     $array1[] = $A[0];
                     $array2[]=$A;
                 }
             }
             $sort = $this->sort($array2);
             $Category = Category::wherein('id',$array1)->limit(8)->get();
-            
+
             $Category = $this->Sortproduct($Category,$sort);
             $data[] = ['category'=>$Category,'Homecat'=>$value];
             $array2 = [];$array1 = [];
         }
         return $data;
     }
-    
+
         public function gethomeCategory3(){
         $Homecat = Homecat::where('status','1')->where('styles',3)->get();
         $data = [];
@@ -205,14 +206,14 @@ class HomecatController extends Controller
             $array = explode('|',$value['category']);
             foreach ($array as $key1 => $value1) {
                 $A = explode(',',$value1);
-                if(!empty($A[0])){ 
+                if(!empty($A[0])){
                     $array1[] = $A[0];
                     $array2[]=$A;
                 }
             }
             $sort = $this->sort($array2);
             $Category = Category::wherein('id',$array1)->limit(8)->get();
-            
+
             $Category = $this->Sortproduct($Category,$sort);
             $data[] = ['category'=>$Category,'Homecat'=>$value];
             $array2 = [];$array1 = [];

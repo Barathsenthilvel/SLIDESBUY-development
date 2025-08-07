@@ -13,7 +13,7 @@
                 <h3 class="section-heading__title">Our Best Pricing Plan</h3>
                 <p class="section-heading__desc">Every month we pick some best products for you. This month's best web themes & templates have arrived, chosen by our content specialists.</p>
             </div>
-            <div class="pricing-tabs">
+            {{-- <div class="pricing-tabs">
                 <ul class="nav tab-gradient nav-pills mb-0" id="pills-tab-pricing" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link pill active" id="pills-monthly-tab" data-bs-toggle="pill" data-bs-target="#pills-monthly" type="button" role="tab" aria-controls="pills-monthly" aria-selected="true">monthly</button>
@@ -22,7 +22,7 @@
                         <button class="nav-link pill" id="pills-yearly-tab" data-bs-toggle="pill" data-bs-target="#pills-yearly" type="button" role="tab" aria-controls="pills-yearly" aria-selected="false">yearly</button>
                     </li>
                 </ul>
-            </div>
+            </div> --}}
         </div>
 
         <div class="tab-content" id="pills-tab-pricingContent">
@@ -44,7 +44,7 @@
                             </div>
                             <div class="pricing-item__content">
                                 <h3 class="pricing-item__price mb-2">
-                                    ${{ $plan->price }}
+                                    ₹{{ $plan->price }}
                                     <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span>
                                 </h3>
                                 <p class="pricing-item__desc">Essential services to start your journey</p>

@@ -260,8 +260,8 @@ public function signIn(Request $request)
         ], 422);
     }
 
-    
-    // we check this email is there are not 
+
+    // we check this email is there are not
     if (!User::where('email', $request->email)->exists()) {
         return response()->json([
             'field'   => 'email',
@@ -306,7 +306,7 @@ public function register(Request $request)
     $otpExpiresAt = now()->addMinutes(10);
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
-    Session::put('otp_expires', now()->addMinutes(10));
+    Session::put('otp_expires', now()->addMinutes(2));
 
     try {
         // dd('mail->send');
@@ -362,36 +362,71 @@ public function showOtpForm()
     return view('front.otpform');
 }
 
-    public function verifyOtp(Request $request)
-    {
-        $request->validate(['otp' => 'required|digits:6']);
+//     public function verifyOtp(Request $request)
+//     {
+//         // dd($request);
+//         $request->validate(['otp' => 'required|digits:6']);
 
 
-        // dd($request);
-        $data = Session::get('register_data');
+//         // dd($request);
+//         $data = Session::get('register_data');
 
-        $otpRecord = OtpVerification::where('email', $data['email'])
-            ->where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->first();
+//         $otpRecord = OtpVerification::where('email', $data['email'])
+//             ->where('otp', $request->otp)
+//             ->where('expires_at', '>', now())
+//             ->first();
 
-            // dd($otpRecord);
-        if ($otpRecord) {
-            User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
-                'password' => Hash::make($data['password']),
-            ]);
+//             // dd($otpRecord);
+//         if ($otpRecord) {
+//             User::create([
+//                 'name'     => $data['name'],
+//                 'email'    => $data['email'],
+//                 'password' => Hash::make($data['password']),
+//             ]);
 
-            Session::forget('register_data');
-            OtpVerification::where('email', $data['email'])->delete();
-// dd('coming to home');
-            // return redirect('login')->with('success', 'Account created successfully!');
-               return redirect(url('/login'))->with('success', 'Account created successfully!');
-        } else {
-            return back()->with('error', 'Invalid or expired OTP.');
-        }
+//             Session::forget('register_data');
+//             OtpVerification::where('email', $data['email'])->delete();
+// // dd('coming to home');
+//             // return redirect('login')->with('success', 'Account created successfully!');
+//                return redirect(url('/login'))->with('success', 'Account created successfully!');
+//         } else {
+//             return back()->with('error', 'Invalid or expired OTP.');
+//         }
+//     }
+
+public function verifyOtp(Request $request)
+{
+    $request->validate(['otp' => 'required|digits:6']);
+
+    $data = Session::get('register_data');
+
+    $otpRecord = OtpVerification::where('email', $data['email'])
+        ->where('otp', $request->otp)
+        ->where('expires_at', '>', now())
+        ->first();
+
+    if ($otpRecord) {
+        User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        Session::forget('register_data');
+        OtpVerification::where('email', $data['email'])->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account created successfully!',
+            'redirect' => url('/login')
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid or expired OTP.'
+        ], 422);
     }
+}
 public function resendOtp(Request $request)
 {
     $registerData = session('register_data');
@@ -415,13 +450,60 @@ public function resendOtp(Request $request)
         ['otp' => $otp, 'created_at' => now(), 'expires_at' => $expiresAt]
     );
 
+    // Update expiry in session for JS sync
+    Session::put('otp_expires_at', $expiresAt);
+
+    // ✅ Send OTP Email
+    try {
+        Mail::to($email)->send(new \App\Mail\SendOtpMail($otp));
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send OTP. Error: ' . $e->getMessage()
+        ]);
+    }
+
     return response()->json([
         'success' => true,
         'message' => 'OTP resent successfully',
-        'otp' => $otp, // remove in production
         'expires_at' => $expiresAt->timestamp
     ]);
 }
+
+// public function resendOtp(Request $request)
+// {
+//     $registerData = session('register_data');
+
+//     if (!$registerData || !isset($registerData['email'])) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Session expired. Please register again.'
+//         ]);
+//     }
+
+//     $email = $registerData['email'];
+//     $otp = rand(100000, 999999); // Generate new 6-digit OTP
+
+//     // Set expiration to 1 minute from now
+//     $expiresAt = Carbon::now()->addMinutes(1);
+
+//     // Store/update the OTP
+//     OtpVerification::updateOrCreate(
+//         ['email' => $email],
+//         ['otp' => $otp, 'created_at' => now(), 'expires_at' => $expiresAt]
+//     );
+
+
+//     // Update expiry in session for JS sync
+//     Session::put('otp_expires_at', $expiresAt);
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'OTP resent successfully',
+//         'otp' => $otp, // remove in production
+//         'expires_at' => $expiresAt->timestamp
+//     ]);
+// }
 
 
 

@@ -24,7 +24,8 @@
                 <a href="#" class="list-group-item" data-target="#downloads">My Downloads</a>
                 <a href="#" class="list-group-item" data-target="#subscriptions">Subscriptions (1)</a>
                 <a href="#" class="list-group-item active" data-target="#profile">Profile Update</a>
-                <a href="{{ route('logout') }}" class="list-group-item">Log Out</a>
+                <a href="#" class="list-group-item" data-toggle="modal" data-target="#logoutModal">Log Out</a>
+
             </div>
         </div>
 
@@ -201,9 +202,41 @@
     </div>
 </div>
 
+
+{{--  --}}
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+          @csrf
+        </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="document.getElementById('logout-form').submit();">Yes, Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 @endsection
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     jQuery(document).ready(function ($) {
 

@@ -44,13 +44,12 @@
 
 
 
-   
-        <h2>Enter OTP</h2>
 
         @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
+    <div class="alert alert-danger" id="errorMessage">{{ session('error') }}</div>
+@endif
+<div id="ajaxSuccessMessage" class="alert alert-success d-none"></div>
+<div id="ajaxErrorMessage" class="alert alert-danger d-none"></div>
         {{-- <form action="{{ route('verify.otp') }}" method="POST">
             @csrf
             <div class="form-group">
@@ -63,11 +62,11 @@
 
 
 
-    <form method="POST" action="{{ route('verify.otp') }}">
+    <form id="verifyOtpForm">
 
     @csrf
     <div class="row gy-4">
-        
+<div id="ajaxMessage" class="mt-2 alert d-none"></div>
 
         <div class="col-12">
             <label for="otp" class="form-label mb-2 font-18 font-heading fw-600">OTP</label>
@@ -76,21 +75,24 @@
                 <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
             </div>
         </div>
+
+
         <div class="col-12 text-center mb-3">
             <div id="timer" style="color: red; font-weight: bold;"></div>
-            <button type="button" id="resendOtpBtn" class="btn btn-link" style="display: none;">Resend OTP</button>
+            <button type="button" id="resendOtpBtn" class="btn btn-main btn-lg w-100 pill" style="display: none;">Resend OTP</button>
         </div>
 
 
         <div class="col-12">
-            <button type="submit" class="btn btn-main btn-lg w-100 pill">Verify</button>
+            <button type="submit" id="verifyOtpBtn" class="btn btn-main btn-lg w-100 pill">Verify</button>
         </div>
 
 
 
 
-       
-        
+
+
+
         </div>
     </div>
 </form>
@@ -101,51 +103,111 @@
 @endsection
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 <script>
+
   jQuery(document).ready(function ($) {
-        let duration = 60;
-        let timerInterval;
+let timerInterval;
 
-        function startTimer(seconds) {
-            let time = seconds;
+// Get expiry time from server
+const otpExpiresAt = "{{ \Carbon\Carbon::parse(session('otp_expires_at'))->format('Y-m-d H:i:s') }}";
+const expiry = new Date(otpExpiresAt).getTime();
+const now = new Date().getTime();
+let duration = Math.floor((expiry - now) / 1000);
 
-            timerInterval = setInterval(function () {
-                if (time <= 0) {
-                    clearInterval(timerInterval);
-                    $('#timer').text("OTP expired.");
-                    $('#resendOtpBtn').show();
-                } else {
-                    $('#timer').text(`Time left: ${time}s`);
-                    time--;
-                }
-            }, 1000);
+function startTimer(seconds) {
+    let time = seconds;
+
+    timerInterval = setInterval(() => {
+        if (time <= 0) {
+            clearInterval(timerInterval);
+            $('#timer').text("OTP expired.");
+            $('#resendOtpBtn').show();
+            $('#verifyOtpBtn').hide();
+        } else {
+            $('#timer').text(`Time left: ${time}s`);
+            time--;
         }
+    }, 1000);
+}
 
-        startTimer(duration);
+// Initial run
+if (duration > 0) {
+    startTimer(duration);
+} else {
+    $('#timer').text("OTP expired.");
+    $('#resendOtpBtn').show();
+    $('#verifyOtpBtn').hide();
+}
 
-        $('#resendOtpBtn').click(function () {
-            $(this).text("Resending...").prop("disabled", true);
 
-            $.ajax({
-                url: "{{ route('resend.otp') }}",
-                method: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}' 
-                    },
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        $('#resendOtpBtn').hide().text("Resend OTP").prop("disabled", false);
-                        startTimer(duration);
-                    } else {
-                        alert(response.message);
-                        $('#resendOtpBtn').text("Resend OTP").prop("disabled", false);
-                    }
-                },
-                error: function () {
-                    alert("Something went wrong. Try again.");
-                    $('#resendOtpBtn').text("Resend OTP").prop("disabled", false);
+       $('#resendOtpBtn').click(function () {
+    $.ajax({
+        url: "{{ route('resend.otp') }}", // You must define this route in your web.php
+        method: "POST",
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        success: function (response) {
+            $('#ajaxMessage')
+                .removeClass('d-none alert-danger')
+                .addClass('alert-success')
+                .text(response.message);
+
+                  // Hide message after 3 seconds
+    setTimeout(function () {
+        $('#ajaxMessage').fadeOut('slow', function () {
+            $(this).addClass('d-none').text('').show(); // Reset state
+        });
+    }, 3000); // 3000 milliseconds = 3 seconds
+
+
+            // Reset buttons and timer
+            $('#resendOtpBtn').hide();
+            $('#verifyOtpBtn').show();
+            clearInterval(timerInterval);
+            startTimer(120); // restart timer to 2 minutes
+        },
+        error: function () {
+            $('#ajaxMessage')
+                .removeClass('d-none alert-success')
+                .addClass('alert-danger')
+                .text('Failed to resend OTP. Please try again.');
+        }
+    });
+});
+
+
+          $('#verifyOtpBtn').click(function (e) {
+        e.preventDefault();
+
+        var formData = $('#verifyOtpForm').serialize();
+
+        $.ajax({
+            url: "{{ route('verify.otp') }}",
+            type: "POST",
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                // Assuming a JSON response or redirect
+                if (response.success) {
+                    $('#ajaxSuccessMessage').removeClass('d-none').text(response.message);
+                    window.location.href = "/login"; // Redirect to login page
+                } else {
+                    $('#ajaxErrorMessage').removeClass('d-none').text(response.message);
                 }
-            });
+            },
+            error: function (xhr) {
+                let error = xhr.responseJSON?.message || 'An error occurred';
+                $('#ajaxErrorMessage').removeClass('d-none').text(error);
+            }
         });
     });
+
+
+
+
+
+    });
     </script>
+

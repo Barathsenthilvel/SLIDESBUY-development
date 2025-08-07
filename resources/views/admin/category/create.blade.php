@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -60,7 +60,7 @@
                                                         <div class="col-10">
                                                             <input class="form-control" type="text" value="{{old('category_name')}}" id="category_name" name="category_name" required/>
                                                         </div>
-                                                    </div>    
+                                                    </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Parent Category
                                                          <span class="text-danger">*</span></label>
@@ -77,21 +77,21 @@
                                                             @endforeach
                                                          </select>
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Category URL
                                                          <span class="text-danger">*</span></label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('Category_url')}}" id="Category_url" name="Category_url" required/>
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">HSN Code
                                                          <span class="text-danger">*</span></label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('hns_code')}}" id="hns_code" name="hns_code" />
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Description
                                                          <span class="text-danger"></span></label>
@@ -99,9 +99,9 @@
                                                             <textarea name="short_description" id="ktckeditor">{{old('short_description')}}</textarea>
                                                             <div class="fv-plugins-message-container"></div>
                                                          </div>
-                                                     </div>  
-                                                     
-                                                     
+                                                     </div>
+
+
                                      <div class="form-group row">
                                          <label class="col-2 col-form-label">Category Style1
                                          <span class="text-danger">*</span></label>
@@ -110,10 +110,10 @@
                                                 <img style="width:255px;border:2px dashed #222;height: 255px;" src="" id="image1">
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile(event)" id="style_1" name="style_1" >
-                                            
+
                                         <span class="text-danger">Width:1000px and Height:629px</span>
                                         </div>
-                                     </div>         
+                                     </div>
                                                     <div class="form-group row d-none">
                                                          <label class="col-2 col-form-label">Category Banner
                                                          <span class="text-danger">*</span></label>
@@ -125,8 +125,8 @@
                                                            <input style="display: none" type="file" class="upload_image"  accept="image/*"  id="category_banner">
                                                            <span class="text-danger">Width:600px and Height:370px</span>
                                                        </div>
-                                                     </div> 
-                                     
+                                                     </div>
+
                                      <div class="form-group row ">
                                          <label class="col-2 col-form-label">Category Style3
                                          <span class="text-danger">*</span></label>
@@ -135,10 +135,10 @@
                                                 <img style="width:255px;border:2px dashed #222;height: 255px;" src="" id="image3">
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile1(event)"  id="style_3" name="style_3" >
-                                            
+
                                         <span class="text-danger">Width:600px and Height:600px</span>
                                         </div>
-                                     </div>           
+                                     </div>
                                                     <div class="form-group row d-none">
                                                          <label class="col-2 col-form-label">Category Mobile Image
                                                          <span class="text-danger">*</span></label>
@@ -146,39 +146,39 @@
                                                             <label for="mobile_image">
                                                                <img  style="width:255px;border:2px dashed #222;height: 255px;">
                                                                <input type="hidden" name="mobile_image" value="">
-                                                              
+
                                                             </label>
                                                            <input type="file" style="display: none" class="upload_image" accept="image/*" value="" id="mobile_image">
                                                        </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Meta Title
                                                          </label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('meta_title')}}" id="meta_title" name="meta_title" />
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Meta Description
                                                          </label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('meta_description')}}" id="meta_description" name="meta_description" />
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Meta Keywords
                                                          </label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('meta_keywords')}}" id="meta_keywords" name="meta_keywords" />
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Sorting Order
                                                          </label>
                                                          <div class="col-10">
                                                              <input class="form-control" type="text" value="{{old('sort_order')}}" id="sort_order" name="sort_order" />
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row d-none">
                                                          <label class="col-2 col-form-label">Featured Category
                                                          </label>
@@ -188,7 +188,7 @@
                                                                 <span></span>
                                                             </label>
                                                          </div>
-                                                     </div>            
+                                                     </div>
                                                     <div class="form-group row d-none">
                                                          <label class="col-2 col-form-label">Featured Collection
                                                          </label>
@@ -198,9 +198,9 @@
                                                                 <span></span>
                                                             </label>
                                                          </div>
-                                                     </div>            
-                                        
-                                                </div> 
+                                                     </div>
+
+                                                </div>
                                                 <div class="card-footer">
                                                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-secondary">Cancel</button>
@@ -209,9 +209,9 @@
                                             <!--end::Form-->
                                         </div>
                                         <!--end::Card-->
-                                                        
+
                                     </div>
-                                  
+
                                 </div>
                             </div>
                             <!--end::Container-->
@@ -221,7 +221,7 @@
 
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection                     
+ @endsection
 
  @push('script')
     <script>
@@ -250,7 +250,7 @@
               height:400
             }
           });
-        
+
           $('.upload_image').on('change', function(){
             objectB = this.parentElement;
             objectA = this;
@@ -265,7 +265,7 @@
             reader.readAsDataURL(this.files[0]);
             $('#uploadimageModal').modal('show');
           });
-        
+
           $('.crop_image').click(function(event){
               var id= $("#id").val();
               var table_colum = objectA.id;
@@ -277,7 +277,7 @@
                     url:"{{ route('admin-category-cropimage') }}",
                     type: "POST",
                     data:{id:id,table_colum:table_colum,"image": response,"_token": "{{ csrf_token() }}"},
-                    success:function(data){  
+                    success:function(data){
                         $('#uploadimageModal').modal('hide');
                         objectB.children[0].children[1].value = data['Name'];
                     }
@@ -286,17 +286,17 @@
                 $('#uploadimageModal').modal('hide');
             })
           });
-        });  
+        });
         </script>
         <script>
   function loadFile(event) {
     var reader = new FileReader();
     reader.onload = function(e){
-        
+
                 var image = new Image();
                 image.src = e.target.result;
                 image.onload = function () {
-                  
+
         var height = image.naturalHeight;
     var width = image.naturalWidth;
     if ((height == 629) && (width == 1000 )) {
@@ -306,7 +306,7 @@
       $('#image1').attr('src','');
       $('#style_1').val();
       return false;
-    }  
+    }
                 };
       var output = document.getElementById('image1');
       output.src = reader.result;
@@ -316,11 +316,11 @@
   function loadFile1(event) {
     var reader = new FileReader();
     reader.onload = function(e){
-        
+
                 var image = new Image();
                 image.src = e.target.result;
                 image.onload = function () {
-                  
+
         var height = image.naturalHeight;
     var width = image.naturalWidth;
 
@@ -331,7 +331,7 @@
       $('#image3').attr('src','');
       $('#style_3').val();
       return false;
-    }  
+    }
                 };
       var output = document.getElementById('image3');
       output.src = reader.result;

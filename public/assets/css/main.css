@@ -479,29 +479,7 @@
     height: 100%;
 }
 
-/* Hide Scroll bar Css For Custom Modal */
-.scroll-hide {
-    position: absolute;
-    overflow-y: hidden;
-    padding-right: 17px;
-    top: 0;
-    left: 0;
-    width: 100%;
-}
-
-@media screen and (max-width: 991px) {
-    .scroll-hide {
-        padding-right: 0;
-    }
-}
-
-.scroll-hide-sm {
-    position: absolute;
-    overflow-y: hidden;
-    top: 0;
-    left: 0;
-    width: calc(100% - 0px);
-}
+/* Scroll functionality removed for better user experience */
 
 /* Overlay Start */
 .overlay {
@@ -551,6 +529,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    border-radius: inherit;
 }
 
 /* Display Flex Css Start */
@@ -5107,11 +5087,22 @@ input[type=number] {
     overflow: hidden;
     padding-bottom: 0;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (min-width: 575px) {
     .product-item__thumb {
-        max-height: 156px;
+        max-height: 200px;
+        aspect-ratio: 16/9;
+    }
+}
+
+@media (max-width: 574px) {
+    .product-item__thumb {
+        aspect-ratio: 4/3;
+        max-height: 180px;
     }
 }
 
@@ -5132,6 +5123,10 @@ input[type=number] {
 
 .product-item__thumb img {
     transition: 0.2s linear;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .product-item__wishlist {

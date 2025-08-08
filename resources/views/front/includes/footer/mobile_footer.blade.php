@@ -22,7 +22,7 @@
        function footer()
        {
        var st = $(this).scrollTop();
-       if (st> lastScrollTop) { 
+       if (st> lastScrollTop) {
            if(st >= $('.profile-leftinner').offset().top + $('.profile-leftinner').outerHeight() - window.innerHeight &&
            st <= $('.mobpricedet').offset().top + $('.mobpricedet').outerHeight() - window.innerHeight +500)
            {
@@ -48,10 +48,10 @@
        lastScrollTop = st;
        }
        footer();
-       }		
+       }
        });
    });
-       
+
    </script>
 @endpush
 @break
@@ -77,7 +77,7 @@
        function footer()
        {
        var st = $(this).scrollTop();
-       if (st> lastScrollTop) { 
+       if (st> lastScrollTop) {
            if(st >= $('.profile-leftinner').offset().top + $('.profile-leftinner').outerHeight() - window.innerHeight &&
            st <= $('.mobpricedet').offset().top + $('.mobpricedet').outerHeight() - window.innerHeight +500)
            {
@@ -103,10 +103,10 @@
        lastScrollTop = st;
        }
        footer();
-       }		
+       }
        });
    });
-       
+
    </script>
 @endpush
 @break
@@ -132,7 +132,7 @@
        function footer()
        {
        var st = $(this).scrollTop();
-       if (st> lastScrollTop) { 
+       if (st> lastScrollTop) {
            if(st >= $('.profile-leftinner').offset().top + $('.profile-leftinner').outerHeight() - window.innerHeight &&
            st <= $('.mobpricedet').offset().top + $('.mobpricedet').outerHeight() - window.innerHeight +500)
            {
@@ -158,17 +158,17 @@
        lastScrollTop = st;
        }
        footer();
-       }		
+       }
        });
    });
-       
+
    </script>
 @endpush
 @break
 @case('view.payment')
 
 <style>
-    .profile-leftinner { 
+    .profile-leftinner {
         min-height: auto;
     }
 </style>
@@ -177,7 +177,7 @@
 @case('product.item')
 <div class="sticky-foot footer-nav prodetfooter" style="display: block;">
 	  <div class="container ">
-	  <div class="mobile-footer"> 
+	  <div class="mobile-footer">
 	  <ul class="list-inline">
 	      <li class="footercart" ><a href="" style="font-size:11px;flex-direction: row;align-items: center;justify-content: center;align-content: center;" class="btn-cart1"><i class="fa fa-shopping-cart"></i>ADD TO CART</a></li>
 		  <li class=""><a href="" style="font-size:11px;flex-direction: row;align-items: center;justify-content: center;align-content: center;" id="footerWishlist"><i class="fa fa-heart"></i>WISHLIST</a></li>
@@ -187,7 +187,7 @@
 	 </div>
 	 @push('script')
    <script>
-   $(document).ready(function(){ 
+   $(document).ready(function(){
 	 /*sticky footer*/
 		 var width = $(window).width();
 		var lastScrollTop = 0;
@@ -199,7 +199,7 @@
 				var st = $(this).scrollTop();
 				 if (st > lastScrollTop){
 				 $(".footer-nav").slideDown();
-				 } 
+				 }
 				 else {
 				 $(".footer-nav").hide();
 				 }
@@ -225,7 +225,7 @@
 @case('front.userprofile')
 <div class="sticky-foot footer-nav orderfoot" style="display: block;">
 	  <div class="container ">
-	  <div class="mobile-footer"> 
+	  <div class="mobile-footer">
 	  <ul class="list-inline">
 		  <li class="w1"><a href="{{ route('front.index') }}"><i class="fa fa-home"></i><span>Home</span></a></li>
 		  <li class="w2"><a href="{{ route('order') }}" @if($screen == 'order') class="active" @endif><i class="fa fa-shopping-cart"></i><span>Orders</span></a></li>
@@ -238,8 +238,8 @@
 	 </div>
 	  @push('script')
    <script>
-   $(document).ready(function(){ 
-        	
+   $(document).ready(function(){
+
 	 /*sticky footer*/
     	 var searchvar=0;
     	 $("#searchbtm").click(function(e){
@@ -265,7 +265,7 @@
     			var st = $(this).scrollTop();
     			 if (st > lastScrollTop){
     			 $(".footer-nav").slideDown();
-    			 } 
+    			 }
     			 else {
     			 $(".footer-nav").hide();
     			 }
@@ -311,9 +311,7 @@
         </div>
     </div>
 </div>
-<div class="goto-top2">
-    <p class="goto-top"> <img src="{{URL::asset('assets/front/images/arrow.png')}}" class="img-responsive center-block" alt="logo" width="20" height="20"></p>
- </div>
+{{-- Scroll to top button removed for better user experience --}}
  @push('script')
    <script>
    $(document).ready(function(){
@@ -342,7 +340,7 @@
                   var st = $(this).scrollTop();
                    if (st > lastScrollTop){
                    $(".footer-nav").slideDown();
-                   } 
+                   }
                    else {
                    $(".footer-nav").hide();
                    }
@@ -353,7 +351,7 @@
           });
           /*sticky footer ends*/
    });
-       
+
    </script>
 @endpush
 @endswitch

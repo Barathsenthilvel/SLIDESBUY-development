@@ -66,7 +66,7 @@ class SubscriptionController extends Controller
 
 public function success($id)
 {
-    dd($id);
+    // dd($id);
     $subscription = Subscription::with('plan')->findOrFail($id);
     // dd($subscription);
     $plan = $subscription->plan;

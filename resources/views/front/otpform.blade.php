@@ -40,7 +40,7 @@
                 <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
                 <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
             </a>
-            <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
+            <h4 class="account-content__title mb-48 text-capitalize">Enter Your OTP</h4>
 
 
 
@@ -151,14 +151,6 @@ if (duration > 0) {
                 .removeClass('d-none alert-danger')
                 .addClass('alert-success')
                 .text(response.message);
-
-                  // Hide message after 3 seconds
-    setTimeout(function () {
-        $('#ajaxMessage').fadeOut('slow', function () {
-            $(this).addClass('d-none').text('').show(); // Reset state
-        });
-    }, 3000); // 3000 milliseconds = 3 seconds
-
 
             // Reset buttons and timer
             $('#resendOtpBtn').hide();

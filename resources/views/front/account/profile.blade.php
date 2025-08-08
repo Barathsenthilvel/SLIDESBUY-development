@@ -88,7 +88,7 @@
 
                 <div id="subscriptions" class="tab-pane" style="display: none;">
                     <!-- Subscriptions content -->
-                    <p>My Subscriptions content here</p>
+                    {{-- <p>My Subscriptions content here</p> --}}
                     {{--  --}}
                      <div class="container bg-grey" >
                          <table class="table table-custom">
@@ -137,7 +137,7 @@
                         <!-- Inner Tabs Content -->
                         <div class="tab-content">
                             <div id="personal-info" class="inner-tab-pane" style="display: block;">
-                                <p>Personal Info form or content goes here.</p>
+
                                 <form id="update-profile-form" action="{{ route('account.update') }}" method="POST" autocomplete="off">
                                         @csrf
                                         @method('POST')

@@ -502,61 +502,7 @@ weightUnit
 
 
     <!-- Author Details Start  http://127.0.0.1:8000/subscription/success/9-->
-    <div class="author-details">
-        <div class="d-flex align-items-center gap-2">
-            <div class="author-details__thumb flex-shrink-0">
-                <img src="{{ asset('assets/images/thumbs/author-details-img.png') }}" alt="">
-            </div>
-            <div class="author-details__content">
-                <h6 class="author-details__name font-18 mb-2"><a href="profile.html" class="link hover-text-main">Oviousdev</a></h6>
 
-                <span class="d-flex align-items-center gap-1">
-                    <span class="star-rating">
-                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
-                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
-                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
-                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
-                        <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
-                    </span>
-                    <span class="star-rating__text text-body"> 5.0</span>
-                </span>
-            </div>
-        </div>
-
-        <ul class="badge-list flx-align gap-2 mt-3">
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-          <img src="{{ asset('assets/images/thumbs/badge1.png') }}" alt="">
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="{{ asset('assets/images/thumbs/badge2.png') }} "alt="">
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                   <img src="{{ asset('assets/images/thumbs/badge3.png') }} "alt="">
-
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                  <img src="{{ asset('assets/images/thumbs/badge4.png') }} "alt="">
-
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-
-                 <img src="{{ asset('assets/images/thumbs/badge5.png') }} "alt="">
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-                <img src="{{ asset('assets/images/thumbs/badge6.png') }} "alt="">
-
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-
-                <img src="{{ asset('assets/images/thumbs/badge7.png') }} "alt="">
-            </li>
-            <li class="badge-list__item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Badge Info">
-
-                <img src="{{ asset('assets/images/thumbs/badge8.png') }} "alt="">
-            </li>
-        </ul>
-        <a href="profile.html" class="btn btn-outline-light w-100 pill mt-32">View Portfolio</a>
-    </div>
     <!-- Author Details End -->
 
     <!-- Meta Attribute List Start -->
@@ -573,14 +519,8 @@ weightUnit
             <span class="name">Category</span>
             <span class="details">Themes</span>
         </li>
-        <li class="meta-attribute__item">
-            <span class="name">Widget Ready</span>
-            <span class="details">Yes</span>
-        </li>
-        <li class="meta-attribute__item">
-            <span class="name">High Resolution</span>
-            <span class="details">Yes</span>
-        </li>
+
+
         <li class="meta-attribute__item">
             <span class="name">Copatible with</span>
             <span class="details">

@@ -303,10 +303,10 @@ public function register(Request $request)
 
     // dd($request->all());
     $otp = rand(100000, 999999);
-    $otpExpiresAt = now()->addMinutes(10);
+    $otpExpiresAt = now()->addMinutes(2); // Set consistent expiry time
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
-    Session::put('otp_expires', now()->addMinutes(2));
+    Session::put('otp_expires', $otpExpiresAt);
 
     try {
         // dd('mail->send');

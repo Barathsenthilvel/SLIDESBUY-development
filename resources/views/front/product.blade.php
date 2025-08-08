@@ -6,6 +6,35 @@
 
 
 <style>
+/* Attribute value styling */
+.attribute-value {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.tag-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.9em;
+    margin: 3px 6px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tag-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
 .btn-mainsss::before, .btn-mainsss::after {
     position: absolute;
@@ -415,16 +444,7 @@
         </li>
     </ul>
 
-    <div class="flx-between mt-3">
-        <div class="common-check mb-0">
-            <input class="form-check-input" type="checkbox" name="checkbox" id="extended">
-            <label class="form-check-label mb-0 fw-300 text-body" for="extended">Extended support 12 month</label>
-        </div>
-        <div class="flx-align gap-2">
-            <span class="product-item__prevPrice text-decoration-line-through">$12</span>
-            <h6 class="product-item__price mb-0 font-14 fw-500">$7.25</h6>
-        </div>
-    </div>
+
     {{-- <button type="button" class="btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5 mt-32">
         <img src="{{ asset('assets/images/icons/add-to-cart.svg') }}" alt="">
         Add To Cart
@@ -465,7 +485,7 @@
         </div>
     </div>
 @endif
-weightUnit
+
 @if (session('error'))
     <div class="alert alert-danger text-center mt-3">
         {{ session('error') }}
@@ -508,16 +528,92 @@ weightUnit
     <!-- Meta Attribute List Start -->
     <ul class="meta-attribute">
         <li class="meta-attribute__item">
+            <span class="name">Accessible</span>
+            <span class="details">
+                @if($product->is_free)
+                    <span class="badge bg-success">Free</span>
+                @else
+                    <span class="badge bg-primary">Paid</span>
+                @endif
+            </span>
+        </li>
+        <li class="meta-attribute__item">
+            <span class="name">Published By</span>
+            <span class="details">Slidesbuy</span>
+        </li>
+        <li class="meta-attribute__item">
+            <span class="name">Published On</span>
+            <span class="details">{{ $product->created_at->format('M d, Y') }}</span>
+        </li>
+        <li class="meta-attribute__item">
             <span class="name">Last Update</span>
-            <span class="details">{{ $product->updated_at }}</span>
+            <span class="details">{{ $product->updated_at->format('M d, Y') }}</span>
         </li>
         <li class="meta-attribute__item">
-            <span class="name">Published</span>
-            <span class="details">{{ $product->created_at }}</span>
+            <span class="name">Code</span>
+            <span class="details">{{ $product->product_sku }}</span>
         </li>
         <li class="meta-attribute__item">
-            <span class="name">Category</span>
-            <span class="details">Themes</span>
+            <span class="name">Categories</span>
+            <span class="details">
+                @php
+                    $categories = $product->getcategort();
+                @endphp
+                @if($categories->count() > 0)
+                    @foreach($categories as $key => $category)
+                        <a href="{{ url('category/' . $category->Category_url) }}"
+                           class="hover-text-decoration-underline">
+                            {{ $category->category_name }}{{ !$loop->last ? ',' : '' }}
+                        </a>
+                    @endforeach
+                @else
+                    <span class="text-muted">No categories assigned</span>
+                @endif
+            </span>
+        </li>
+                @php
+            $attributes = $product->Methodattribute();
+            $tags = [];
+            $otherAttributes = [];
+
+            foreach($attributes as $attribute) {
+                // Debug output
+                echo "<!-- Attribute: " . json_encode($attribute) . " -->\n";
+
+                // Check for both 'Tags' and 'tag' case-insensitively
+                if(strtolower($attribute[0]) == 'tags' || strtolower($attribute[0]) == 'tag') {
+                    $tagValues = $attribute[1];
+                    echo "<!-- Found Tags: " . $tagValues . " -->\n";
+                    $tags = array_filter(explode(',', $tagValues));
+                } else {
+                    $otherAttributes[] = $attribute;
+                }
+            }
+        @endphp
+
+        @if(count($otherAttributes) > 0)
+            @foreach($otherAttributes as $attribute)
+            <li class="meta-attribute__item">
+                <span class="name">{{ $attribute[0] }}</span>
+                <span class="details">
+                    <span class="attribute-value">{{ $attribute[1] }}</span>
+                </span>
+            </li>
+            @endforeach
+        @endif
+
+        <!-- Debug: Number of tags found: {{ count($tags) }} -->
+        <li class="meta-attribute__item">
+            <span class="name">Tags</span>
+            <span class="details">
+                @if(count($tags) > 0)
+                    @foreach($tags as $tag)
+                        <span class="tag-badge">{{ trim($tag) }}</span>
+                    @endforeach
+                @else
+                    <span class="text-muted">No tags assigned</span>
+                @endif
+            </span>
         </li>
 
 

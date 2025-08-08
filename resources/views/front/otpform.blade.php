@@ -108,10 +108,14 @@
 let timerInterval;
 
 // Get expiry time from server
-const otpExpiresAt = "{{ \Carbon\Carbon::parse(session('otp_expires_at'))->format('Y-m-d H:i:s') }}";
-const expiry = new Date(otpExpiresAt).getTime();
+const otpExpiresAt = "{{ session('otp_expires') ? \Carbon\Carbon::parse(session('otp_expires'))->format('Y-m-d H:i:s') : '' }}";
 const now = new Date().getTime();
-let duration = Math.floor((expiry - now) / 1000);
+let duration = 120; // Default 2 minutes
+
+if (otpExpiresAt) {
+    const expiry = new Date(otpExpiresAt).getTime();
+    duration = Math.floor((expiry - now) / 1000);
+}
 
 function startTimer(seconds) {
     let time = seconds;
@@ -130,13 +134,7 @@ function startTimer(seconds) {
 }
 
 // Initial run
-if (duration > 0) {
-    startTimer(duration);
-} else {
-    $('#timer').text("OTP expired.");
-    $('#resendOtpBtn').show();
-    $('#verifyOtpBtn').hide();
-}
+startTimer(Math.max(0, duration)); // Use max to ensure non-negative duration
 
 
        $('#resendOtpBtn').click(function () {

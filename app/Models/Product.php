@@ -194,16 +194,34 @@ class Product extends Model
     }
 
     public function Methodattribute(){
+        if (empty($this->attribute_values)) {
+            return [];
+        }
+
         $array = [];
-        $attribute_values  = explode("|",$this->attribute_values);
+        $attribute_values = array_filter(explode("|", $this->attribute_values));
+
         foreach($attribute_values as $value){
-            $value1 = \explode("-",$value);
-            $Att =  Attribute::where('status','1')->where('id',$value1[0])->first();
-            if(!empty($Att)){
-                $value1[0] = $Att->attribute_name;
-                $array[] = $value1;
+            $parts = explode("-", $value);
+            if (count($parts) !== 2) continue;
+
+            list($attrId, $attrValue) = $parts;
+
+            $attribute = Attribute::where('status', '1')
+                                ->where('id', $attrId)
+                                ->first();
+
+            if ($attribute) {
+                // For tags, split the values by comma
+                if (strtolower($attribute->attribute_name) === 'tags') {
+                    $values = array_filter(array_map('trim', explode(',', $attrValue)));
+                    $array[] = [$attribute->attribute_name, implode(', ', $values)];
+                } else {
+                    $array[] = [$attribute->attribute_name, $attrValue];
+                }
             }
         }
+
         return $array;
     }
     public function quantity(){

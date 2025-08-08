@@ -490,9 +490,11 @@ class ProductController extends Controller
         // Serve the file for download
         return Storage::disk('public')->download($filePath, $product->product_title . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
-public function store(Request $request){
-
-    // dd($request->all());
+    public function store(Request $request){
+        \Log::info('Product Attributes:', [
+            'all_request' => $request->all(),
+            'attributes' => $request->input('attributes', [])
+        ]);
     $attributeValues = [];
     $requestData = $request->all();
 
@@ -547,49 +549,63 @@ public function store(Request $request){
     $image4 = $request->image4;
     $image5 = $request->image5;
 
-    // COMMENTED OUT: Attribute logic block
-    /*
-    if ($attributeTemplate > 0) {
-        $attributes = $request['attributes'];
-        $attributeValues = [];
+    // Process attributes
+    $attributes = $request['attributes'] ?? [];
+    $attributeValues = [];
 
-        if (is_array($attributes)) {
-            foreach ($attributes as $key => $value) {
-                if (is_array($value)) {
-                    $attributeValues[] = $key . '-' . implode(',', $value);
-                } else {
-                    $getType = Attribute::findOrFail($key);
-                    $getAttri = $getType->attribute_values;
+    if (is_array($attributes)) {
+        foreach ($attributes as $key => $value) {
+            $getType = Attribute::find($key);
+            if (!$getType) continue;
 
-                    if ($getType->attribute_type == 2) {
-                        if (empty($getAttri)) {
-                            $getType->attribute_values = strip_tags($value);
-                            $getType->save();
-                        } else {
-                            if (!in_array(strip_tags($value), explode(',', $getAttri))) {
-                                $getType->attribute_values = $getAttri . ',' . strip_tags($value);
-                                $getType->save();
-                            }
-                        }
-                        $attributeValues[] = $key . '-' . $value;
-                    } else {
-                        if (empty($getAttri)) {
-                            $getType->attribute_values = $value;
-                            $getType->save();
-                        } else {
-                            if (!in_array($value, explode(',', $getAttri))) {
-                                $getType->attribute_values = $getAttri . ',' . $value;
-                                $getType->save();
-                            }
-                        }
-                        $attributeValues[] = $key . '-' . $value;
+            if (is_array($value)) {
+                // Handle multiple values (e.g. tags)
+                $cleanValues = array_map('trim', $value);
+                $attributeValues[] = $key . '-' . implode(',', $cleanValues);
+
+                // Update attribute's available values if needed
+                $existingValues = array_filter(explode(',', $getType->attribute_values ?? ''));
+                $newValues = array_diff($cleanValues, $existingValues);
+                if (!empty($newValues)) {
+                    $allValues = array_merge($existingValues, $newValues);
+                    $getType->attribute_values = implode(',', array_unique($allValues));
+                    $getType->save();
+                }
+            } else {
+                // Handle single value
+                $cleanValue = trim($value);
+                if (!empty($cleanValue)) {
+                    $attributeValues[] = $key . '-' . $cleanValue;
+
+                    // Update attribute's available values if needed
+                    $existingValues = array_filter(explode(',', $getType->attribute_values ?? ''));
+                    if (!in_array($cleanValue, $existingValues)) {
+                        $existingValues[] = $cleanValue;
+                        $getType->attribute_values = implode(',', array_unique($existingValues));
+                        $getType->save();
                     }
                 }
             }
         }
-        $attribute_value = implode('|', $attributeValues);
     }
-    */
+
+    $attribute_value = !empty($attributeValues) ? implode('|', $attributeValues) : '';
+
+    // Process attributes first
+    $attributeValues = [];
+    if (isset($requestData['attributes']) && is_array($requestData['attributes'])) {
+        foreach ($requestData['attributes'] as $attrId => $value) {
+            if (is_array($value)) {
+                // Handle multiple values (checkboxes, multiselect)
+                $attributeValues[] = $attrId . '-' . implode(',', $value);
+            } else {
+                // Handle single values
+                if (!empty($value)) {
+                    $attributeValues[] = $attrId . '-' . $value;
+                }
+            }
+        }
+    }
 
     $data = new Product;
     $data->category = (empty($requestData['category'])) ? '' : implode('|', (array)$requestData['category']);
@@ -597,7 +613,7 @@ public function store(Request $request){
     $data->slug = Str::slug($data->product_title, '-');
     $data->product_base_price = '';
     $data->product_sku = $requestData['skuCode'];
-    $data->attribute_values = ''; // Removed attribute_value based on template
+    $data->attribute_values = !empty($attributeValues) ? implode('|', $attributeValues) : '';
     $data->tax = '';
     $data->weight = '';
     $data->weight_unit = $requestData['weightUnit'];

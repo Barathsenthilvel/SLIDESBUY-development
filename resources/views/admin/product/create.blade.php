@@ -281,6 +281,12 @@
                             <h3 class="card-title">Attribute</h3>
                             @foreach($processGroup as $processGroup)
                             @if (!empty($processGroup[0]))
+                            @php
+                                $attributeId = $processGroup[0]->id;
+                                $attributeName = $processGroup[0]->attribute_name;
+                                $attributeType = $processGroup[0]->attribute_type;
+                                $attributeValues = !empty($processGroup[0]->attribute_values) ? explode(',', $processGroup[0]->attribute_values) : [];
+                            @endphp
                             @switch($processGroup[0]->attribute_type)
                             @case (1)
                             <div class="form-group row">
@@ -332,18 +338,19 @@
                                 <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
                                 <div class="col-lg-10 col-md-12">
                                   <select class="form-control multis" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}][]" multiple>
-                                      @if($attributeValues>0)
-                                      <option value="" >select {{$processGroup[0]->attribute_name}}</option>
-                                      @foreach($attributeValues1 as $attributeValues1)
-                                      @php
-                                      if(old('attributes[$processGroup[0]->attribute_name][]')){
-                                      var_dump(old('attributes[$processGroup[0]->attribute_name][]'));exit;
-                                        }
-                                      @endphp
-                                      <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',old('attributes[$processGroup[0]->attribute_name][]')))?'selected':'')}}>{{$attributeValues1}}</option>
+                                      @foreach($attributeValues as $value)
+                                          @php
+                                              $value = trim($value);
+                                              $oldValues = old("attributes.{$processGroup[0]->id}") ?? [];
+                                          @endphp
+                                          <option value="{{ $value }}" {{ in_array($value, $oldValues) ? 'selected' : '' }}>
+                                              {{ $value }}
+                                          </option>
                                       @endforeach
-                                      @endif
                                   </select>
+                                  @if($processGroup[0]->attribute_name === 'Tags' || $processGroup[0]->attribute_name === 'tags')
+                                      <small class="form-text text-muted">You can select multiple tags. These will be displayed on the product page.</small>
+                                  @endif
                               </div>
                           </div>
                           @break

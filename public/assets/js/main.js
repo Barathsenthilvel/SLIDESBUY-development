@@ -216,8 +216,112 @@
   // ========================= popular Category Js End ===================
   
   // ========================= Wishlist Js Start ===================
+  
+  // Global wishlist functions
+  function addToWishlist(productId) {
+    $.ajax({
+      method: "POST",
+      url: "/wishlistAdd",
+      data: { 
+        id: productId,
+        _token: $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(data) {
+        if (data.status === 'success') {
+          // Update wishlist count in header
+          $('.wishlist-count').text(data.count);
+          
+          // Update wishlist button state
+          $(`.wishlist-btn[data-product-id="${productId}"]`).addClass('in-wishlist active').find('i').removeClass('far').addClass('fas');
+          
+          // Refresh page to show updated wishlist
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        } else {
+          if (window.toaster) {
+            window.toaster.error(data.message || 'Error adding to wishlist');
+          } else {
+            alert(data.message || 'Error adding to wishlist');
+          }
+        }
+      },
+      error: function(xhr) {
+        if (xhr.status === 401) {
+          // Redirect to login if not authenticated
+          window.location.href = '/login';
+        } else {
+          if (window.toaster) {
+            window.toaster.error('Error adding to wishlist');
+          } else {
+            alert('Error adding to wishlist');
+          }
+        }
+      }
+    });
+  }
+
+  function removeFromWishlist(productId) {
+    $.ajax({
+      method: "POST",
+      url: "/wishlistRemove",
+      data: { 
+        id: productId,
+        _token: $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(data) {
+        if (data.status === 'success') {
+          // Update wishlist count in header
+          $('.wishlist-count').text(data.count);
+          
+          // Update wishlist button state
+          $(`.wishlist-btn[data-product-id="${productId}"]`).removeClass('in-wishlist active').find('i').removeClass('fas').addClass('far');
+          
+          // Refresh page to show updated wishlist
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        } else {
+          if (window.toaster) {
+            window.toaster.error(data.message || 'Error removing from wishlist');
+          } else {
+            alert(data.message || 'Error removing from wishlist');
+          }
+        }
+      },
+      error: function(xhr) {
+        if (xhr.status === 401) {
+          // Redirect to login if not authenticated
+          window.location.href = '/login';
+        } else {
+          if (window.toaster) {
+            window.toaster.error('Error removing from wishlist');
+          } else {
+            alert('Error removing from wishlist');
+          }
+        }
+      }
+    });
+  }
+
+  // Toggle wishlist function
+  function toggleWishlist(productId) {
+    const btn = $(`.wishlist-btn[data-product-id="${productId}"]`);
+    if (btn.hasClass('in-wishlist')) {
+      removeFromWishlist(productId);
+    } else {
+      addToWishlist(productId);
+    }
+  }
+
+  // Wishlist click handler
   $('.product-item__wishlist').on('click', function() {
-    $(this).toggleClass('active')
+    const productId = $(this).data('product-id');
+    if (productId) {
+      toggleWishlist(productId);
+    } else {
+      $(this).toggleClass('active');
+    }
   }); 
   // ========================= Wishlist Js End ===================
   

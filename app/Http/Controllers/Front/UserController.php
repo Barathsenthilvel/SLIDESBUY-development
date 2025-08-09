@@ -312,7 +312,18 @@ public function register(Request $request)
     'email' => 'required|email|unique:users,email',
     'password' => 'required|confirmed|min:6',
     'agree' => 'accepted',
-]);
+  ], [
+    'name.required' => 'Full name is required.',
+    'name.string' => 'Full name must be a valid text.',
+    'name.max' => 'Full name cannot exceed 255 characters.',
+    'email.required' => 'Email address is required.',
+    'email.email' => 'Please enter a valid email address.',
+    'email.unique' => 'This email address is already registered. Please use a different email or login.',
+    'password.required' => 'Password is required.',
+    'password.confirmed' => 'Password confirmation does not match.',
+    'password.min' => 'Password must be at least 6 characters long.',
+    'agree.accepted' => 'You must agree to the terms and conditions.',
+  ]);
 
     // dd($request->all());
     $otp = rand(100000, 999999);
@@ -601,33 +612,55 @@ public function resendOtp(Request $request)
   // }
   public function wishlist(){
     if(Auth::check()){
-      $array = \explode(',',Auth::user()->wishlist);
-      $Product = Product::whereIn('id',$array)->get();
-      return view('front.wishlist',compact('Product'));
+      $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');
+      return view('front.wishlist',compact('wishlistProducts'));
     }
     return redirect('/');
   }
+  
   public function wishlistAdd(Request $request){
-    $id = $request->id;
-    $array = \explode(',',Auth::user()->wishlist);
-    if(empty($array[0])){ $array = []; }
-    $array[] = $id;
-    $temp = implode(',',$array);
-    $user = Auth::user();
-    $user->wishlist = $temp;
-    $user->update();
-    return count($array);
+    if(!Auth::check()){
+      return response()->json(['status' => 'error', 'message' => 'Please login to add items to wishlist'], 401);
+    }
+    
+    $productId = $request->id;
+    
+    // Check if product already in wishlist
+    $exists = Auth::user()->wishlists()->where('product_id', $productId)->exists();
+    
+    if($exists){
+      return response()->json(['status' => 'error', 'message' => 'Product already in wishlist'], 400);
+    }
+    
+    try {
+      // Add to wishlist
+      Auth::user()->wishlists()->create([
+        'product_id' => $productId
+      ]);
+      
+      $wishlistCount = Auth::user()->wishlists()->count();
+      return response()->json(['status' => 'success', 'count' => $wishlistCount]);
+    } catch (\Exception $e) {
+      return response()->json(['status' => 'error', 'message' => 'Failed to add to wishlist: ' . $e->getMessage()], 500);
+    }
   }
+  
   public function wishlistremove(Request $request){
-    $id = $request->id;
-    $array = \explode(',',Auth::user()->wishlist);
-    $key  = array_search($id,$array,true);
-    unset($array[$key]);
-    $temp = implode(',',$array);
-    $user = Auth::user();
-    $user->wishlist = $temp;
-    $user->update();
-    return count($array);
+    if(!Auth::check()){
+      return response()->json(['status' => 'error', 'message' => 'Please login to remove items from wishlist'], 401);
+    }
+    
+    $productId = $request->id;
+    
+    try {
+      // Remove from wishlist
+      Auth::user()->wishlists()->where('product_id', $productId)->delete();
+      
+      $wishlistCount = Auth::user()->wishlists()->count();
+      return response()->json(['status' => 'success', 'count' => $wishlistCount]);
+    } catch (\Exception $e) {
+      return response()->json(['status' => 'error', 'message' => 'Failed to remove from wishlist: ' . $e->getMessage()], 500);
+    }
   }
    public function contact(Request $request){
       $requestData=$request->all();
@@ -679,9 +712,8 @@ public function resendOtp(Request $request)
        return redirect()->back()->withSuccess("Mail Sent");
     }
   public function wishlistTemplate(){
-    $array = \explode(',',Auth::user()->wishlist);
-    $Product = Product::whereIn('id',$array)->get();
-    return view('front.includes.wishlistTemplate',compact('Product'));
+    $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');
+    return view('front.includes.wishlistTemplate',compact('wishlistProducts'));
   }
     public function contactus(){
     return view('front.contactus');

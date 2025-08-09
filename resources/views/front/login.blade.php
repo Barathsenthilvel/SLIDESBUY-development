@@ -110,6 +110,9 @@
                 <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
+            @error('password')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
@@ -118,6 +121,9 @@
                 <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
+            @error('password_confirmation')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
@@ -125,6 +131,9 @@
                 <input class="form-check-input" type="checkbox" name="agree" id="agree" required>
                 <label class="form-check-label mb-0 fw-400 font-16 text-body" for="agree">I agree to the terms & conditions</label>
             </div>
+            @error('agree')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
@@ -159,9 +168,17 @@
 <script>
     // debugger
 jQuery(document).ready(function ($) {
-    $('#registerForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent form submission
+    // Show server-side validation errors if they exist
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            if (window.toaster) {
+                window.toaster.error('{{ $error }}');
+            }
+        @endforeach
+    @endif
 
+    $('#registerForm').on('submit', function(e) {
+        // Only do client-side validation, don't prevent form submission
         let isValid = true;
         let name = $('input[name="name"]').val().trim();
         let email = $('input[name="email"]').val().trim();
@@ -169,8 +186,8 @@ jQuery(document).ready(function ($) {
         let confirmPassword = $('input[name="password_confirmation"]').val();
         let agree = $('#agree').is(':checked');
 
-        // Clear previous errors
-        $('.text-danger').remove();
+        // Clear previous client-side errors
+        $('.text-danger').not('.server-error').remove();
 
         // Name validation
         if (name === '') {
@@ -205,82 +222,27 @@ jQuery(document).ready(function ($) {
             isValid = false;
         }
 
-        // If all validations pass, submit the form
-        if (isValid) {
-            // Show loading toaster
-            let loadingToast = null;
-            if (window.toaster) {
-                loadingToast = window.toaster.loading('Creating your account...');
-            } else {
-                // Fallback: show a simple loading message
-                $('.alert').remove();
-                $('<div class="alert alert-info">Creating your account...</div>').insertBefore($('#registerForm'));
-            }
-            
-            // Submit form via AJAX
-            $.ajax({
-                url: $(this).attr('action'),
-                method: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (window.toaster && loadingToast) {
-                        window.toaster.hide(loadingToast);
-                    } else {
-                        $('.alert').remove();
-                    }
-                    
-                    if (response.success) {
-                        if (window.toaster) {
-                            window.toaster.success('Account created successfully! Redirecting to OTP verification...', 3000);
-                        } else {
-                            $('<div class="alert alert-success">Account created successfully! Redirecting to OTP verification...</div>').insertBefore($('#registerForm'));
-                        }
-                        setTimeout(() => {
-                            window.location.href = response.redirect || '/otp-form';
-                        }, 3000);
-                    } else {
-                        if (window.toaster) {
-                            window.toaster.error(response.message || 'Account creation failed. Please try again.');
-                        } else {
-                            $('<div class="alert alert-danger">' + (response.message || 'Account creation failed. Please try again.') + '</div>').insertBefore($('#registerForm'));
-                        }
-                    }
-                },
-                error: function(xhr) {
-                    if (window.toaster && loadingToast) {
-                        window.toaster.hide(loadingToast);
-                    } else {
-                        $('.alert').remove();
-                    }
-                    
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        let errorMessage = '';
-                        for (let field in errors) {
-                            errorMessage += errors[field][0] + ' ';
-                        }
-                        if (window.toaster) {
-                            window.toaster.error(errorMessage.trim());
-                        } else {
-                            $('<div class="alert alert-danger">' + errorMessage.trim() + '</div>').insertBefore($('#registerForm'));
-                        }
-                    } else {
-                        const errorMessage = 'An error occurred while creating your account. Please try again.';
-                        if (window.toaster) {
-                            window.toaster.error(errorMessage);
-                        } else {
-                            $('<div class="alert alert-danger">' + errorMessage + '</div>').insertBefore($('#registerForm'));
-                        }
-                    }
-                }
-            });
-        } else {
-            if (window.toaster) {
-                window.toaster.error('Please fix the validation errors above.');
-            } else {
-                $('<div class="alert alert-danger">Please fix the validation errors above.</div>').insertBefore($('#registerForm'));
-            }
+        // If validation fails, prevent form submission and show errors
+        if (!isValid) {
+            e.preventDefault();
+            return false;
         }
+
+        // If all validations pass, show loading and submit form
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.text();
+
+        // Show loading state
+        submitBtn.prop('disabled', true).text('Creating Account...');
+
+        // Show loading toaster
+                        if (window.toaster) {
+            window.toaster.loading('Creating your account and sending OTP...');
+        }
+
+        // Allow form to submit normally
+        // The success message will be shown on the OTP form page
+    });
     });
 
     // Email regex helper

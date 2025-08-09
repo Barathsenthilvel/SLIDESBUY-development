@@ -148,14 +148,14 @@
                      class="cover-img">
             </a>
             <button type="button"
-                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $array) ? 'active' : '' }}"
-                    data-id="{{ $discountProduct->id }}"
+                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
+                    data-product-id="{{ $discountProduct->id }}"
                     data-container="body"
                     data-toggle="popover"
                     data-trigger="hover"
                     data-placement="top"
                     data-content="Wishlist">
-                <i class="{{ in_array($discountProduct->id, $array) ? 'fas' : 'far' }} fa-heart"></i>
+                <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
             </button>
         </div>
 
@@ -228,10 +228,12 @@
 
  --}}
 
-@php $array = []; @endphp
-@if (Auth::check())
-    @php $array = explode(',', Auth::user()->wishlist); @endphp
-@endif
+@php 
+$wishlistProductIds = [];
+if (Auth::check()) {
+    $wishlistProductIds = Auth::user()->wishlists()->pluck('product_id')->toArray();
+}
+@endphp
 
 <div class="row g-3">
     <div class="col-lg-12">
@@ -331,14 +333,14 @@
                              class="cover-img">
                     </a>
                                 <button type="button"
-                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $array) ? 'active' : '' }}"
-                    data-id="{{ $discountProduct->id }}"
+                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
+                    data-product-id="{{ $discountProduct->id }}"
                     data-container="body"
                     data-toggle="popover"
                     data-trigger="hover"
                     data-placement="top"
                     data-content="Wishlist">
-                <i class="{{ in_array($discountProduct->id, $array) ? 'fas' : 'far' }} fa-heart"></i>
+                <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
             </button>
                 </div>
 

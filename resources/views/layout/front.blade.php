@@ -280,6 +280,8 @@
                 }
             });
         });
+        
+
     </script>
     @stack('script')
 </body>

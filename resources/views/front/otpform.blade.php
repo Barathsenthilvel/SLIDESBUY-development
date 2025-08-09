@@ -48,6 +48,9 @@
         @if(session('error'))
     <div class="alert alert-danger" id="errorMessage">{{ session('error') }}</div>
 @endif
+@if(session('success'))
+    <div class="alert alert-success" id="successMessage">{{ session('success') }}</div>
+@endif
 <div id="ajaxSuccessMessage" class="alert alert-success d-none"></div>
 <div id="ajaxErrorMessage" class="alert alert-danger d-none"></div>
         {{-- <form action="{{ route('verify.otp') }}" method="POST">
@@ -109,6 +112,13 @@
 <script>
 
   jQuery(document).ready(function ($) {
+    // Show success message as toaster if it exists
+    @if(session('success'))
+        if (window.toaster) {
+            window.toaster.success('{{ session('success') }}');
+        }
+    @endif
+    
 let timerInterval;
 
 // Get expiry time from server
@@ -231,9 +241,9 @@ $('#verifyOtpBtn').click(function (e) {
             
             if (response.success) {
                 if (window.toaster) {
-                    window.toaster.success(response.message || 'Account created successfully! Redirecting to login...', 3000);
+                    window.toaster.success('🎉 Account created successfully! Redirecting to login...', 3000);
                 } else {
-                    $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-success').text(response.message || 'Account created successfully! Redirecting to login...');
+                    $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-success').text('Account created successfully! Redirecting to login...');
                 }
                 setTimeout(() => {
                     window.location.href = response.redirect || "/login";

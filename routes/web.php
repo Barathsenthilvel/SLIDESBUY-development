@@ -41,11 +41,11 @@ Route::post('/loginmobile', 'Front\UserController@signOnWithMobileNo')->name('lo
 Route::get('/Sign-Up', 'Front\UserController@LoadLogin')->name('front.loginBlade');
 Route::get('/thankyou', 'Front\UserController@thankyou')->name('thankyou');
 Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
-Route::get('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
-Route::get('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
+Route::post('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
+Route::post('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
 Route::get('/wishlistTemplate', 'Front\UserController@wishlistTemplate')->name('wishlistTemplate');
-Route::get('/wishlist/add', 'Front\UserController@wishlistAdd')->name('wishlist.add');
-Route::get('/wishlist/remove', 'Front\UserController@wishlistremove')->name('wishlist.remove');
+Route::post('/wishlist/add', 'Front\UserController@wishlistAdd')->name('wishlist.add');
+Route::post('/wishlist/remove', 'Front\UserController@wishlistremove')->name('wishlist.remove');
 Route::get('/myaddress', 'Front\UserController@myaccount')->name('front.account');
 Route::get('/verification/{id}/{token}', 'Front\UserController@verify')->name('front.verify');
 Route::Post('/forgoaaaaaat', 'Front\UserController@forgotpasswordaaa')->name('front.forgot');

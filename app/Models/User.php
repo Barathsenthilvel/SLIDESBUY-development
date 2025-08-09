@@ -110,4 +110,14 @@ public function subscriptions()
 {
     return $this->hasMany(Subscription::class, 'user_id');
 }
+
+public function wishlists()
+{
+    return $this->hasMany(Wishlist::class);
+}
+
+public function isInWishlist($productId)
+{
+    return $this->wishlists()->where('product_id', $productId)->exists();
+}
 }

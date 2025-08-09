@@ -49,10 +49,9 @@
 <body>
 @php
 $wishlistcnt = 0;
-    if(Auth::check()){
-    if(Auth::user()->wishlist) $wishlistcnt = count(\explode(',',Auth::user()->wishlist));
-    }
-
+if(Auth::check()){
+    $wishlistcnt = Auth::user()->wishlists()->count();
+}
 @endphp
 <!--==================== Preloader Start ====================-->
  <div class="loader-mask">

@@ -107,7 +107,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" >
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
         </div>
@@ -115,7 +115,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Confirm Password</label>
             <div class="position-relative">
-                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" >
+                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
         </div>
@@ -150,9 +150,11 @@
 <!-- Load jQuery first -->
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <!-- Then jQuery Validation -->
 {{-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script> --}}
-
 
 <script>
     // debugger
@@ -205,7 +207,79 @@ jQuery(document).ready(function ($) {
 
         // If all validations pass, submit the form
         if (isValid) {
-            this.submit(); // or use AJAX if needed
+            // Show loading toaster
+            let loadingToast = null;
+            if (window.toaster) {
+                loadingToast = window.toaster.loading('Creating your account...');
+            } else {
+                // Fallback: show a simple loading message
+                $('.alert').remove();
+                $('<div class="alert alert-info">Creating your account...</div>').insertBefore($('#registerForm'));
+            }
+            
+            // Submit form via AJAX
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('.alert').remove();
+                    }
+                    
+                    if (response.success) {
+                        if (window.toaster) {
+                            window.toaster.success('Account created successfully! Redirecting to OTP verification...', 3000);
+                        } else {
+                            $('<div class="alert alert-success">Account created successfully! Redirecting to OTP verification...</div>').insertBefore($('#registerForm'));
+                        }
+                        setTimeout(() => {
+                            window.location.href = response.redirect || '/otp-form';
+                        }, 3000);
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error(response.message || 'Account creation failed. Please try again.');
+                        } else {
+                            $('<div class="alert alert-danger">' + (response.message || 'Account creation failed. Please try again.') + '</div>').insertBefore($('#registerForm'));
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('.alert').remove();
+                    }
+                    
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorMessage = '';
+                        for (let field in errors) {
+                            errorMessage += errors[field][0] + ' ';
+                        }
+                        if (window.toaster) {
+                            window.toaster.error(errorMessage.trim());
+                        } else {
+                            $('<div class="alert alert-danger">' + errorMessage.trim() + '</div>').insertBefore($('#registerForm'));
+                        }
+                    } else {
+                        const errorMessage = 'An error occurred while creating your account. Please try again.';
+                        if (window.toaster) {
+                            window.toaster.error(errorMessage);
+                        } else {
+                            $('<div class="alert alert-danger">' + errorMessage + '</div>').insertBefore($('#registerForm'));
+                        }
+                    }
+                }
+            });
+        } else {
+            if (window.toaster) {
+                window.toaster.error('Please fix the validation errors above.');
+            } else {
+                $('<div class="alert alert-danger">Please fix the validation errors above.</div>').insertBefore($('#registerForm'));
+            }
         }
     });
 

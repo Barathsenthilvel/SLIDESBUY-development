@@ -30,6 +30,7 @@
                 <div class="row gy-4">
 
                     @foreach($plans as $plan)
+                    {{-- @dd($plan); --}}
                     <div class="col-lg-4 col-sm-6">
                         <div class="pricing-item box-shadow-lg hover-bg-main">
                             <img src="assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
@@ -44,7 +45,39 @@
                             </div>
                             <div class="pricing-item__content">
                                 <h3 class="pricing-item__price mb-2">
-                                    ₹{{ $plan->price }}
+                                    @if($plan->discount && $plan->discount > 0)
+                                        @php
+                                            $originalPrice = $plan->price;
+                                            $discountedPrice = $plan->price;
+                                            
+                                            if($plan->discount_type === 'flat') {
+                                                $discountedPrice = $plan->price - $plan->discount;
+                                            } elseif($plan->discount_type === 'percentage') {
+                                                $discountedPrice = $plan->price - ($plan->price * $plan->discount / 100);
+                                            }
+                                            
+                                            // Ensure discounted price doesn't go below 0
+                                            $discountedPrice = max(0, $discountedPrice);
+                                        @endphp
+                                        
+                                        <div class="price-display">
+                                            <div class="original-price-small">
+                                                <span class="text-decoration-line-through text-muted">₹{{ $originalPrice }}</span>
+                                            </div>
+                                            <div class="discounted-price-large">
+                                                <span class="text-success fw-bold">₹{{ number_format($discountedPrice, 2) }}</span>
+                                                <span class="discount-badge-attractive">
+                                                    @if($plan->discount_type === 'flat')
+                                                        SAVE ₹{{ $plan->discount }}
+                                                    @elseif($plan->discount_type === 'percentage')
+                                                        SAVE {{ $plan->discount }}%
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        ₹{{ $plan->price }}
+                                    @endif
                                     <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span>
                                 </h3>
                                 <p class="pricing-item__desc">Essential services to start your journey</p>
@@ -64,13 +97,21 @@
                             </div>
                             <div class="pricing-item__lists">
                                 <ul class="text-list">
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Up to 30 members</li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Collaboration</li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Project management</li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Case management</li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Process management</li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads{{$plan->download_limit}} </li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
+                                    @if($plan->discount && $plan->discount > 0)
+                                        <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount: 
+                                            @if($plan->discount_type === 'flat')
+                                                ₹{{ $plan->discount }} OFF
+                                            @elseif($plan->discount_type === 'percentage')
+                                                {{ $plan->discount }}% OFF
+                                            @endif
+                                        </li>
+                                    @endif
+                                    {{-- <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Process management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Workflow management</li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Team management</li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Team management</li> --}}
                                 </ul>
                             </div>
                         </div>
@@ -130,6 +171,170 @@
 .discount-badge {
     font-size: 0.8rem;
     font-weight: 600;
+}
+
+/* Pricing card discount styles */
+.pricing-item__price .text-decoration-line-through {
+    color: #6c757d !important;
+    font-size: 0.9em;
+}
+
+.pricing-item__price .text-success {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+
+.pricing-item__price .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Attractive discount pricing styles */
+.price-display {
+    text-align: center;
+    position: relative;
+}
+
+.original-price-small {
+    margin-bottom: 8px;
+}
+
+.original-price-small .text-decoration-line-through {
+    font-size: 0.75em !important;
+    color: #999 !important;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+.discounted-price-large {
+    position: relative;
+    display: inline-block;
+}
+
+.discounted-price-large .text-success {
+    font-size: 1.4em !important;
+    color: #28a745 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    animation: pulse-glow 2s infinite;
+    display: inline-block;
+}
+
+.discount-badge-attractive {
+    position: absolute;
+    top: -12px;
+    right: -20px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(238, 90, 36, 0.4);
+    animation: bounce 2s infinite;
+    transform: rotate(-5deg);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+/* Animations for attractive pricing */
+@keyframes pulse-glow {
+    0%, 100% {
+        text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+    50% {
+        text-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: rotate(-5deg) translateY(0);
+    }
+    40% {
+        transform: rotate(-5deg) translateY(-5px);
+    }
+    60% {
+        transform: rotate(-5deg) translateY(-3px);
+    }
+}
+
+/* Hover effects for more attraction */
+.pricing-item:hover .discounted-price-large .text-success {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.pricing-item:hover .discount-badge-attractive {
+    animation: bounce 1s infinite;
+    box-shadow: 0 6px 16px rgba(238, 90, 36, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .discounted-price-large .text-success {
+        font-size: 1.2em !important;
+    }
+    
+    .discount-badge-attractive {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+        top: -10px;
+        right: -15px;
+    }
+}
+
+/* Ensure all pricing cards have the same height */
+.pricing-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-item__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-item__price {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
+    align-items: center;
+}
+
+.pricing-item__price .d-flex {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.pricing-item__price .text-decoration-line-through {
+    color: #6c757d !important;
+    font-size: 0.65em !important;
+}
+
+.pricing-item__price .text-success {
+    color: #28a745 !important;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .pricing-item__price .d-flex {
+        flex-direction: column;
+        gap: 0.25rem !important;
+    }
+    
+    .pricing-item__price .badge {
+        font-size: 0.5rem;
+        padding: 0.2rem 0.4rem;
+    }
 }
 
 /* Toast Styles */
@@ -211,10 +416,14 @@
                                                 <div class="col-md-6">
                             <h6 class="text-muted mb-2">Plan Price</h6>
                             <div class="price-container mb-3">
-                                <h3 class="plan-price-final text-primary mb-1"></h3>
-                                <div class="original-price-container" style="display: none;">
-                                    <span class="plan-price-original text-muted text-decoration-line-through"></span>
-                                    <span class="discount-badge bg-success text-white px-2 py-1 rounded ms-2"></span>
+                                <div class="price-display">
+                                    <div class="original-price-small" style="display: none;">
+                                        <span class="plan-price-original text-decoration-line-through text-muted"></span>
+                                    </div>
+                                    <div class="discounted-price-large">
+                                        <h3 class="plan-price-final text-success mb-0"></h3>
+                                        <span class="discount-badge-attractive" style="display: none;"></span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -347,21 +556,23 @@ jQuery(document).ready(function ($) {
         let discountedPrice = calculateDiscountedPrice(planData.price, planData.discountType, planData.discount);
 
         // Display final price (discounted or original)
-        $('.plan-price-final').text('₹' + discountedPrice);
+        $('.plan-price-final').text('₹' + discountedPrice.toFixed(2));
 
         // Show original price and discount if applicable
         if (planData.discount > 0) {
-            $('.original-price-container').show();
-            $('.plan-price-original').text('₹' + planData.price);
+            $('.original-price-small').show();
+            $('.plan-price-original').text('₹' + planData.price.toFixed(2));
+            $('.discount-badge-attractive').show();
 
             // Show discount badge
             if (planData.discountType === 'flat') {
-                $('.discount-badge').text('₹' + planData.discount + ' OFF');
+                $('.discount-badge-attractive').text('SAVE ₹' + planData.discount);
             } else if (planData.discountType === 'percentage') {
-                $('.discount-badge').text(planData.discount + '% OFF');
+                $('.discount-badge-attractive').text('SAVE ' + planData.discount + '%');
             }
         } else {
-            $('.original-price-container').hide();
+            $('.original-price-small').hide();
+            $('.discount-badge-attractive').hide();
         }
     }
 
@@ -479,23 +690,247 @@ jQuery(document).ready(function ($) {
 function calculateDiscountedPrice(price, discountType, discount) {
     if (!discount || discount <= 0) return price;
 
-    let flatDiscountPrice = price;
-    let percentageDiscountPrice = price;
+    let discountedPrice = price;
 
     if (discountType === 'flat') {
-        flatDiscountPrice = price - discount;
+        discountedPrice = price - discount;
     } else if (discountType === 'percentage') {
-        percentageDiscountPrice = price - (price * discount / 100);
+        discountedPrice = price - (price * discount / 100);
     }
-
-    // Pick the lesser of the two discount types (better deal for user)
-    let discountedPrice = Math.min(flatDiscountPrice, percentageDiscountPrice);
 
     // Avoid negative price
     if (discountedPrice < 0) discountedPrice = 0;
 
-    return discountedPrice;
+    return Math.round(discountedPrice * 100) / 100; // Round to 2 decimal places
 }
+
+// ==================== UNIVERSAL TOASTER SYSTEM ====================
+// This toaster system can be used across all authentication forms
+
+class ToasterSystem {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        // Create toaster container if it doesn't exist
+        if (!document.getElementById('toaster-container')) {
+            const toasterContainer = document.createElement('div');
+            toasterContainer.id = 'toaster-container';
+            toasterContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 400px;
+                width: 100%;
+            `;
+            document.body.appendChild(toasterContainer);
+        }
+    }
+
+    show(message, type = 'info', duration = 5000, loading = false) {
+        const toasterContainer = document.getElementById('toaster-container');
+        
+        // Remove existing toasts
+        const existingToasts = toasterContainer.querySelectorAll('.toast-item');
+        existingToasts.forEach(toast => {
+            if (toast.dataset.type !== 'loading') {
+                toast.remove();
+            }
+        });
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast-item toast-${type}`;
+        toast.style.cssText = `
+            background: ${this.getBackgroundColor(type)};
+            color: ${this.getTextColor(type)};
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        `;
+
+        // Add icon
+        const icon = document.createElement('span');
+        icon.innerHTML = this.getIcon(type, loading);
+        icon.style.cssText = `
+            font-size: 18px;
+            flex-shrink: 0;
+        `;
+
+        // Add message
+        const messageElement = document.createElement('span');
+        messageElement.textContent = message;
+        messageElement.style.cssText = `
+            flex: 1;
+        `;
+
+        // Add close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '×';
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 8px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        `;
+        closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
+        closeBtn.onmouseout = () => closeBtn.style.opacity = '0.7';
+        closeBtn.onclick = () => this.hide(toast);
+
+        // Add progress bar for loading
+        if (loading) {
+            const progressBar = document.createElement('div');
+            progressBar.style.cssText = `
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                background: rgba(255,255,255,0.3);
+                width: 100%;
+                animation: progress 2s linear infinite;
+            `;
+            toast.appendChild(progressBar);
+        }
+
+        // Assemble toast
+        toast.appendChild(icon);
+        toast.appendChild(messageElement);
+        if (!loading) {
+            toast.appendChild(closeBtn);
+        }
+
+        // Add to container
+        toasterContainer.appendChild(toast);
+
+        // Auto remove after duration (except for loading toasts)
+        if (!loading && duration > 0) {
+            setTimeout(() => {
+                this.hide(toast);
+            }, duration);
+        }
+
+        return toast;
+    }
+
+    hide(toast) {
+        if (toast && toast.parentNode) {
+            toast.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }
+    }
+
+    loading(message = 'Loading...') {
+        return this.show(message, 'loading', 0, true);
+    }
+
+    success(message, duration = 5000) {
+        return this.show(message, 'success', duration);
+    }
+
+    error(message, duration = 5000) {
+        return this.show(message, 'error', duration);
+    }
+
+    warning(message, duration = 5000) {
+        return this.show(message, 'warning', duration);
+    }
+
+    info(message, duration = 5000) {
+        return this.show(message, 'info', duration);
+    }
+
+    getBackgroundColor(type) {
+        const colors = {
+            success: '#28a745',
+            error: '#dc3545',
+            warning: '#ffc107',
+            info: '#17a2b8',
+            loading: '#6c757d'
+        };
+        return colors[type] || colors.info;
+    }
+
+    getTextColor(type) {
+        return type === 'warning' ? '#212529' : '#ffffff';
+    }
+
+    getIcon(type, loading = false) {
+        if (loading) {
+            return '<div class="spinner-border spinner-border-sm" role="status"></div>';
+        }
+
+        const icons = {
+            success: '<i class="fas fa-check-circle"></i>',
+            error: '<i class="fas fa-exclamation-circle"></i>',
+            warning: '<i class="fas fa-exclamation-triangle"></i>',
+            info: '<i class="fas fa-info-circle"></i>'
+        };
+        return icons[type] || icons.info;
+    }
+}
+
+// Initialize toaster system
+window.toaster = new ToasterSystem();
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes progress {
+        0% { width: 0%; }
+        100% { width: 100%; }
+    }
+
+    .toast-item {
+        transition: all 0.3s ease;
+    }
+
+    .toast-item:hover {
+        transform: translateX(-5px);
+    }
+`;
+document.head.appendChild(style);
 </script>
 
 

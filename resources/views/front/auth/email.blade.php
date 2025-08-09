@@ -44,6 +44,8 @@
 
     #countdownTimer {
       font-size: 15px;
+      font-weight: bold;
+      color: #dc3545;
     }
 
     .btn-custom {
@@ -56,12 +58,32 @@
       background-color: #0056b3;
     }
 
+    .btn-custom:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
     .form-title {
       font-size: 24px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 20px;
       color: #333;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -78,24 +100,51 @@
         <span id="emailError" class="text-danger mt-1 d-block"></span>
       </div>
 
-      <button type="submit" id="resetBtn" class="btn btn-custom w-100">Send Reset Link</button>
+      <button type="submit" id="resetBtn" class="btn btn-custom w-100">
+        <span id="btnText">Send Reset Link</span>
+        <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+      </button>
     </form>
 
     <!-- Message Boxes -->
     <div id="resetStatusMessage" class="text-center mt-3"></div>
-    <div id="countdownTimer" class="text-center text-primary"></div>
+    <div id="countdownTimer" class="text-center mt-2"></div>
   </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <script>
 let countdown;
+let isSubmitting = false;
 
 $('#resetForm').on('submit', function(e) {
     e.preventDefault();
 
+    // Prevent multiple submissions
+    if (isSubmitting) {
+        return false;
+    }
+
     $('#emailError').text('');
     $('#resetStatusMessage').text('').css('color', '');
     $('#countdownTimer').text('');
+
+    // Show loading state
+    isSubmitting = true;
+    $('#btnText').text('Sending...');
+    $('#btnSpinner').show();
+    $('#resetBtn').prop('disabled', true);
+
+    // Show loading toaster
+    let loadingToast = null;
+    if (window.toaster) {
+        loadingToast = window.toaster.loading('Sending reset link...');
+    } else {
+        $('#resetStatusMessage').text('Sending reset link...').css('color', '#007bff');
+    }
 
     $.ajax({
         url: '{{ route("password.email") }}',
@@ -104,62 +153,123 @@ $('#resetForm').on('submit', function(e) {
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
+        timeout: 10000, // 10 second timeout
         success: function(response) {
-    $('#resetStatusMessage')
-        .text(response.message)
-        .css('color', 'green');
-
-    // Optional: Disable button to prevent resending
-    $('#resetBtn').prop('disabled', true);
-
-    // Optional: Start countdown (if you want visual delay)
-    // startCountdown(300);
-
-    // Wait 3 seconds, then go to login page
-    setTimeout(function() {
-        window.location.href = "{{ route('login.form') }}";
-    }, 3000);
-},
-        // success: function(response) {
-        //     $('#resetStatusMessage').text(response.message).css('color', 'green');
-        //     $('#')
-
-
-
-        //     // Start 5-minute countdown
-        //     startCountdown(300);
-        //     $('#resetBtn').prop('disabled', true);
-        // },
-        error: function(xhr) {
-            if (xhr.status === 429) {
-                // Laravel throttle response
-                $('#resetStatusMessage').text("Please wait before retrying.").css('color', 'red');
-            } else if (xhr.status === 404 && xhr.responseJSON?.message) {
-                $('#resetStatusMessage').text(xhr.responseJSON.message).css('color', 'red');
-            } else if (xhr.responseJSON?.errors?.email) {
-                $('#emailError').text(xhr.responseJSON.errors.email[0]);
+            // Hide loading toaster
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            }
+            
+            if (response.status) {
+                // Success case - reset link sent
+                if (window.toaster) {
+                    window.toaster.success(response.message || 'Reset link sent successfully! Redirecting to login page...', 3000);
+                } else {
+                    $('#resetStatusMessage').text(response.message || 'Reset link sent successfully! Redirecting to login page...').css('color', '#28a745');
+                }
+                
+                // Clear any existing countdown
+                clearInterval(countdown);
+                $('#countdownTimer').text('');
+                
+                // Redirect to login page after 3 seconds
+                setTimeout(function() {
+                    window.location.href = "{{ route('login.form') }}";
+                }, 3000);
+                
             } else {
-                $('#resetStatusMessage').text('Something went wrong. Please try again.').css('color', 'red');
+                // Failed case - reset link not sent
+                if (window.toaster) {
+                    window.toaster.error(response.message || 'Failed to send reset link.');
+                } else {
+                    $('#resetStatusMessage').text(response.message || 'Failed to send reset link.').css('color', '#dc3545');
+                }
+                resetButton();
+            }
+        },
+        error: function(xhr) {
+            // Hide loading toaster
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            }
+            
+            if (xhr.status === 429) {
+                // Laravel throttle response - too many requests
+                let retryAfter = xhr.responseJSON?.retry_after || 300;
+                if (window.toaster) {
+                    window.toaster.error('Please wait before requesting again. You can try again in ' + Math.ceil(retryAfter / 60) + ' minutes.');
+                } else {
+                    $('#resetStatusMessage').text('Please wait before requesting again. You can try again in ' + Math.ceil(retryAfter / 60) + ' minutes.').css('color', '#dc3545');
+                }
+                startCountdown(retryAfter);
+            } else if (xhr.status === 404) {
+                const errorMsg = xhr.responseJSON?.message || 'Email not found. Please check your email address.';
+                if (window.toaster) {
+                    window.toaster.error(errorMsg);
+                } else {
+                    $('#resetStatusMessage').text(errorMsg).css('color', '#dc3545');
+                }
+                resetButton();
+            } else if (xhr.responseJSON?.errors?.email) {
+                const errorMsg = xhr.responseJSON.errors.email[0];
+                $('#emailError').text(errorMsg);
+                if (window.toaster) {
+                    window.toaster.error(errorMsg);
+                } else {
+                    $('#resetStatusMessage').text(errorMsg).css('color', '#dc3545');
+                }
+                resetButton();
+            } else if (xhr.status === 0 || xhr.statusText === 'timeout') {
+                const errorMsg = 'Request timeout. Please check your internet connection and try again.';
+                if (window.toaster) {
+                    window.toaster.error(errorMsg);
+                } else {
+                    $('#resetStatusMessage').text(errorMsg).css('color', '#dc3545');
+                }
+                resetButton();
+            } else {
+                const errorMsg = 'Something went wrong. Please try again.';
+                if (window.toaster) {
+                    window.toaster.error(errorMsg);
+                } else {
+                    $('#resetStatusMessage').text(errorMsg).css('color', '#dc3545');
+                }
+                resetButton();
             }
         }
     });
 });
 
+function resetButton() {
+    isSubmitting = false;
+    $('#btnText').text('Send Reset Link');
+    $('#btnSpinner').hide();
+    $('#resetBtn').prop('disabled', false);
+}
+
 function startCountdown(seconds) {
     clearInterval(countdown);
+    let remainingSeconds = seconds;
+    
     countdown = setInterval(function () {
-        let minutes = Math.floor(seconds / 60);
-        let secs = seconds % 60;
-        $('#countdownTimer').text(`You can request again in ${minutes}:${secs < 10 ? '0' : ''}${secs}`);
-        seconds--;
-
-        if (seconds < 0) {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        
+        if (remainingSeconds > 0) {
+            $('#countdownTimer').text(`Please wait ${minutes}:${seconds.toString().padStart(2, '0')} before requesting again`);
+            remainingSeconds--;
+        } else {
             clearInterval(countdown);
             $('#countdownTimer').text('');
-            $('#resetBtn').prop('disabled', false);
+            resetButton();
         }
     }, 1000);
 }
+
+// Clear countdown when user leaves page
+$(window).on('beforeunload', function() {
+    clearInterval(countdown);
+});
 </script>
 </body>
 </html>

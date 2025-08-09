@@ -53,43 +53,56 @@ class UserController extends Controller
 }
 public function sendResetLinkEmail(Request $request)
 {
-    $request->validate(['email' => 'required|email']);
+    try {
+        $request->validate(['email' => 'required|email']);
 
-    $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-    if (!$user) {
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This email is not registered in our system.'
+            ], 404);
+        }
+
+        // Check if requested within last 5 minutes (300 seconds)
+        if ($user->password_requested_at && now()->diffInSeconds($user->password_requested_at) < 300) {
+            $remainingSeconds = 300 - now()->diffInSeconds($user->password_requested_at);
+            $remainingMinutes = ceil($remainingSeconds / 60);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Please wait ' . $remainingMinutes . ' minute(s) before requesting again.',
+                'retry_after' => $remainingSeconds
+            ], 429);
+        }
+
+        // Send reset link using Laravel's built-in password reset
+        $status = Password::sendResetLink($request->only('email'));
+
+        if (in_array($status, [Password::RESET_LINK_SENT, 'passwords.sent'])) {
+            // Update the password_requested_at timestamp
+            $user->update(['password_requested_at' => now()]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password reset link has been sent to your email address. Please check your inbox (and spam folder).'
+            ]);
+        }
+
         return response()->json([
             'status' => false,
-            'message' => 'This email is not registered.'
-        ], 404);
-    }
+            'message' => 'Unable to send reset link. Please try again later.'
+        ], 500);
 
-    // Check if requested within last 5 minutes
-    if ($user->password_requested_at && now()->diffInSeconds($user->password_requested_at) < 300) {
-        $remainingSeconds = 300 - now()->diffInSeconds($user->password_requested_at);
-
+    } catch (\Exception $e) {
+        \Log::error('Password reset error: ' . $e->getMessage());
+        
         return response()->json([
             'status' => false,
-            'message' => 'Please wait before requesting again.',
-            'retry_after' => $remainingSeconds
-        ], 429); // 429 = Too Many Requests
+            'message' => 'An error occurred while processing your request. Please try again later.'
+        ], 500);
     }
-
-    $status = Password::sendResetLink($request->only('email'));
-
-    if (in_array($status, [Password::RESET_LINK_SENT, 'passwords.sent'])) {
-        $user->update(['password_requested_at' => now()]);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Reset link sent. Please check your email.'
-        ]);
-    }
-
-    return response()->json([
-        'status' => false,
-        'message' => 'Unable to send reset link. Please try again later.'
-    ], 500);
 }
 
 

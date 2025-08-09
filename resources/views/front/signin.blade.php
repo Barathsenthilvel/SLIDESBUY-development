@@ -90,7 +90,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required>
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required autocomplete="current-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
                         <div class="error-msg password-error mt-1 text-danger"></div>
 
@@ -122,9 +122,11 @@
 <!-- Load jQuery first -->
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <!-- Then your script -->
 <script>
-
     jQuery(document).ready(function ($) {
         $('#loginForm').on('submit', function (e) {
             e.preventDefault();
@@ -134,40 +136,101 @@
             $('.password-error').text('');
             $('input').removeClass('is-invalid');
 
+            // Show loading toaster (with fallback)
+            let loadingToast = null;
+            if (window.toaster) {
+                loadingToast = window.toaster.loading('Logging in...');
+            } else {
+                // Fallback: show a simple loading message
+                $('#loginError').text('Logging in...').removeClass('text-danger').addClass('text-info');
+            }
+
             let formData = $(this).serialize();
 
             $.ajax({
-               url: "{{ route('login.submit') }}",// Update if your login route is different
+               url: "{{ route('login.submit') }}",
                 method: 'POST',
                 data: formData,
                 success: function (res) {
+                    // Hide loading toaster
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('#loginError').text('').removeClass('text-info');
+                    }
+                    
                     if (res.success) {
-                        window.location.href = '/home';
+                        if (window.toaster) {
+                            window.toaster.success('Login successful! Redirecting...', 2000);
+                        } else {
+                            $('#loginError').text('Login successful! Redirecting...').removeClass('text-danger').addClass('text-success');
+                        }
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 2000);
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error('Login failed. Please try again.');
+                        } else {
+                            $('#loginError').text('Login failed. Please try again.').removeClass('text-success text-info').addClass('text-danger');
+                        }
                     }
                 },
                 error: function (xhr) {
+                    // Hide loading toaster
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('#loginError').text('').removeClass('text-info');
+                    }
+                    
                     if (xhr.status === 422) {
                         // Laravel validation errors
                         let errors = xhr.responseJSON.errors;
                         if (errors.email) {
                             $('input[name="email"]').addClass('is-invalid');
                             $('.email-error').text(errors.email[0]);
+                            if (window.toaster) {
+                                window.toaster.error(errors.email[0]);
+                            } else {
+                                $('#loginError').text(errors.email[0]).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                         if (errors.password) {
                             $('input[name="password"]').addClass('is-invalid');
                             $('.password-error').text(errors.password[0]);
+                            if (window.toaster) {
+                                window.toaster.error(errors.password[0]);
+                            } else {
+                                $('#loginError').text(errors.password[0]).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                     } else if (xhr.status === 401) {
                         let response = xhr.responseJSON;
                         if (response.field === 'email') {
                             $('input[name="email"]').addClass('is-invalid');
                             $('.email-error').text(response.message);
+                            if (window.toaster) {
+                                window.toaster.error(response.message);
+                            } else {
+                                $('#loginError').text(response.message).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         } else if (response.field === 'password') {
                             $('input[name="password"]').addClass('is-invalid');
                             $('.password-error').text(response.message);
+                            if (window.toaster) {
+                                window.toaster.error(response.message);
+                            } else {
+                                $('#loginError').text(response.message).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                     } else {
-                        alert('An unknown error occurred. Please try again.');
+                        const errorMessage = 'An unknown error occurred. Please try again.';
+                        if (window.toaster) {
+                            window.toaster.error(errorMessage);
+                        } else {
+                            $('#loginError').text(errorMessage).removeClass('text-success text-info').addClass('text-danger');
+                        }
                     }
                 }
             });

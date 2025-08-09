@@ -102,6 +102,10 @@
 </section>
 @endsection
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <script>
 
   jQuery(document).ready(function ($) {
@@ -136,68 +140,132 @@ function startTimer(seconds) {
 // Initial run
 startTimer(Math.max(0, duration)); // Use max to ensure non-negative duration
 
-
-       $('#resendOtpBtn').click(function () {
+$('#resendOtpBtn').click(function () {
+    // Show loading toaster
+    let loadingToast = null;
+    if (window.toaster) {
+        loadingToast = window.toaster.loading('Resending OTP...');
+    } else {
+        $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-info').text('Resending OTP...');
+    }
+    
     $.ajax({
-        url: "{{ route('resend.otp') }}", // You must define this route in your web.php
+        url: "{{ route('resend.otp') }}",
         method: "POST",
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         success: function (response) {
-            $('#ajaxMessage')
-                .removeClass('d-none alert-danger')
-                .addClass('alert-success')
-                .text(response.message);
-
-            // Reset buttons and timer
-            $('#resendOtpBtn').hide();
-            $('#verifyOtpBtn').show();
-            clearInterval(timerInterval);
-            startTimer(120); // restart timer to 2 minutes
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            } else {
+                $('#ajaxMessage').removeClass('alert-info');
+            }
+            
+            if (response.success) {
+                if (window.toaster) {
+                    window.toaster.success(response.message || 'OTP resent successfully!');
+                } else {
+                    $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-success').text(response.message || 'OTP resent successfully!');
+                }
+                
+                // Reset buttons and timer
+                $('#resendOtpBtn').hide();
+                $('#verifyOtpBtn').show();
+                clearInterval(timerInterval);
+                startTimer(120); // restart timer to 2 minutes
+            } else {
+                if (window.toaster) {
+                    window.toaster.error(response.message || 'Failed to resend OTP.');
+                } else {
+                    $('#ajaxMessage').removeClass('d-none alert-success').addClass('alert-danger').text(response.message || 'Failed to resend OTP.');
+                }
+            }
         },
-        error: function () {
-            $('#ajaxMessage')
-                .removeClass('d-none alert-success')
-                .addClass('alert-danger')
-                .text('Failed to resend OTP. Please try again.');
+        error: function (xhr) {
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            } else {
+                $('#ajaxMessage').removeClass('alert-info');
+            }
+            
+            let errorMessage = 'Failed to resend OTP. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            if (window.toaster) {
+                window.toaster.error(errorMessage);
+            } else {
+                $('#ajaxMessage').removeClass('d-none alert-success').addClass('alert-danger').text(errorMessage);
+            }
         }
     });
 });
 
+$('#verifyOtpBtn').click(function (e) {
+    e.preventDefault();
 
-          $('#verifyOtpBtn').click(function (e) {
-        e.preventDefault();
+    // Show loading toaster
+    let loadingToast = null;
+    if (window.toaster) {
+        loadingToast = window.toaster.loading('Verifying OTP...');
+    } else {
+        $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-info').text('Verifying OTP...');
+    }
 
-        var formData = $('#verifyOtpForm').serialize();
+    var formData = $('#verifyOtpForm').serialize();
 
-        $.ajax({
-            url: "{{ route('verify.otp') }}",
-            type: "POST",
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function (response) {
-                // Assuming a JSON response or redirect
-                if (response.success) {
-                    $('#ajaxSuccessMessage').removeClass('d-none').text(response.message);
-                    window.location.href = "/login"; // Redirect to login page
-                } else {
-                    $('#ajaxErrorMessage').removeClass('d-none').text(response.message);
-                }
-            },
-            error: function (xhr) {
-                let error = xhr.responseJSON?.message || 'An error occurred';
-                $('#ajaxErrorMessage').removeClass('d-none').text(error);
+    $.ajax({
+        url: "{{ route('verify.otp') }}",
+        type: "POST",
+        data: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        success: function (response) {
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            } else {
+                $('#ajaxMessage').removeClass('alert-info');
             }
-        });
+            
+            if (response.success) {
+                if (window.toaster) {
+                    window.toaster.success(response.message || 'Account created successfully! Redirecting to login...', 3000);
+                } else {
+                    $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-success').text(response.message || 'Account created successfully! Redirecting to login...');
+                }
+                setTimeout(() => {
+                    window.location.href = response.redirect || "/login";
+                }, 3000);
+            } else {
+                if (window.toaster) {
+                    window.toaster.error(response.message || 'Invalid OTP. Please try again.');
+                } else {
+                    $('#ajaxMessage').removeClass('d-none alert-success').addClass('alert-danger').text(response.message || 'Invalid OTP. Please try again.');
+                }
+            }
+        },
+        error: function (xhr) {
+            if (window.toaster && loadingToast) {
+                window.toaster.hide(loadingToast);
+            } else {
+                $('#ajaxMessage').removeClass('alert-info');
+            }
+            
+            let errorMessage = 'An error occurred while verifying OTP.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            if (window.toaster) {
+                window.toaster.error(errorMessage);
+            } else {
+                $('#ajaxMessage').removeClass('d-none alert-success').addClass('alert-danger').text(errorMessage);
+            }
+        }
     });
+});
 
-
-
-
-
-    });
-    </script>
+});
+</script>
 

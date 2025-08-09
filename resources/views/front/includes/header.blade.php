@@ -277,11 +277,19 @@ $wishlistcnt = 0;
 
             <!-- Header Right start -->
             <div class="header-right flx-align">
-    <a href="cart.html" class="header-right__button cart-btn position-relative">
-        <img src={{ asset('assets/images/icons/cart.svg') }} alt="" class="white-version">
-        <img src={{ asset('assets/images/icons/cart-white.svg') }} alt="" class="dark-version">
+    @auth
+    <a href="{{ route('wishlist') }}" class="header-right__button wishlist-btn position-relative">
+        <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
+        <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
+        <span class="qty-badge font-12 wishlist-count">{{ $wishlistcnt }}</span>
+    </a>
+    @else
+    <a href="{{ route('front.loginBlade') }}" class="header-right__button wishlist-btn position-relative">
+        <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
+        <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
         <span class="qty-badge font-12">0</span>
     </a>
+    @endauth
 
      <!-- Light Dark Mode -->
  <div class="theme-switch-wrapper position-relative">

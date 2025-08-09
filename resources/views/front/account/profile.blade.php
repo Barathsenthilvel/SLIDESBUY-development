@@ -1,11 +1,12 @@
 @extends('front.includes.container')
 @section('content')
 <!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-
-    <style>
+<style>
     /* Make all table text black */
     .table-custom tbody tr {
         color: #000;
@@ -250,27 +251,30 @@
 
         $('#update-profile-form').on('submit', function(e) {
             e.preventDefault();
-
-            // Clear previous errors
             $('.text-danger').remove();
+
+            // Show loading toaster
+            const loadingToast = window.toaster.loading('Updating profile...');
 
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 success: function(response) {
-                    // 🎉 Show success toast
-                    toastr.success(response.message || 'Profile updated successfully!');
+                    window.toaster.hide(loadingToast);
+                    window.toaster.success(response.message || 'Profile updated successfully!');
                 },
                 error: function(xhr) {
+                    window.toaster.hide(loadingToast);
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         $.each(errors, function(field, messages) {
                             let input = $('[name=' + field + ']');
                             input.after('<small class="text-danger">' + messages[0] + '</small>');
                         });
+                        window.toaster.error('Please fix the validation errors above.');
                     } else {
-                        toastr.error('Something went wrong!');
+                        window.toaster.error('Something went wrong!');
                     }
                 }
             });
@@ -280,17 +284,24 @@ $('#password-update-form').on('submit', function(e) {
     e.preventDefault();
     $('.text-danger').remove(); // remove previous errors
 
+    // Show loading toaster
+    const loadingToast = window.toaster.loading('Updating password...');
+
     $.ajax({
         type: 'POST',
         url: $(this).attr('action'),
         data: $(this).serialize(),
         success: function(response) {
+            window.toaster.hide(loadingToast);
             if (response.status) {
-                toastr.success(response.message);
+                window.toaster.success(response.message || 'Password updated successfully!');
                 $('#password-update-form')[0].reset();
+            } else {
+                window.toaster.error(response.message || 'Failed to update password.');
             }
         },
         error: function(xhr) {
+            window.toaster.hide(loadingToast);
             if (xhr.status === 422) {
                 const res = xhr.responseJSON;
 
@@ -300,15 +311,17 @@ $('#password-update-form').on('submit', function(e) {
                         const input = $('[name="' + field + '"]');
                         input.after('<small class="text-danger">' + messages[0] + '</small>');
                     });
+                    window.toaster.error('Please fix the validation errors above.');
                 }
 
                 // Show custom error (like incorrect password)
                 if (res.status === false && res.message) {
                     const input = $('[name="current_password"]');
                     input.after('<small class="text-danger">' + res.message + '</small>');
+                    window.toaster.error(res.message);
                 }
             } else {
-                toastr.error('Something went wrong. Please try again.');
+                window.toaster.error('Something went wrong. Please try again.');
             }
         }
     });

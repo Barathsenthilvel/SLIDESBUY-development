@@ -35,7 +35,8 @@ class User extends Authenticatable
         'pincode',
         'address',
         'wishlist',
-        'street'
+        'street',
+        'password_requested_at'
     ];
 
     /**

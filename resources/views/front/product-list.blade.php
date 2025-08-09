@@ -148,14 +148,14 @@
                      class="cover-img">
             </a>
             <button type="button"
-                    class="product-item__wishlist wishlist-btn {{ in_array($discountProduct->id, $array) ? 'added' : '' }}"
+                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $array) ? 'active' : '' }}"
                     data-id="{{ $discountProduct->id }}"
                     data-container="body"
                     data-toggle="popover"
                     data-trigger="hover"
                     data-placement="top"
                     data-content="Wishlist">
-                <i class="fas fa-heart"></i>
+                <i class="{{ in_array($discountProduct->id, $array) ? 'fas' : 'far' }} fa-heart"></i>
             </button>
         </div>
 
@@ -330,16 +330,16 @@
                              alt="{{ $discountProduct->product_title ?? 'Product Image' }}"
                              class="cover-img">
                     </a>
-                    <button type="button"
-                            class="product-item__wishlist wishlist-btn {{ in_array($discountProduct->id, $array) ? 'added' : '' }}"
-                            data-id="{{ $discountProduct->id }}"
-                            data-container="body"
-                            data-toggle="popover"
-                            data-trigger="hover"
-                            data-placement="top"
-                            data-content="Wishlist">
-                        <i class="fas fa-heart"></i>
-                    </button>
+                                <button type="button"
+                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $array) ? 'active' : '' }}"
+                    data-id="{{ $discountProduct->id }}"
+                    data-container="body"
+                    data-toggle="popover"
+                    data-trigger="hover"
+                    data-placement="top"
+                    data-content="Wishlist">
+                <i class="{{ in_array($discountProduct->id, $array) ? 'fas' : 'far' }} fa-heart"></i>
+            </button>
                 </div>
 
                 <div class="product-item__content">

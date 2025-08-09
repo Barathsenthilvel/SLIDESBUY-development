@@ -31,12 +31,16 @@
                                             <li> <a href="#" data-id="{{$discountProduct->id}}" data-q="{{$discountProduct->minquantity}}"
                                                     class="cart-btn common-btn {{($discountProduct->soldout != 'off')?'':'btn-cart2'}} "  @if($discountProduct->soldout != 'off') style="pointer-events: none" @endif >{{($discountProduct->soldout != 'off')?'soldout':'Add to Cart'}}</a></li>
                                             <li>
-                                                <a href="#" data-container="body" data-trigger="hover"
-                                                    data-toggle="popover" data-placement="top" data-content="Wishlist" data-id="{{$discountProduct->id}}"
-                                                    data-original-title="" title="" class="wishlist-btn common-btn btn-wishlist {{(in_array($discountProduct->id,$array)?'added':'')}}">
-                                                    <img class="img-responsive center-block"
-                                                        src="{{URL::asset('assets/front/images/icons/wishlist.png')}}">
-                                                </a>
+                                                <button type="button" 
+                                                        class="wishlist-btn btn-wishlist {{(in_array($discountProduct->id,$array)?'active':'')}}"
+                                                        data-id="{{$discountProduct->id}}"
+                                                        data-container="body"
+                                                        data-toggle="popover"
+                                                        data-trigger="hover"
+                                                        data-placement="top"
+                                                        data-content="Wishlist">
+                                                    <i class="{{(in_array($discountProduct->id,$array)?'fas':'far')}} fa-heart"></i>
+                                                </button>
                                             </li>
                                         </ul>
                                     </div>

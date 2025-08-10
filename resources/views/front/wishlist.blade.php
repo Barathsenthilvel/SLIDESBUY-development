@@ -9,12 +9,12 @@
                 <div class="page-title">
                     <h2 class="text-heading">My Wishlist</h2>
                 </div>
-                <nav class="breadcrumb-nav">
+                {{-- <nav class="breadcrumb-nav">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('front.index') }}">Home</a></li>
                         <li class="breadcrumb-item active">Wishlist</li>
                     </ol>
-                </nav>
+                </nav> --}}
             </div>
         </div>
     </div>
@@ -83,11 +83,11 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                                             <div class="product-item__bottom flx-between gap-2">
                                                 <div>
                                                     <span class="product-item__sales font-14 mb-2">
-                                                        {{ $product->sales ?? '1200' }} Sales
+                                                        {{ $product->sales ?? '1200' }} Downloads
                                     </span>
                                                     <div class="d-flex align-items-center gap-1">
                                                         <ul class="star-rating">
@@ -102,13 +102,13 @@
                                         </span>
                                                     </div>
                                 </div>
-                                
+
                                                 <div class="d-flex gap-2">
                                                     <a href="{{ route('product.item', ['slug' => $product->slug]) }}"
                                                        class="btn btn-outline-light btn-sm pill">
                                                         View
                                                     </a>
-                                    @if($product->soldout == 'off')
+                                    {{-- @if($product->soldout == 'off')
                                                         <button class="btn btn-primary btn-sm pill" onclick="addToCart({{ $product->id }}, {{ $product->minquantity }})">
                                                             <i class="fas fa-shopping-cart"></i>
                                         </button>
@@ -116,7 +116,7 @@
                                                         <button class="btn btn-secondary btn-sm pill" disabled>
                                                             <i class="fas fa-times"></i>
                                         </button>
-                                    @endif
+                                    @endif --}}
                                                 </div>
                                             </div>
                                 </div>
@@ -159,7 +159,7 @@ function addToCart(productId, quantity) {
             // Update cart count
             $('.cart-count').text(data.totalitem);
             $('.dropdown-box').load("{{ route('user.render.card') }}");
-            
+
             // Show success message
             if (window.toaster) {
                 window.toaster.success('Added to Cart');
@@ -188,7 +188,7 @@ $(document).ready(function() {
     $.ajax({
             method: 'POST',
         url: "{{ route('wishlistremove') }}",
-        data: { 
+        data: {
             id: productId,
             _token: '{{ csrf_token() }}'
         },
@@ -196,7 +196,7 @@ $(document).ready(function() {
             if (data.status === 'success') {
                 // Update wishlist count in header
                 $('.wishlist-count').text(data.count);
-                
+
                     // Remove the product card from the list
                     const card = button.closest('.col-xl-3, .col-lg-4, .col-md-6, .col-sm-6');
                     if (card.length) {

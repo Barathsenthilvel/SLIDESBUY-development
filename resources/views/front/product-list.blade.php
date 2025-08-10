@@ -228,7 +228,7 @@
 
  --}}
 
-@php 
+@php
 $wishlistProductIds = [];
 if (Auth::check()) {
     $wishlistProductIds = Auth::user()->wishlists()->pluck('product_id')->toArray();
@@ -378,7 +378,7 @@ if (Auth::check()) {
                     <div class="product-item__bottom flx-between gap-2">
                         <div>
                             <span class="product-item__sales font-14 mb-2">
-                                {{ $discountProduct->sales ?? '1200' }} Sales
+                                {{ $discountProduct->sales ?? '1200' }} Downloads
                             </span>
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="star-rating">

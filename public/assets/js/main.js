@@ -234,12 +234,19 @@
           // Update wishlist button state
           $(`.wishlist-btn[data-product-id="${productId}"]`).addClass('in-wishlist active').find('i').removeClass('far').addClass('fas');
           
-          // Refresh page to show updated wishlist
-          setTimeout(function() {
-            window.location.reload();
-          }, 500);
+          // Show success toast instead of page refresh
+          if (typeof toastr !== 'undefined') {
+            toastr.success('Added to wishlist successfully!');
+          } else if (window.toaster) {
+            window.toaster.success('Added to wishlist successfully!');
+          } else {
+            // Fallback notification
+            showCustomToast('Added to wishlist successfully!', 'success');
+          }
         } else {
-          if (window.toaster) {
+          if (typeof toastr !== 'undefined') {
+            toastr.error(data.message || 'Error adding to wishlist');
+          } else if (window.toaster) {
             window.toaster.error(data.message || 'Error adding to wishlist');
           } else {
             alert(data.message || 'Error adding to wishlist');
@@ -251,7 +258,9 @@
           // Redirect to login if not authenticated
           window.location.href = '/login';
         } else {
-          if (window.toaster) {
+          if (typeof toastr !== 'undefined') {
+            toastr.error('Error adding to wishlist');
+          } else if (window.toaster) {
             window.toaster.error('Error adding to wishlist');
           } else {
             alert('Error adding to wishlist');
@@ -277,12 +286,19 @@
           // Update wishlist button state
           $(`.wishlist-btn[data-product-id="${productId}"]`).removeClass('in-wishlist active').find('i').removeClass('fas').addClass('far');
           
-          // Refresh page to show updated wishlist
-          setTimeout(function() {
-            window.location.reload();
-          }, 500);
+          // Show success toast instead of page refresh
+          if (typeof toastr !== 'undefined') {
+            toastr.success('Removed from wishlist successfully!');
+          } else if (window.toaster) {
+            window.toaster.success('Removed from wishlist successfully!');
+          } else {
+            // Fallback notification
+            showCustomToast('Removed from wishlist successfully!', 'success');
+          }
         } else {
-          if (window.toaster) {
+          if (typeof toastr !== 'undefined') {
+            toastr.error(data.message || 'Error removing from wishlist');
+          } else if (window.toaster) {
             window.toaster.error(data.message || 'Error removing from wishlist');
           } else {
             alert(data.message || 'Error removing from wishlist');
@@ -294,7 +310,9 @@
           // Redirect to login if not authenticated
           window.location.href = '/login';
         } else {
-          if (window.toaster) {
+          if (typeof toastr !== 'undefined') {
+            toastr.error('Error removing from wishlist');
+          } else if (window.toaster) {
             window.toaster.error('Error removing from wishlist');
           } else {
             alert('Error removing from wishlist');
@@ -1111,3 +1129,31 @@
     // ========================= Header Sticky Js End===================
 
 })(jQuery);
+
+// Custom toast notification function
+function showCustomToast(message, type = 'info') {
+  // Remove existing toasts
+  $('.custom-toast').remove();
+  
+  const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+  
+  const toast = $(`
+    <div class="custom-toast position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+      <div class="toast align-items-center ${toastClass} text-white border-0" role="alert">
+        <div class="d-flex">
+          <div class="toast-body">
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+    </div>
+  `);
+  
+  $('body').append(toast);
+  
+  // Auto-remove after 3 seconds
+  setTimeout(function() {
+    toast.remove();
+  }, 3000);
+}

@@ -177,20 +177,16 @@ function addToCart(productId, quantity) {
     });
 }
 
-// Override the wishlist click handler for wishlist page
+// Wishlist page: remove item without full page refresh
 $(document).ready(function() {
-    $('.product-item__wishlist').off('click').on('click', function() {
-        const productId = $(this).data('product-id');
-        if (productId) {
-            // Remove from wishlist (since we're on wishlist page)
-            removeFromWishlist(productId);
-        }
-    });
-});
+    $(document).on('click', '.product-item__wishlist', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const productId = button.data('product-id');
+        if (!productId) return;
 
-function removeFromWishlist(productId) {
     $.ajax({
-        method: "POST",
+            method: 'POST',
         url: "{{ route('wishlistremove') }}",
         data: { 
             id: productId,
@@ -201,10 +197,33 @@ function removeFromWishlist(productId) {
                 // Update wishlist count in header
                 $('.wishlist-count').text(data.count);
                 
-                // Refresh page to show updated wishlist
-                setTimeout(function() {
-                    window.location.reload();
-                }, 500);
+                    // Remove the product card from the list
+                    const card = button.closest('.col-xl-3, .col-lg-4, .col-md-6, .col-sm-6');
+                    if (card.length) {
+                        card.fadeOut(200, function() {
+                            $(this).remove();
+
+                            // If no items remain, show empty state
+                            if ($('.product-item__wishlist').length === 0) {
+                                $('#wishlist-content').html(`
+                                    <div class="text-center py-5">
+                                        <div class="empty-wishlist">
+                                            <i class="fas fa-heart-broken fa-4x text-muted mb-4"></i>
+                                            <h3 class="text-heading mb-3">Your wishlist is empty</h3>
+                                            <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
+                                            <a href="{{ route('front.index') }}" class="btn btn-primary">
+                                                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                                            </a>
+                                        </div>
+                                    </div>
+                                `);
+                            }
+                        });
+                    }
+
+                    if (window.toaster) {
+                        window.toaster.success('Removed from wishlist');
+                    }
             } else {
                 if (window.toaster) {
                     window.toaster.error(data.message || 'Failed to remove item');
@@ -215,8 +234,7 @@ function removeFromWishlist(productId) {
         },
         error: function(xhr) {
             if (xhr.status === 401) {
-                // Redirect to login
-                window.location.href = '{{ route("login.form") }}';
+                    window.location.href = '{{ route('login.form') }}';
             } else {
                 if (window.toaster) {
                     window.toaster.error('Failed to remove item from wishlist');
@@ -226,6 +244,7 @@ function removeFromWishlist(productId) {
             }
         }
     });
-}
+    });
+});
 </script>
 @endpush

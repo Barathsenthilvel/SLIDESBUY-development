@@ -41,6 +41,25 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+/* User profile dropdown behavior */
+.user-profile { position: relative; }
+.user-profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 220px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 1000;
+}
+.user-profile:hover .user-profile-dropdown { display: block; }
+.user-profile-dropdown.open { display: block; }
+.user-profile-dropdown .sidebar-list__item a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+.user-profile-dropdown .sidebar-list__item a:hover { background: #f5f7fb; }
+
 .nav-menu__item:hover > .nav-submenu,
 .nav-submenu__item:hover > .nav-submenu {
     display: block;
@@ -145,14 +164,14 @@ if(Auth::check()){
                     <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
                 </span>
             </button>
-            <ul class="user-profile-dropdown show">
+            <ul class="user-profile-dropdown">
                 <li class="sidebar-list__item">
-                    <a href="dashboard-profile.html" class="sidebar-list__link">
+                    <a href="{{ route('account.profile') }}" class="sidebar-list__link">
                         <span class="sidebar-list__icon">
                             <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
                             <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
                         </span>
-                        <span class="text">Profile</span>
+                        <span class="text">My Account</span>
                     </a>
                 </li>
 
@@ -319,21 +338,54 @@ if(Auth::check()){
                     </a>
             </li>
           @else
-           <div class="user-profile">
-            <button class="user-profile__button flex-align">
+           <div class="user-profile" id="desktopUserProfile">
+            <button class="user-profile__button flex-align" id="desktopUserButton" type="button">
                 <span class="user-profile__thumb">
                     <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
                 </span>
             </button>
-            <ul class="user-profile-dropdown show">
+            <ul class="user-profile-dropdown" id="desktopUserDropdown">
                 <li class="sidebar-list__item">
                     <a class="dropdown-item" href="{{ route('account.profile') }}">
                         <span class="sidebar-list__icon">
                             <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
                             <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
                         </span>
-                        <span class="text">Profile</span>
+                        <span class="text">My Account</span>
                     </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#downloads">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">My Downloads</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#subscriptions">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/price-icon1.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Subscriptions</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#profile">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Profile Update</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Log Out</span>
+                    </a>
+                    <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
                 </li>
             </ul>
         </div>
@@ -392,4 +444,19 @@ if(Auth::check()){
 </header>
 <!-- ==================== Header End Here ==================== -->
 
+
+<script>
+// Toggle user dropdown on click (desktop)
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('desktopUserButton');
+  const dd = document.getElementById('desktopUserDropdown');
+  if (btn && dd) {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      dd.classList.toggle('open');
+    });
+    document.addEventListener('click', function(){ dd.classList.remove('open'); });
+  }
+});
+</script>
 

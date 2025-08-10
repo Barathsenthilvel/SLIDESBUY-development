@@ -89,7 +89,7 @@
                                     data-discount="{{ $plan->discount ?? 0 }}"
                                     data-discount-type="{{ $plan->discount_type ?? '' }}"
                                     data-validity="{{ $plan->validity }}"
-                                    data-downloads="{{ $plan->downloads ?? 'Unlimited' }}"
+                                    data-downloads="{{ $plan->download_limit ?? 'Unlimited' }}"
                                     data-description="{{ $plan->description ?? 'Essential services to start your journey' }}">
                                     Get Started
                                     </a>
@@ -100,15 +100,7 @@
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads{{$plan->download_limit}} </li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
-                                    @if($plan->discount && $plan->discount > 0)
-                                        <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount: 
-                                            @if($plan->discount_type === 'flat')
-                                                ₹{{ $plan->discount }} OFF
-                                            @elseif($plan->discount_type === 'percentage')
-                                                {{ $plan->discount }}% OFF
-                                            @endif
-                                        </li>
-                                    @endif
+                                    {{-- Discount details moved to modal only --}}
                                     {{-- <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Process management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Workflow management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Team management</li> --}}
@@ -152,8 +144,11 @@
 .price-container {
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 15px;
+    padding: 22px 15px 15px; /* extra top space for badge overlap */
     background: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+    min-height: 76px;
 }
 
 .plan-price-final {
@@ -220,10 +215,13 @@
     display: inline-block;
 }
 
+/* reserve space so badge doesn’t cover last digits */
+.plan-price-final { padding-right: 56px; display: inline-block; }
+
 .discount-badge-attractive {
     position: absolute;
-    top: -12px;
-    right: -20px;
+    top: -6px; /* sit on top of the last digits */
+    right: 0;
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
     color: white;
     font-size: 0.65rem;
@@ -232,7 +230,6 @@
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(238, 90, 36, 0.4);
     animation: bounce 2s infinite;
-    transform: rotate(-5deg);
     white-space: nowrap;
     z-index: 10;
 }
@@ -279,8 +276,8 @@
     .discount-badge-attractive {
         font-size: 0.6rem;
         padding: 3px 8px;
-        top: -10px;
-        right: -15px;
+        top: -4px;
+        right: 0;
     }
 }
 
@@ -390,6 +387,13 @@
     background: #f8f9fa;
     border-radius: 0 0 15px 15px;
 }
+
+@media (max-width: 420px) {
+  .discounted-price-large .text-success { font-size: 1.2em !important; }
+  .discount-badge-attractive { font-size: 0.6rem; padding: 3px 8px; top: 6px; right: 6px; }
+}
+.plan-price-final { line-height: 1.1; }
+.discount-badge-attractive { max-width: calc(100% - 16px); text-overflow: ellipsis; overflow: hidden; }
 </style>
 
 <!-- Plan Details Modal -->
@@ -409,11 +413,8 @@
 
                             <h6 class="text-muted mb-2">Description</h6>
                             <p class="plan-description mb-3"></p>
-
-                            <h6 class="text-muted mb-2">Downloads</h6>
-                            <p class="plan-downloads mb-3"></p>
                         </div>
-                                                <div class="col-md-6">
+                        <div class="col-md-6">
                             <h6 class="text-muted mb-2">Plan Price</h6>
                             <div class="price-container mb-3">
                                 <div class="price-display">
@@ -426,17 +427,15 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <h6 class="text-muted mb-2">Validity</h6>
-                            <p class="plan-validity mb-3"></p>
                         </div>
                     </div>
 
                     <div class="plan-features mt-4">
                         <h6 class="text-muted mb-2">Plan Features</h6>
                         <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Up to 30 members</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Collaboration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>No. of Downloads: <span class="fw-600" id="pd-count">{{ $plan->download_limit ?? 'Unlimited' }}</span></li>
+                            <li><i class="fas fa-check text-success me-2"></i>All Content Access: <span class="fw-600" id="pd-access"></span></li>
+                            <li><i class="fas fa-check text-success me-2"></i>Validity: <span class="fw-600" id="pd-validity"></span></li>
                             <li><i class="fas fa-check text-success me-2"></i>Project management</li>
                             <li><i class="fas fa-check text-success me-2"></i>Case management</li>
                             <li><i class="fas fa-check text-success me-2"></i>Process management</li>
@@ -529,6 +528,14 @@ jQuery(document).ready(function ($) {
             description: button.data('description')
         };
 
+        // Debug: Log the data being extracted
+        console.log('Button data:', {
+            id: button.data('id'),
+            downloads: button.data('downloads'),
+            validity: button.data('validity')
+        });
+        console.log('Current plan data:', currentPlanData);
+
         // Populate modal with plan details
         populatePlanDetails(currentPlanData);
 
@@ -547,10 +554,18 @@ jQuery(document).ready(function ($) {
 
         // Function to populate plan details in modal
     function populatePlanDetails(planData) {
+        console.log('Plan Data:', planData); // Debug: Log the plan data
+        
         $('.plan-name').text(planData.name + ' Plan');
         $('.plan-description').text(planData.description);
-        $('.plan-downloads').text(planData.downloads + ' downloads');
-        $('.plan-validity').text(planData.validity + ' days');
+        
+        // Debug: Check if element exists and log the value
+        console.log('Downloads value:', planData.downloads);
+        console.log('pd-count element exists:', $('#pd-count').length > 0);
+        
+        $('#pd-count').text(planData.downloads);
+        $('#pd-access').text('Yes');
+        $('#pd-validity').text(planData.validity + ' days');
 
         // Calculate discounted price
         let discountedPrice = calculateDiscountedPrice(planData.price, planData.discountType, planData.discount);
@@ -931,7 +946,31 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-</script>
 
-
-@endsection
+// Custom toast notification function
+function showCustomToast(message, type = 'info') {
+    // Remove existing toasts
+    $('.custom-toast').remove();
+    
+    const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+    
+    const toast = $(`
+        <div class="custom-toast position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+            <div class="toast align-items-center ${toastClass} text-white border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    $('body').append(toast);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(function() {
+        toast.remove();
+    }, 3000);
+}

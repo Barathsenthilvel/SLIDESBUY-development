@@ -240,7 +240,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center ">
-            <h1 class="fw-bold fs-1 header_color">India’s Favourite Filter Coffee - Now at Your Fingertips!</h1>
+            <h1 class="fw-bold fs-1 header_color">India's Favourite Filter Coffee - Now at Your Fingertips!</h1>
           </div>
         </div>
         <div class="row pt-4">
@@ -516,7 +516,7 @@
       <div class="container my-auto">
         <div class="row">
           <div class="col-md-6">
-            <h1 class="heading-font text-white">Tired of Coffee That’s Too Bitter, Too Acidic, or Just… Meh? </h1>
+            <h1 class="heading-font text-white">Tired of Coffee That's Too Bitter, Too Acidic, or Just… Meh? </h1>
             <img src="{{ URL::asset('/assets/latest/img/smileynew.png')}}" height="337px" width="337px" wir alt="">
           </div>
         </div>
@@ -524,14 +524,14 @@
     </section>
     <section class="d-flex justify-content-end">
       <div class="outer-box">
-        <h1 class="title fw-bolder header_color"> If you’ve ever taken a sip of coffee and thought: </h1>
-        <h3 style="color:#5A1E1D !important">🚫 Too bitter! 🚫 Too sour! 🚫 Lacking depth! You’re not alone.</h3>
+        <h1 class="title fw-bolder header_color"> If you've ever taken a sip of coffee and thought: </h1>
+        <h3 style="color:#5A1E1D !important">🚫 Too bitter! 🚫 Too sour! �� Lacking depth! You're not alone.</h3>
         <div class="content-boxes">
           <div class="content-card">
             <div class="icon-star">
               <i class="fa-solid fa-star"></i>
             </div>
-            <p>Most store-bought coffee is over-roasted, stale, or made from low-quality beans, leaving you with a cup that’s far from satisfying.</p>
+            <p>Most store-bought coffee is over-roasted, stale, or made from low-quality beans, leaving you with a cup that's far from satisfying.</p>
           </div>
           <div class="content-card">
             <div class="icon-star">
@@ -547,7 +547,7 @@
           </div>
         </div>
         <div class="d-flex justify-content-between outer-end">
-          <p class="bottom-text">But at Bestie Beans, we believe great coffee doesn’t need to be complicated—it just needs to be done right</p>
+          <p class="bottom-text">But at Bestie Beans, we believe great coffee doesn't need to be complicated—it just needs to be done right</p>
           <a href="#" class="cta-button hyperlink">Try Bestie Beans Risk-Free Today</a>
         </div>
       </div>
@@ -568,7 +568,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Preethi Susan Isaac” </p>
+                <p class="text-white fw-bold"> "Preethi Susan Isaac" </p>
                 <p class="text-white t-review"> Grateful for this beautiful blend that fills our hearts and home with joy.Highly, whole heartedly recommended </p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -600,7 +600,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Ramachandran PB” </p>
+                <p class="text-white fw-bold"> "Ramachandran PB" </p>
                 <p class="text-white t-review"> Wow..what a Taste! Beats the home-made version. Way to go, TB!!</p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -632,7 +632,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Nithesh Babu” </p>
+                <p class="text-white fw-bold"> "Nithesh Babu" </p>
                 <p class="text-white t-review"> Excellect and natural taste of coffee and quality foremost. </p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -664,7 +664,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Vidhya TC” </p>
+                <p class="text-white fw-bold"> "Vidhya TC" </p>
                 <p class="text-white t-review"> Really satisfied with the taste , aroma and the packing. Good service and good customer service. </p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -696,7 +696,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Latha Gopal” </p>
+                <p class="text-white fw-bold"> "Latha Gopal" </p>
                 <p class="text-white t-review"> Real Madras coffee experience good relaxant and excellent Aroma packing the best with zip lock technology for locking the Aroma</p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -728,7 +728,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Deena Krishnamurthy” </p>
+                <p class="text-white fw-bold"> "Deena Krishnamurthy" </p>
                 <p class="text-white t-review"> Very nice coffee.It gives instant energy and boost to do my upcoming works.aroma is awesome</p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -760,7 +760,7 @@
                 </div>
               </div>
               <div class="testimonial-content mb-3">
-                <p class="text-white fw-bold"> “Revathi Srinivasan” </p>
+                <p class="text-white fw-bold"> "Revathi Srinivasan" </p>
                 <p class="text-white t-review"> I have tried this recently. The taste and smell sound good. I became a fan of Bestie Beans Coffee.</p>
               </div>
               <div class="testimonial-rating d-flex gap-2">
@@ -917,8 +917,8 @@
       <div class="container promo-container">
         <div class="row align-items-center">
           <div class="col-xl-5 col-md-12 mb-2 text-white position-relative">
-            <h2 style="color:#ffffff">Risk-Free Guarantee. Love It or It’s on Us!</h2>
-            <p>We’re so confident you’ll love Bestie Beans that we offer a 30-Day Money-Back Guarantee. If you don’t absolutely love your coffee, we’ll refund every rupee—no questions asked.</p>
+            <h2 style="color:#ffffff">Risk-Free Guarantee. Love It or It's on Us!</h2>
+            <p>We're so confident you'll love Bestie Beans that we offer a 30-Day Money-Back Guarantee. If you don't absolutely love your coffee, we'll refund every rupee—no questions asked.</p>
             <button class="sm-button mt-3">Upgrade Your Coffee Experience</button>
             <div class="position-absolute arrow-m">
               <img src="{{ URL::asset('/assets/latest/img/Group1544.png')}}" alt="">
@@ -941,7 +941,7 @@
       <div class="container">
         <div class="row text-center">
           <h2 class="heading-font header_color">Frequently Ask Questions</h2>
-          <h5 class="header_color">We know you might have a few questions before trying **Bestie Beans Coffee**, so we’ve answered the most common ones below! </h5>
+          <h5 class="header_color">We know you might have a few questions before trying **Bestie Beans Coffee**, so we've answered the most common ones below! </h5>
         </div>
         <div class="row mt-3">
           <div class="tab-button-rm mb-4">
@@ -1005,7 +1005,7 @@
                       <div class="p-3">
                         <i class="fa-solid fa-plus"></i>
                       </div>
-                      <p>What’s the difference between the pure coffee and chicory blend?</p>
+                      <p>What's the difference between the pure coffee and chicory blend?</p>
                     </div>
                     <div class="faq-ans">
                       <ul>
@@ -1013,7 +1013,7 @@
                              Bestie Beans Filter Coffee (No Chicory)** – 100% pure coffee for those who love a bold, strong, and rich coffee experience
                          </li>
                           <li>
-                            Bestie Beans Filter Coffee with Chicory** – A smoother, slightly sweet blend that’s gentler on the stomach with a unique depth of flavor
+                            Bestie Beans Filter Coffee with Chicory** – A smoother, slightly sweet blend that's gentler on the stomach with a unique depth of flavor
                          </li>
                           <li>
                              Our **chicory blend is naturally smooth** and lower in acidity, making it easier on the stomach
@@ -1138,7 +1138,7 @@
                     <div class="faq-ans">
                      <ul>
                          <li>
-                             Simply select your preferred coffee blend, choose whole bean or ground, and click **“Order Now”** to check out securely
+                             Simply select your preferred coffee blend, choose whole bean or ground, and click **"Order Now"** to check out securely
                          </li>
                      </ul>
                     </div>
@@ -1241,12 +1241,12 @@
                       <div class="p-3">
                         <i class="fa-solid fa-plus"></i>
                       </div>
-                      <p> What if I don’t like the coffee?</p>
+                      <p> What if I don't like the coffee?</p>
                     </div>
                     <div class="faq-ans">
                       <ul>
                          <li>
-                             We stand by our coffee 100%! If you don’t absolutely love it, we offer a **30-day money-back guarantee**.Just contact us, and we’ll process a full refund—**no questions asked.** 
+                             We stand by our coffee 100%! If you don't absolutely love it, we offer a **30-day money-back guarantee**.Just contact us, and we'll process a full refund—**no questions asked.** 
                          </li>
                      </ul>
                     </div>
@@ -1282,8 +1282,8 @@
           <div class="col-md-7 my-auto p-5">
             <div class="d-grid justify-content-center text-center">
               <h1 class="heading-font fw-bold text-white"> STILL HAVE <br> QUESTIONS? </h1>
-              <p style="color: var(--tm-bgprimary); font-weight: 600;"> We’re happy to help! </p>
-              <p style="color: var(--tm-bgprimary);">Reach out to our support team via email or WhatsApp, and we’ll assist you right</p>
+              <p style="color: var(--tm-bgprimary); font-weight: 600;"> We're happy to help! </p>
+              <p style="color: var(--tm-bgprimary);">Reach out to our support team via email or WhatsApp, and we'll assist you right</p>
                 <div style="color: var(--tm-bgprimary);margin-top: 10px;font-size: large;">
                     <span style="margin-right: 5px;">+91 90944 42772</span>
                     <span><i class="fa fa-phone"></i></span>               
@@ -1316,8 +1316,6 @@
         </div>
       </div>
     </section>
-    <script src="{{ URL::asset('/assets/latest/js/main.js')}}">
-    </script>
     <!-- jquery and slick js -->
     <script type="text/javascript" src="{{ URL::asset('/assets/latest/css/slick/jquery-3.7.1.min.js')}}"></script>
     <script type="text/javascript" src="{{ URL::asset('/assets/latest/css/slick/jquery-migrate.min.js')}}"></script>

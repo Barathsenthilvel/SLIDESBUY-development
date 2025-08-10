@@ -270,6 +270,16 @@
                data-images='@json($images)'>
                 Screenshot
             </a>
+
+            @php
+                $inWishlist = Auth::check() ? Auth::user()->wishlists()->where('product_id', $product->id)->exists() : false;
+            @endphp
+            <button type="button"
+                    class="wishlist-btn btn-wishlist {{ $inWishlist ? 'active' : '' }}"
+                    data-id="{{ $product->id }}"
+                    title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+            </button>
         </div>
 
         {{-- Thumbnails Row --}}
@@ -713,33 +723,7 @@ jQuery(document).ready(function ($) {
         $livePreviewLink.attr('href', newSrc).css('display', 'inline-flex');
     });
 
-    // whislist
-
-      $(document).on('click', '.wishlist-btn', function () {
-        const button = $(this);
-        const productId = button.data('id');
-        const isActive = button.hasClass('active');
-        const action = isActive ? 'remove' : 'add';
-
-        $.ajax({
-            url: action === 'add' ? '{{ route("wishlist.add") }}' : '{{ route("wishlist.remove") }}',
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                product_id: productId
-            },
-            success: function (response) {
-                if (response.status === 'added') {
-                    button.addClass('active').attr('title', 'Remove from Wishlist');
-                } else if (response.status === 'removed') {
-                    button.removeClass('active').attr('title', 'Add to Wishlist');
-                }
-            },
-            error: function () {
-                alert('Something went wrong!');
-            }
-        });
-    });
+    // Wishlist handled globally in container.blade.php
 
 
 

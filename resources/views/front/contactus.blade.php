@@ -7,7 +7,7 @@
 <section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
 
     <div class="breadcrumb-two">
-        <img src="assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
+        <img src="../assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
         <div class="container container-two">
             <div class="row justify-content-center">
                 <div class="col-lg-12">
@@ -35,8 +35,8 @@
 
 
 <section class="contact padding-t-120 padding-b-60 section-bg position-relative z-index-1 overflow-hidden">
-    <img src="assets/images/gradients/banner-two-gradient.png" alt="" class="bg--gradient">
-    <img src="assets/images/shapes/pattern-five.png" class="position-absolute end-0 top-0 z-index--1" alt="">
+    <img src="../assets/images/gradients/banner-two-gradient.png" alt="" class="bg--gradient">
+    <img src="../assets/images/shapes/pattern-five.png" class="position-absolute end-0 top-0 z-index--1" alt="">
 
     <div class="container container-two">
         <div class="row gy-4">

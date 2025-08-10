@@ -7,7 +7,7 @@
 
 <!-- ================================== Account Page Start =========================== -->
 <section class="account d-flex">
-    <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
+    <img src="../assets/images/thumbs/account-img.png" alt="" class="account__img">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
         <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
@@ -118,7 +118,7 @@
             window.toaster.success('{{ session('success') }}');
         }
     @endif
-    
+
 let timerInterval;
 
 // Get expiry time from server
@@ -158,7 +158,7 @@ $('#resendOtpBtn').click(function () {
     } else {
         $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-info').text('Resending OTP...');
     }
-    
+
     $.ajax({
         url: "{{ route('resend.otp') }}",
         method: "POST",
@@ -171,14 +171,14 @@ $('#resendOtpBtn').click(function () {
             } else {
                 $('#ajaxMessage').removeClass('alert-info');
             }
-            
+
             if (response.success) {
                 if (window.toaster) {
                     window.toaster.success(response.message || 'OTP resent successfully!');
                 } else {
                     $('#ajaxMessage').removeClass('d-none alert-danger').addClass('alert-success').text(response.message || 'OTP resent successfully!');
                 }
-                
+
                 // Reset buttons and timer
                 $('#resendOtpBtn').hide();
                 $('#verifyOtpBtn').show();
@@ -198,7 +198,7 @@ $('#resendOtpBtn').click(function () {
             } else {
                 $('#ajaxMessage').removeClass('alert-info');
             }
-            
+
             let errorMessage = 'Failed to resend OTP. Please try again.';
             if (xhr.responseJSON && xhr.responseJSON.message) {
                 errorMessage = xhr.responseJSON.message;
@@ -238,7 +238,7 @@ $('#verifyOtpBtn').click(function (e) {
             } else {
                 $('#ajaxMessage').removeClass('alert-info');
             }
-            
+
             if (response.success) {
                 if (window.toaster) {
                     window.toaster.success('🎉 Account created successfully! Redirecting to login...', 3000);
@@ -262,7 +262,7 @@ $('#verifyOtpBtn').click(function (e) {
             } else {
                 $('#ajaxMessage').removeClass('alert-info');
             }
-            
+
             let errorMessage = 'An error occurred while verifying OTP.';
             if (xhr.responseJSON && xhr.responseJSON.message) {
                 errorMessage = xhr.responseJSON.message;

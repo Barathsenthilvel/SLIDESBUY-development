@@ -4,8 +4,8 @@
 
 <!-- ========================= Pricing Plan Section Start ============================ -->
 <section class="pricing padding-y-120 position-relative z-index-1">
-    <img src="assets/images/shapes/element1.png" alt="" class="element one">
-    <img src="assets/images/gradients/pricing-gradient-bg.png" alt="" class="bg--gradient">
+    <img src="../assets/images/shapes/element1.png" alt="" class="element one">
+    <img src="../assets/images/gradients/pricing-gradient-bg.png" alt="" class="bg--gradient">
 
     <div class="container container-two">
         <div class="section-heading style-left style-flex flx-between align-items-end gap-3">
@@ -33,11 +33,11 @@
                     {{-- @dd($plan); --}}
                     <div class="col-lg-4 col-sm-6">
                         <div class="pricing-item box-shadow-lg hover-bg-main">
-                            <img src="assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
+                            <img src="../assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
                             <div class="pricing-item__top">
                                 <div class="flx-between flex-nowrap">
                                     <span class="pricing-item__icon">
-                                        <img src="assets/images/icons/price-icon1.svg" alt="">
+                                        <img src="../assets/images/icons/price-icon1.svg" alt="">
                                     </span>
                                     <span class="popular-badge d-none"></span>
                                 </div>
@@ -49,17 +49,17 @@
                                         @php
                                             $originalPrice = $plan->price;
                                             $discountedPrice = $plan->price;
-                                            
+
                                             if($plan->discount_type === 'flat') {
                                                 $discountedPrice = $plan->price - $plan->discount;
                                             } elseif($plan->discount_type === 'percentage') {
                                                 $discountedPrice = $plan->price - ($plan->price * $plan->discount / 100);
                                             }
-                                            
+
                                             // Ensure discounted price doesn't go below 0
                                             $discountedPrice = max(0, $discountedPrice);
                                         @endphp
-                                        
+
                                         <div class="price-display">
                                             <div class="original-price-small">
                                                 <span class="text-decoration-line-through text-muted">₹{{ $originalPrice }}</span>
@@ -101,7 +101,7 @@
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
                                     @if($plan->discount && $plan->discount > 0)
-                                        <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount: 
+                                        <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount:
                                             @if($plan->discount_type === 'flat')
                                                 ₹{{ $plan->discount }} OFF
                                             @elseif($plan->discount_type === 'percentage')
@@ -275,7 +275,7 @@
     .discounted-price-large .text-success {
         font-size: 1.2em !important;
     }
-    
+
     .discount-badge-attractive {
         font-size: 0.6rem;
         padding: 3px 8px;
@@ -330,7 +330,7 @@
         flex-direction: column;
         gap: 0.25rem !important;
     }
-    
+
     .pricing-item__price .badge {
         font-size: 0.5rem;
         padding: 0.2rem 0.4rem;
@@ -731,7 +731,7 @@ class ToasterSystem {
 
     show(message, type = 'info', duration = 5000, loading = false) {
         const toasterContainer = document.getElementById('toaster-container');
-        
+
         // Remove existing toasts
         const existingToasts = toasterContainer.querySelectorAll('.toast-item');
         existingToasts.forEach(toast => {

@@ -32,7 +32,7 @@
 
 <section class="popular-item-card-section padding-y-120 overflow-hidden">
 
-  <img src="assets/images/shapes/brush.png" alt="" class="element-brush">
+  <img src="../assets/images/shapes/brush.png" alt="" class="element-brush">
 
   <div class="container container-two">
 
@@ -85,8 +85,8 @@
                     </a>
                   </h6>
                   <a href="{{ route('front.getCategory', $cat->Category_url) }}" class="btn-link line-height-1 flex-shrink-0">
-                    <img src="assets/images/icons/link.svg" alt="" class="white-version">
-                    <img src="assets/images/icons/link-light.svg" alt="" class="dark-version">
+                    <img src="../assets/images/icons/link.svg" alt="" class="white-version">
+                    <img src="../assets/images/icons/link-light.svg" alt="" class="dark-version">
                   </a>
                 </div>
 

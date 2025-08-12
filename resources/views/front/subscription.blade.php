@@ -4,8 +4,8 @@
 
 <!-- ========================= Pricing Plan Section Start ============================ -->
 <section class="pricing padding-y-120 position-relative z-index-1">
-    <img src="assets/images/shapes/element1.png" alt="" class="element one">
-    <img src="assets/images/gradients/pricing-gradient-bg.png" alt="" class="bg--gradient">
+    <img src="../assets/images/shapes/element1.png" alt="" class="element one">
+    <img src="../assets/images/gradients/pricing-gradient-bg.png" alt="" class="bg--gradient">
 
     <div class="container container-two">
         <div class="section-heading style-left style-flex flx-between align-items-end gap-3">
@@ -33,11 +33,11 @@
                     {{-- @dd($plan); --}}
                     <div class="col-lg-4 col-sm-6">
                         <div class="pricing-item box-shadow-lg hover-bg-main">
-                            <img src="assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
+                            <img src="../assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
                             <div class="pricing-item__top">
                                 <div class="flx-between flex-nowrap">
                                     <span class="pricing-item__icon">
-                                        <img src="assets/images/icons/price-icon1.svg" alt="">
+                                        <img src="../assets/images/icons/price-icon1.svg" alt="">
                                     </span>
                                     <span class="popular-badge d-none"></span>
                                 </div>
@@ -49,17 +49,17 @@
                                         @php
                                             $originalPrice = $plan->price;
                                             $discountedPrice = $plan->price;
-                                            
+
                                             if($plan->discount_type === 'flat') {
                                                 $discountedPrice = $plan->price - $plan->discount;
                                             } elseif($plan->discount_type === 'percentage') {
                                                 $discountedPrice = $plan->price - ($plan->price * $plan->discount / 100);
                                             }
-                                            
+
                                             // Ensure discounted price doesn't go below 0
                                             $discountedPrice = max(0, $discountedPrice);
                                         @endphp
-                                        
+
                                         <div class="price-display">
                                             <div class="original-price-small">
                                                 <span class="text-decoration-line-through text-muted">₹{{ $originalPrice }}</span>
@@ -89,7 +89,7 @@
                                     data-discount="{{ $plan->discount ?? 0 }}"
                                     data-discount-type="{{ $plan->discount_type ?? '' }}"
                                     data-validity="{{ $plan->validity }}"
-                                    data-downloads="{{ $plan->download_limit ?? 'Unlimited' }}"
+                                    data-downloads="{{ $plan->downloads ?? 'Unlimited' }}"
                                     data-description="{{ $plan->description ?? 'Essential services to start your journey' }}">
                                     Get Started
                                     </a>
@@ -100,7 +100,15 @@
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads{{$plan->download_limit}} </li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
-                                    {{-- Discount details moved to modal only --}}
+                                    @if($plan->discount && $plan->discount > 0)
+                                        <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount:
+                                            @if($plan->discount_type === 'flat')
+                                                ₹{{ $plan->discount }} OFF
+                                            @elseif($plan->discount_type === 'percentage')
+                                                {{ $plan->discount }}% OFF
+                                            @endif
+                                        </li>
+                                    @endif
                                     {{-- <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Process management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Workflow management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Team management</li> --}}
@@ -144,11 +152,8 @@
 .price-container {
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 22px 15px 15px; /* extra top space for badge overlap */
+    padding: 15px;
     background: #f8f9fa;
-    position: relative;
-    overflow: hidden;
-    min-height: 76px;
 }
 
 .plan-price-final {
@@ -215,13 +220,10 @@
     display: inline-block;
 }
 
-/* reserve space so badge doesn’t cover last digits */
-.plan-price-final { padding-right: 56px; display: inline-block; }
-
 .discount-badge-attractive {
     position: absolute;
-    top: -6px; /* sit on top of the last digits */
-    right: 0;
+    top: -12px;
+    right: -20px;
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
     color: white;
     font-size: 0.65rem;
@@ -230,6 +232,7 @@
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(238, 90, 36, 0.4);
     animation: bounce 2s infinite;
+    transform: rotate(-5deg);
     white-space: nowrap;
     z-index: 10;
 }
@@ -272,12 +275,12 @@
     .discounted-price-large .text-success {
         font-size: 1.2em !important;
     }
-    
+
     .discount-badge-attractive {
         font-size: 0.6rem;
         padding: 3px 8px;
-        top: -4px;
-        right: 0;
+        top: -10px;
+        right: -15px;
     }
 }
 
@@ -327,7 +330,7 @@
         flex-direction: column;
         gap: 0.25rem !important;
     }
-    
+
     .pricing-item__price .badge {
         font-size: 0.5rem;
         padding: 0.2rem 0.4rem;
@@ -387,13 +390,6 @@
     background: #f8f9fa;
     border-radius: 0 0 15px 15px;
 }
-
-@media (max-width: 420px) {
-  .discounted-price-large .text-success { font-size: 1.2em !important; }
-  .discount-badge-attractive { font-size: 0.6rem; padding: 3px 8px; top: 6px; right: 6px; }
-}
-.plan-price-final { line-height: 1.1; }
-.discount-badge-attractive { max-width: calc(100% - 16px); text-overflow: ellipsis; overflow: hidden; }
 </style>
 
 <!-- Plan Details Modal -->
@@ -413,8 +409,11 @@
 
                             <h6 class="text-muted mb-2">Description</h6>
                             <p class="plan-description mb-3"></p>
+
+                            <h6 class="text-muted mb-2">Downloads</h6>
+                            <p class="plan-downloads mb-3"></p>
                         </div>
-                        <div class="col-md-6">
+                                                <div class="col-md-6">
                             <h6 class="text-muted mb-2">Plan Price</h6>
                             <div class="price-container mb-3">
                                 <div class="price-display">
@@ -427,15 +426,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <h6 class="text-muted mb-2">Validity</h6>
+                            <p class="plan-validity mb-3"></p>
                         </div>
                     </div>
 
                     <div class="plan-features mt-4">
                         <h6 class="text-muted mb-2">Plan Features</h6>
                         <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>No. of Downloads: <span class="fw-600" id="pd-count">{{ $plan->download_limit ?? 'Unlimited' }}</span></li>
-                            <li><i class="fas fa-check text-success me-2"></i>All Content Access: <span class="fw-600" id="pd-access"></span></li>
-                            <li><i class="fas fa-check text-success me-2"></i>Validity: <span class="fw-600" id="pd-validity"></span></li>
+                            <li><i class="fas fa-check text-success me-2"></i>Up to 30 members</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Collaboration</li>
                             <li><i class="fas fa-check text-success me-2"></i>Project management</li>
                             <li><i class="fas fa-check text-success me-2"></i>Case management</li>
                             <li><i class="fas fa-check text-success me-2"></i>Process management</li>
@@ -528,14 +529,6 @@ jQuery(document).ready(function ($) {
             description: button.data('description')
         };
 
-        // Debug: Log the data being extracted
-        console.log('Button data:', {
-            id: button.data('id'),
-            downloads: button.data('downloads'),
-            validity: button.data('validity')
-        });
-        console.log('Current plan data:', currentPlanData);
-
         // Populate modal with plan details
         populatePlanDetails(currentPlanData);
 
@@ -554,18 +547,10 @@ jQuery(document).ready(function ($) {
 
         // Function to populate plan details in modal
     function populatePlanDetails(planData) {
-        console.log('Plan Data:', planData); // Debug: Log the plan data
-        
         $('.plan-name').text(planData.name + ' Plan');
         $('.plan-description').text(planData.description);
-        
-        // Debug: Check if element exists and log the value
-        console.log('Downloads value:', planData.downloads);
-        console.log('pd-count element exists:', $('#pd-count').length > 0);
-        
-        $('#pd-count').text(planData.downloads);
-        $('#pd-access').text('Yes');
-        $('#pd-validity').text(planData.validity + ' days');
+        $('.plan-downloads').text(planData.downloads + ' downloads');
+        $('.plan-validity').text(planData.validity + ' days');
 
         // Calculate discounted price
         let discountedPrice = calculateDiscountedPrice(planData.price, planData.discountType, planData.discount);
@@ -746,7 +731,7 @@ class ToasterSystem {
 
     show(message, type = 'info', duration = 5000, loading = false) {
         const toasterContainer = document.getElementById('toaster-container');
-        
+
         // Remove existing toasts
         const existingToasts = toasterContainer.querySelectorAll('.toast-item');
         existingToasts.forEach(toast => {
@@ -946,31 +931,7 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+</script>
 
-// Custom toast notification function
-function showCustomToast(message, type = 'info') {
-    // Remove existing toasts
-    $('.custom-toast').remove();
-    
-    const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
-    
-    const toast = $(`
-        <div class="custom-toast position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-            <div class="toast align-items-center ${toastClass} text-white border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
-    `);
-    
-    $('body').append(toast);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(function() {
-        toast.remove();
-    }, 3000);
-}
+
+@endsection

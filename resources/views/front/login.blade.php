@@ -45,7 +45,7 @@
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
         <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
-            <img src="assets/images/thumbs/banner-img.png" alt="">
+            <img src="../assets/images/thumbs/banner-img.png" alt="">
             <div class="statistics animation bg-main text-center">
                 <h5 class="statistics__amount text-white">50k</h5>
                 <span class="statistics__text text-white font-14">Customers</span>
@@ -60,10 +60,10 @@
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src="../assets/images/icons/sun.svg" alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src="../assets/images/icons/moon.svg" alt="">
         </span>
     </label>
 </div>

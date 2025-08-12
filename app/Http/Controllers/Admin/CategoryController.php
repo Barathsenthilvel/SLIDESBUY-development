@@ -63,134 +63,188 @@ class CategoryController extends Controller
     public function store(Request $request){
         $input = $request->all();
 
-        if($input['parent_category_id'] > 0){
-          $parent=Category::findOrFail($input['parent_category_id']);
-            if($parent->parent_category_id > 0){
-
-          $input['parent_category_id']=$parent->parent_category_id;
-          $input['sub_category']=$parent->id;
-
-            }else{
-              $input['parent_category_id']=$parent->id;
-              $input['sub_category']='0';
-
-            }
-      }else{
-          $input['parent_category_id']='0';
-          $input['sub_category']='0';
-      }
-        $rules=[
-            'category_name' => 'required|unique:categories,category_name,'.$input['category_name'],
-            'style_1' => 'required',
-            'hns_code' =>'nullable'
-            // 'style_3' => 'required',
+        // Validation rules - moved outside the if-else block
+        $rules = [
+            'category_name' => 'required|unique:categories,category_name',
+            'parent_category_id' => 'required',
+            'Category_url' => 'required|unique:categories,Category_url',
+            'style_1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'style_3' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'hns_code' => 'nullable|string|max:50',
+            'short_description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'sort_order' => 'nullable|integer'
         ];
-        $customs=[
-            'category_name.required'  => 'Category Name should be unique',
-            'style_1.required'  => 'Category Style1 should be filled',
-            'style_3.required'  => 'Category Style3 should be filled',
-         ];
-         $validator = Validator::make($request->all(), $rules,$customs);
-         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+
+        $customs = [
+            'category_name.required' => 'Category Name is required',
+            'category_name.unique' => 'Category Name already exists',
+            'parent_category_id.required' => 'Parent Category is required',
+            'Category_url.required' => 'Category URL is required',
+            'Category_url.unique' => 'Category URL already exists',
+            'style_1.required' => 'Category Style1 image is required',
+            'style_1.image' => 'Category Style1 must be an image file',
+            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif)',
+            'style_1.max' => 'Category Style1 image size must not exceed 2MB',
+            'style_3.required' => 'Category Style3 image is required',
+            'style_3.image' => 'Category Style3 must be an image file',
+            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
+            'style_3.max' => 'Category Style3 image size must not exceed 2MB',
+            'hns_code.max' => 'HSN Code must not exceed 50 characters',
+            'meta_title.max' => 'Meta Title must not exceed 255 characters',
+            'sort_order.integer' => 'Sorting Order must be a number'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $customs);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
         }
 
-
-        if ($file = $request->file('style_1'))
-        {
-          $bannerFile = time().$file->getClientOriginalName();
-          $file->move(public_path().'/assets/media/banner',$bannerFile);
-          $input['style_1'] = $bannerFile;
-      }
-
-
-        if ($file = $request->file('style_3'))
-        {
-          $bannerFile = time().$file->getClientOriginalName();
-          $file->move(public_path().'/assets/media/banner',$bannerFile);
-          $input['style_3'] = $bannerFile;
-      }
-
-    //   if ($file = $request->file('mobile_image'))
-    //     {
-    //       $mobileFile = time().$file->getClientOriginalName();
-    //       $file->move(public_path().'/assets/media/banner',$mobileFile);
-    //       $input['mobile_image'] = $bannerFile;
-    //   }
-
-        $input['category_banner'] = $request->category_banner;
-        $input['mobile_image'] = $request->mobile_image;
-
-       if(!array_key_exists('featured_collection',$input)){ $input['featured_collection'] = 0; }
-       if(!array_key_exists('featured_category',$input)){ $input['featured_category'] = 0; }
-
-       $Category = new Category();
-       $Category->fill($input)->save();
-       $data1['msg']  = 'Category Add Successfully.';
-        return response()->json($data1);
-	}
-
-    public function update(Request $request,$id){
-
-        $input = $request->all();
+        // Process parent category logic
         if($input['parent_category_id'] > 0){
-          $parent=Category::findOrFail($input['parent_category_id']);
+            $parent = Category::findOrFail($input['parent_category_id']);
             if($parent->parent_category_id > 0){
-          $input['parent_category_id']=$parent->parent_category_id;
-          $input['sub_category']=$parent->id;
-
-            }else{
-              $input['parent_category_id']=$parent->id;
-              $input['sub_category']='0';
-
+                $input['parent_category_id'] = $parent->parent_category_id;
+                $input['sub_category'] = $parent->id;
+            } else {
+                $input['parent_category_id'] = $parent->id;
+                $input['sub_category'] = '0';
             }
-      }else{
-          $input['parent_category_id']='0';
-          $input['sub_category']='0';
-      }
+        } else {
+            $input['parent_category_id'] = '0';
+            $input['sub_category'] = '0';
+        }
 
-// dd($input['sub_category']);
-        $rules=[
-            'category_name' => 'required|unique:categories,category_name,'.$id,
-        ];
-        $customs=[
-            'category_name.required'  => 'Category Name should be unique',
-         ];
-         $validator = Validator::make($request->all(), $rules,$customs);
-         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->getMessageBag()->toArray());
-          }
+        // Handle file uploads
+        if ($file = $request->file('style_1')) {
+            $bannerFile = time() . '_style1_' . $file->getClientOriginalName();
+            $file->move(public_path().'/assets/media/banner', $bannerFile);
+            $input['style_1'] = $bannerFile;
+        }
 
+        if ($file = $request->file('style_3')) {
+            $bannerFile = time() . '_style3_' . $file->getClientOriginalName();
+            $file->move(public_path().'/assets/media/banner', $bannerFile);
+            $input['style_3'] = $bannerFile;
+        }
 
         $input['category_banner'] = $request->category_banner;
         $input['mobile_image'] = $request->mobile_image;
 
-       $Category = Category::findOrFail($id);
-        if ($file = $request->file('style_1'))
-        {
-          $bannerFile = time().$file->getClientOriginalName();
-          $file->move(public_path().'/assets/media/banner',$bannerFile);
-          $input['style_1'] = $bannerFile;
-      }else{
-          $input['style_1'] = $Category['style_1'];
-      }
-        if ($file = $request->file('style_3'))
-        {
-          $bannerFile = time().$file->getClientOriginalName();
-          $file->move(public_path().'/assets/media/banner',$bannerFile);
-          $input['style_3'] = $bannerFile;
-      }else{
-          $input['style_3'] = $Category['style_3'];
-      }
-       if(array_key_exists('featured_collection',$input)){ $input['featured_collection'] = 1; }else{
-           $input['featured_collection'] = 0;
-       }
+        if(!array_key_exists('featured_collection', $input)){ 
+            $input['featured_collection'] = 0; 
+        }
+        if(!array_key_exists('featured_category', $input)){ 
+            $input['featured_category'] = 0; 
+        }
 
-       if(array_key_exists('featured_category',$input)){ $input['featured_category'] = 1; }else{
-           $input['featured_category'] = 0;
-       }
-       $Category->fill($input)->save();
-       $data1['msg']  = 'Category Updated Successfully.';
+        $Category = new Category();
+        $Category->fill($input)->save();
+        $data1['msg'] = 'Category Added Successfully.';
+        return response()->json($data1);
+    }
+
+    public function update(Request $request, $id){
+        $input = $request->all();
+
+        // Validation rules for update
+        $rules = [
+            'category_name' => 'required|unique:categories,category_name,'.$id,
+            'parent_category_id' => 'required',
+            'Category_url' => 'required|unique:categories,Category_url,'.$id,
+            'style_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'style_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'hns_code' => 'nullable|string|max:50',
+            'short_description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'sort_order' => 'nullable|integer'
+        ];
+
+        $customs = [
+            'category_name.required' => 'Category Name is required',
+            'category_name.unique' => 'Category Name already exists',
+            'parent_category_id.required' => 'Parent Category is required',
+            'Category_url.required' => 'Category URL is required',
+            'Category_url.unique' => 'Category URL already exists',
+            'style_1.image' => 'Category Style1 must be an image file',
+            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif)',
+            'style_1.max' => 'Category Style1 image size must not exceed 2MB',
+            'style_3.image' => 'Category Style3 must be an image file',
+            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
+            'style_3.max' => 'Category Style3 image size must not exceed 2MB',
+            'hns_code.max' => 'HSN Code must not exceed 50 characters',
+            'meta_title.max' => 'Meta Title must not exceed 255 characters',
+            'sort_order.integer' => 'Sorting Order must be a number'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $customs);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
+        }
+
+        // Process parent category logic
+        if($input['parent_category_id'] > 0){
+            $parent = Category::findOrFail($input['parent_category_id']);
+            if($parent->parent_category_id > 0){
+                $input['parent_category_id'] = $parent->parent_category_id;
+                $input['sub_category'] = $parent->id;
+            } else {
+                $input['parent_category_id'] = $parent->id;
+                $input['sub_category'] = '0';
+            }
+        } else {
+            $input['parent_category_id'] = '0';
+            $input['sub_category'] = '0';
+        }
+
+        $input['category_banner'] = $request->category_banner;
+        $input['mobile_image'] = $request->mobile_image;
+
+        $Category = Category::findOrFail($id);
+        
+        // Handle file uploads for update
+        if ($file = $request->file('style_1')) {
+            // Delete old file if exists
+            if($Category->style_1 && file_exists(public_path().'/assets/media/banner/'.$Category->style_1)) {
+                unlink(public_path().'/assets/media/banner/'.$Category->style_1);
+            }
+            $bannerFile = time() . '_style1_' . $file->getClientOriginalName();
+            $file->move(public_path().'/assets/media/banner', $bannerFile);
+            $input['style_1'] = $bannerFile;
+        } else {
+            $input['style_1'] = $Category['style_1'];
+        }
+        
+        if ($file = $request->file('style_3')) {
+            // Delete old file if exists
+            if($Category->style_3 && file_exists(public_path().'/assets/media/banner/'.$Category->style_3)) {
+                unlink(public_path().'/assets/media/banner/'.$Category->style_3);
+            }
+            $bannerFile = time() . '_style3_' . $file->getClientOriginalName();
+            $file->move(public_path().'/assets/media/banner', $bannerFile);
+            $input['style_3'] = $bannerFile;
+        } else {
+            $input['style_3'] = $Category['style_3'];
+        }
+        
+        if(array_key_exists('featured_collection', $input)){ 
+            $input['featured_collection'] = 1; 
+        } else {
+            $input['featured_collection'] = 0;
+        }
+
+        if(array_key_exists('featured_category', $input)){ 
+            $input['featured_category'] = 1; 
+        } else {
+            $input['featured_category'] = 0;
+        }
+        
+        $Category->fill($input)->save();
+        $data1['msg'] = 'Category Updated Successfully.';
         return response()->json($data1);
     }
     public function status($id1,$id2)

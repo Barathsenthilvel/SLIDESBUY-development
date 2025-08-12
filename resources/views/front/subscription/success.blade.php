@@ -38,7 +38,7 @@
 
 <section class="cart-thank section-bg padding-y-120 position-relative z-index-1 overflow-hidden">
 
-    <img src="assets/images/gradients/thank-you-gradient.png" alt="" class="bg--gradient">
+    <img src="../assets/images/gradients/thank-you-gradient.png" alt="" class="bg--gradient">
 
     <div class="container container-two">
         <div class="row justify-content-center">
@@ -46,7 +46,7 @@
                 <div class="cart-thank__content text-center">
                     <h2 class="cart-thank__title mb-48">Thank you for purchased this products!!</h2>
                     <div class="cart-thank__img">
-                        <img src="assets/images/thumbs/thank-evenelope.png" alt="">
+                        <img src="../assets/images/thumbs/thank-evenelope.png" alt="">
                     </div>
                 </div>
             </div>
@@ -110,7 +110,7 @@
                             </ul>
                             @endforeach
                             <div class="thank-card__thumb mt-64 mb-3">
-                                <img src="assets/images/thumbs/rating-img.png" alt="">
+                                <img src="../assets/images/thumbs/rating-img.png" alt="">
                             </div>
                             <div class="flx-between gap-2">
                                 <p class="text">Please don’t forget to rating</p>

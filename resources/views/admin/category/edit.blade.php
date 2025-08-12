@@ -87,7 +87,7 @@
                                      </div>
                                     <div class="form-group row">
                                          <label class="col-2 col-form-label">HSN Code
-                                         <span class="text-danger">*</span></label>
+                                         </label>
                                          <div class="col-10">
                                              <input class="form-control" type="text" value="{{ $data->hns_code != null ? $data->hns_code : '' }}" id="hns_code" name="hns_code" />
                                          </div>
@@ -236,6 +236,69 @@
         ClassicEditor.create( document.querySelector( '#ktckeditor' ) )
         .then( editor => { window.CKEditor1 = editor;} )
 		.catch( error => { console.error( error ); });
+    </script>
+    
+    <script>
+        // Handle form submission with AJAX for edit
+        $('#formEdit').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous error messages
+            $('.alert-danger').hide();
+            $('.alert-success').hide();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            var formData = new FormData(this);
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if(response.msg) {
+                        $('.alert-success .alert-body').html(response.msg);
+                        $('.alert-success').show();
+                        
+                        // Redirect to category list after 2 seconds
+                        setTimeout(function() {
+                            window.location.href = '{{ route("admin-category") }}';
+                        }, 2000);
+                    }
+                },
+                error: function(xhr) {
+                    if(xhr.status === 422) {
+                        var errors = xhr.responseJSON.errors;
+                        var errorHtml = '<ul>';
+                        
+                        $.each(errors, function(field, messages) {
+                            $.each(messages, function(index, message) {
+                                errorHtml += '<li>' + message + '</li>';
+                            });
+                            
+                            // Add error class to input field
+                            $('#' + field).addClass('is-invalid');
+                            $('#' + field).after('<div class="invalid-feedback">' + messages[0] + '</div>');
+                        });
+                        
+                        errorHtml += '</ul>';
+                        $('.alert-danger .alert-body').html(errorHtml);
+                        $('.alert-danger').show();
+                    } else {
+                        $('.alert-danger .alert-body').html('An error occurred. Please try again.');
+                        $('.alert-danger').show();
+                    }
+                }
+            });
+        });
+        
+        // Clear error messages when user starts typing
+        $('input, select, textarea').on('input change', function() {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        });
     </script>
     <script>
         var objectB = new Object();

@@ -333,7 +333,7 @@ if(Auth::check()){
             <li>
                     <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
                     <span class="icon-left icon">
-                        <img src="assets/images/icons/user.svg" alt="">
+                        <img src="../assets/images/icons/user.svg" alt="">
                     </span>Login / Signup
                     </a>
             </li>

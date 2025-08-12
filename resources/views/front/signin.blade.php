@@ -8,11 +8,11 @@
 
     </style>
 <section class="account d-flex">
-    <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
+    <img src="../assets/images/thumbs/account-img.png" alt="" class="account__img">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
-        <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
+        <img src="../assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
-            <img src="assets/images/thumbs/banner-img.png" alt="">
+            <img src="../assets/images/thumbs/banner-img.png" alt="">
             <div class="statistics animation bg-main text-center">
                 <h5 class="statistics__amount text-white">50k</h5>
                 <span class="statistics__text text-white font-14">Customers</span>
@@ -27,10 +27,10 @@
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src="../assets/images/icons/sun.svg" alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src="../assets/images/icons/moon.svg" alt="">
         </span>
     </label>
 </div>
@@ -38,8 +38,8 @@
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
-                <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
+                <img src="../assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+                <img src="../assets/images/logo/slidesbuy.png" alt="" class="dark-version">
             </a>
             <h4 class="account-content__title mb-48 text-capitalize">Login</h4>
 
@@ -76,7 +76,7 @@
 
     @csrf
     <div class="row gy-4">
-        
+
 
         <div class="col-12">
             <label for="email" class="form-label mb-2 font-18 font-heading fw-600">Email</label>
@@ -108,8 +108,8 @@
 
 
 
-       
-        
+
+
         </div>
     </div>
 </form>
@@ -158,7 +158,7 @@
                     } else {
                         $('#loginError').text('').removeClass('text-info');
                     }
-                    
+
                     if (res.success) {
                         if (window.toaster) {
                             window.toaster.success('Login successful! Redirecting...', 2000);
@@ -183,7 +183,7 @@
                     } else {
                         $('#loginError').text('').removeClass('text-info');
                     }
-                    
+
                     if (xhr.status === 422) {
                         // Laravel validation errors
                         let errors = xhr.responseJSON.errors;

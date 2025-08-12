@@ -7,20 +7,21 @@
     <!-- Title -->
     <title> Digital Market Place HTML Template</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/images/logo/favicon-two.png">
+<!-- Favicon -->
+<link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <!-- Slick -->
-    <link rel="stylesheet" href="assets/css/slick.css">
-    <!-- magnific popup -->
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <!-- line awesome -->
-    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
-    <!-- Main css -->
-    <link rel="stylesheet" href="assets/css/main.css">
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+<!-- Fontawesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
+<!-- Slick -->
+<link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
+<!-- Magnific popup -->
+<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+<!-- Line awesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/line-awesome.min.css') }}">
+<!-- Main css -->
+<link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
 </head>
 <style>
@@ -40,6 +41,25 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+/* User profile dropdown behavior */
+.user-profile { position: relative; }
+.user-profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 220px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 1000;
+}
+.user-profile:hover .user-profile-dropdown { display: block; }
+.user-profile-dropdown.open { display: block; }
+.user-profile-dropdown .sidebar-list__item a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
+.user-profile-dropdown .sidebar-list__item a:hover { background: #f5f7fb; }
+
 .nav-menu__item:hover > .nav-submenu,
 .nav-submenu__item:hover > .nav-submenu {
     display: block;
@@ -48,10 +68,9 @@
 <body>
 @php
 $wishlistcnt = 0;
-    if(Auth::check()){
-    if(Auth::user()->wishlist) $wishlistcnt = count(\explode(',',Auth::user()->wishlist));
-    }
-
+if(Auth::check()){
+    $wishlistcnt = Auth::user()->wishlists()->count();
+}
 @endphp
 <!--==================== Preloader Start ====================-->
  <div class="loader-mask">
@@ -83,8 +102,11 @@ $wishlistcnt = 0;
     <button type="button" class="close-button"> <i class="las la-times"></i> </button>
     <div class="mobile-menu__inner">
         <a  href="{{ route('front.index') }}" class="mobile-menu__logo">
-            <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="white-version">
-            <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="dark-version">
+            {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="white-version"> --}}
+            {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="dark-version"> --}}
+
+            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="dark-version">
 
 
 
@@ -132,18 +154,47 @@ $wishlistcnt = 0;
 
     <a href="register.html" class="btn btn-main pill">
         <span class="icon-left icon">
-            <img src="assets/images/icons/user.svg" alt="">
+        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
         </span>Create Account
     </a>
     <div class="language-select flx-align select-has-icon">
-        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
-        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
-        <select class="select py-0 ps-2 border-0 fw-500">
-            <option value="1">Eng</option>
-            <option value="2">Bn</option>
-            <option value="3">Eur</option>
-            <option value="4">Urd</option>
-        </select>
+       <div class="user-profile">
+            <button class="user-profile__button flex-align">
+                <span class="user-profile__thumb">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown">
+                <li class="sidebar-list__item">
+                    <a href="{{ route('account.profile') }}" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">My Account</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-list__item">
+                    <a href="setting.html" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active10.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a href="login.html" class="sidebar-list__link">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active13.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
             </div>
         </div>
@@ -185,10 +236,14 @@ $wishlistcnt = 0;
             <!-- Logo Start -->
             <div class="logo">
                 <a href="index.html" class="link white-version">
-                    <img src="assets/images/logo/slidesbuy.png" alt="Logo">
+                    {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
+                      <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+                   {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version"> --}}
                 </a>
                 <a href="index.html" class="link dark-version">
-                    <img src="assets/images/logo/slidesbuy.png" alt="Logo">
+                    {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
+                      {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version"> --}}
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version">
                 </a>
             </div>
             <!-- Logo End  -->
@@ -240,49 +295,111 @@ $wishlistcnt = 0;
 
             <!-- Header Right start -->
             <div class="header-right flx-align">
-    <a href="cart.html" class="header-right__button cart-btn position-relative">
-        <img src="assets/images/icons/cart.svg" alt="" class="white-version">
-        <img src="assets/images/icons/cart-white.svg" alt="" class="dark-version">
+    @auth
+    <a href="{{ route('wishlist') }}" class="header-right__button wishlist-btn position-relative">
+        <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
+        <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
+        <span class="qty-badge font-12 wishlist-count">{{ $wishlistcnt }}</span>
+    </a>
+    @else
+    <a href="{{ route('front.loginBlade') }}" class="header-right__button wishlist-btn position-relative">
+        <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
+        <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
         <span class="qty-badge font-12">0</span>
     </a>
+    @endauth
 
      <!-- Light Dark Mode -->
  <div class="theme-switch-wrapper position-relative">
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src={{ asset('assets/images/icons/sun.svg ') }}alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src={{ asset('assets/images/icons/moon.svg') }} alt="">
         </span>
     </label>
 </div>
 
     <div class="header-right__inner gap-3 flx-align d-lg-flex d-none">
          <ul class="">
+                {{-- <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
+                    <span class="icon-left icon">
+                        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
+                    </span>Login / Signup
+                    </a> --}}
           @if(!Auth::check())
             <li>
                     <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
                     <span class="icon-left icon">
-                        <img src="assets/images/icons/user.svg" alt="">
+                        <img src="../assets/images/icons/user.svg" alt="">
                     </span>Login / Signup
                     </a>
             </li>
           @else
-            <li> <a  href="javascript:void(0);">! Hai {{ auth()->user()->name }}</a></li>
-            <li> <a href="{{route('user.logout')}}"> <i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+           <div class="user-profile" id="desktopUserProfile">
+            <button class="user-profile__button flex-align" id="desktopUserButton" type="button">
+                <span class="user-profile__thumb">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown" id="desktopUserDropdown">
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">My Account</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#downloads">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">My Downloads</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#subscriptions">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/price-icon1.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Subscriptions</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}#profile">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Profile Update</span>
+                    </a>
+                </li>
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
+                        </span>
+                        <span class="text">Log Out</span>
+                    </a>
+                    <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+                </li>
+            </ul>
+        </div>
             @endif
 
              <li class="text-center">
                                 <!-- <a data-toggle="tooltip" title="Wishlist"
-                                    href="{{(Auth::check()?route('wishlist'):route('front.loginBlade'))}}">
+                                    href="">
                                     <div>
                                         <div class="text-center" style="color:#560835;float:left;margin-top:2px;">
                                             Wishlist
                                         </div>
                                         <span class="wishlist-icon common-count">
-                                            <span class="cart-count wishlistcnt">{{$wishlistcnt}}</span>
+                                            {{-- <span class="cart-count wishlistcnt">{{$wishlistcnt}}</span> --}}
                                         </span>
                                     </div>
                                 </a>
@@ -296,17 +413,28 @@ $wishlistcnt = 0;
 
 
         </ul>
-
-    <div class="language-select flx-align select-has-icon">
-        <img src="assets/images/icons/globe.svg" alt="" class="globe-icon white-version">
-        <img src="assets/images/icons/globe-white.svg" alt="" class="globe-icon dark-version">
-        <select class="select py-0 ps-2 border-0 fw-500">
-            <option value="1">Eng</option>
-            <option value="2">Bn</option>
-            <option value="3">Eur</option>
-            <option value="4">Urd</option>
-        </select>
-    </div>
+{{-- @auth
+    <div class="flx-align select-has-icon">
+        <div class="user-profile">
+            <button class="user-profile__button flex-align">
+                <span class="user-profile__thumb">
+                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
+                </span>
+            </button>
+            <ul class="user-profile-dropdown show">
+                <li class="sidebar-list__item">
+                    <a class="dropdown-item" href="{{ route('account.profile') }}">
+                        <span class="sidebar-list__icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
+                        </span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div> --}}
+    {{-- @endauth --}}
     </div>
     <button type="button" class="toggle-mobileMenu d-lg-none"> <i class="las la-bars"></i> </button>
 </div>
@@ -316,4 +444,19 @@ $wishlistcnt = 0;
 </header>
 <!-- ==================== Header End Here ==================== -->
 
+
+<script>
+// Toggle user dropdown on click (desktop)
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('desktopUserButton');
+  const dd = document.getElementById('desktopUserDropdown');
+  if (btn && dd) {
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      dd.classList.toggle('open');
+    });
+    document.addEventListener('click', function(){ dd.classList.remove('open'); });
+  }
+});
+</script>
 

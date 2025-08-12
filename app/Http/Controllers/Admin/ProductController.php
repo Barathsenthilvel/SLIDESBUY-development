@@ -472,8 +472,29 @@ class ProductController extends Controller
     //     $data1['msg'] = 'New product Added Successfully.';
     // return response()->json($data1);
     //   }
-public function store(Request $request){
 
+    public function download(Product $product)
+    {
+        dd($product);
+        // Check if the user is authorized to download (e.g., based on ownership or purchase)
+        if (!Auth::check() || !$this->authorizeDownload($product)) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Check if the file exists
+        $filePath = $product->document; // e.g., 'documents/filename.pdf'
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        // Serve the file for download
+        return Storage::disk('public')->download($filePath, $product->product_title . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
+    }
+    public function store(Request $request){
+        \Log::info('Product Attributes:', [
+            'all_request' => $request->all(),
+            'attributes' => $request->input('attributes', [])
+        ]);
     $attributeValues = [];
     $requestData = $request->all();
 
@@ -486,6 +507,7 @@ public function store(Request $request){
         'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
         'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
         'image1'           => 'required',
+        'document' => 'required|file|mimes:pdf,ppt,pptx|max:10240',
         'productDescription' => 'required'
     ];
 
@@ -496,6 +518,9 @@ public function store(Request $request){
         'skuCode.unique'            => 'SKU  Code should be unique',
         'productTitle.required'     => 'Product Name should be filled',
         'productTitle.unique'       => 'Product Name already taken',
+        'document.required' => 'Document should be uploaded',
+            'document.mimes' => 'Document must be a PDF or PPT/PPTX file',
+            'document.max' => 'Document size must not exceed 10MB',
         'image1.required'           => 'Image 1 should be filled',
         'productDescription.required' => 'Product Description should be filled',
     ];
@@ -509,55 +534,78 @@ public function store(Request $request){
         return response()->json(['errors' => $validator->getMessageBag()->toArray()]);
     }
 
+    // Handle document upload
+        $documentPath = null;
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $documentPath = $file->store('documents', 'public'); // Store in storage/app/public/documents
+        }
+
+
+
     $image1 = $request->image1;
     $image2 = $request->image2;
     $image3 = $request->image3;
     $image4 = $request->image4;
     $image5 = $request->image5;
 
-    // COMMENTED OUT: Attribute logic block
-    /*
-    if ($attributeTemplate > 0) {
-        $attributes = $request['attributes'];
-        $attributeValues = [];
+    // Process attributes
+    $attributes = $request['attributes'] ?? [];
+    $attributeValues = [];
 
-        if (is_array($attributes)) {
-            foreach ($attributes as $key => $value) {
-                if (is_array($value)) {
-                    $attributeValues[] = $key . '-' . implode(',', $value);
-                } else {
-                    $getType = Attribute::findOrFail($key);
-                    $getAttri = $getType->attribute_values;
+    if (is_array($attributes)) {
+        foreach ($attributes as $key => $value) {
+            $getType = Attribute::find($key);
+            if (!$getType) continue;
 
-                    if ($getType->attribute_type == 2) {
-                        if (empty($getAttri)) {
-                            $getType->attribute_values = strip_tags($value);
-                            $getType->save();
-                        } else {
-                            if (!in_array(strip_tags($value), explode(',', $getAttri))) {
-                                $getType->attribute_values = $getAttri . ',' . strip_tags($value);
-                                $getType->save();
-                            }
-                        }
-                        $attributeValues[] = $key . '-' . $value;
-                    } else {
-                        if (empty($getAttri)) {
-                            $getType->attribute_values = $value;
-                            $getType->save();
-                        } else {
-                            if (!in_array($value, explode(',', $getAttri))) {
-                                $getType->attribute_values = $getAttri . ',' . $value;
-                                $getType->save();
-                            }
-                        }
-                        $attributeValues[] = $key . '-' . $value;
+            if (is_array($value)) {
+                // Handle multiple values (e.g. tags)
+                $cleanValues = array_map('trim', $value);
+                $attributeValues[] = $key . '-' . implode(',', $cleanValues);
+
+                // Update attribute's available values if needed
+                $existingValues = array_filter(explode(',', $getType->attribute_values ?? ''));
+                $newValues = array_diff($cleanValues, $existingValues);
+                if (!empty($newValues)) {
+                    $allValues = array_merge($existingValues, $newValues);
+                    $getType->attribute_values = implode(',', array_unique($allValues));
+                    $getType->save();
+                }
+            } else {
+                // Handle single value
+                $cleanValue = trim($value);
+                if (!empty($cleanValue)) {
+                    $attributeValues[] = $key . '-' . $cleanValue;
+
+                    // Update attribute's available values if needed
+                    $existingValues = array_filter(explode(',', $getType->attribute_values ?? ''));
+                    if (!in_array($cleanValue, $existingValues)) {
+                        $existingValues[] = $cleanValue;
+                        $getType->attribute_values = implode(',', array_unique($existingValues));
+                        $getType->save();
                     }
                 }
             }
         }
-        $attribute_value = implode('|', $attributeValues);
     }
-    */
+
+    $attribute_value = !empty($attributeValues) ? implode('|', $attributeValues) : '';
+
+    // Process attributes first
+    $attributeValues = [];
+    if (isset($requestData['attributes']) && is_array($requestData['attributes'])) {
+        foreach ($requestData['attributes'] as $attrId => $value) {
+            if (is_array($value)) {
+                // Handle multiple values (checkboxes, multiselect)
+                $attributeValues[] = $attrId . '-' . implode(',', $value);
+            } else {
+                // Handle single values
+                if (!empty($value)) {
+                    $attributeValues[] = $attrId . '-' . $value;
+                }
+            }
+        }
+    }
 
     $data = new Product;
     $data->category = (empty($requestData['category'])) ? '' : implode('|', (array)$requestData['category']);
@@ -565,7 +613,7 @@ public function store(Request $request){
     $data->slug = Str::slug($data->product_title, '-');
     $data->product_base_price = '';
     $data->product_sku = $requestData['skuCode'];
-    $data->attribute_values = ''; // Removed attribute_value based on template
+    $data->attribute_values = !empty($attributeValues) ? implode('|', $attributeValues) : '';
     $data->tax = '';
     $data->weight = '';
     $data->weight_unit = $requestData['weightUnit'];
@@ -583,6 +631,7 @@ public function store(Request $request){
     $data->image3 = $image3;
     $data->image4 = $image4;
     $data->image5 = $image5;
+    $data->document = $documentPath;
     $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
     $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
     $data->user_id = Auth::user()->id;

@@ -42,11 +42,10 @@
 
 <!-- ================================== Account Page Start =========================== -->
 <section class="account d-flex">
-    <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
         <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
-            <img src="assets/images/thumbs/banner-img.png" alt="">
+            <img src="../assets/images/thumbs/banner-img.png" alt="">
             <div class="statistics animation bg-main text-center">
                 <h5 class="statistics__amount text-white">50k</h5>
                 <span class="statistics__text text-white font-14">Customers</span>
@@ -61,10 +60,10 @@
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src="../assets/images/icons/sun.svg" alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src="../assets/images/icons/moon.svg" alt="">
         </span>
     </label>
 </div>
@@ -72,8 +71,10 @@
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
-                <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
+                {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version"> --}}
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version">
             </a>
             <h4 class="account-content__title mb-48 text-capitalize">Create A Free Account</h4>
 <!-- register form start -->
@@ -106,17 +107,23 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" >
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
+            @error('password')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Confirm Password</label>
             <div class="position-relative">
-                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" >
+                <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
+            @error('password_confirmation')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
@@ -124,6 +131,9 @@
                 <input class="form-check-input" type="checkbox" name="agree" id="agree" required>
                 <label class="form-check-label mb-0 fw-400 font-16 text-body" for="agree">I agree to the terms & conditions</label>
             </div>
+            @error('agree')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
 
         <div class="col-12">
@@ -149,16 +159,26 @@
 <!-- Load jQuery first -->
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <!-- Then jQuery Validation -->
 {{-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script> --}}
-
 
 <script>
     // debugger
 jQuery(document).ready(function ($) {
-    $('#registerForm').on('submit', function(e) {
-        e.preventDefault(); // Prevent form submission
+    // Show server-side validation errors if they exist
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            if (window.toaster) {
+                window.toaster.error('{{ $error }}');
+            }
+        @endforeach
+    @endif
 
+    $('#registerForm').on('submit', function(e) {
+        // Only do client-side validation, don't prevent form submission
         let isValid = true;
         let name = $('input[name="name"]').val().trim();
         let email = $('input[name="email"]').val().trim();
@@ -166,8 +186,8 @@ jQuery(document).ready(function ($) {
         let confirmPassword = $('input[name="password_confirmation"]').val();
         let agree = $('#agree').is(':checked');
 
-        // Clear previous errors
-        $('.text-danger').remove();
+        // Clear previous client-side errors
+        $('.text-danger').not('.server-error').remove();
 
         // Name validation
         if (name === '') {
@@ -202,10 +222,27 @@ jQuery(document).ready(function ($) {
             isValid = false;
         }
 
-        // If all validations pass, submit the form
-        if (isValid) {
-            this.submit(); // or use AJAX if needed
+        // If validation fails, prevent form submission and show errors
+        if (!isValid) {
+            e.preventDefault();
+            return false;
         }
+
+        // If all validations pass, show loading and submit form
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.text();
+
+        // Show loading state
+        submitBtn.prop('disabled', true).text('Creating Account...');
+
+        // Show loading toaster
+                        if (window.toaster) {
+            window.toaster.loading('Creating your account and sending OTP...');
+        }
+
+        // Allow form to submit normally
+        // The success message will be shown on the OTP form page
+    });
     });
 
     // Email regex helper
@@ -219,4 +256,4 @@ jQuery(document).ready(function ($) {
 
 
 
-  
+

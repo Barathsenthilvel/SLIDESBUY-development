@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                         <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -15,13 +15,13 @@
                                         <h5 class="text-dark font-weight-bold my-1 mr-5">Subscriptions</h5>
                                         <!--end::Page Title-->
                                         <!--begin::Breadcrumb-->
-                                       
+
                                         <!--end::Breadcrumb-->
                                     </div>
                                     <!--end::Page Heading-->
                                 </div>
                                 <!--end::Info-->
-                                
+
                             </div>
                         </div>
                         <!--end::Subheader-->
@@ -51,13 +51,13 @@
                                                     <th>Expired At</th>
                                                 </tr>
                                             </thead>
-                                          
+
                                         </table>
                                         <!--end: Datatable-->
                                     </div>
                                 </div>
                                 <!--end::Card-->
-                               
+
                             </div>
                             <!--end::Container-->
                         </div>
@@ -65,8 +65,8 @@
                     </div>
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection   
- @push('script')                  
+ @endsection
+ @push('script')
      <script type="text/javascript">
         $(function(){
         var table = $('#subscriptiontable').DataTable({
@@ -102,7 +102,7 @@ $(document).on('change','.droplinks',function () {
         $.notify("Status Updated Successfully.","success");
       });
 
-{{-- DATA TABLE ENDS--}}
+// {{-- DATA TABLE ENDS--}}
 
 </script>
- @endpush   
+ @endpush

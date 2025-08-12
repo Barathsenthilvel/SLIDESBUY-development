@@ -35,7 +35,8 @@ class User extends Authenticatable
         'pincode',
         'address',
         'wishlist',
-        'street'
+        'street',
+        'password_requested_at'
     ];
 
     /**
@@ -95,10 +96,28 @@ class User extends Authenticatable
             return '';
         }
     }
-
+public function subscriptions()
+{
+    return $this->hasMany(Subscription::class);
+}
 
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    public function subscriptionss()
+{
+    return $this->hasMany(Subscription::class, 'user_id');
+}
+
+public function wishlists()
+{
+    return $this->hasMany(Wishlist::class);
+}
+
+public function isInWishlist($productId)
+{
+    return $this->wishlists()->where('product_id', $productId)->exists();
+}
 }

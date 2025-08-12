@@ -1,5 +1,5 @@
-@if (count($Product)>0)
-@foreach ($Product as $product)
+@if (count($wishlistProducts)>0)
+@foreach ($wishlistProducts as $product)
 @php
     $rev = $product->reviewtotal();
     $star = $rev->reviewtotal/20;

@@ -1,93 +1,250 @@
 @extends('front.includes.container')
 @section('content')
-<section class="banner-section">
-	<div class="banner-inner">
-		<div class="homeslider">
-            <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
-			<div class="pagetitle-wraper">
-				<div class="container">
-					<div class="pagetitle">Wishlist</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="banner-breadcrumb">
-  		<div class="container">
-  			<div class="row">
-  				<div class="col-md-12">
-  					<ul class="breadcrumb">
-					  <li><a href="{{route('front.index')}}">Home</a></li>
-					  <li><a href="">Wishlist</a></li>
-				    </ul>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-	</section>
-    <section class="wishlist-section">
+
+<!-- ============================ Breadcrumb Start ================================== -->
+<div class="breadcrumb-section">
         <div class="container">
-          <div class="row">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 wishfull">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  profile-leftinner">
-                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cartitem-lits orderlist-wraper">
-                     <div class="profile-navbar mobhide">
-                        <ul class="list-inline">
-                            <li><a class="active" href="https://www.tuljamart.com/tuljamart/myorders">Wishlist</a></li>
-                        </ul>
-                    </div>
-                    <div class="row">
-                    <div  id="wishlisttemplate" style="padding-top: 25px;">
-                        @include('front.includes.wishlistTemplate')
-                    </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 nopad bottombtn-wraper text-right">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title">
+                    <h2 class="text-heading">My Wishlist</h2>
+                </div>
+                {{-- <nav class="breadcrumb-nav">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('front.index') }}">Home</a></li>
+                        <li class="breadcrumb-item active">Wishlist</li>
+                    </ol>
+                </nav> --}}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============================ Breadcrumb End ================================== -->
 
-                            <a class="transparent-btn"  href="{{route('front.getCategory')}}">continue shopping</a>
-                            <a class="placeorder-btn" href="address.html">Place Order</a>
+<!-- ============================ Wishlist Section Start ================================== -->
+<section class="wishlist-section section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+        <div id="wishlist-content">
+                    @if(count($wishlistProducts) > 0)
+                        <div class="row g-4">
+                            @foreach($wishlistProducts as $product)
+                        @php
+                            $rev = $product->reviewtotal();
+                            $star = $rev->reviewtotal/20;
+                            $currentPrice = $product->getproductPrice()->isoffer ? $product->getproductPrice()->price : $product->getproductPrice()->price;
+                        @endphp
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="product-item section-bg h-100">
+                                        <div class="product-item__thumb d-flex">
+                                            <a href="{{ route('product.item', ['slug' => $product->slug]) }}" class="link w-100">
+                                                <img src="{{ $product->image1 ? URL::asset('/assets/media/products/' . $product->image1) : URL::asset('assets/images/thumbs/product-img1.png') }}"
+                                                     alt="{{ $product->product_title ?? 'Product Image' }}"
+                                                     class="cover-img">
+                                            </a>
+                                            <button type="button"
+                                                class="product-item__wishlist wishlist-btn btn-wishlist active in-wishlist"
+                                                data-product-id="{{ $product->id }}"
+                                                data-container="body"
+                                                data-toggle="popover"
+                                                data-trigger="hover"
+                                                data-placement="top"
+                                                data-content="Remove from Wishlist">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        </div>
+
+                                        <div class="product-item__content">
+                                            <h6 class="product-item__title">
+                                                <a href="{{ route('product.item', ['slug' => $product->slug]) }}" class="link">
+                                                    {{ Str::limit($product->product_title ?? 'Product Title', 50) }}
+                                                </a>
+                                            </h6>
+
+                                            <div class="product-item__info flx-between gap-2">
+                                                <span class="product-item__author">
+                                                    by
+                                                    <a href="profile.html" class="link hover-text-decoration-underline">
+                                                        {{ $product->vendor->name ?? 'Slidesbuy' }}
+                                                    </a>
+                                                </span>
+                                                <div class="flx-align gap-2">
+                                                   <h6 class="product-item__price mb-0">
+                                                   <span class="custom-badge {{ $product->discount_price ? 'Free' : 'paid' }}">
+        {{ $product->discount_price ? 'Free' : 'paid' }}
+    </span>
+                                                </h6>
+
+                                                    @if (!empty($product->price))
+                                                        <span class="product-item__prevPrice text-decoration-line-through">
+                                                            ${{ $product->price }}
+                                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                                            <div class="product-item__bottom flx-between gap-2">
+                                                <div>
+                                                    <span class="product-item__sales font-14 mb-2">
+                                                        {{ $product->sales ?? '1200' }} Downloads
+                                    </span>
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <ul class="star-rating">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <li class="star-rating__item font-11">
+                                                                    <i class="{{ $star >= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
+                                                                </li>
+                                                            @endfor
+                                                        </ul>
+                                                        <span class="star-rating__text text-heading fw-500 font-14">
+                                                            ({{ $product->review_count ?? '16' }})
+                                        </span>
+                                                    </div>
+                                </div>
+
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ route('product.item', ['slug' => $product->slug]) }}"
+                                                       class="btn btn-outline-light btn-sm pill">
+                                                        View
+                                                    </a>
+                                    {{-- @if($product->soldout == 'off')
+                                                        <button class="btn btn-primary btn-sm pill" onclick="addToCart({{ $product->id }}, {{ $product->minquantity }})">
+                                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    @else
+                                                        <button class="btn btn-secondary btn-sm pill" disabled>
+                                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @endif --}}
+                                                </div>
+                                            </div>
+                                </div>
+                            </div>
                         </div>
+                    @endforeach
+                </div>
+            @else
+                        <div class="text-center py-5">
+                            <div class="empty-wishlist">
+                                <i class="fas fa-heart-broken fa-4x text-muted mb-4"></i>
+                                <h3 class="text-heading mb-3">Your wishlist is empty</h3>
+                                <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
+                                <a href="{{ route('front.index') }}" class="btn btn-primary">
+                                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ============================ Wishlist Section End ================================== -->
 
-                    </div>
-              </div>
-
-              </div>
-        </div>
-        </div>
-        </div>
-      </section>
 @endsection
+
 @push('script')
 <script>
-    $('body').on('click','.wishlistremove',function(e){
-        e.preventDefault();
-        $.ajax({
-                method:"GET",
-                url:$(this).attr('href'),
-                data:{id:$(this).data('id')},
-                success:function(data){
-                    $('#wishlisttemplate').load('{{route('wishlistTemplate')}}');
-                },
-                error:function(erroe){ }
-            });
-    });
-            $('body').on('click','.btn-cartvl', function (t) {
-            t.preventDefault();
-            var qu = $(this).data('quantity');
-            var id = $(this).data('id');
-            $.ajax({
-                method: "GET",
-                url: "{{route('user.add.card')}}",
-                data: {
-                    quantity: qu,
-                    id: id
-                },
-                success: function (data) {
-                    $('.cart-count').text(data.totalitem);
-                    $('.dropdown-box').load("{{route('user.render.card')}}");
-                    toastr["success"]('Added to Cart');
-                },
-                error: function (erroe) {
+function addToCart(productId, quantity) {
+    $.ajax({
+        method: "GET",
+        url: "{{ route('user.add.card') }}",
+        data: {
+            quantity: quantity,
+            id: productId
+        },
+        success: function(data) {
+            // Update cart count
+            $('.cart-count').text(data.totalitem);
+            $('.dropdown-box').load("{{ route('user.render.card') }}");
 
+            // Show success message
+            if (window.toaster) {
+                window.toaster.success('Added to Cart');
+            } else {
+                alert('Added to Cart');
+            }
+        },
+        error: function() {
+            if (window.toaster) {
+                window.toaster.error('Failed to add to cart');
+            } else {
+                alert('Failed to add to cart');
+            }
+        }
+    });
+}
+
+// Wishlist page: remove item without full page refresh
+$(document).ready(function() {
+    $(document).on('click', '.product-item__wishlist', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const productId = button.data('product-id');
+        if (!productId) return;
+
+    $.ajax({
+            method: 'POST',
+        url: "{{ route('wishlistremove') }}",
+        data: {
+            id: productId,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(data) {
+            if (data.status === 'success') {
+                // Update wishlist count in header
+                $('.wishlist-count').text(data.count);
+
+                    // Remove the product card from the list
+                    const card = button.closest('.col-xl-3, .col-lg-4, .col-md-6, .col-sm-6');
+                    if (card.length) {
+                        card.fadeOut(200, function() {
+                            $(this).remove();
+
+                            // If no items remain, show empty state
+                            if ($('.product-item__wishlist').length === 0) {
+                                $('#wishlist-content').html(`
+                                    <div class="text-center py-5">
+                                        <div class="empty-wishlist">
+                                            <i class="fas fa-heart-broken fa-4x text-muted mb-4"></i>
+                                            <h3 class="text-heading mb-3">Your wishlist is empty</h3>
+                                            <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
+                                            <a href="{{ route('front.index') }}" class="btn btn-primary">
+                                                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                                            </a>
+                                        </div>
+                                    </div>
+                                `);
+                            }
+                        });
+                    }
+
+                    if (window.toaster) {
+                        window.toaster.success('Removed from wishlist');
+                    }
+            } else {
+                if (window.toaster) {
+                    window.toaster.error(data.message || 'Failed to remove item');
+                } else {
+                    alert(data.message || 'Failed to remove item');
                 }
-            });
-        });
+            }
+        },
+        error: function(xhr) {
+            if (xhr.status === 401) {
+                    window.location.href = '{{ route('login.form') }}';
+            } else {
+                if (window.toaster) {
+                    window.toaster.error('Failed to remove item from wishlist');
+                } else {
+                    alert('Failed to remove item from wishlist');
+                }
+            }
+        }
+    });
+    });
+});
 </script>
 @endpush

@@ -31,12 +31,16 @@
                                             <li> <a href="#" data-id="{{$discountProduct->id}}" data-q="{{$discountProduct->minquantity}}"
                                                     class="cart-btn common-btn {{($discountProduct->soldout != 'off')?'':'btn-cart2'}}" @if($discountProduct->soldout != 'off') style="pointer-events: none" @endif>{{($discountProduct->soldout != 'off')?'soldout':'Add to Cart'}}</a></li>
                                             <li>
-                                                <a href="#" data-container="body" data-trigger="hover"
-                                                    data-toggle="popover" data-placement="top" data-content="Wishlist" data-id="{{$discountProduct->id}}"
-                                                    data-original-title="" title="" class="wishlist-btn common-btn btn-wishlist {{(in_array($discountProduct->id,$array)?'added':'')}}">
-                                                    <img class="img-responsive center-block"
-                                                        src="{{URL::asset('assets/front/images/icons/wishlist.png')}}">
-                                                </a>
+                                                <button type="button"
+                                                        class="wishlist-btn btn-wishlist {{(in_array($discountProduct->id,$array)?'active':'')}}"
+                                                        data-id="{{$discountProduct->id}}"
+                                                        data-container="body"
+                                                        data-toggle="popover"
+                                                        data-trigger="hover"
+                                                        data-placement="top"
+                                                        data-content="Wishlist">
+                                                    <i class="{{(in_array($discountProduct->id,$array)?'fas':'far')}} fa-heart"></i>
+                                                </button>
                                             </li>
                                         </ul>
                                     </div>
@@ -86,13 +90,13 @@
 
 
 <section class="selling-product padding-y-120 position-relative z-index-1 overflow-hidden">
-    <img src="assets/images/gradients/selling-gradient.png" alt="" class="bg--gradient">
+    <img src="../assets/images/gradients/selling-gradient.png" alt="" class="bg--gradient">
 
-    <img src="assets/images/shapes/element2.png" alt="" class="element one">
-    <img src="assets/images/shapes/element1.png" alt="" class="element two">
+    <img src="../assets/images/shapes/element2.png" alt="" class="element one">
+    <img src="../assets/images/shapes/element1.png" alt="" class="element two">
 
-    <img src="assets/images/shapes/curve-pattern1.png" alt="" class="position-absolute start-0 top-0 z-index--1">
-    <img src="assets/images/shapes/curve-pattern2.png" alt="" class="position-absolute end-0 top-0 z-index--1">
+    <img src="../assets/images/shapes/curve-pattern1.png" alt="" class="position-absolute start-0 top-0 z-index--1">
+    <img src="../assets/images/shapes/curve-pattern2.png" alt="" class="position-absolute end-0 top-0 z-index--1">
 
     <div class="container container-two">
         <div class="section-heading style-left style-white flx-between max-w-unset gap-4">
@@ -149,8 +153,8 @@
                             <div class="flx-align gap-2">
                                 <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="btn btn-outline-light download-icon btn-icon btn-icon--sm pill">
                                     <span class="icon">
-                                        <img src="assets/images/icons/download.svg" alt="" class="white-version">
-                                        <img src="assets/images/icons/download-white.svg" alt="" class="dark-version">
+                                        <img src="../assets/images/icons/download.svg" alt="" class="white-version">
+                                        <img src="../assets/images/icons/download-white.svg" alt="" class="dark-version">
                                     </span>
                                 </a>
                                 <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="btn btn-outline-light pill">Live Demo</a>

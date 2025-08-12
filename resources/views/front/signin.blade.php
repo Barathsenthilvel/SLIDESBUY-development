@@ -8,11 +8,11 @@
 
     </style>
 <section class="account d-flex">
-    <img src="assets/images/thumbs/account-img.png" alt="" class="account__img">
+    <img src="../assets/images/thumbs/account-img.png" alt="" class="account__img">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
-        <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
+        <img src="../assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
-            <img src="assets/images/thumbs/banner-img.png" alt="">
+            <img src="../assets/images/thumbs/banner-img.png" alt="">
             <div class="statistics animation bg-main text-center">
                 <h5 class="statistics__amount text-white">50k</h5>
                 <span class="statistics__text text-white font-14">Customers</span>
@@ -27,10 +27,10 @@
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">
-            <img src="assets/images/icons/sun.svg" alt="">
+            <img src="../assets/images/icons/sun.svg" alt="">
         </span>
         <span class="slider text-black header-right__button dark-version">
-            <img src="assets/images/icons/moon.svg" alt="">
+            <img src="../assets/images/icons/moon.svg" alt="">
         </span>
     </label>
 </div>
@@ -38,8 +38,8 @@
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
-                <img src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-                <img src="assets/images/logo/slidesbuy.png" alt="" class="dark-version">
+                <img src="../assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
+                <img src="../assets/images/logo/slidesbuy.png" alt="" class="dark-version">
             </a>
             <h4 class="account-content__title mb-48 text-capitalize">Login</h4>
 
@@ -76,7 +76,7 @@
 
     @csrf
     <div class="row gy-4">
-        
+
 
         <div class="col-12">
             <label for="email" class="form-label mb-2 font-18 font-heading fw-600">Email</label>
@@ -90,7 +90,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required>
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required autocomplete="current-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
                         <div class="error-msg password-error mt-1 text-danger"></div>
 
@@ -108,8 +108,8 @@
 
 
 
-       
-        
+
+
         </div>
     </div>
 </form>
@@ -122,9 +122,11 @@
 <!-- Load jQuery first -->
 <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
 <!-- Then your script -->
 <script>
-
     jQuery(document).ready(function ($) {
         $('#loginForm').on('submit', function (e) {
             e.preventDefault();
@@ -134,40 +136,101 @@
             $('.password-error').text('');
             $('input').removeClass('is-invalid');
 
+            // Show loading toaster (with fallback)
+            let loadingToast = null;
+            if (window.toaster) {
+                loadingToast = window.toaster.loading('Logging in...');
+            } else {
+                // Fallback: show a simple loading message
+                $('#loginError').text('Logging in...').removeClass('text-danger').addClass('text-info');
+            }
+
             let formData = $(this).serialize();
 
             $.ajax({
-               url: "{{ route('login.submit') }}",// Update if your login route is different
+               url: "{{ route('login.submit') }}",
                 method: 'POST',
                 data: formData,
                 success: function (res) {
+                    // Hide loading toaster
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('#loginError').text('').removeClass('text-info');
+                    }
+
                     if (res.success) {
-                        window.location.href = '/home';
+                        if (window.toaster) {
+                            window.toaster.success('Login successful! Redirecting...', 2000);
+                        } else {
+                            $('#loginError').text('Login successful! Redirecting...').removeClass('text-danger').addClass('text-success');
+                        }
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 2000);
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error('Login failed. Please try again.');
+                        } else {
+                            $('#loginError').text('Login failed. Please try again.').removeClass('text-success text-info').addClass('text-danger');
+                        }
                     }
                 },
                 error: function (xhr) {
+                    // Hide loading toaster
+                    if (window.toaster && loadingToast) {
+                        window.toaster.hide(loadingToast);
+                    } else {
+                        $('#loginError').text('').removeClass('text-info');
+                    }
+
                     if (xhr.status === 422) {
                         // Laravel validation errors
                         let errors = xhr.responseJSON.errors;
                         if (errors.email) {
                             $('input[name="email"]').addClass('is-invalid');
                             $('.email-error').text(errors.email[0]);
+                            if (window.toaster) {
+                                window.toaster.error(errors.email[0]);
+                            } else {
+                                $('#loginError').text(errors.email[0]).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                         if (errors.password) {
                             $('input[name="password"]').addClass('is-invalid');
                             $('.password-error').text(errors.password[0]);
+                            if (window.toaster) {
+                                window.toaster.error(errors.password[0]);
+                            } else {
+                                $('#loginError').text(errors.password[0]).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                     } else if (xhr.status === 401) {
                         let response = xhr.responseJSON;
                         if (response.field === 'email') {
                             $('input[name="email"]').addClass('is-invalid');
                             $('.email-error').text(response.message);
+                            if (window.toaster) {
+                                window.toaster.error(response.message);
+                            } else {
+                                $('#loginError').text(response.message).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         } else if (response.field === 'password') {
                             $('input[name="password"]').addClass('is-invalid');
                             $('.password-error').text(response.message);
+                            if (window.toaster) {
+                                window.toaster.error(response.message);
+                            } else {
+                                $('#loginError').text(response.message).removeClass('text-success text-info').addClass('text-danger');
+                            }
                         }
                     } else {
-                        alert('An unknown error occurred. Please try again.');
+                        const errorMessage = 'An unknown error occurred. Please try again.';
+                        if (window.toaster) {
+                            window.toaster.error(errorMessage);
+                        } else {
+                            $('#loginError').text(errorMessage).removeClass('text-success text-info').addClass('text-danger');
+                        }
                     }
                 }
             });

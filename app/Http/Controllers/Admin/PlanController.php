@@ -67,6 +67,40 @@ class PlanController extends Controller
     }
 
 
+
+    public function update(Request $request, $id)
+{
+    $plan = Plan::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string',
+        'price' => 'required|numeric',
+        'discount' => 'nullable|numeric',
+        'discount_type' => 'required|in:flat,percentage',
+        'download_limit' => 'required|numeric',
+        'validity' => 'required|integer|min:1',
+    ]);
+
+
+
+    try {
+       $plan->update($request->only([
+        'name',
+        'price',
+        'discount',
+        'discount_type',
+        'download_limit',
+        'validity',
+    ]));
+    return redirect('/admin/subscription/setup')->with('success', 'Plan updated successfully.');
+}
+catch (\Exception $e) {
+    return redirect()->back()->with('error', 'Failed to update plan. Try again.');
+}
+}
+
+
+
     /**
      * Display the specified resource.
      *
@@ -84,10 +118,11 @@ class PlanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+  public function edit($id)
+{
+    $plan = Plan::findOrFail($id);
+    return view('admin.subscriptions.create', compact('plan'));
+}
 
     /**
      * Update the specified resource in storage.
@@ -96,10 +131,7 @@ class PlanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -107,10 +139,15 @@ class PlanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
+ public function destroy($id)
+{
+    // dd($id);
+    $plan = Plan::findOrFail($id);
+    $plan->delete();
+
+    return redirect()->back()->with('success', 'Plan deleted successfully.');
+}
+
 
     public function datatables()
     {
@@ -141,4 +178,9 @@ class PlanController extends Controller
             ->rawColumns(['actions'])
             ->make(true);
     }
+    public function getName()
+{
+    return $this->name;
+}
+
 }

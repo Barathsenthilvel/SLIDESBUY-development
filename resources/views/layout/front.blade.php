@@ -60,14 +60,7 @@
 
     <!-- end preloader area -->
 
-    <!-- start top to button -->
-    <div class="top-to">
-        <button class="top-to-btn">
-            <i class="fas fa-long-arrow-alt-up"></i>
-        </button>
-        <p>back to top</p>
-    </div>
-    <!-- end top to button -->
+    {{-- Scroll to top button removed for better user experience --}}
 
     <!-- start header area -->
     <header>
@@ -287,6 +280,8 @@
                 }
             });
         });
+        
+
     </script>
     @stack('script')
 </body>

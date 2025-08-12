@@ -6,201 +6,230 @@
     var min = parseInt('{{$min}}');
     var max = parseInt('{{$max}}') +1;
 </script>
-
-<section class="banner-section">
-    <div class="banner-inner">
-        <div class="homeslider">
-            <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
-            <div class="pagetitle-wraper">
+        {{-- <section class="banner-section">
+            <div class="banner-inner">
+                <div class="homeslider">
+                    <img src="{{URL::asset('assets/front/images/banner/productlist.jpg')}}" class="img-responsive" alt="slider1">
+                    <div class="pagetitle-wraper">
+                        <div class="container">
+                            <div class="pagetitle">Products</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="banner-breadcrumb">
                 <div class="container">
-                    <div class="pagetitle">Products</div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="breadcrumb">
+                                <li><a href="{{ route('front.index') }}">Home</a></li>
+
+                                <li><a href="#">Products</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="banner-breadcrumb">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="breadcrumb">
-                        <li><a href="{{ route('front.index') }}">Home</a></li>
-
-                        <li><a href="#">Products</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
+        </section> --}}
 <section>
     <div class="container">
-        <aside class="col-md-3 col-sm-4 col-xs-12 nopad sss1 sticky-wraper">
-            <div class="productlistaside" id="productlistaside">
-                <form id="frmproductlistaside" name="frmproductlistaside" action="#">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="filtersec">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 filtersecc">
-                                    <h4 class="filtertrigger">Filters &nbsp; <span
-                                            class="hidden-sm hidden-lg hidden-md"><i
-                                                class="fa fa-caret-down"></i></span></h4>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 filterseccc">
-                                    <h4>
-                                        <span class="saveandclear-wraper">
-                                            <a href="javascript:void(0);" class="filter-clean">Clear All</a>
-                                        </span>
-                                    </h4>
-                                </div>
-                            </div>
+        <div class="row">
+            {{-- Filter Sidebar --}}
+        <div class="col-xl-3 col-lg-4">
+                <!-- ===================== Filter Sidebar Start ============================= -->
+<div class="filter-sidebar">
+    <button type="button" class="filter-sidebar__close p-2 position-absolute end-0 top-0 z-index-1 text-body hover-text-main font-20 d-lg-none d-block"><i class="las la-times"></i></button>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Category</button>
+        <div class="filter-sidebar__content">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        All Categories <span class="qty">25489</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Site Template <span class="qty">12,501</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        WordPress <span class="qty">1258</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        UI Template <span class="qty">1520</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Templates Kits <span class="qty">210</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        eCommerce <span class="qty">158</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Marketing <span class="qty">178</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        CMS Template <span class="qty">122</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Muse Themes <span class="qty">450</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Blogging <span class="qty">155</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Courses <span class="qty">125</span>
+                    </a>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <a href="" class="filter-sidebar-list__text">
+                        Forums <span class="qty">35</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Rating</button>
+        <div class="filter-sidebar__content" style="">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="veiwAll">
+                            <label class="form-check-label" for="veiwAll"> View All</label>
                         </div>
-
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 nopad collapsemenu-wraper">
-                            <div class="filter-title">
-                                <span class="filter-trigger">
-                                    <span class="filter-close"><i class="fa fa-angle-left"></i></span>
-                                    &nbsp; <span>Filters </span>
-                                </span>
-                                <span class="clear-filter pull-right"><a href="javascript:void(0);" class="filter-clean">Clear All</a></span>
-                            </div>
-                            <!---->
-                            <div class="pricerange-wraper">
-                                <ul class="collapsemenu">
-                                    <li>
-                                        <a class="firstlevel-collpase" href="#">Price</a>
-                                        <a aria-controls="pricefilter1" aria-expanded="true"
-                                            class="collapse-trigger" data-toggle="collapse" href="#pricefilter1"
-                                            role="button"></a>
-                                        <div aria-expanded="true" class="collapse in" id="pricefilter1" style="">
-                                            <div class="well">
-                                                <div class="price-range-block">
-                                                    <div id="slider-range" class="price-filter-range"
-                                                        name="rangeInput"></div>
-                                                    <div>
-                                                        <!--<input type="number" min="180" max="435"  oninput="validity.valid||(value='180');" id="min_price" name="min_price" class="price-range-field" />-->
-                                                        {{-- <input type="hidden" id="minval" value="{{$min}}" />
-                                                        <input type="hidden" id="maxval" value="{{$max+1}}" /> --}}
-                                                        <input type="number" id="min_price" name="min_price"
-                                                            class="price-range-field"
-                                                            onBlur="pricevaluechange(this.value,'min_price');" />
-
-                                                        <span>to</span>
-
-                                                        <!--<input type="number"  oninput="validity.valid||(value='180');" id="min_price" name="min_price" class="price-range-field" /> <span>to</span>  -->
-
-                                                        <input type="number" id="max_price" name="max_price"
-                                                            class="price-range-field"
-                                                            onBlur="pricevaluechange(this.value,'max_price');" />
-
-                                                        <!-- <input type="number" min="180" max="435" oninput="validity.valid||(value='435');" id="max_price" name="max_price" class="price-range-field" />-->
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                            <div class="categorylist-wraper">
-                                <ul class="collapsemenu">
-                                    @foreach($categorys as $key=>$categorys)
-                                    <li>
-                                        <a class="firstlevel-collpase Category" href="{{route('front.getCategory',$categorys->Category_url)}}"  data-id="{{$categorys->id}}">{{$categorys->category_name}}</a>
-                                        @if(count($categorys->subs))
-                                        <a aria-controls="collapseMenu1" aria-expanded="false"
-                                            class="collapse-trigger collapsed" data-toggle="collapse" href="#collapseMenu{{$key}}"
-                                            id="flexible-packaging" role="button"></a>
-                                        <div aria-expanded="false" class="collapse" id="collapseMenu{{ $key }}" style="">
-                                            <div class="well">
-                                                <ul class="collapse-submenu">
-                                                    @foreach($categorys->subs as $subcats)
-                                                    <li>
-                                                        <a href="{{route('front.getCategory',$subcats->Category_url)}}" class="sucategories" data-cat_id = "{{$categorys->id}}" data-id="{{$subcats->id}}">{{$subcats->category_name}}</a>
-                                                    </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            <div class="filtermain-wraper">
-                                <ul class="collapsemenu">
-                                    @foreach($attributeValues as $key=>$attributeValues)
-                                        @if(count(explode(',',$attributeValues->attribute_values)) > 0)
-                                            <li>
-                                                <a class="firstlevel-collpase" href="#">{{$attributeValues->attribute_name}}</a>
-                                                <a aria-controls="blouse{{$key}}" aria-expanded="false" class="collapse-trigger collapsed"
-                                                    data-toggle="collapse" href="#blouse{{$key}}" role="button"></a>
-                                                <div aria-expanded="false" class="collapse" id="blouse{{$key}}" style="">
-                                                    <div class="well">
-                                                        @foreach(explode(',',$attributeValues->attribute_values) as $key2=>$values)
-                                                            <div class="filterlist">
-                                                                <div>
-                                                                    <input type="checkbox"
-                                                                        name="attr[]" id="{{$attributeValues->id}}-{{$values}}" data-id="{{$attributeValues->id}}-{{$values}}" value="{{$attributeValues->id}}-{{$values}}">
-                                                                    <label for="{{$attributeValues->id}}-{{$values}}">{{$values}}</label>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div>
-
-                            <!---->
-                            <div class="filter-bottom">
-                                <span class="filterbot-single filter-result">
-                                    <span></span> <span> </span>
-                                </span>
-                                <span class="filterbot-single filter-apply ">
-                                    <a href="javascript:void(0);" onChange="fnAttrChanged();"
-                                        class="apply-btn text-center"><span>Apply</span></a>
-                                </span>
-
-                            </div>
-
+                        <span class="qty">(1859)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="oneStar">
+                            <label class="form-check-label" for="oneStar"> 1 Star and above</label>
                         </div>
-                    </div><!-- panel-group -->
-                </form>
+                        <span class="qty">(785)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="twoStar">
+                            <label class="form-check-label" for="twoStar"> 2 Star and above</label>
+                        </div>
+                        <span class="qty">(1250)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="threeStar">
+                            <label class="form-check-label" for="threeStar"> 3 Star and above</label>
+                        </div>
+                        <span class="qty">(7580)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="fourStar">
+                            <label class="form-check-label" for="fourStar"> 4 Star and above</label>
+                        </div>
+                        <span class="qty">(1450)</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="fiveStar">
+                            <label class="form-check-label" for="fiveStar"> 5 Star Rating</label>
+                        </div>
+                        <span class="qty">(2530)</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="filter-sidebar__item">
+        <button type="button" class="filter-sidebar__button font-16 text-capitalize fw-500">Date Updated</button>
+        <div class="filter-sidebar__content">
+            <ul class="filter-sidebar-list">
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="anyDate">
+                            <label class="form-check-label" for="anyDate"> Any Date</label>
+                        </div>
+                        <span class="qty"> 5,203</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastYear">
+                            <label class="form-check-label" for="lastYear"> In the last year</label>
+                        </div>
+                        <span class="qty">1,258</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastMonth">
+                            <label class="form-check-label" for="lastMonth"> In the last month</label>
+                        </div>
+                        <span class="qty">2450</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="LastWeek">
+                            <label class="form-check-label" for="LastWeek"> In the last week</label>
+                        </div>
+                        <span class="qty">325</span>
+                    </div>
+                </li>
+                <li class="filter-sidebar-list__item">
+                    <div class="filter-sidebar-list__text">
+                        <div class="common-check common-radio">
+                            <input class="form-check-input" type="radio" name="radio" id="lastDay">
+                            <label class="form-check-label" for="lastDay"> In the last day</label>
+                        </div>
+                        <span class="qty">745</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- ===================== Filter Sidebar End ============================= -->
             </div>
 
-        </aside>
+            {{-- Product List Section --}}
+            <div class="col-xl-9 col-lg-8 nopad sss2 productcontainer">
+                
 
-        <div class="col-md-9 col-sm-8 col-xs-12 nopad sss2 productcontainer">
-
-            <div class="protitlesec">
-                <div class="row">
-                    <div class="col-md-8 col-sm-8 col-xs-2">
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-10">
-                        <form id="frmsortby" class="form-inline text-right">
-                            <div class="form-group">
-                                <label for="sel1">Sort by :</label>
-                                <select name="orderby" id="orderby" class="form-control">
-                                    <option value="default" selected="selected">Default</option>
-                                    <option value="new">New</option>
-                                    <option value="top_rated">Top Rated</option>
-                                    <option value="H-L">High to Low</option>
-                                    <option value="L-H">Low to High</option>
-                                    <option value="A-Z">A to Z</option>
-                                    <option value="Z-A">Z to A</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
+                <div id="renderproduct">
+                    @include('front.product-list')
                 </div>
-            </div>
-            <div id="renderproduct">
-                @include('front.product-list')
             </div>
         </div>
     </div>

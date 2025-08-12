@@ -53,43 +53,56 @@ class UserController extends Controller
 }
 public function sendResetLinkEmail(Request $request)
 {
-    $request->validate(['email' => 'required|email']);
+    try {
+        $request->validate(['email' => 'required|email']);
 
-    $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-    if (!$user) {
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This email is not registered in our system.'
+            ], 404);
+        }
+
+        // Check if requested within last 5 minutes (300 seconds)
+        if ($user->password_requested_at && now()->diffInSeconds($user->password_requested_at) < 300) {
+            $remainingSeconds = 300 - now()->diffInSeconds($user->password_requested_at);
+            $remainingMinutes = ceil($remainingSeconds / 60);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Please wait ' . $remainingMinutes . ' minute(s) before requesting again.',
+                'retry_after' => $remainingSeconds
+            ], 429);
+        }
+
+        // Send reset link using Laravel's built-in password reset
+        $status = Password::sendResetLink($request->only('email'));
+
+        if (in_array($status, [Password::RESET_LINK_SENT, 'passwords.sent'])) {
+            // Update the password_requested_at timestamp
+            $user->update(['password_requested_at' => now()]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password reset link has been sent to your email address. Please check your inbox (and spam folder).'
+            ]);
+        }
+
         return response()->json([
             'status' => false,
-            'message' => 'This email is not registered.'
-        ], 404);
-    }
+            'message' => 'Unable to send reset link. Please try again later.'
+        ], 500);
 
-    // Check if requested within last 5 minutes
-    if ($user->password_requested_at && now()->diffInSeconds($user->password_requested_at) < 300) {
-        $remainingSeconds = 300 - now()->diffInSeconds($user->password_requested_at);
-
+    } catch (\Exception $e) {
+        \Log::error('Password reset error: ' . $e->getMessage());
+        
         return response()->json([
             'status' => false,
-            'message' => 'Please wait before requesting again.',
-            'retry_after' => $remainingSeconds
-        ], 429); // 429 = Too Many Requests
+            'message' => 'An error occurred while processing your request. Please try again later.'
+        ], 500);
     }
-
-    $status = Password::sendResetLink($request->only('email'));
-
-    if (in_array($status, [Password::RESET_LINK_SENT, 'passwords.sent'])) {
-        $user->update(['password_requested_at' => now()]);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Reset link sent. Please check your email.'
-        ]);
-    }
-
-    return response()->json([
-        'status' => false,
-        'message' => 'Unable to send reset link. Please try again later.'
-    ], 500);
 }
 
 
@@ -260,8 +273,8 @@ public function signIn(Request $request)
         ], 422);
     }
 
-    
-    // we check this email is there are not 
+
+    // we check this email is there are not
     if (!User::where('email', $request->email)->exists()) {
         return response()->json([
             'field'   => 'email',
@@ -299,14 +312,25 @@ public function register(Request $request)
     'email' => 'required|email|unique:users,email',
     'password' => 'required|confirmed|min:6',
     'agree' => 'accepted',
-]);
+  ], [
+    'name.required' => 'Full name is required.',
+    'name.string' => 'Full name must be a valid text.',
+    'name.max' => 'Full name cannot exceed 255 characters.',
+    'email.required' => 'Email address is required.',
+    'email.email' => 'Please enter a valid email address.',
+    'email.unique' => 'This email address is already registered. Please use a different email or login.',
+    'password.required' => 'Password is required.',
+    'password.confirmed' => 'Password confirmation does not match.',
+    'password.min' => 'Password must be at least 6 characters long.',
+    'agree.accepted' => 'You must agree to the terms and conditions.',
+  ]);
 
     // dd($request->all());
     $otp = rand(100000, 999999);
-    $otpExpiresAt = now()->addMinutes(10);
+    $otpExpiresAt = now()->addMinutes(2); // Set consistent expiry time
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
-    Session::put('otp_expires', now()->addMinutes(10));
+    Session::put('otp_expires', $otpExpiresAt);
 
     try {
         // dd('mail->send');
@@ -362,36 +386,71 @@ public function showOtpForm()
     return view('front.otpform');
 }
 
-    public function verifyOtp(Request $request)
-    {
-        $request->validate(['otp' => 'required|digits:6']);
+//     public function verifyOtp(Request $request)
+//     {
+//         // dd($request);
+//         $request->validate(['otp' => 'required|digits:6']);
 
 
-        // dd($request);
-        $data = Session::get('register_data');
+//         // dd($request);
+//         $data = Session::get('register_data');
 
-        $otpRecord = OtpVerification::where('email', $data['email'])
-            ->where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->first();
+//         $otpRecord = OtpVerification::where('email', $data['email'])
+//             ->where('otp', $request->otp)
+//             ->where('expires_at', '>', now())
+//             ->first();
 
-            // dd($otpRecord);
-        if ($otpRecord) {
-            User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
-                'password' => Hash::make($data['password']),
-            ]);
+//             // dd($otpRecord);
+//         if ($otpRecord) {
+//             User::create([
+//                 'name'     => $data['name'],
+//                 'email'    => $data['email'],
+//                 'password' => Hash::make($data['password']),
+//             ]);
 
-            Session::forget('register_data');
-            OtpVerification::where('email', $data['email'])->delete();
-// dd('coming to home');
-            // return redirect('login')->with('success', 'Account created successfully!');
-               return redirect(url('/login'))->with('success', 'Account created successfully!');
-        } else {
-            return back()->with('error', 'Invalid or expired OTP.');
-        }
+//             Session::forget('register_data');
+//             OtpVerification::where('email', $data['email'])->delete();
+// // dd('coming to home');
+//             // return redirect('login')->with('success', 'Account created successfully!');
+//                return redirect(url('/login'))->with('success', 'Account created successfully!');
+//         } else {
+//             return back()->with('error', 'Invalid or expired OTP.');
+//         }
+//     }
+
+public function verifyOtp(Request $request)
+{
+    $request->validate(['otp' => 'required|digits:6']);
+
+    $data = Session::get('register_data');
+
+    $otpRecord = OtpVerification::where('email', $data['email'])
+        ->where('otp', $request->otp)
+        ->where('expires_at', '>', now())
+        ->first();
+
+    if ($otpRecord) {
+        User::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        Session::forget('register_data');
+        OtpVerification::where('email', $data['email'])->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account created successfully!',
+            'redirect' => url('/login')
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid or expired OTP.'
+        ], 422);
     }
+}
 public function resendOtp(Request $request)
 {
     $registerData = session('register_data');
@@ -415,13 +474,60 @@ public function resendOtp(Request $request)
         ['otp' => $otp, 'created_at' => now(), 'expires_at' => $expiresAt]
     );
 
+    // Update expiry in session for JS sync
+    Session::put('otp_expires_at', $expiresAt);
+
+    // ✅ Send OTP Email
+    try {
+        Mail::to($email)->send(new \App\Mail\SendOtpMail($otp));
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send OTP. Error: ' . $e->getMessage()
+        ]);
+    }
+
     return response()->json([
         'success' => true,
         'message' => 'OTP resent successfully',
-        'otp' => $otp, // remove in production
         'expires_at' => $expiresAt->timestamp
     ]);
 }
+
+// public function resendOtp(Request $request)
+// {
+//     $registerData = session('register_data');
+
+//     if (!$registerData || !isset($registerData['email'])) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Session expired. Please register again.'
+//         ]);
+//     }
+
+//     $email = $registerData['email'];
+//     $otp = rand(100000, 999999); // Generate new 6-digit OTP
+
+//     // Set expiration to 1 minute from now
+//     $expiresAt = Carbon::now()->addMinutes(1);
+
+//     // Store/update the OTP
+//     OtpVerification::updateOrCreate(
+//         ['email' => $email],
+//         ['otp' => $otp, 'created_at' => now(), 'expires_at' => $expiresAt]
+//     );
+
+
+//     // Update expiry in session for JS sync
+//     Session::put('otp_expires_at', $expiresAt);
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'OTP resent successfully',
+//         'otp' => $otp, // remove in production
+//         'expires_at' => $expiresAt->timestamp
+//     ]);
+// }
 
 
 
@@ -506,33 +612,55 @@ public function resendOtp(Request $request)
   // }
   public function wishlist(){
     if(Auth::check()){
-      $array = \explode(',',Auth::user()->wishlist);
-      $Product = Product::whereIn('id',$array)->get();
-      return view('front.wishlist',compact('Product'));
+      $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');
+      return view('front.wishlist',compact('wishlistProducts'));
     }
     return redirect('/');
   }
+  
   public function wishlistAdd(Request $request){
-    $id = $request->id;
-    $array = \explode(',',Auth::user()->wishlist);
-    if(empty($array[0])){ $array = []; }
-    $array[] = $id;
-    $temp = implode(',',$array);
-    $user = Auth::user();
-    $user->wishlist = $temp;
-    $user->update();
-    return count($array);
+    if(!Auth::check()){
+      return response()->json(['status' => 'error', 'message' => 'Please login to add items to wishlist'], 401);
+    }
+    
+    $productId = $request->id;
+    
+    // Check if product already in wishlist
+    $exists = Auth::user()->wishlists()->where('product_id', $productId)->exists();
+    
+    if($exists){
+      return response()->json(['status' => 'error', 'message' => 'Product already in wishlist'], 400);
+    }
+    
+    try {
+      // Add to wishlist
+      Auth::user()->wishlists()->create([
+        'product_id' => $productId
+      ]);
+      
+      $wishlistCount = Auth::user()->wishlists()->count();
+      return response()->json(['status' => 'success', 'count' => $wishlistCount]);
+    } catch (\Exception $e) {
+      return response()->json(['status' => 'error', 'message' => 'Failed to add to wishlist: ' . $e->getMessage()], 500);
+    }
   }
+  
   public function wishlistremove(Request $request){
-    $id = $request->id;
-    $array = \explode(',',Auth::user()->wishlist);
-    $key  = array_search($id,$array,true);
-    unset($array[$key]);
-    $temp = implode(',',$array);
-    $user = Auth::user();
-    $user->wishlist = $temp;
-    $user->update();
-    return count($array);
+    if(!Auth::check()){
+      return response()->json(['status' => 'error', 'message' => 'Please login to remove items from wishlist'], 401);
+    }
+    
+    $productId = $request->id;
+    
+    try {
+      // Remove from wishlist
+      Auth::user()->wishlists()->where('product_id', $productId)->delete();
+      
+      $wishlistCount = Auth::user()->wishlists()->count();
+      return response()->json(['status' => 'success', 'count' => $wishlistCount]);
+    } catch (\Exception $e) {
+      return response()->json(['status' => 'error', 'message' => 'Failed to remove from wishlist: ' . $e->getMessage()], 500);
+    }
   }
    public function contact(Request $request){
       $requestData=$request->all();
@@ -584,9 +712,8 @@ public function resendOtp(Request $request)
        return redirect()->back()->withSuccess("Mail Sent");
     }
   public function wishlistTemplate(){
-    $array = \explode(',',Auth::user()->wishlist);
-    $Product = Product::whereIn('id',$array)->get();
-    return view('front.includes.wishlistTemplate',compact('Product'));
+    $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');
+    return view('front.includes.wishlistTemplate',compact('wishlistProducts'));
   }
     public function contactus(){
     return view('front.contactus');

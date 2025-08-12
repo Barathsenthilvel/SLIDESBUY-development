@@ -36,7 +36,7 @@
 @if(count($homeProduct)>0)
     @foreach($homeProduct as $discounts)
         @include('front.includes.product')
-    @endforeach 
+    @endforeach
 @endif
 
 <style>
@@ -50,7 +50,7 @@
    }
      .login-btn {
         background: linear-gradient(90deg, #e648f3, #4d3eff);
-       
+
         border: none;
     }
 
@@ -255,7 +255,7 @@
     </div>
 </section> -->
 
-<!-- 
+<!--
 <section class="clients-section common-section" id="clients-section">
     <div class="container">
 
@@ -311,7 +311,7 @@
         </div>
     </div>
 </section> -->
-<!-- 
+<!--
 <section class="testimonial-section  common-section text-white" id="testimonial-section">
     <div class="container">
         <div class="col-md-12 col-sm-12 col-xs-12 section-title text-uppercase text-center">
@@ -447,14 +447,14 @@
 </section> -->
 
 
-  
+
 
 <!-- ======================= Trending tag start ======================= -->
 <section class="bg-light py-5">
   <div class="container">
     <h4 class="fw-bold display-5 mb-4">Trending  Tags</h4>
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
-      
+
       <!-- Tag Item Start -->
       <div class="col">
         <a href="#" class="d-block text-decoration-none text-dark trending-tags">
@@ -519,7 +519,7 @@
           <!-- <div class="text-muted small">344 templates</div> -->
         </a>
       </div>
-      
+
       <!-- ... Add more here ... -->
     </div>
   </div>
@@ -528,13 +528,13 @@
 
     <!-- ======================= To Featured Author Start =============================== -->
 <section class="top-author padding-y-120 section-bg position-relative z-index-1">
-    <img src="assets/images/gradients/featured-gradient.png" alt="" class="bg--gradient white-version">
-    <img src="assets/images/shapes/spider-net.png" alt="" class="spider-net position-absolute top-0 start-0 z-index--1 white-version">
-    <img src="assets/images/shapes/spider-net-white2.png" alt="" class="spider-net position-absolute top-0 start-0 z-index--1 dark-version">
-    <img src="assets/images/shapes/pattern-curve-three.png" alt="" class="position-absolute top-0 end-0 z-index--1">
+    <img src="../assets/images/gradients/featured-gradient.png" alt="" class="bg--gradient white-version">
+    <img src="../assets/images/shapes/spider-net.png" alt="" class="spider-net position-absolute top-0 start-0 z-index--1 white-version">
+    <img src="../assets/images/shapes/spider-net-white2.png" alt="" class="spider-net position-absolute top-0 start-0 z-index--1 dark-version">
+    <img src="../assets/images/shapes/pattern-curve-three.png" alt="" class="position-absolute top-0 end-0 z-index--1">
 
-    <img src="assets/images/shapes/element1.png" alt="" class="element two">
-    
+    <img src="../assets/images/shapes/element1.png" alt="" class="element two">
+
     <div class="container container-two">
         <div class="row gy-4 align-items-center">
             <div class="col-xl-5">
@@ -562,11 +562,11 @@
                 <div class="circle-content position-relative">
                     <div class="circle static-circle">
                         <div class="circle__badge">
-                            <img src="assets/images/icons/featured-badge.png" alt="">
+                            <img src="../assets/images/icons/featured-badge.png" alt="">
                         </div>
                         <div class="circle__text">
                             <p>
-                                DPmarketer Top Featured Author 
+                                DPmarketer Top Featured Author
                             </p>
                         </div>
                     </div>
@@ -575,7 +575,7 @@
                               <div class="product-item box-shadow">
     <div class="product-item__thumb d-flex">
         <a href="product-details.html" class="link w-100">
-            <img src="assets/images/thumbs/product-img9.png" alt="" class="cover-img"> 
+            <img src="../assets/images/thumbs/product-img9.png" alt="" class="cover-img">
         </a>
         <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
     </div>
@@ -616,7 +616,7 @@
                               <div class="product-item box-shadow">
     <div class="product-item__thumb d-flex">
         <a href="product-details.html" class="link w-100">
-            <img src="assets/images/thumbs/product-img10.png" alt="" class="cover-img"> 
+            <img src="assets/images/thumbs/product-img10.png" alt="" class="cover-img">
         </a>
         <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
     </div>
@@ -657,7 +657,7 @@
                             <div class="product-item box-shadow">
     <div class="product-item__thumb d-flex">
         <a href="product-details.html" class="link w-100">
-            <img src="assets/images/thumbs/product-img11.png" alt="" class="cover-img"> 
+            <img src="assets/images/thumbs/product-img11.png" alt="" class="cover-img">
         </a>
         <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
     </div>
@@ -698,7 +698,7 @@
                              <div class="product-item box-shadow">
     <div class="product-item__thumb d-flex">
         <a href="product-details.html" class="link w-100">
-            <img src="assets/images/thumbs/product-img4.png" alt="" class="cover-img"> 
+            <img src="assets/images/thumbs/product-img4.png" alt="" class="cover-img">
         </a>
         <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
     </div>
@@ -748,7 +748,7 @@
 <section class="testimonial padding-y-120 position-relative section-bg overflow-hidden">
 
     <img src="assets/images/shapes/brush.png" alt="" class="element-brush">
-    
+
     <div class="container container-two">
         <div class="section-heading style-left style-flex flx-between align-items-end gap-3">
             <div class="section-heading__inner w-lg">
@@ -855,7 +855,7 @@
     <img src="assets/images/shapes/line-vector-two.png" alt="" class="line-vector two">
 
     <img src="assets/images/thumbs/newsletter-man.png" alt="" class="newsletter-man">
-    
+
     <div class="container container-two">
         <div class="row justify-content-center">
             <div class="col-xl-6 col-lg-8 col-md-10">

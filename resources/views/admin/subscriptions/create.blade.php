@@ -35,31 +35,47 @@
                         <!--begin::Card-->
                         <div class="card card-custom gutter-b example example-compact">
                             <div class="card-header">
-                                <h3 class="card-title">Create Plan</h3>
+                               <h3 class="card-title">
+    {{ isset($plan) ? 'Update Plan' : 'Create Plan' }}
+</h3>
+
                             </div>
                             <!--begin::Form-->
 
-                            <div class="alert alert-custom alert-success fade show" style="display: none;" role="alert">
-                                <div class="alert-icon"><i class="flaticon2-check-mark"></i></div>
-                                <div class="alert-text">{{session('success')}}</div>
-                                <div class="alert-close">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
-                                    </button>
-                                </div>
-                            </div>
+                           @if (session('success'))
+    <div class="alert alert-custom alert-success fade show" role="alert">
+        <div class="alert-icon"><i class="flaticon2-check-mark"></i></div>
+        <div class="alert-text">{{ session('success') }}</div>
+        <div class="alert-close">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"><i class="ki ki-close"></i></span>
+            </button>
+        </div>
+    </div>
+@endif
 
-                            <div class="alert alert-custom alert-danger fade show" style="display: none;" role="alert">
-                                <div class="alert-icon"><i class="flaticon2-radial-warning"></i></div>
-                                <div class="alert-text" id="error">{{session('error')}}</div>
-                                <div class="alert-close">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <form method="POST" action="{{route('admin-plan-store')}}" id="formCreate"
-                                enctype="multipart/form-data" class="form">
+@if (session('error'))
+    <div class="alert alert-custom alert-danger fade show" role="alert">
+        <div class="alert-icon"><i class="flaticon2-radial-warning"></i></div>
+        <div class="alert-text">{{ session('error') }}</div>
+        <div class="alert-close">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"><i class="ki ki-close"></i></span>
+            </button>
+        </div>
+    </div>
+@endif
+
+                           <form method="POST"
+      action="{{ isset($plan) ? route('admin-plans-update', $plan->id) : route('admin-plan-store') }}"
+      id="formCreate"
+      enctype="multipart/form-data"
+      class="form">
+
+    @csrf
+    @if(isset($plan))
+        @method('PUT')
+    @endif
                                 {{ csrf_field() }}
                                 <div class="card-body">
                                     <div class="form-group row">
@@ -67,7 +83,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
                                             <input type="text" name="name" class="form-control" required
-                                                placeholder="Enter a Plan Name">
+                                                placeholder="Enter a Plan Name"   value="{{ old('name', $plan->name ?? '') }}">
                                         </div>
                                     </div>
 
@@ -77,7 +93,7 @@
                                         <div class="col-3">
                                             <input type="text" name="price" class="form-control" required
                                                 placeholder="Price"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')">
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')"  value="{{ old('price', $plan->price ?? '') }}">
                                         </div>
                                     </div>
 
@@ -85,7 +101,7 @@
                                         <label class="col-2 col-form-label">Enter the Discount</label>
                                         <div class="col-3">
                                             <input type="text" name="discount" class="form-control" placeholder="Discount"
-                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')">
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')" value="{{ old('discount', $plan->discount ?? '') }}">
                                         </div>
                                     </div>
 
@@ -95,8 +111,8 @@
                                         <div class="col-3">
                                             <select name="discount_type" class="form-control" required>
                                                 <option value="">Select Type</option>
-                                                <option value="flat">Flat</option>
-                                                <option value="percentage">Percentage</option>
+                                                <option value="flat"  {{ (old('discount_type', $plan->discount_type ?? '') == 'flat') ? 'selected' : '' }}>Flat</option>
+                                                <option value="percentage" {{ (old('discount_type', $plan->discount_type ?? '') == 'percentage') ? 'selected' : '' }}>Percentage</option>
                                             </select>
                                         </div>
                                     </div>
@@ -107,7 +123,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
                                             <input type="text" name="download_limit" class="form-control" required
-                                                placeholder="Enter the Document download limit">
+                                                placeholder="Enter the Document download limit"  value="{{ old('download_limit', $plan->download_limit ?? '') }}">
                                         </div>
                                     </div>
 
@@ -116,7 +132,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
                                             <input type="number" name="validity" class="form-control" required
-                                                placeholder="Validity in days" min="1">
+                                                placeholder="Validity in days" min="1"  value="{{ old('validity', $plan->validity ?? '') }}">
                                         </div>
                                     </div>
                                 </div>

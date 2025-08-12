@@ -67,6 +67,6 @@
         @include('layout.partials.extras._chat')
     @endif
 
-    @include('layout.partials.extras._scrolltop')
+    {{-- Scroll to top functionality removed for better user experience --}}
 
 @endif

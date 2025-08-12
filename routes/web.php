@@ -38,12 +38,14 @@ Route::get('/checkphone', 'Front\FrontendController@checkphone')->name('checkpho
 Route::get('/home', 'Front\FrontendController@index')->name('login');
 Route::get('/', 'Front\FrontendController@index')->name('front.index');
 Route::post('/loginmobile', 'Front\UserController@signOnWithMobileNo')->name('login.mobile');
-Route::get('/loginBlade', 'Front\UserController@LoadLogin')->name('front.loginBlade');
+Route::get('/Sign-Up', 'Front\UserController@LoadLogin')->name('front.loginBlade');
 Route::get('/thankyou', 'Front\UserController@thankyou')->name('thankyou');
 Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
-Route::get('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
-Route::get('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
+Route::post('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
+Route::post('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
 Route::get('/wishlistTemplate', 'Front\UserController@wishlistTemplate')->name('wishlistTemplate');
+Route::post('/wishlist/add', 'Front\UserController@wishlistAdd')->name('wishlist.add');
+Route::post('/wishlist/remove', 'Front\UserController@wishlistremove')->name('wishlist.remove');
 Route::get('/myaddress', 'Front\UserController@myaccount')->name('front.account');
 Route::get('/verification/{id}/{token}', 'Front\UserController@verify')->name('front.verify');
 Route::Post('/forgoaaaaaat', 'Front\UserController@forgotpasswordaaa')->name('front.forgot');
@@ -105,9 +107,37 @@ Route::post('/profile','Front\UserController@updateProfile')->name('update.profi
 Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('vieworder');
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
+// Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
+ Route::get('/Pricing-plan','Front\SubscriptionController@showPlans')->name('front.subscription');
+//subscription forntend
+Route::middleware('auth')->group(function () {
+
+    Route::post('/subscribe/{plan}','Front\SubscriptionController@subscribe')->name('subscribe.post');
+    Route::get('/subscription/{id}','Front\RazorpayPaymentController@show')->name('subscription.show');
+    Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
+    //subscription get data
+    Route::get('/subscription/success/{id}','Front\SubscriptionController@success')->name('subscription.success');
+    Route::get('download/{product}', 'Front\ProductController@download')->name('download.product');
+    // routes/web.php
+// Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')->name('product.download');
+    Route::get('/my-account','Front\AccountController@index')->name('account.profile');
+    Route::post('/logout', 'Front\AccountController@destroy')->name('logout');
+Route::post('/account/update','Front\AccountController@update')->name('account.update');
 
 
+Route::post('/update-password','Front\AccountController@changePassword')->name('password.change');
+// Route::get('/my-downloads','Front\AccountController@userDownloads')->name('user.downloads');
+Route::get('/download-file/{product}', 'Front\AccountController@download')->name('download.file');
 
+// Example route for writing a review for a product
+Route::get('/write-review/{product}', 'Front\ReviewController@create')->name('product.review.create');
+
+
+});
+
+Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')
+    ->middleware('auth')
+    ->name('product.download');
 //new routes added
 
 Route::any('/sign-in','Front\UserController@signIn')->name('login.submit');
@@ -662,18 +692,24 @@ Route::prefix('admin')->group(function() {
 
    Route::prefix('subscription')->group(function() {
         Route::get('/', 'Admin\SubscriptionController@index')->name('admin-subscriptionlist');
-        Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
+        // Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
         Route::get('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setupview');
         Route::post('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setup');
    });
 
+
+
+
+
          Route::prefix('plan')->group(function() {
           Route::get('/create', 'Admin\PlanController@create')->name('admin-plan-create');
           Route::post('/store', 'Admin\PlanController@store')->name('admin-plan-store');
-          Route::get('/datatables', 'Admin\PlanController@datatables')->name('admin-plan-datatable');
+          Route::get('/datatablesssss', 'Admin\PlanController@datatables')->name('admin-plan-datatable');
           Route::get('/edit/{id}', 'Admin\PlanController@edit')->name('admin-plans-edit');
           // Route::post('/update/{id}', 'Admin\PlanController@update')->name('admin-plan-update');
-          Route::get('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
+          Route::put('/update/{id}', 'Admin\PlanController@update')->name('admin-plans-update');
+          Route::any('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
+
         });
     });
 });

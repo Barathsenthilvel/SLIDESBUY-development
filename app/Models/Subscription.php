@@ -9,24 +9,30 @@ class Subscription extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'plan_id',
-        'price',
-        'subscribed_at',
-        'expired_at',
-    ];
-
+   protected $fillable = [
+    'plan_id',
+    'razorpay_payment_id',
+    'price',
+    'discount_price',
+    'validity',
+    'valid_until',
+    'expired_at',
+    'payment_status',
+    'payment_method',
+    'transaction_id',
+    'user_id',
+    'started_at',
+    'is_active'
+];
     public $timestamps = true;
+protected $dates = ['expired_at'];
+public function user()
+{
+    return $this->belongsTo('App\Models\User', 'user_id'); // foreign key on Subscription table
+}
 
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User','user','id');
-    }
+public function plan() {
+    return $this->belongsTo(Plan::class, 'plan_id');
+}
 
-    public function plan()
-    {
-        return $this->belongsTo('App\Models\Plan', 'plan', 'id');
-    }
-    
 }

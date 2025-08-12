@@ -34,17 +34,17 @@
             @media (max-width: 768.98px) {
                .logo{
                    max-width: 110px;
-               } 
+               }
             }
         </style>
-        
+
     </head>
     <!--end::Head-->
     <!--begin::Body-->
     <body id="kt_body" class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading">
         <!--begin::Main-->
         <!--begin::Header Mobile-->
-        
+
     </div>
         <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
             <!--begin::Logo-->
@@ -169,7 +169,7 @@
                                                     <span class="menu-text">{{$FrontMenu->menu_name}}</span>
                                                 </span>
                                             </li>
-                                                                     
+
                                             @foreach($FrontMenu->menuModule as $subMenus)
                                             @if($subMenus->sort_order > 0)
 
@@ -183,7 +183,7 @@
                                             </li>
                                             @endif
                                                 @endforeach
-                                            
+
                                         </ul>
                                     </div>
                                 </li>
@@ -223,7 +223,7 @@
                                                     <span class="menu-text">{{$FrontMenu->menu_name}}</span>
                                                 </span>
                                             </li>
-                                                                     
+
                                             @foreach($FrontMenu->menuModule as $subMenus)
                                             @if($subMenus->sort_order > 0)
                                             @if(Auth::guard('webadmin')->user()->sectionCheck($subMenus->module_path))
@@ -238,7 +238,7 @@
                                             @endif
                                             @endif
                                             @endforeach
-                                            
+
                                         </ul>
                                     </div>
                                 </li>
@@ -280,7 +280,7 @@
                                 <!--begin::Header Menu-->
                                 <div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
                                     <!--begin::Header Nav-->
-                                   
+
                                     <!--end::Header Nav-->
                                 </div>
                                 <!--end::Header Menu-->
@@ -1093,7 +1093,7 @@
                             </div>
                             <!--end::Copyright-->
                             <!--begin::Nav-->
-                           
+
                             <!--end::Nav-->
                         </div>
                         <!--end::Container-->
@@ -2075,7 +2075,7 @@
                             </div>
                             <!--end::Scroll-->
                         </div>
-                        
+
                         <!--end::Body-->
                         <!--begin::Footer-->
                         <div class="card-footer align-items-center">
@@ -2117,14 +2117,14 @@
                 <!--end::Svg Icon-->
             </span>
         </div>
-        
-                
+
+
         <!--end::Scrolltop-->
         <!--begin::Sticky Toolbar-->
- 
+
         <!--end::Sticky Toolbar-->
         <!--begin::Demo Panel-->
-    
+
         <!--end::Demo Panel-->
             <script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1400 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#3699FF", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#E4E6EF", "dark": "#181C32" }, "light": { "white": "#ffffff", "primary": "#E1F0FF", "secondary": "#EBEDF3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#3F4254", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#EBEDF3", "gray-300": "#E4E6EF", "gray-400": "#D1D3E0", "gray-500": "#B5B5C3", "gray-600": "#7E8299", "gray-700": "#5E6278", "gray-800": "#3F4254", "gray-900": "#181C32" } }, "font-family": "Poppins" };</script>
         <!--end::Global Config-->
@@ -2152,11 +2152,12 @@
         <script src="{{ URL::asset('assets/js/myscript.js')}}"></script>
         <script src="{{ URL::asset('assets/js/asteroid-alert.js')}}"></script>
 
-             @if (count($errors)>0)
-        <script>
-            $.notify("{{$errors[0]}}.","danger");
-        </script>
-        @endif
+  @if ($errors->any())
+    <script>
+        $.notify("{{ $errors->first() }}", "danger");
+    </script>
+@endif
+
         @stack('script')
     </body>
     <!--end::Body-->

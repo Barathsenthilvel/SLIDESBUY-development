@@ -8,43 +8,124 @@
         <meta name="description" content="{{ $StoreConfig->Store_Meta_Description }}" />
         <meta name="keywords" content="{{ $StoreConfig->Store_Meta_Keywords }}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <base href="{{ url('/') }}/">
         <link href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" rel="icon">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-           <!-- Favicon -->
-    <link rel="shortcut icon" href="assets/images/logo/favicon-two.png">
+     <!-- Favicon -->
+<link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <!-- Slick -->
-    <link rel="stylesheet" href="assets/css/slick.css">
-    <!-- magnific popup -->
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <!-- line awesome -->
-    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
-    <!-- Main css -->
-    <link rel="stylesheet" href="assets/css/main.css">
+<!-- Bootstrap -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+<!-- Fontawesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
+<!-- Slick -->
+<link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
+<!-- Magnific Popup -->
+<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+<!-- Line Awesome -->
+<link rel="stylesheet" href="{{ asset('assets/css/line-awesome.min.css') }}">
+<!-- Main CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
-     <!-- Jquery js -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap Bundle Js -->
-    <script src="assets/js/boostrap.bundle.min.js"></script>
-    <!-- CountDown -->
-    <script src="assets/js/countdown.js"></script>
-    <!-- counter up -->
-    <script src="assets/js/counterup.min.js"></script>
-    <!-- Slick js -->
-    <script src="assets/js/slick.min.js"></script>
-    <!-- magnific popup -->
-    <script src="assets/js/jquery.magnific-popup.js"></script>
-    <!-- apex chart -->
-    <script src="assets/js/apexchart.js"></script>
-    <!-- marquee -->
-    <script src="assets/js/marquee.min.js"></script>
+<!-- Wishlist Styles -->
+<style>
+.wishlist-btn {
+    transition: all 0.3s ease !important;
+    border: 2px solid #e1e5e9 !important;
+    background: white !important;
+    color: #666 !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
 
-    <!-- main js -->
-    <script src="assets/js/main.js"></script>
+.wishlist-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+.wishlist-btn.active {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
+    border-color: #ff6b6b !important;
+    color: white !important;
+}
+
+.wishlist-btn.active i {
+    color: white !important;
+}
+
+.wishlist-btn:not(.active) i {
+    color: #666 !important;
+}
+
+.wishlist-btn.active:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%) !important;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4) !important;
+}
+
+.wishlist-btn:not(.active):hover {
+    border-color: #ff6b6b !important;
+    color: #ff6b6b !important;
+}
+
+.wishlist-btn:not(.active):hover i {
+    color: #ff6b6b !important;
+}
+
+/* Wishlist count badge */
+.wishlist-count {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
+    color: white !important;
+    border-radius: 50% !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+}
+
+/* Product item wishlist button */
+.product-item__wishlist {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 10 !important;
+}
+</style>
+
+<!-- jQuery -->
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+<!-- Bootstrap Bundle JS -->
+<script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
+<!-- Countdown -->
+<script src="{{ asset('assets/js/countdown.js') }}"></script>
+<!-- Counter Up -->
+<script src="{{ asset('assets/js/counterup.min.js') }}"></script>
+<!-- Slick JS -->
+<script src="{{ asset('assets/js/slick.min.js') }}"></script>
+<!-- Magnific Popup -->
+<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
+<!-- Apex Chart -->
+<script src="{{ asset('assets/js/apexchart.js') }}"></script>
+<!-- Marquee -->
+<script src="{{ asset('assets/js/marquee.min.js') }}"></script>
+<!-- Main JS -->
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
+
+
+
+
 {{--
       <link href="{{URL::asset('assets/front/static/css/jquery-ui.css')}}" rel="stylesheet">
         <link href="{{URL::asset('assets/front/static/css/price_range_style.css')}}" rel="stylesheet">
@@ -67,7 +148,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
 
        <!-- start script-->
-       <script>
+       {{-- <script>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -81,7 +162,7 @@
         </script>
         <noscript><img height="1" width="1" style="display:none"
         src="https://www.facebook.com/tr?id=698472925993707&ev=PageView&noscript=1"
-        /></noscript>
+        /></noscript> --}}
 
            <!--end script-->
 
@@ -354,36 +435,77 @@ $('body').on('click','.btn.btn-link.btn-close',function(t){
 });
 $('body').on('click','.btn-wishlist',function(e){
     e.preventDefault();
+    // If we're on the wishlist page, let the page-specific handler manage this (it refreshes after removal)
+    if ($(this).closest('.wishlist-section').length) {
+        return;
+    }
     @if(Auth::check())
-            if(!$(this).hasClass("added")){
-				$(this).addClass("added");
+        const button = $(this);
+        const productId = button.data('id') || button.data('product-id');
+        const isActive = button.hasClass('active');
+        
+        if(!isActive){
+            // Add to wishlist
             $.ajax({
-                method:"GET",
-                url:'{{route('wishlistAdd')}}',
-                data:{id:$(this).data('id')},
-                success:function(data){
-                    $('.wishlistcnt').text(data)
-					toastr["success"]('Added to wishlist');
-                 },
-                error:function(erroe){ }
+                method: "POST",
+                url: '{{route("wishlistAdd")}}',
+                data: {id: productId, _token: $('meta[name="csrf-token"]').attr('content')},
+                success: function(data) {
+                    button.addClass('active');
+                    const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
+                    $('.wishlist-count').text(newCount);
+                    
+                    // Update button appearance
+                    button.find('i').removeClass('far').addClass('fas');
+                    button.find('i').css('color', '#ff6b6b');
+                    
+                    if (window.toaster) {
+                        window.toaster.success('Added to wishlist');
+                    } else {
+                        toastr["success"]('Added to wishlist');
+                    }
+                },
+                error: function(error) {
+                    if (window.toaster) {
+                        window.toaster.error('Failed to add to wishlist');
+                    } else {
+                        toastr["error"]('Failed to add to wishlist');
+                    }
+                }
             });
-            }else{
-				$(this).removeClass("added");
-                $.ajax({
-                    method:"GET",
-                    url:'{{route('wishlistremove')}}',
-                    data:{id:$(this).data('id')},
-                    success:function(data){
-                        $('.wishlistcnt').text(data)
-                        toastr["error"]('Removed from wishlist');
-                    },
-                    error:function(erroe){ }
-                });
-            }
-            @else
-                window.location.href = "{{route('front.loginBlade')}}";
-            @endif
-    });
+        } else {
+            // Remove from wishlist
+            $.ajax({
+                method: "POST",
+                url: '{{route("wishlistremove")}}',
+                data: {id: productId, _token: $('meta[name="csrf-token"]').attr('content')},
+                success: function(data) {
+                    button.removeClass('active');
+                    const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
+                    $('.wishlist-count').text(newCount);
+                    
+                    // Update button appearance
+                    button.find('i').removeClass('fas').addClass('far');
+                    button.find('i').css('color', '#666');
+                    
+                    if (window.toaster) {
+                        window.toaster.success('Removed from wishlist');
+                    } else {
+                        toastr["success"]('Removed from wishlist');
+                    }
+                },
+                error: function(error) {
+                    if (window.toaster) {
+                        window.toaster.error('Failed to remove from wishlist');
+                    } else {
+                        toastr["error"]('Failed to remove from wishlist');
+                    }
+                }
+            });
+        }
+    @else
+        window.location.href = "{{route('front.loginBlade')}}";
+    @endif
 });
 
     function myfunction(search,textsearch){
@@ -396,6 +518,51 @@ $('body').on('click','.btn-wishlist',function(e){
     @endif
     </script>
     @stack('script') --}}
+
+    <script>
+    // Global wishlist handler (active; outside commented legacy block)
+    jQuery(function($){
+        $('body').on('click','.btn-wishlist',function(e){
+            e.preventDefault();
+            // Skip on wishlist page; it has its own optimized handler
+            if ($(this).closest('.wishlist-section').length) { return; }
+
+            if (!$('meta[name="csrf-token"]').length) { return; }
+
+            const button = $(this);
+            const productId = button.data('id') || button.data('product-id');
+            if (!productId) { return; }
+            const isActive = button.hasClass('active');
+
+            $.ajax({
+                method: 'POST',
+                url: isActive ? '{{ route("wishlistremove") }}' : '{{ route("wishlistAdd") }}',
+                data: { id: productId, _token: $('meta[name="csrf-token"]').attr('content') },
+                success: function(data){
+                    // Toggle active state and icon
+                    if (isActive) {
+                        button.removeClass('active');
+                        button.find('i').removeClass('fas').addClass('far').css('color', '#666');
+                    } else {
+                        button.addClass('active');
+                        button.find('i').removeClass('far').addClass('fas').css('color', '#ff6b6b');
+                    }
+                    const newCount = (data && typeof data === 'object' && data.count !== undefined) ? data.count : data;
+                    if (newCount !== undefined) { $('.wishlist-count').text(newCount); }
+
+                    if (window.toaster) {
+                        window.toaster.success(isActive ? 'Removed from wishlist' : 'Added to wishlist');
+                    }
+                },
+                error: function(){
+                    if (window.toaster) {
+                        window.toaster.error('Wishlist action failed');
+                    }
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

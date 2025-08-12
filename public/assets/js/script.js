@@ -2,9 +2,9 @@
 
 Template name: Martfy Multipurpose eCommerce HTML Template
 Version: 1.0.0
-Author: SITLBD 
+Author: SITLBD
 Author url: https://www.sitlbd.com/
-Developer: Najmul Huda Eimon   
+Developer: Najmul Huda Eimon
 
 
 [Table of Content]
@@ -35,7 +35,7 @@ Developer: Najmul Huda Eimon
 24: blog page image slider and zoom
 25: packery blog masonry
 26: contact page Google Map
- 
+
 ====================================================================*/
 
   $(function(){
@@ -52,26 +52,8 @@ Developer: Najmul Huda Eimon
 
 
   /*=====================================================================
-        02: Scroll to top button
+        02: Scroll to top button - REMOVED for better user experience
     =======================================================================*/
-
-    $('.top-to-btn').on('click',function(e){
-      e.preventDefault();
-      $('html, body').animate({
-          scrollTop: 0
-      }, 400);
-    });
-
-
-  $(window).on('scroll',function(){
-      var $scroll = $(this).scrollTop();
-
-      if($scroll > 300){
-          $('.top-to').addClass('show');
-      }else{
-          $('.top-to').removeClass('show');
-      }
-  });
 
     /*=====================================================================
         03: Background image
@@ -103,7 +85,7 @@ Developer: Najmul Huda Eimon
 =============================================================*/
     $(window).on('load', function(){
       if($('.fancybox').length !==0){
-          setTimeout(function(){ 
+          setTimeout(function(){
           $('.fancybox').addClass('window-show');
           $('body').delay(500).addClass('window-open');
           }, 3000);
@@ -123,14 +105,14 @@ Developer: Najmul Huda Eimon
 
     }
     modalfunction()
-  
+
   /*=====================================================================
     06: Select style
    ======================================================================*/
    $(".select").select2({
-      width: 'resolve' 
+      width: 'resolve'
   });
-  
+
 
   /*=====================================================================
         07: mobile Menu
@@ -143,7 +125,7 @@ Developer: Najmul Huda Eimon
     if($(window).width() < 559 ){
       $(".categories").menumaker({ title: '<i class="fas fa-bars"></i>', format: "multitoggle" });
     }
-    
+
 
     /*=====================================================================
         08: home1 home3 banner slider
@@ -205,7 +187,7 @@ Developer: Najmul Huda Eimon
           }
         ]
       });
-    
+
       function doAnimations(elements) {
         var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
         elements.each(function () {
@@ -268,7 +250,7 @@ Developer: Najmul Huda Eimon
     /*=====================================================================
         10: category button
     ======================================================================*/
-  
+
    if($(window).width() > 558){
     $('.category-btn').on('click',function(){
       $('.menu-holder').slideToggle();
@@ -291,7 +273,7 @@ Developer: Najmul Huda Eimon
       $(this).parents().find('.menu-holder .more-item').slideToggle();
       $(this).children().toggleClass('fa-plus').toggleClass('fa-minus');
    });
-    
+
 
     /*=====================================================================
         11: home1 featured slider
@@ -375,7 +357,7 @@ Developer: Najmul Huda Eimon
         }
       ]
     });
-  
+
   $('.client-img-slider').slick({
       dots: false,
       infinite: true,
@@ -464,20 +446,20 @@ Developer: Najmul Huda Eimon
     review.on('init', function(event, slick, currentSlide) {
       var
         cur = $(slick.$slides[slick.currentSlide]),
-        
+
         next = cur.next(),
         prev = cur.prev();
       prev.addClass('slick-sprev');
-      next.addClass('slick-snext');  
+      next.addClass('slick-snext');
       slick.$prev = prev;
       slick.$next = next;
     }).on('beforeChange', function(event, slick, currentSlide, nextSlide) {
-    
+
       var
         cur = $(slick.$slides[nextSlide]);
       slick.$prev.removeClass('slick-sprev');
       slick.$next.removeClass('slick-snext');
-      let next = cur.next(); 
+      let next = cur.next();
       let prev = cur.prev();
       prev.addClass('slick-sprev');
       next.addClass('slick-snext');
@@ -608,20 +590,20 @@ Developer: Najmul Huda Eimon
     /*=====================================================================
         19: aos scroll animation
     ======================================================================*/
-    
+
     AOS.init();
 
     /*=====================================================================
         20: shop page range slider
     ======================================================================*/
 
-    
+
 
       /*=====================================================================
         21: input spinner
     ======================================================================*/
 
-    $('.number-spinner button').on('click', function (e) { 
+    $('.number-spinner button').on('click', function (e) {
       e.preventDefault()
         var btn = $(this),
           oldValue = btn.closest('.number-spinner').find('input').val(),
@@ -642,36 +624,36 @@ Developer: Najmul Huda Eimon
   /*=====================================================================
         22: star rating
     ======================================================================*/
-        
+
     $('#stars li').on('mouseover', function(){
       var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
-    
+
     /* 2. Action to perform on click */
     $('#stars li').on('click', function(){
       var onStar = parseInt($(this).data('value'), 10); // The star currently selected
       var stars = $(this).parent().children('li.star');
-      
+
       for (var i = 0; i < stars.length; i++) {
         $(stars[i]).removeClass('selected');
       }
-      
+
       for (var i = 0; i < onStar; i++) {
         $(stars[i]).addClass('selected');
       }
-      
+
     });
-    
-    
+
+
   });
 
 
     /*=====================================================================
         23: shop page product slider and zoom
     ======================================================================*/
-    
+
   let $productGallery = $('.img-gallery'),
   $productThumbs = $('.img-thumb');
-  
+
     $productGallery.slick({
       dots: false,
       infinite: true,
@@ -707,8 +689,8 @@ Developer: Najmul Huda Eimon
           }
         }
       ]
-    });  
-  
+    });
+
   $productThumbs.slick({
   dots: false,
   infinite: true,
@@ -759,9 +741,9 @@ Developer: Najmul Huda Eimon
   cursor: "crosshair"
   });
   }
-  
-  elevateZoomInstall($('.img-gallery .slick-current img')); 
-  
+
+  elevateZoomInstall($('.img-gallery .slick-current img'));
+
   $productGallery.on('afterChange', function(){
   elevateZoomInstall($('.img-gallery .slick-current img'))
   })
@@ -813,7 +795,7 @@ responsive: [
 ]
 });
 
-   
+
 
 $productThumbsTab.slick({
 dots: false,
@@ -874,11 +856,11 @@ elevateZoomInstall($('.img-gallery-tab .slick-current img'))
   /*=====================================================================
         23: modal slider
     ======================================================================*/
-  
+
     var myModal = document.querySelector('.modal')
     if(myModal){
       myModal.addEventListener('shown.bs.modal', function () {
-      
+
         $('.modal-gallery').slick({
           dots: false,
           infinite: true,
@@ -914,9 +896,9 @@ elevateZoomInstall($('.img-gallery-tab .slick-current img'))
               }
             }
           ]
-        });  
-      
-  
+        });
+
+
         $('.modal-thumb').slick({
           dots: false,
           infinite: true,
@@ -953,11 +935,11 @@ elevateZoomInstall($('.img-gallery-tab .slick-current img'))
           }
           ]
           });
-        
-          
+
+
         });
     }
-    
+
 
     /*=====================================================================
         24: blog page image slider and zoom
@@ -1013,7 +995,7 @@ elevateZoomInstall($('.img-gallery-tab .slick-current img'))
     ==========================================================*/
 
     if($('#map').length !==0){
-            
+
       var googleMapSelector = $('#map');
       var latitude = $('.google-map-wrapper').attr('data-latitude');
       var longitude = $('.google-map-wrapper').attr('data-longitude');
@@ -1173,11 +1155,11 @@ elevateZoomInstall($('.img-gallery-tab .slick-current img'))
           });
           marker.setMap(map);
 
-         
+
       }
       if (googleMapSelector.length) {
           google.maps.event.addDomListener(window, 'load', initialize);
       }
   }
-    
+
 });

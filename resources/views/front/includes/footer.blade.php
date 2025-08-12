@@ -109,9 +109,9 @@
 </footer> --}}
 
 <footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
-    <img src="assets/images/gradients/footer-gradient-bg.png" alt="" class="bg--gradient">
-    <img src="assets/images/shapes/footer-pattern1.png" alt="" class="position-absolute end-0 top-0 z-index--1">
-    <img src="assets/images/shapes/footer-pattern2.png" alt="" class="position-absolute start-0 top-0 z-index--1">
+    <img src={{ asset('assets/images/gradients/footer-gradient-bg.png') }} alt="" class="bg--gradient">
+    <img src={{ asset('assets/images/shapes/footer-pattern1.png') }} alt="" class="position-absolute end-0 top-0 z-index--1">
+    <img src={{ asset('assets/images/shapes/footer-pattern2.png') }} alt="" class="position-absolute start-0 top-0 z-index--1">
 
     <div class="footer-inner py-5">
         <div class="container container-two">
@@ -122,8 +122,8 @@
                     <div class="footer-widget">
                         <div class="footer-widget__logo mb-3">
                             <a href="index.html">
-                                <img  src="assets/images/logo/slidesbuy.png" alt="Logo" class="white-version">
-                                <img  src="assets/images/logo/slidesbuy.png" alt="Logo" class="dark-version">
+                                <img  src={{ asset('assets/images/logo/slidesbuy.png') }} alt="Logo" class="white-version">
+                                <img  src={{ asset(' assets/images/logo/slidesbuy.png') }} alt="Logo" class="dark-version">
                             </a>
                         </div>
                         <p class="footer-widget__desc">Lorem consultancy elitsed do eiusmod tempor inci didunt ut labore dolore magna aliqua sed do eiusmod.</p>

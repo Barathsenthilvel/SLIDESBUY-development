@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Subscription;
+use Carbon\Carbon;
 
 class AccountController extends Controller
 {
@@ -53,10 +54,26 @@ class AccountController extends Controller
         ];
     });
 
-    // Assuming all downloads belong to the same active subscription
-    $subscription = $downloads->first()->subscription ?? null;
-    $downloadLimit = $subscription->plan->download_limit ?? 0;
-    $totalDownloaded = $downloads->count();
+    // Determine the active subscription (unexpired), or fall back to the most recent
+    $activeSubscription = $subscriptions
+        ->filter(function ($s) {
+            return $s->expired_at && Carbon::parse($s->expired_at)->isFuture();
+        })
+        ->first() ?? $subscriptions->first();
+
+    // Plan download limit comes from the active (or latest) subscription's plan
+    $downloadLimit = optional(optional($activeSubscription)->plan)->download_limit ?? 0;
+
+    // Count downloads for the active subscription only (if present)
+    if ($activeSubscription) {
+        $downloadsForActive = $downloads->filter(function ($d) use ($activeSubscription) {
+            return optional($d->subscription)->id === $activeSubscription->id;
+        });
+    } else {
+        $downloadsForActive = $downloads;
+    }
+
+    $totalDownloaded = $downloadsForActive->count();
     $remainingDownloads = max(0, $downloadLimit - $totalDownloaded);
 
     return view('front.account.profile', compact(
@@ -136,11 +153,18 @@ public function download($productId)
     // Check if the product exists
     $product = Product::findOrFail($productId);
 
-    // Check if user is allowed to download
+    // If free product, allow download without counting/checking
+    if (($product->sell_type ?? 1) == 0) {
+        if (!Storage::disk('public')->exists($product->document)) {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+        return Storage::disk('public')->download($product->document);
+    }
+
+    // For paid products, ensure a historical download exists (or you can adapt to your policy)
     $hasDownloaded = Downloads::where('user_id', $user->id)
                               ->where('product_id', $productId)
                               ->exists();
-
     if (!$hasDownloaded) {
         return redirect()->back()->with('error', 'You are not allowed to download this file.');
     }

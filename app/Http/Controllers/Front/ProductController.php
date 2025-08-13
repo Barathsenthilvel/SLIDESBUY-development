@@ -326,9 +326,19 @@ public function item(Request $request, $slug)
 
 public function downloaddocuments($productId)
 {
+    // Serve free products without auth and without counting
+    $product = Product::findOrFail($productId);
+    if (($product->sell_type ?? 1) == 0) {
+        $filePath = $product->document;
+        if (!Storage::disk('public')->exists($filePath)) {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+        return Storage::disk('public')->download($filePath);
+    }
+
     $user = auth()->user();
 
-    // Get all active subscriptions
+    // Get all active subscriptions for paid downloads
     $activeSubscriptions = Subscription::where('user_id', $user->id)
         ->where('payment_status', 'success')
         ->where('is_active', 1)
@@ -361,7 +371,7 @@ public function downloaddocuments($productId)
         return redirect()->back()->with('error', 'You have reached your download limit. Please renew your subscription.');
     }
 
-    // Record the new download
+    // Record the new download (paid only)
     Downloads::create([
         'user_id' => $user->id,
         'product_id' => $productId,
@@ -369,7 +379,6 @@ public function downloaddocuments($productId)
     ]);
 
     // Serve the document
-    $product = Product::findOrFail($productId);
     $filePath = $product->document;
 
     if (!Storage::disk('public')->exists($filePath)) {
@@ -430,6 +439,17 @@ public function downloaddocuments($productId)
     public function download(Product $product)
 {
     \Log::info('Download attempt for product ID: ' . $product->id . ', Document: ' . ($product->document ?? 'null'));
+
+    // Free products are downloadable by anyone
+    if (($product->sell_type ?? 1) == 0) {
+        $filePath = $product->document;
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
+            abort(404, 'File not found');
+        }
+        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $originalName = $product->product_title . '.' . $fileExtension;
+        return Storage::disk('public')->download($filePath, $originalName);
+    }
 
     if (!Auth::check() || !$this->authorizeDownload($product)) {
         \Log::warning('Unauthorized download attempt for product ID: ' . $product->id);

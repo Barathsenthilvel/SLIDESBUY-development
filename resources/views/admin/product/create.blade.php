@@ -515,10 +515,9 @@
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Sell Type</label>
                                 <div class="col-lg-9 col-md-9 col-sm-12">
-                                    <select name="weightUnit" class="form-control" >
-                                        <option value="1">Select SellType</option>
-                                        <option value="1">Free</option>
-                                        <option value="2">Paid</option>
+                                    <select name="sell_type" class="form-control" >
+                                        <option value="1">Paid</option>
+                                        <option value="0">Free</option>
                                     </select>
                                 </div>
                             </div>

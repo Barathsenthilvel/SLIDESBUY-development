@@ -59,8 +59,8 @@
                   <div class="product-item__bottom flx-between gap-2">
                     <div>
                       {{-- You can customize these details as needed, below are placeholders --}}
-                      <span class="product-item__sales font-14 mb-0 text-white">100 Sales</span>
-                      <div class="d-flex align-items-center gap-1">
+                      <span class="product-item__sales font-14 mb-0 text-white">100 Slides Count</span>
+                      {{-- <div class="d-flex align-items-center gap-1">
                         <ul class="star-rating">
                           <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
                           <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
@@ -69,11 +69,11 @@
                           <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>
                         </ul>
                         <span class="star-rating__text text-white fw-500 font-14">(16)</span>
-                      </div>
+                      </div> --}}
                     </div>
                     <span class="product-item__author">
                       by
-                      <a href="profile.html" class="link text-decoration-underline"> themepix</a>
+                      <a href="profile.html" class="link text-decoration-underline"> Slidesbuy</a>
                     </span>
                   </div>
                 </div>

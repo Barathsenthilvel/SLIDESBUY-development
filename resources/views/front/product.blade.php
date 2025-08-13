@@ -195,9 +195,7 @@
                     </span>
                   </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="pills-comments-tab" data-bs-toggle="pill" data-bs-target="#pills-comments" type="button" role="tab" aria-controls="pills-comments" aria-selected="false" tabindex="-1">Comments (50)</button>
-                </li>
+
             </ul>
             <div class="social-share">
                 <button type="button" class="social-share__button">
@@ -368,51 +366,7 @@
                     <div class="tab-pane fade" id="pills-comments" role="tabpanel" aria-labelledby="pills-comments-tab" tabindex="0">
 
     <!-- Comment Start -->
-    <div class="comment mt-64 mb-64">
-        <h5 class="mb-32">2 Comments</h5>
-        <ul class="comment-list">
-            <li class="comment-list__item d-flex align-items-start gap-sm-4 gap-3">
-                <div class="comment-list__thumb flex-shrink-0">
-                    <img src="{{ asset('assets/images/thumbs/comment1.png') }}" class="cover-img" alt="">
-                </div>
-                <div class="comment-list__content">
-                    <div class="flx-between gap-2 align-items-start">
-                        <div>
-                            <h6 class="comment-list__name font-18 mb-sm-2 mb-1">Jenny Wilson</h6>
-                            <span class="comment-list__date font-14">Jan 21, 2024 at 11:25 pm</span>
-                        </div>
-                        <a class="comment-list__reply fw-500 flx-align gap-2 hover-text-decoration-underline" href="#comment-box">
-                            Reply
-                            <span class="icon"><img src="{{ asset('assets/images/icons/reply-icon.svg') }}" alt=""></span>
-                        </a>
-                    </div>
-                    <p class="comment-list__desc mt-3">Lorem ipsum dolor sit amet consectetur. Nec nunc pellentesque massa pretium. Quam sapien nec venenatis vivamus sed cras faucibus mi viverra. Quam faucibus morbi cras vitae neque. Necnunc pellentesque massa pretium.</p>
-                </div>
-            </li>
-            <li>
-                <ul class="comment-list comment-list--two">
-                    <li class="comment-list__item d-flex align-items-start gap-sm-4 gap-3">
-                        <div class="comment-list__thumb flex-shrink-0">
-                            <img src="{{ asset('assets/images/thumbs/comment2.png') }}" class="cover-img" alt="">
-                        </div>
-                        <div class="comment-list__content">
-                            <div class="flx-between gap-2 align-items-start">
-                                <div>
-                                    <h6 class="comment-list__name font-18 mb-sm-2 mb-1">Courtney Henry</h6>
-                                    <span class="comment-list__date font-14">Jan 21, 2024 at 11:25 pm</span>
-                                </div>
-                                <a class="comment-list__reply fw-500 flx-align gap-2 hover-text-decoration-underline" href="#comment-box">
-                                    Reply
-                                    <span class="icon"><img src="{{ asset('assets/images/icons/reply-icon.svg') }}" alt=""></span>
-                                </a>
-                            </div>
-                            <p class="comment-list__desc mt-3">Lorem ipsum dolor sit amet consectetur. Nec nunc pellentesque massa pretium. Quam sapien nec venenatis vivamus sed cras faucibus.</p>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+
     <!-- Comment End -->
                     </div>
                 </div>
@@ -435,7 +389,7 @@
                 <a href="#" class="link hover-text-decoration-underline font-14 text-main fw-500">View License Details</a>
             </div>
         </div>
-        <h6 class="product-sidebar__title">  <span class="custom-badge ">Paid</span>
+        <h6 class="product-sidebar__title">  <span class="custom-badge {{ ($product->sell_type ?? 1) == 0 ? 'free' : 'paid' }}">{{ ($product->sell_type ?? 1) == 0 ? 'Free' : 'Paid' }}</span>
 </h6>
     </div>
 
@@ -514,6 +468,11 @@
     @if ($activeSubscription && $downloadLimitReached)
         <a href="{{ route('front.subscription') }}" class="btn btn-danger w-100 w-sm-auto mt-3">
             Renew Subscription
+        </a>
+    @elseif (($product->sell_type ?? 1) == 0)
+        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
+            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
+            Download Free
         </a>
     @elseif ($activeSubscription && $canDownload)
         <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">

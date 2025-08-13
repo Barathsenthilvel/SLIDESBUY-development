@@ -616,7 +616,7 @@ class ProductController extends Controller
     $data->attribute_values = !empty($attributeValues) ? implode('|', $attributeValues) : '';
     $data->tax = '';
     $data->weight = '';
-    $data->weight_unit = $requestData['weightUnit'];
+    $data->weight_unit = $requestData['weightUnit'] ?? null;
     $data->product_description = $requestData['productDescription'];
     $data->trending = (isset($requestData['trending'])) ? 'on' : 'off';
     $data->metadescription = $requestData['metadescription'];
@@ -624,6 +624,7 @@ class ProductController extends Controller
     $data->quantity ='';
     $data->minquantity = '';
     $data->soldout = (isset($requestData['soldout'])) ? 'on' : 'off';
+    $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : 1; // default paid
     $data->metaname = $requestData['metaname'];
     $data->delivery_date = '';
     $data->image1 = $image1;
@@ -642,7 +643,7 @@ class ProductController extends Controller
     $data->markup = '';
     $data->mrp = '';
     $data->mark_type = '';
-    $data->shipping_price = '';
+        $data->shipping_price = '';
     $data->save();
 
     return response()->json(['msg' => 'New product Added Successfully.']);
@@ -786,8 +787,8 @@ class ProductController extends Controller
         $data->product_sku=$requestData['skuCode'];
         $data->attribute_values=($attributeTemplate > 0)?$attribute_value:'';
         $data->tax=$requestData['tax'];
-        $data->weight=$requestData['weight'];
-        $data->weight_unit=$requestData['weightUnit'];
+        $data->weight = $requestData['weight'] ?? $data->weight;
+        $data->weight_unit = $requestData['weightUnit'] ?? $data->weight_unit;
         $data->product_description=$requestData['productDescription'];
         $data->trending = (isset($requestData['trending']))?$requestData['trending']:'off';
         $data->metadescription=$requestData['metadescription'];
@@ -795,6 +796,7 @@ class ProductController extends Controller
         $data->quantity=($requestData['quantity'] == "")?'unlimited':$requestData['quantity'];
         $data->minquantity=$requestData['minquantity'];
         $data->soldout=(isset($requestData['soldout'])?$requestData['soldout']:'off');
+        $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : ($data->sell_type ?? 1);
         $data->delivery_date=$requestData['deliveryDate'];
         $data->metaname=$requestData['metaname'];
         $data->image1=$image1;

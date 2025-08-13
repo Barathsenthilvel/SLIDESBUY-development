@@ -75,13 +75,13 @@
                                     <span class="text text-heading fw-500">Date:</span>
                                     <span class="text">{{ $orderDetails['date'] }}</span>
                                 </li>
-                                <li class="list-text__item flx-align flex-nowrap">
+                                {{-- <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Discount:</span>
                                     <span class="text">${{ number_format($orderDetails['discount_price'], 2) }}</span>
-                                </li>
+                                </li> --}}
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Total</span>
-                                    <span class="text"> ${{ number_format($orderDetails['total'], 2) }}</span>
+                                    <span class="text">₹{{ number_format($orderDetails['total'], 2) }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -97,7 +97,7 @@
                                 </li>
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">{{ $product['name'] }}</span>
-                                    <span class="text">${{ number_format($product['price'], 2) }}</span>
+                                    <span class="text">₹{{ number_format($product['price'], 2) }}</span>
                                 </li>
                                 {{-- <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Project Management Dashboard </span>

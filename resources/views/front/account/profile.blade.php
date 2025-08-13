@@ -131,7 +131,7 @@
                                     <th>Expires</th>
                                 </tr>
                             </thead>
-                                                                    <tbody>
+                                 <tbody>
                                 @forelse(($subscriptions ?? collect()) as $key => $subscription)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
@@ -145,7 +145,7 @@
                                 @empty
                                     <tr><td colspan="7" class="text-center text-muted py-4">No subscriptions found.</td></tr>
                                 @endforelse
-                            </tbody
+                            </tbody>
                         </table>
                     </div>
                 </div>

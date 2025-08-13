@@ -51,7 +51,7 @@
                         </button>
                     </form>
         
-                    <div class="popular-search d-flex align-items-start gap-3 justify-content-center">
+                    {{-- <div class="popular-search d-flex align-items-start gap-3 justify-content-center">
                         <h6 class="popular-search__title font-18 fw-700 mb-0 mt-1 flex-shrink-0 flx-align gap-1"> <span class="d-md-flex d-none">Popular</span> Search: </h6>
                         <ul class="search-list">
                             <li class="search-list__item">
@@ -73,7 +73,7 @@
                                 <a href="all-product.html" class="search-list__link font-14 text-heading">dashboard</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

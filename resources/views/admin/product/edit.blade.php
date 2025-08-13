@@ -499,6 +499,15 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Sell Type</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <select name="sell_type" class="form-control">
+                                        <option value="1" {{ ($product->sell_type ?? 1) == 1 ? 'selected' : '' }}>Paid</option>
+                                        <option value="0" {{ ($product->sell_type ?? 1) == 0 ? 'selected' : '' }}>Free</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Sold Out</label>
 
                                 <div class="col-lg-4 col-md-4 col-sm-4">

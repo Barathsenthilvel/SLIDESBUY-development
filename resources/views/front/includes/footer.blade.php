@@ -108,7 +108,7 @@
     </div>
 </footer> --}}
 
-<footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
+{{-- <footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
     <img src={{ asset('assets/images/gradients/footer-gradient-bg.png') }} alt="" class="bg--gradient">
     <img src={{ asset('assets/images/shapes/footer-pattern1.png') }} alt="" class="position-absolute end-0 top-0 z-index--1">
     <img src={{ asset('assets/images/shapes/footer-pattern2.png') }} alt="" class="position-absolute start-0 top-0 z-index--1">
@@ -207,6 +207,99 @@
                     <a href="#" class="footer-link font-14">Terms of Service</a>
                     <a href="#" class="footer-link font-14">Privacy Policy</a>
                     <a href="contact.html" class="footer-link font-14">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer> --}}
+
+
+<footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
+
+    <img src="assets/images/gradients/footer-gradient-bg.png" alt="" class="bg--gradient">
+    
+    <img src="assets/images/shapes/footer-pattern1.png" alt="" class="position-absolute end-0 top-0 z-index--1">
+    <img src="assets/images/shapes/footer-pattern2.png" alt="" class="position-absolute start-0 top-0 z-index--1">
+    
+    <div class="footer-inner padding-y-120">
+        <div class="container container-two">
+            <div class="row gy-5">
+                <div class="col-xl-3 col-sm-6">
+                    <div class="footer-widget">
+                        <div class="footer-widget__logo">
+                            <a href="index.html"> 
+                                <img  src={{ asset('assets/images/logo/slidesbuy.png') }} alt="Logo" class="white-version">
+                                <img  src={{ asset(' assets/images/logo/slidesbuy.png') }} alt="Logo" class="dark-version">
+                            </a>
+                        </div>
+                        <p class="footer-widget__desc">Lorem consultancy elitsed do eiusmod tempor inci didunt ut labore dolore magna aliqua sed do eiusmod.</p>                    
+                        <div class="footer-widget__social">
+                            <ul class="social-icon-list">
+    <li class="social-icon-list__item">
+        <a href="https://www.facebook.com" class="social-icon-list__link flx-center"><i class="fab fa-facebook-f"></i></a>
+    </li>
+    <li class="social-icon-list__item">
+        <a href="https://www.twitter.com" class="social-icon-list__link flx-center"> <i class="fab fa-twitter"></i></a>
+    </li>
+    <li class="social-icon-list__item">
+        <a href="https://www.linkedin.com" class="social-icon-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
+    </li>
+    <li class="social-icon-list__item">
+        <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-pinterest-p"></i></a>
+    </li>
+    <li class="social-icon-list__item">
+        <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-youtube"></i></a>
+    </li>
+</ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-sm-6 col-xs-6">
+                    <div class="footer-widget">
+                        <h5 class="footer-widget__title">Useful Link</h5>
+                        <ul class="footer-lists">
+                            <li class="footer-lists__item"><a href="all-product.html" class="footer-lists__link">Privacy Policy </a></li>
+                            <li class="footer-lists__item"><a href="product-details.html" class="footer-lists__link">Terms & Conditions </a></li>
+                            <li class="footer-lists__item"><a href="profile.html" class="footer-lists__link">Suubscription and Renewal </a></li>
+                            <li class="footer-lists__item"><a href="cart.html" class="footer-lists__link">Cancellation and refund</a></li>
+                            <li class="footer-lists__item"><a href="dashboard.html" class="footer-lists__link">Disclaimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-1 d-xl-block d-none"></div>
+                <div class="col-xl-3 col-sm-6 col-xs-6">
+                    <div class="footer-widget">
+                        <h5 class="footer-widget__title">Quick Links </h5>
+                        <ul class="footer-lists">
+                            <li class="footer-lists__item"><a href="dashboard.html" class="footer-lists__link">Home </a></li>
+                            <li class="footer-lists__item"><a href="login.html" class="footer-lists__link">Price plan </a></li>
+                            <li class="footer-lists__item"><a href="register.html" class="footer-lists__link">Contact us </a></li>
+                            <li class="footer-lists__item"><a href="blog.html" class="footer-lists__link">Login </a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 col-xs-6">
+                    <div class="footer-widget">
+                        <h5 class="footer-widget__title">Payments</h5>
+                        <ul class="footer-lists">
+                            <img src="{{URL::asset('assets/media/payment_logo.png')}}" alt="payment" class="img-fluid" style="max-width: 110px;">
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bottom Footer Two -->
+    <div class="bottom-footer-two">
+        <div class="container container-two">
+            <div class="bottom-footer__inner flx-between gap-3">
+                <p class="bottom-footer__text font-14"> Copyright © 2025 Slidesbuy, All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link font-14">Developed by - </a>
+                    <a href="https://witglobalsolutions.com/" class="footer-link font-14">witglobalsolutions</a>
+                    {{-- <a href="contact.html" class="footer-link font-14">cookies</a> --}}
                 </div>
             </div>
         </div>

@@ -32,7 +32,7 @@
     .logout-card { background: linear-gradient(180deg, #fff, #f8fafc); border: 1px solid #eef1f5; border-radius: 14px; padding: 16px; }
         </style>
 @php
-    $subscriptionCount = isset($uniqueSubscriptions) ? $uniqueSubscriptions->count() : 0;
+    $subscriptionCount = isset($subscriptions) ? $subscriptions->count() : 0;
 @endphp
 <div class="container container-two py-4 account-wrapper">
     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -131,21 +131,21 @@
                                     <th>Expires</th>
                                 </tr>
                             </thead>
-                                        <tbody>
-                                @forelse(($uniqueSubscriptions ?? collect()) as $key => $subscription)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ $subscription->transaction_id ?? 'N/A' }}</td>
+                                                                    <tbody>
+                                @forelse(($subscriptions ?? collect()) as $key => $subscription)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $subscription->razorpay_payment_id ?? 'N/A' }}</td>
                                         <td><span class="badge-soft">{{ optional($subscription->plan)->name ?? 'N/A' }}</span></td>
                                         <td>{{ optional($subscription->plan)->download_limit ?? '—' }}</td>
-                                        <td>₹{{ optional($subscription->plan)->price ?? '0' }}</td>
-                                            <td>{{ optional($subscription->created_at)->format('d M Y') }}</td>
-                                            <td>{{ $subscription->expired_at ? \Carbon\Carbon::parse($subscription->expired_at)->format('d M Y') : 'N/A' }}</td>
-                                        </tr>
+                                        <td>₹{{ $subscription->discount_price ?? $subscription->price ?? '0' }}</td>
+                                        <td>{{ optional($subscription->created_at)->format('d M Y') }}</td>
+                                        <td>{{ $subscription->expired_at ? \Carbon\Carbon::parse($subscription->expired_at)->format('d M Y') : 'N/A' }}</td>
+                                    </tr>
                                 @empty
                                     <tr><td colspan="7" class="text-center text-muted py-4">No subscriptions found.</td></tr>
                                 @endforelse
-                                        </tbody>
+                            </tbody
                         </table>
                     </div>
                 </div>

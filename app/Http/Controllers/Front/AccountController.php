@@ -10,6 +10,7 @@ use App\Models\Downloads;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Subscription;
 
 class AccountController extends Controller
 {
@@ -36,7 +37,12 @@ class AccountController extends Controller
         ->where('user_id', $user->id)
         ->orderBy('created_at', 'desc')
         ->get();
-    $uniqueSubscriptions = $downloads->pluck('subscription')->unique('id')->values();
+
+    // NEW: Fetch ALL subscriptions directly from subscriptions table
+    $subscriptions = Subscription::with('plan')
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
     // Group downloads by product to get count and details
     $downloadsGrouped = $downloads->groupBy('product_id')->map(function ($items) {
@@ -60,7 +66,7 @@ class AccountController extends Controller
         'totalDownloaded',
         'downloadLimit',
         'remainingDownloads',
-        'uniqueSubscriptions'
+        'subscriptions'
     ));
 }
 

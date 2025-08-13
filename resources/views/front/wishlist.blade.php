@@ -196,34 +196,13 @@ $(document).ready(function() {
             if (data.status === 'success') {
                 // Update wishlist count in header
                 $('.wishlist-count').text(data.count);
-
-                    // Remove the product card from the list
-                    const card = button.closest('.col-xl-3, .col-lg-4, .col-md-6, .col-sm-6');
-                    if (card.length) {
-                        card.fadeOut(200, function() {
-                            $(this).remove();
-
-                            // If no items remain, show empty state
-                            if ($('.product-item__wishlist').length === 0) {
-                                $('#wishlist-content').html(`
-                                    <div class="text-center py-5">
-                                        <div class="empty-wishlist">
-                                            <i class="fas fa-heart-broken fa-4x text-muted mb-4"></i>
-                                            <h3 class="text-heading mb-3">Your wishlist is empty</h3>
-                                            <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
-                                            <a href="{{ route('front.index') }}" class="btn btn-primary">
-                                                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
-                                            </a>
-                                        </div>
-                                    </div>
-                                `);
-                            }
-                        });
-                    }
-
-                    if (window.toaster) {
-                        window.toaster.success('Removed from wishlist');
-                    }
+                
+                if (window.toaster) {
+                    window.toaster.success('Removed from wishlist');
+                }
+                
+                // Refresh the page after successful removal
+                window.location.reload();
             } else {
                 if (window.toaster) {
                     window.toaster.error(data.message || 'Failed to remove item');

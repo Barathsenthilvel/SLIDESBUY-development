@@ -2,6 +2,97 @@
 @section('content')
 <!-- main start -->
 
+<style>
+    /* List View Styles */
+    .list-view .list-grid-wrapper > div {
+        width: 100%;
+    }
+
+    .list-view .list-grid-wrapper .product-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__thumb {
+        flex-shrink: 0;
+        width: 200px;
+        height: 120px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__title {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__info {
+        margin-bottom: 10px;
+    }
+
+    .list-view .list-grid-wrapper .product-item__bottom {
+        margin-top: auto;
+    }
+
+    /* Grid View (Default) */
+    .list-grid-wrapper .product-item {
+        height: auto;
+        flex-direction: column;
+    }
+
+    .list-grid-wrapper .product-item__thumb {
+        width: 100%;
+        height: auto;
+    }
+
+    .list-grid-wrapper .product-item__content {
+        width: 100%;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .list-view .list-grid-wrapper .product-item {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .list-view .list-grid-wrapper .product-item__thumb {
+            width: 100%;
+            height: 200px;
+        }
+    }
+
+    /* Filter tab styles */
+    .filter-tab {
+        background: #fff;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .filter-form {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+
 <script>
     var min = parseInt('{{$min}}');
     var max = parseInt('{{$max}}') +1;
@@ -225,7 +316,80 @@
 
             {{-- Product List Section --}}
             <div class="col-xl-9 col-lg-8 nopad sss2 productcontainer">
-                
+                <!-- Filter Tab -->
+                <div class="filter-tab gap-3 flx-between mb-4">
+                    <button type="button" class="filter-tab__button btn btn-outline-light pill d-flex align-items-center active">
+                        <span class="icon icon-left">
+                            <img src="{{ asset('assets/images/icons/filter.svg') }}" alt="">
+                        </span>
+                        <span class="font-18 fw-500">Filters</span>
+                    </button>
+
+                    <ul class="nav common-tab nav-pills mb-0 gap-lg-2 gap-1 ms-lg-auto" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-product-tab" data-bs-toggle="pill" data-bs-target="#pills-product" type="button" role="tab" aria-controls="pills-product" aria-selected="true">All Item</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestMatch-tab" data-bs-toggle="pill" data-bs-target="#pills-bestMatch" type="button" role="tab" aria-controls="pills-bestMatch" aria-selected="false" tabindex="-1">Best Match</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestRating-tab" data-bs-toggle="pill" data-bs-target="#pills-bestRating" type="button" role="tab" aria-controls="pills-bestRating" aria-selected="false" tabindex="-1">Best Rating</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false" tabindex="-1">Site Template</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestOffers-tab" data-bs-toggle="pill" data-bs-target="#pills-bestOffers" type="button" role="tab" aria-controls="pills-bestOffers" aria-selected="false" tabindex="-1">Best Offers</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-bestSelling-tab" data-bs-toggle="pill" data-bs-target="#pills-bestSelling" type="button" role="tab" aria-controls="pills-bestSelling" aria-selected="false" tabindex="-1">Best Selling</button>
+                        </li>
+                    </ul>
+
+                    <div class="list-grid d-flex align-items-center gap-2">
+                        <button class="list-grid__button list-button d-sm-flex d-none text-body active"><i class="las la-list"></i></button>
+                        <button class="list-grid__button grid-button d-sm-flex d-none text-body"><i class="las la-border-all"></i></button>
+                        <button class="list-grid__button sidebar-btn text-body d-lg-none d-flex"><i class="las la-bars"></i></button>
+                    </div>
+                </div>
+
+                <!-- Filter Form -->
+                <form action="#" class="filter-form pb-4" style="display: block;">
+                    <div class="row gy-3">
+                        <div class="col-sm-4 col-xs-6">
+                            <div class="flx-between gap-1">
+                                <label for="tag" class="form-label font-16">Tag</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative">
+                                <input type="text" class="common-input border-gray-five common-input--withLeftIcon" id="tag" placeholder="Search By Tag...">
+                                <span class="input-icon input-icon--left"><img src="{{ asset('assets/images/icons/search-two.svg') }}" alt=""></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-xs-6">
+                            <div class="flx-between gap-1">
+                                <label for="Price" class="form-label font-16">Price</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative">
+                                <input type="text" class="common-input border-gray-five" id="Price" placeholder="$7 - $29">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="flx-between gap-1">
+                                <label for="time" class="form-label font-16">Time Frame</label>
+                                <button type="reset" class="text-body font-14">Clear</button>
+                            </div>
+                            <div class="position-relative select-has-icon">
+                                <select id="time" class="common-input border-gray-five">
+                                    <option value="1">Now</option>
+                                    <option value="2">Yesterday</option>
+                                    <option value="3">1 Month Ago</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
                 <div id="renderproduct">
                     @include('front.product-list')
@@ -239,6 +403,40 @@
 @push('script')
 <script src="static/js/jquery-ias.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Grid and List View Toggle
+    $('.list-button').on('click', function() {
+        $('body').addClass('list-view');
+        $(this).addClass('active');
+        $('.grid-button').removeClass('active');
+
+        // Update column classes for list view
+        $('.list-grid-wrapper > div').removeClass('col-xl-4 col-sm-6').addClass('col-12');
+    });
+
+    $('.grid-button').on('click', function() {
+        $('body').removeClass('list-view');
+        $('.list-button').removeClass('active');
+        $(this).addClass('active');
+
+        // Restore column classes for grid view
+        $('.list-grid-wrapper > div').removeClass('col-12').addClass('col-xl-4 col-sm-6');
+    });
+
+    // Filter form toggle
+    $('.filter-tab__button').on('click', function() {
+        $('.filter-form').slideToggle();
+        $(this).toggleClass('active');
+    });
+
+    // Clear filter buttons
+    $('.filter-form button[type="reset"]').on('click', function() {
+        $(this).closest('.col-sm-4, .col-xs-6').find('input, select').val('');
+    });
+});
+</script>
 <script type="text/javascript">
 // $('.filter-clean').hide(500);
 

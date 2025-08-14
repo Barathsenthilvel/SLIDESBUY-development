@@ -68,8 +68,9 @@ class CategoryController extends Controller
             'category_name' => 'required|unique:categories,category_name',
             'parent_category_id' => 'required',
             'Category_url' => 'required|unique:categories,Category_url',
-            'style_1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'style_3' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // Enforce exact image dimensions of 306x196
+            'style_1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
+            'style_3' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
             'hns_code' => 'nullable|string|max:50',
             'short_description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
@@ -92,6 +93,8 @@ class CategoryController extends Controller
             'style_3.image' => 'Category Style3 must be an image file',
             'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
             'style_3.max' => 'Category Style3 image size must not exceed 2MB',
+            'style_1.dimensions' => 'Category Style1 image must be exactly 306x196 pixels',
+            'style_3.dimensions' => 'Category Style3 image must be exactly 306x196 pixels',
             'hns_code.max' => 'HSN Code must not exceed 50 characters',
             'meta_title.max' => 'Meta Title must not exceed 255 characters',
             'sort_order.integer' => 'Sorting Order must be a number'
@@ -133,11 +136,11 @@ class CategoryController extends Controller
         $input['category_banner'] = $request->category_banner;
         $input['mobile_image'] = $request->mobile_image;
 
-        if(!array_key_exists('featured_collection', $input)){ 
-            $input['featured_collection'] = 0; 
+        if(!array_key_exists('featured_collection', $input)){
+            $input['featured_collection'] = 0;
         }
-        if(!array_key_exists('featured_category', $input)){ 
-            $input['featured_category'] = 0; 
+        if(!array_key_exists('featured_category', $input)){
+            $input['featured_category'] = 0;
         }
 
         $Category = new Category();
@@ -154,8 +157,9 @@ class CategoryController extends Controller
             'category_name' => 'required|unique:categories,category_name,'.$id,
             'parent_category_id' => 'required',
             'Category_url' => 'required|unique:categories,Category_url,'.$id,
-            'style_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'style_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // Enforce exact image dimensions when provided
+            'style_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
+            'style_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
             'hns_code' => 'nullable|string|max:50',
             'short_description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
@@ -176,6 +180,8 @@ class CategoryController extends Controller
             'style_3.image' => 'Category Style3 must be an image file',
             'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
             'style_3.max' => 'Category Style3 image size must not exceed 2MB',
+            'style_1.dimensions' => 'Category Style1 image must be exactly 306x196 pixels',
+            'style_3.dimensions' => 'Category Style3 image must be exactly 306x196 pixels',
             'hns_code.max' => 'HSN Code must not exceed 50 characters',
             'meta_title.max' => 'Meta Title must not exceed 255 characters',
             'sort_order.integer' => 'Sorting Order must be a number'
@@ -205,7 +211,7 @@ class CategoryController extends Controller
         $input['mobile_image'] = $request->mobile_image;
 
         $Category = Category::findOrFail($id);
-        
+
         // Handle file uploads for update
         if ($file = $request->file('style_1')) {
             // Delete old file if exists
@@ -218,7 +224,7 @@ class CategoryController extends Controller
         } else {
             $input['style_1'] = $Category['style_1'];
         }
-        
+
         if ($file = $request->file('style_3')) {
             // Delete old file if exists
             if($Category->style_3 && file_exists(public_path().'/assets/media/banner/'.$Category->style_3)) {
@@ -230,19 +236,19 @@ class CategoryController extends Controller
         } else {
             $input['style_3'] = $Category['style_3'];
         }
-        
-        if(array_key_exists('featured_collection', $input)){ 
-            $input['featured_collection'] = 1; 
+
+        if(array_key_exists('featured_collection', $input)){
+            $input['featured_collection'] = 1;
         } else {
             $input['featured_collection'] = 0;
         }
 
-        if(array_key_exists('featured_category', $input)){ 
-            $input['featured_category'] = 1; 
+        if(array_key_exists('featured_category', $input)){
+            $input['featured_category'] = 1;
         } else {
             $input['featured_category'] = 0;
         }
-        
+
         $Category->fill($input)->save();
         $data1['msg'] = 'Category Updated Successfully.';
         return response()->json($data1);

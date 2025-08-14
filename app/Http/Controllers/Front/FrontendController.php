@@ -156,8 +156,8 @@ class FrontendController extends Controller
             //     $temp[$key]->temp_price = ($price->isoffer)?$price->offer:$price->price;
             // }
 
-            $perpage = 24;
-            $page = 1;
+            $perpage = 6;
+            $page = $request->get('page', 1);
             if(isset($request->max) && isset($request->min)){
                 //  $temp = (new Collection($temp))->filter(function ($item) use($minprice,$maxprice) {
                 //     return $item->temp_price >= (double)$minprice && $item->temp_price <= (double)$maxprice;
@@ -216,7 +216,7 @@ class FrontendController extends Controller
     public function filter(Request $request,$slug=null,$slug1=null){
         // dd($request->all());
       $store = Storeconfiguration::where('id',1)->first();
-      $perpage = 24;
+       $perpage = 6;
       $cat = null;
       $subcat = null;
       $minprice = $request->min;
@@ -388,6 +388,14 @@ class FrontendController extends Controller
     }
         public function Disclaimer(){
       return view('front.Disclaimer');
+    }
+
+    public function SubscriptionRenewal(){
+      return view('front.SubscriptionRenewal');
+    }
+
+    public function CancellationRefund(){
+      return view('front.CancellationRefund');
     }
         public function Careers(){
       return view('front.Careers');

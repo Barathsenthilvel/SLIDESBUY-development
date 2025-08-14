@@ -143,14 +143,14 @@
 
                         <div class="breadcrumb-content flx-align gap-3">
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
-                                <span class="text">By <a href="#" class="link text-main fw-600">Oviousdev</a> </span>
+                                <span class="text">By <a href="#" class="link text-main fw-600">Slidesbuy</a> </span>
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">
                                     <img src="{{ asset('assets/images/icons/cart-icon.svg') }}" alt="" class="white-version">
                                     <img src="{{ asset('assets/images/icons/cart-white.svg') }}" alt="" class="dark-version w-20">
                                 </span>
-                                <span class="text">158 sales</span>
+                                <span class="text">158 Downloads</span>
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">

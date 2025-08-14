@@ -39,13 +39,13 @@
                                             </div>
                                             <!--begin::Form-->
                                             <div class="alert alert-danger alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
+                                                <div class="alert-body"></div>
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
+                                                <div class="alert-body"></div>
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -111,7 +111,7 @@
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile(event)" id="style_1" name="style_1" >
 
-                                        <span class="text-danger">Width:1000px and Height:629px</span>
+                                        <span class="text-danger">Required size: 306px × 196px</span>
                                         </div>
                                      </div>
                                                     <div class="form-group row d-none">
@@ -136,7 +136,7 @@
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile1(event)"  id="style_3" name="style_3" >
 
-                                        <span class="text-danger">Width:600px and Height:600px</span>
+                                        <span class="text-danger">Required size: 306px × 196px</span>
                                         </div>
                                      </div>
                                                     <div class="form-group row d-none">
@@ -234,20 +234,20 @@
         .then( editor => { window.CKEditor1 = editor;} )
 		.catch( error => { console.error( error ); });
     </script>
-    
+
     <script>
         // Handle form submission with AJAX
         $('#formCreate').on('submit', function(e) {
             e.preventDefault();
-            
+
             // Clear previous error messages
             $('.alert-danger').hide();
             $('.alert-success').hide();
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').remove();
-            
+
             var formData = new FormData(this);
-            
+
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -261,7 +261,7 @@
                         $('#formCreate')[0].reset();
                         $('#image1').attr('src', '');
                         $('#image3').attr('src', '');
-                        
+
                         // Redirect to category list after 2 seconds
                         setTimeout(function() {
                             window.location.href = '{{ route("admin-category") }}';
@@ -272,17 +272,17 @@
                     if(xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
                         var errorHtml = '<ul>';
-                        
+
                         $.each(errors, function(field, messages) {
                             $.each(messages, function(index, message) {
                                 errorHtml += '<li>' + message + '</li>';
                             });
-                            
+
                             // Add error class to input field
                             $('#' + field).addClass('is-invalid');
                             $('#' + field).after('<div class="invalid-feedback">' + messages[0] + '</div>');
                         });
-                        
+
                         errorHtml += '</ul>';
                         $('.alert-danger .alert-body').html(errorHtml);
                         $('.alert-danger').show();
@@ -293,14 +293,14 @@
                 }
             });
         });
-        
+
         // Clear error messages when user starts typing
         $('input, select, textarea').on('input change', function() {
             $(this).removeClass('is-invalid');
             $(this).next('.invalid-feedback').remove();
         });
     </script>
-    
+
     <script>
         var objectB = new Object();
         var objectA = new Object();
@@ -366,10 +366,10 @@
 
         var height = image.naturalHeight;
     var width = image.naturalWidth;
-    if ((height == 629) && (width == 1000 )) {
+    if ((height == 196) && (width == 306 )) {
         return true;
     }else{
-      alert("Kindly check image width and height");
+      alert("Image must be exactly 306x196 pixels");
       $('#image1').attr('src','');
       $('#style_1').val();
       return false;
@@ -391,10 +391,10 @@
         var height = image.naturalHeight;
     var width = image.naturalWidth;
 
-    if ((height == 600) && (width == 600)) {
+    if ((height == 196) && (width == 306)) {
         return true;
         }else{
-      alert("Kindly check image width and height");
+      alert("Image must be exactly 306x196 pixels");
       $('#image3').attr('src','');
       $('#style_3').val();
       return false;

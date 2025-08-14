@@ -523,7 +523,7 @@
                                     <label for="image1"  ><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px"  src="{{ URL::asset('assets/media/products/'.$product->image1) }}"></label>
                                     <input type="hidden" name="image1" value="{{ $product->image1 }}">
                                     <input type="file" class="upload_image" id="image1" style="width:250px;border:2px dashed #222;height: 310px"  accept="image/*">
-                                    <span class="form-text text-muted">Image width and height:700*700</span>
+                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                             </div>
 
@@ -542,7 +542,7 @@
                                     </label>
                                     <input type="file" id="image2"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
                                     
-                                    <span class="form-text text-muted">Image width and height:700*700</span>
+                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                                 <div class="col-lg-2 col-md-3">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -566,7 +566,7 @@
                                     </label>
                                     <input type="file" id="image3"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
                                     
-                                    <span class="form-text text-muted">Image width and height:700*700</span>
+                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                                 <div class="col-lg-2 col-md-3">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -590,7 +590,7 @@
                                     </label>
                                     <input type="file" id="image4" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
                                     
-                                    <span class="form-text text-muted">Image width and height:700*700</span>
+                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                    
                                 </div>
                                 <div class="col-lg-2 col-md-3">
@@ -804,21 +804,41 @@ jQuery(document).ready(function() {
     });
     var objectB = new Object();
     var objectA = new Object();
+
+    // Client-side image dimension validation
+    function validateImageDimensions(file, callback) {
+        var img = new Image();
+        img.onload = function() {
+            if (this.width === 290 && this.height === 160) {
+                callback(true);
+            } else {
+                alert('Image must be exactly 290×160 pixels. Current size: ' + this.width + '×' + this.height);
+                callback(false);
+            }
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
     $(document).ready(function(){
         $image_crop = $('#image_demo').croppie({
         enableExif: true,
         viewport: {
-         width:700,
-          height:700,
+         width:290,
+          height:160,
           type:'square' //circle
         },
         boundary:{
-          width:800,
-          height:800
+          width:400,
+          height:300
         }
       });
     
       $('.upload_image').on('change', function(){
+        var file = this.files[0];
+        if (!file) return;
+
+        validateImageDimensions(file, function(isValid) {
+            if (isValid) {
         objectB = this.parentElement;
         objectA = this;
         var reader = new FileReader();
@@ -829,8 +849,13 @@ jQuery(document).ready(function() {
             console.log('jQuery bind complete');
           });
         }
-        reader.readAsDataURL(this.files[0]);
+                reader.readAsDataURL(file);
         $('#uploadimageModal').modal('show');
+            } else {
+                // Clear the file input
+                this.value = '';
+            }
+        }.bind(this));
       });
     
       $('.crop_image').click(function(event){

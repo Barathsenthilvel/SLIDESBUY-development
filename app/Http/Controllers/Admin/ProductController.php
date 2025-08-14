@@ -506,7 +506,10 @@ class ProductController extends Controller
         'basePrice'        => 'nulable',
         'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
         'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
-        'image1'           => 'required',
+        'image1'           => 'required|string',
+        'image2'           => 'nullable|string',
+        'image3'           => 'nullable|string',
+        'image4'           => 'nullable|string',
         'document' => 'required|file|mimes:pdf,ppt,pptx|max:10240',
         'productDescription' => 'required'
     ];
@@ -705,7 +708,10 @@ class ProductController extends Controller
             'basePrice'     => 'nullable',
             'skuCode'     => 'required|unique:products,product_sku,'.$id,
             'productTitle' => 'required|unique:products,product_title,'.$id,
-            'image1' => 'required',
+            'image1' => 'required|string',
+            'image2' => 'nullable|string',
+            'image3' => 'nullable|string',
+            'image4' => 'nullable|string',
             'productDescription' =>'required'
         ];
 

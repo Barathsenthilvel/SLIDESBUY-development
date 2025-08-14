@@ -155,9 +155,10 @@
                         <h5 class="footer-widget__title">Policy</h5>
                         <ul class="footer-lists">
                             <li><a href="{{route('front.Privacy_Policy')}}" class="footer-lists__link">Privacy Policy</a></li>
-                            <li><a href="{{route('front.Shipping_Policy')}}" class="footer-lists__link">Shipping Policy</a></li>
                             <li><a href="{{route('front.TermsConditions')}}" class="footer-lists__link">Terms & Conditions</a></li>
-                            <li><a href="{{route('front.returnandcancle')}}" class="footer-lists__link">Returns, Exchange & Cancellation</a></li>
+                            <li><a href="{{route('front.SubscriptionRenewal')}}" class="footer-lists__link">Subscription & Renewal</a></li>
+                            <li><a href="{{route('front.CancellationRefund')}}" class="footer-lists__link">Cancellation & Refund</a></li>
+                            <li><a href="{{route('front.Disclaimer')}}" class="footer-lists__link">Disclaimer</a></li>
                         </ul>
                     </div>
                 </div>
@@ -217,22 +218,22 @@
 <footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
 
     <img src="assets/images/gradients/footer-gradient-bg.png" alt="" class="bg--gradient">
-    
+
     <img src="assets/images/shapes/footer-pattern1.png" alt="" class="position-absolute end-0 top-0 z-index--1">
     <img src="assets/images/shapes/footer-pattern2.png" alt="" class="position-absolute start-0 top-0 z-index--1">
-    
+
     <div class="footer-inner padding-y-120">
         <div class="container container-two">
             <div class="row gy-5">
                 <div class="col-xl-3 col-sm-6">
                     <div class="footer-widget">
                         <div class="footer-widget__logo">
-                            <a href="index.html"> 
+                            <a href="index.html">
                                 <img  src={{ asset('assets/images/logo/slidesbuy.png') }} alt="Logo" class="white-version">
                                 <img  src={{ asset(' assets/images/logo/slidesbuy.png') }} alt="Logo" class="dark-version">
                             </a>
                         </div>
-                        <p class="footer-widget__desc">Lorem consultancy elitsed do eiusmod tempor inci didunt ut labore dolore magna aliqua sed do eiusmod.</p>                    
+                        <p class="footer-widget__desc">Lorem consultancy elitsed do eiusmod tempor inci didunt ut labore dolore magna aliqua sed do eiusmod.</p>
                         <div class="footer-widget__social">
                             <ul class="social-icon-list">
     <li class="social-icon-list__item">
@@ -258,11 +259,11 @@
                     <div class="footer-widget">
                         <h5 class="footer-widget__title">Useful Link</h5>
                         <ul class="footer-lists">
-                            <li class="footer-lists__item"><a href="all-product.html" class="footer-lists__link">Privacy Policy </a></li>
-                            <li class="footer-lists__item"><a href="product-details.html" class="footer-lists__link">Terms & Conditions </a></li>
-                            <li class="footer-lists__item"><a href="profile.html" class="footer-lists__link">Suubscription and Renewal </a></li>
-                            <li class="footer-lists__item"><a href="cart.html" class="footer-lists__link">Cancellation and refund</a></li>
-                            <li class="footer-lists__item"><a href="dashboard.html" class="footer-lists__link">Disclaimer</a></li>
+                            <li class="footer-lists__item"><a href="{{route('front.Privacy_Policy')}}" class="footer-lists__link">Privacy Policy </a></li>
+                            <li class="footer-lists__item"><a href="{{route('front.TermsConditions')}}" class="footer-lists__link">Terms & Conditions </a></li>
+                            <li class="footer-lists__item"><a href="{{route('front.SubscriptionRenewal')}}" class="footer-lists__link">Subscription and Renewal </a></li>
+                            <li class="footer-lists__item"><a href="{{route('front.CancellationRefund')}}" class="footer-lists__link">Cancellation and refund</a></li>
+                            <li class="footer-lists__item"><a href="{{route('front.Disclaimer')}}" class="footer-lists__link">Disclaimer</a></li>
                         </ul>
                     </div>
                 </div>
@@ -284,7 +285,7 @@
                         <h5 class="footer-widget__title">Payments</h5>
                         <ul class="footer-lists">
                             <img src="{{URL::asset('assets/media/payment_logo.png')}}" alt="payment" class="img-fluid" style="max-width: 110px;">
-                            
+
                         </ul>
                     </div>
                 </div>

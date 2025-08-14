@@ -15,15 +15,22 @@
         </div>
 
         <ul class="nav common-tab justify-content-center nav-pills mb-48" id="pills-tab" role="tablist">
-            <li class="nav-item" role="presentation">
+            {{-- <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">All Item</button>
-            </li>
+            </li> --}}
         </ul>
 
-        <div class="tab-content" id="pills-tabContent">
+                <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
+                @php $products = collect($discounts['product'] ?? [])->take(8); @endphp
+                @if($products->isEmpty())
+                <div class="text-center py-5">
+                    <h4 class="mb-2">No slides found</h4>
+                    {{-- <p class="text-muted mb-4">Please check back later or explore all categories.</p>
+                    <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300">Browse All Slides</a> --}}
+                </div>
+                @else
                 <div class="row gy-4">
-                    @php $products = collect($discounts['product'])->take(8); @endphp
                     @foreach($products as $discountProduct)
                         @php
                             $data = $discountProduct->getproductPrice();
@@ -68,14 +75,11 @@
                         </div>
                     @endforeach
                 </div>
+                @endif
             </div>
         </div>
 
-        <div class="text-center mt-64">
-            <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300">
-                View All Slides
-            </a>
-        </div>
+
     </div>
 </section>
 <!-- ======================= Arrival Products End ========================= -->

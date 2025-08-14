@@ -300,16 +300,6 @@
         <!-- Login and register Modal -->
       <!--mobile sticky footer-->
 
-      {{-- @include('front.includes.footer.mobile_footer') --}}
-    <div id="recaptcha-container" style="display:none"></div>
-    <!-- <script src="{{URL::asset('assets/front/static/js/jquery.min.js')}}"></script>
-    <script src="{{URL::asset('assets/front/static/js/non-defered.js')}}"></script>
-	<script src="{{URL::asset('assets/front/static/js/defered.js')}}"></script>
-	<script src="{{URL::asset('assets/front/static/js/jquery.fancybox.min.js')}}"></script>
-	<script src="{{URL::asset('assets/front/static/js/main.js')}}"></script>
-	<script src="{{URL::asset('assets/front/static/js/bootoast.js')}}"></script>
-    <script src="{{URL::asset('assets/front/static/js/toastr.min.js')}}"></script>
-    <script src="{{URL::asset('assets/front/static/js/myscript.js')}}"></script> -->
 
 
 {{--
@@ -443,7 +433,7 @@ $('body').on('click','.btn-wishlist',function(e){
         const button = $(this);
         const productId = button.data('id') || button.data('product-id');
         const isActive = button.hasClass('active');
-        
+
         if(!isActive){
             // Add to wishlist
             $.ajax({
@@ -454,11 +444,11 @@ $('body').on('click','.btn-wishlist',function(e){
                     button.addClass('active');
                     const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
                     $('.wishlist-count').text(newCount);
-                    
+
                     // Update button appearance
                     button.find('i').removeClass('far').addClass('fas');
                     button.find('i').css('color', '#ff6b6b');
-                    
+
                     if (window.toaster) {
                         window.toaster.success('Added to wishlist');
                     } else {
@@ -483,11 +473,11 @@ $('body').on('click','.btn-wishlist',function(e){
                     button.removeClass('active');
                     const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
                     $('.wishlist-count').text(newCount);
-                    
+
                     // Update button appearance
                     button.find('i').removeClass('fas').addClass('far');
                     button.find('i').css('color', '#666');
-                    
+
                     if (window.toaster) {
                         window.toaster.success('Removed from wishlist');
                     } else {

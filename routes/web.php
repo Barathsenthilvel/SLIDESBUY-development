@@ -73,6 +73,8 @@ Route::get('/FAQ', 'Front\FrontendController@FAQ')->name('front.FAQ');
 Route::get('/About', 'Front\FrontendController@About')->name('front.about');
 Route::get('/return_exchange_cancel', 'Front\FrontendController@returnandcancle')->name('front.returnandcancle');
 Route::get('/Disclaimer', 'Front\FrontendController@Disclaimer')->name('front.Disclaimer');
+Route::get('/subscription-renewal', 'Front\FrontendController@SubscriptionRenewal')->name('front.SubscriptionRenewal');
+Route::get('/cancellation-refund', 'Front\FrontendController@CancellationRefund')->name('front.CancellationRefund');
 Route::get('/Careers', 'Front\FrontendController@Careers')->name('front.Careers');
 Route::get('/Contact_Us', 'Front\FrontendController@Contact_Us')->name('front.Contact_Us');
 Route::get('/TrackOrder', 'Front\FrontendController@TrackOrder')->name('front.TrackOrder');

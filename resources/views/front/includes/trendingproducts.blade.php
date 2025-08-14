@@ -10,7 +10,7 @@
     <div class="container container-two">
         <div class="section-heading style-left style-white flx-between max-w-unset gap-4">
             <div>
-                <h3 class="section-heading__title"> Trending Products</h3>
+                <h3 class="section-heading__title"> Trending Slides</h3>
                 <p class="section-heading__desc font-18">
                     Handpicked trending items, updated regularly.
                 </p>

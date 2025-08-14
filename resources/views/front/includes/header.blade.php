@@ -29,16 +29,26 @@
     position: relative;
 }
 
+
+.header, .header-menu, .nav-menu, .header-menu .nav-menu {
+    overflow: visible !important; /* ensure dropdowns are not clipped */
+}
+
 .nav-submenu {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
-    background: white;
-    z-index: 999;
+    background: #ffffff;
+    z-index: 2000;
     min-width: 200px;
-    padding: 10px 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    /* show full list without internal scrollbar */
+    max-height: none;
+    overflow: visible;
+    white-space: nowrap;         /* keep items in one line */
 }
 
 /* User profile dropdown behavior */
@@ -64,6 +74,40 @@
 .nav-submenu__item:hover > .nav-submenu {
     display: block;
 }
+
+/* Nested submenu position (flyout to the right) */
+.nav-submenu .nav-submenu {
+    top: 0;
+    left: 100%;
+}
+
+/* Submenu items UI */
+.nav-submenu__item { list-style: none; }
+.nav-submenu__link {
+    display: block;
+    padding: 10px 18px;
+    color: #0f172a; /* slate-900 */
+    text-decoration: none;
+    font-weight: 600;
+}
+.nav-submenu__link:hover {
+    background: #f5f7fb;
+    color: #6a42f1; /* theme purple */
+}
+
+/* Active page styling with » arrow */
+.nav-submenu__item.activePage > .nav-submenu__link {
+    color: #6a42f1;
+    position: relative;
+}
+.nav-submenu__item.activePage > .nav-submenu__link::before {
+    content: "\00BB"; /* » */
+    margin-right: 8px;
+    color: #6a42f1;
+}
+
+/* Ensure header sits above page content */
+.header { position: relative; z-index: 1500; }
     </style>
 <body>
 @php
@@ -129,9 +173,11 @@ if(Auth::check()){
                         @foreach($headmenus['page_link'][$keys] as $cateNames)
                             @if(count($cateNames[1]) > 0 && $cateNames[0]->parent_category_id == 0)
                                 <li class="nav-submenu__item has-submenu">
-                                    <a href="javascript:void(0)" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
+                                    <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
                                     <ul class="nav-submenu">
+
                                         @foreach($cateNames[1] as $subCat)
+
                                             <li class="nav-submenu__item">
                                                 <a href="{{ route('front.getCategory', $subCat->Category_url) }}" class="nav-submenu__link">{{ $subCat->category_name }}</a>
                                             </li>
@@ -202,7 +248,8 @@ if(Auth::check()){
 </div>
 <!-- ==================== Mobile Menu End Here ==================== -->
 
-<main class="change-gradient">
+<main>
+{{-- <main class="change-gradient"> --}}
     <!-- ============================ Sale Offer Start =========================== -->
 <div class="sale-offer ">
     <div class="container container-full ">
@@ -265,7 +312,7 @@ if(Auth::check()){
                         @foreach($headmenus['page_link'][$keys] as $cateNames)
                             @if(count($cateNames[1]) > 0 && $cateNames[0]->parent_category_id == 0)
                                 <li class="nav-submenu__item has-submenu">
-                                    <a href="javascript:void(0)" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
+                                    <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
                                     <ul class="nav-submenu">
                                         @foreach($cateNames[1] as $subCat)
                                             <li class="nav-submenu__item">

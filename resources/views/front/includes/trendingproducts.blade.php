@@ -31,7 +31,7 @@
                 <div class="product-item shadow-sm overlay-none">
                     <div class="product-item__thumb d-flex">
                         <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
-                            <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="cover-img" style="width:100%; height:220px; object-fit:cover; border-radius:8px;">
+                            <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="cover-img" style="width:100%; height:220px; object-fit:cover; border-radius:8px 8px 0 0;">
                         </a>
                     </div>
                     <div class="product-item__content">

@@ -44,6 +44,17 @@
         box-shadow: 0 0 6px rgba(0, 176, 155, 0.4);
     }
 
+    /* Grid View Styles (Default) */
+    .list-grid-wrapper .product-item {
+        height: auto;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
     /* List View Styles */
     .list-view .list-grid-wrapper > div {
         width: 100%;
@@ -54,6 +65,7 @@
         align-items: center;
         gap: 20px;
         padding: 20px;
+        margin-bottom: 15px;
     }
 
     .list-view .list-grid-wrapper .product-item__thumb {
@@ -87,17 +99,6 @@
 
     .list-view .list-grid-wrapper .product-item__bottom {
         margin-top: auto;
-    }
-
-    /* Grid View (Default) */
-    .list-grid-wrapper .product-item {
-        height: auto;
-        flex-direction: column;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
     }
 
     .list-grid-wrapper .product-item:hover {
@@ -146,6 +147,25 @@
         color: #6c757d;
     }
 
+    .list-grid-wrapper .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .list-grid-wrapper .badge.bg-success {
+        background-color: #28a745 !important;
+        color: white;
+    }
+
+    .list-grid-wrapper .badge.bg-primary {
+        background-color: #007bff !important;
+        color: white;
+    }
+
     .list-grid-wrapper .product-item__sales {
         font-size: 0.8rem;
         color: #6c757d;
@@ -168,6 +188,8 @@
         font-size: 0.8rem;
         color: #6c757d;
     }
+
+
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -225,12 +247,6 @@
                             <button class="nav-link" id="pills-bestSelling-tab" data-bs-toggle="pill" data-bs-target="#pills-bestSelling" type="button" role="tab" aria-controls="pills-bestSelling" aria-selected="false" tabindex="-1">Best Selling</button>
                         </li>
                     </ul>
-
-                    <div class="list-grid d-flex align-items-center gap-2">
-                        <button class="list-grid__button list-button d-sm-flex d-none text-body"><i class="las la-list"></i></button>
-                        <button class="list-grid__button grid-button d-sm-flex d-none active text-body"><i class="las la-border-all"></i></button>
-                        <button class="list-grid__button sidebar-btn text-body d-lg-none d-flex"><i class="las la-bars"></i></button>
-                    </div>
                 </div>
                 <!-- Filter Form -->
                 <form action="#" class="filter-form pb-4">
@@ -384,99 +400,93 @@ if (Auth::check()) {
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-product" role="tabpanel" aria-labelledby="pills-product-tab" tabindex="0">
                 <div class="row gy-4 list-grid-wrapper">
-                    @forelse($products as $discountProduct)
-                        @php
-                            $data = $discountProduct->getproductPrice();
-                            $isoffer = $data->isoffer;
-                            $offer = $data->offer;
-                            $price = $data->price;
-                            $discount = $data->discount;
-                            $rev = $discountProduct->reviewtotal();
-                            $star = $rev->reviewtotal / 20;
-                        @endphp
+    @forelse($products as $discountProduct)
+        @php
+            $data = $discountProduct->getproductPrice();
+            $isoffer = $data->isoffer;
+            $offer = $data->offer;
+            $price = $data->price;
+            $discount = $data->discount;
+            $rev = $discountProduct->reviewtotal();
+            $star = $rev->reviewtotal / 20;
+        @endphp
 
-                        <div class="col-xl-4 col-sm-6">
-                            <div class="product-item section-bg">
-                                <div class="product-item__thumb d-flex">
-                                    <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
-                                        <img src="{{ $discountProduct->image1 ? URL::asset('/assets/media/products/' . $discountProduct->image1) : URL::asset('assets/images/thumbs/product-img1.png') }}"
-                                             alt="{{ $discountProduct->product_title ?? 'Product Image' }}"
-                                             class="cover-img">
-                                    </a>
-                                    <button type="button" 
-                                            class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
-                                            data-product-id="{{ $discountProduct->id }}"
-                                            data-container="body"
-                                            data-toggle="popover"
-                                            data-trigger="hover"
-                                            data-placement="top"
-                                            data-content="Wishlist">
-                                        <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
-                                    </button>
-                                </div>
-                                <div class="product-item__content">
-                                    <h6 class="product-item__title">
-                                        <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link">
-                                            {{ $discountProduct->product_title ?? 'SaaS dashboard digital products Title here' }}
-                                        </a>
-                                    </h6>
-                                    <div class="product-item__info flx-between gap-2">
-                                        <span class="product-item__author">
-                                            by
-                                            <a href="profile.html" class="link hover-text-decoration-underline">
-                                                {{ $discountProduct->vendor->name ?? 'themepix' }}
-                                            </a>
-                                        </span>
-                                        <div class="flx-align gap-2">
-                                            <h6 class="product-item__price mb-0">
-                                                ${{ $discountProduct->discount_price ?? $discountProduct->price ?? '129' }}
-                                            </h6>
-                                            @if (!empty($discountProduct->price) && $discountProduct->price != $discountProduct->discount_price)
-                                                <span class="product-item__prevPrice text-decoration-line-through">
-                                                    ${{ $discountProduct->price }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="product-item__bottom flx-between gap-2">
-                                        <div>
-                                            <span class="product-item__sales font-14 mb-2">
-                                                {{ $discountProduct->sales ?? '100' }} Sales
-                                            </span>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <ul class="star-rating">
-                                                    @php $star = $discountProduct->average_rating ?? 5; @endphp
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <li class="star-rating__item font-11">
-                                                            <i class="{{ $star >= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
-                                                        </li>
-                                                    @endfor
-                                                </ul>
-                                                <span class="star-rating__text text-heading fw-500 font-14">
-                                                    ({{ $discountProduct->review_count ?? '16' }})
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}"
-                                           class="btn btn-outline-light btn-sm pill">
-                                            Live Demo
-                                        </a>
-                                    </div>
-                                </div>
+        <div class="col-xl-4 col-sm-6">
+            <div class="product-item section-bg">
+                <div class="product-item__thumb d-flex">
+                    <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
+                        <img src="{{ $discountProduct->image1 ? URL::asset('/assets/media/products/' . $discountProduct->image1) : URL::asset('assets/images/thumbs/product-img1.png') }}"
+                             alt="{{ $discountProduct->product_title ?? 'Product Image' }}"
+                             class="cover-img">
+                    </a>
+                                <button type="button"
+                    class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
+                    data-product-id="{{ $discountProduct->id }}"
+                    data-container="body"
+                    data-toggle="popover"
+                    data-trigger="hover"
+                    data-placement="top"
+                    data-content="Wishlist">
+                <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
+            </button>
+                </div>
+                <div class="product-item__content">
+                    <h6 class="product-item__title">
+                        <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link">
+                            {{ $discountProduct->product_title ?? 'SaaS dashboard digital products Title here' }}
+                        </a>
+                    </h6>
+                    <div class="product-item__info flx-between gap-2">
+                        <span class="product-item__author">
+                            by
+                            <a href="profile.html" class="link hover-text-decoration-underline">
+                                                {{ $discountProduct->vendor->name ?? 'Slidesbuy' }}
+                            </a>
+                        </span>
+                        <div class="flx-align gap-2">
+                            @php $isFree = (($discountProduct->sell_type ?? 1) == 0); @endphp
+                            <span class="badge {{ $isFree ? 'bg-success' : 'bg-primary' }}">{{ $isFree ? 'Free' : 'Paid' }}</span>
+                        </div>
+                    </div>
+                    <div class="product-item__bottom flx-between gap-2">
+                        <div>
+                            <span class="product-item__sales font-14 mb-2">
+                                                {{ $discountProduct->sales ?? '100' }} Downloads
+                            </span>
+                            <div class="d-flex align-items-center gap-1">
+                                <ul class="star-rating">
+                                    @php $star = $discountProduct->average_rating ?? 5; @endphp
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <li class="star-rating__item font-11">
+                                            <i class="{{ $star >= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
+                                        </li>
+                                    @endfor
+                                </ul>
+                                <span class="star-rating__text text-heading fw-500 font-14">
+                                    ({{ $discountProduct->review_count ?? '16' }})
+                                </span>
                             </div>
                         </div>
-                    @empty
-                        <div class="col-12 text-center mt-4">
-                            <h2>No Slides found</h2>
-                        </div>
-                    @endforelse
+                        <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}"
+                           class="btn btn-outline-light btn-sm pill">
+                                            View
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="col-12 text-center mt-4">
+            <h2>No Slides found</h2>
+        </div>
+    @endforelse
                 </div>
 
                     <!-- Pagination Start -->
-                    @if ($products->hasPages())
+    @if ($products->hasPages())
                         <nav aria-label="Page navigation example" class="mt-4">
                             <ul class="pagination common-pagination justify-content-center">
-                                {!! $products->links() !!}
+            {!! $products->links() !!}
                             </ul>
                         </nav>
                     @endif
@@ -484,7 +494,7 @@ if (Auth::check()) {
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 </div>
 
 <!-- ======================== All Product Section Start ====================== -->
@@ -522,12 +532,6 @@ if (Auth::check()) {
                             <button class="nav-link" id="pills-bestSelling-tab" data-bs-toggle="pill" data-bs-target="#pills-bestSelling" type="button" role="tab" aria-controls="pills-bestSelling" aria-selected="false">Best Selling</button>
                         </li>
                     </ul>
-
-                    <div class="list-grid d-flex align-items-center gap-2">
-                        <button class="list-grid__button list-button d-sm-flex d-none text-body"><i class="las la-list"></i></button>
-                        <button class="list-grid__button grid-button d-sm-flex d-none active text-body"><i class="las la-border-all"></i></button>
-                        <button class="list-grid__button sidebar-btn text-body d-lg-none d-flex"><i class="las la-bars"></i></button>
-                    </div>
                 </div>
                 <!-- Filter Form -->
                 <form action="#" class="filter-form pb-4">
@@ -644,24 +648,7 @@ if (Auth::check()) {
 
 <script>
 $(document).ready(function() {
-    // Grid and List View Toggle
-    $('.list-button').on('click', function() {
-        $('body').addClass('list-view');
-        $(this).addClass('active');
-        $('.grid-button').removeClass('active');
 
-        // Update column classes for list view
-        $('.list-grid-wrapper > div').removeClass('col-xl-4 col-sm-6').addClass('col-12');
-    });
-
-    $('.grid-button').on('click', function() {
-        $('body').removeClass('list-view');
-        $('.list-button').removeClass('active');
-        $(this).addClass('active');
-
-        // Restore column classes for grid view
-        $('.list-grid-wrapper > div').removeClass('col-12').addClass('col-xl-4 col-sm-6');
-    });
 
     // Filter form toggle
     $('.filter-tab__button').on('click', function() {

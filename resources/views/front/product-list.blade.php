@@ -395,6 +395,8 @@ if (Auth::check()) {
 
 
 
+
+
     <!-- Product Content Area -->
     <div class="col-12">
         <div class="tab-content" id="pills-tabContent">

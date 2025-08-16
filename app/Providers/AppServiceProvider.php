@@ -39,9 +39,13 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
         $MenuController = new MenuController();
         $headMenu = $MenuController->getHomeMenu();
-        
-            $view->with(compact('headMenu'))->with('Category', Category::with('subs')->where('status',1)->where('parent_category_id',0)->get())->with('screen',\Request::route()->getName())->with('frontBanner',Banner::where('status',1)->orderBy('sorting_order','ASC')->get())->with('fronCategory',Category::where('status',1)->where('parent_category_id',0)->get())->with('frontMenu',AdminMenu::with('menuModule')->where('status','1')->orderBy('sort_order','ASC')->get())->with('menuMod',Module::with('getMenu')->where('status','1')->orderBy('sort_order','ASC')->get())->with('StoreConfig',Storeconfiguration::where('status','1')->orderBy('id','ASC')->first());
-     
+
+        // Fix: Add null check for route before calling getName()
+        $currentRoute = \Request::route();
+        $screen = $currentRoute ? $currentRoute->getName() : null;
+
+            $view->with(compact('headMenu'))->with('Category', Category::with('subs')->where('status',1)->where('parent_category_id',0)->get())->with('screen', $screen)->with('frontBanner',Banner::where('status',1)->orderBy('sorting_order','ASC')->get())->with('fronCategory',Category::where('status',1)->where('parent_category_id',0)->get())->with('frontMenu',AdminMenu::with('menuModule')->where('status','1')->orderBy('sort_order','ASC')->get())->with('menuMod',Module::with('getMenu')->where('status','1')->orderBy('sort_order','ASC')->get())->with('StoreConfig',Storeconfiguration::where('status','1')->orderBy('id','ASC')->first());
+
         });
     }
 }

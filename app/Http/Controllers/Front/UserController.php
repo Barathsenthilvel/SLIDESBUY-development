@@ -307,48 +307,76 @@ public function signIn(Request $request)
 
 public function register(Request $request)
 {
-  $request->validate([
-    'name' => 'required|string|max:255',
-    'email' => 'required|email|unique:users,email',
-    'password' => 'required|confirmed|min:6',
-    'agree' => 'accepted',
-  ], [
-    'name.required' => 'Full name is required.',
-    'name.string' => 'Full name must be a valid text.',
-    'name.max' => 'Full name cannot exceed 255 characters.',
-    'email.required' => 'Email address is required.',
-    'email.email' => 'Please enter a valid email address.',
-    'email.unique' => 'This email address is already registered. Please use a different email or login.',
-    'password.required' => 'Password is required.',
-    'password.confirmed' => 'Password confirmation does not match.',
-    'password.min' => 'Password must be at least 6 characters long.',
-    'agree.accepted' => 'You must agree to the terms and conditions.',
-  ]);
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|confirmed|min:6',
+        'agree' => 'accepted',
+    ], [
+        'name.required' => 'Full name is required.',
+        'name.string' => 'Full name must be a valid text.',
+        'name.max' => 'Full name cannot exceed 255 characters.',
+        'email.required' => 'Email address is required.',
+        'email.email' => 'Please enter a valid email address.',
+        'email.unique' => 'This email address is already registered. Please use a different email or login.',
+        'password.required' => 'Password is required.',
+        'password.confirmed' => 'Password confirmation does not match.',
+        'password.min' => 'Password must be at least 6 characters long.',
+        'agree.accepted' => 'You must agree to the terms and conditions.',
+    ]);
 
-    // dd($request->all());
+    if ($validator->fails()) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // Generate OTP
     $otp = rand(100000, 999999);
-    $otpExpiresAt = now()->addMinutes(2); // Set consistent expiry time
+    $otpExpiresAt = now()->addMinutes(2);
+    
+    // Store data in session
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
     Session::put('otp_expires', $otpExpiresAt);
 
     try {
-        // dd('mail->send');
+        // Send OTP email
         Mail::to($request->email)->send(new SendOtpMail($otp));
-         // Store OTP in the database
+        
+        // Store OTP in database
         OtpVerification::updateOrCreate(
-            ['email' => $request->email], // if already exists, update
+            ['email' => $request->email],
             ['otp' => $otp, 'expires_at' => $otpExpiresAt]
         );
-    }
-    catch (\Exception $e) {
-        // dd('error');
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent to your email successfully! Please check your inbox.',
+                'redirect_url' => url('/otp-form')
+            ]);
+        }
+
+        return redirect(url('/otp-form'))->with('success', 'OTP sent to your email.');
+        
+    } catch (\Exception $e) {
+        \Log::error('Registration error: ' . $e->getMessage());
+        
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send OTP. Please try again later.'
+            ], 500);
+        }
+        
         return back()->with('error', 'Failed to send OTP: ' . $e->getMessage());
     }
-
-// dd('coming');
-// return "this is otpofrm";
-    return redirect(url('/otp-form'))->with('success', 'OTP sent to your email.');
 }
 
 // public function register(Request $request)

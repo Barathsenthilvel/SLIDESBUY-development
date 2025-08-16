@@ -88,9 +88,7 @@
                 <input type="text" name="name" class="common-input common-input--bg common-input--withIcon" placeholder="Your full name" >
                 <span class="input-icon"><img src="assets/images/icons/user-icon.svg" alt=""></span>
             </div>
-               @error('name')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+               <div class="error-message" id="name-error"></div>
         </div>
 
         <div class="col-12">
@@ -99,9 +97,7 @@
                 <input type="email" name="email" class="common-input common-input--bg common-input--withIcon" placeholder="you@example.com" >
                 <span class="input-icon"><img src="assets/images/icons/envelope-icon.svg" alt=""></span>
             </div>
-             @error('email')
-        <small class="text-danger">{{ $message }}</small>
-    @enderror
+             <div class="error-message" id="email-error"></div>
         </div>
 
         <div class="col-12">
@@ -110,9 +106,7 @@
                 <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
-            @error('password')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+            <div class="error-message" id="password-error"></div>
         </div>
 
         <div class="col-12">
@@ -121,9 +115,7 @@
                 <input type="password" name="password_confirmation" class="common-input common-input--bg common-input--withIcon" placeholder="Confirm password" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
-            @error('password_confirmation')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+            <div class="error-message" id="password_confirmation-error"></div>
         </div>
 
         <div class="col-12">
@@ -131,13 +123,11 @@
                 <input class="form-check-input" type="checkbox" name="agree" id="agree" required>
                 <label class="form-check-label mb-0 fw-400 font-16 text-body" for="agree">I agree to the terms & conditions</label>
             </div>
-            @error('agree')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+            <div class="error-message" id="agree-error"></div>
         </div>
 
         <div class="col-12">
-            <button type="submit" class="btn btn-main btn-lg w-100 pill">Create An Account</button>
+            <button type="submit" class="btn btn-main btn-lg w-100 pill" id="submitBtn">Create An Account</button>
         </div>
 
         <div class="col-sm-12 mb-0">
@@ -162,74 +152,119 @@
 <!-- Include Toaster System -->
 @include('front.includes.toaster')
 
-<!-- Then jQuery Validation -->
-{{-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script> --}}
+<style>
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+}
+
+.input-success {
+    border-color: #28a745 !important;
+}
+</style>
 
 <script>
-    // debugger
 jQuery(document).ready(function ($) {
-    // Show server-side validation errors if they exist
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            if (window.toaster) {
-                window.toaster.error('{{ $error }}');
-            }
-        @endforeach
-    @endif
+    // Clear all error messages
+    function clearErrors() {
+        $('.error-message').removeClass('show').text('');
+        $('.common-input').removeClass('input-error input-success');
+    }
 
-    $('#registerForm').on('submit', function(e) {
-        // Only do client-side validation, don't prevent form submission
+    // Show error message for a specific field
+    function showError(fieldName, message) {
+        $(`#${fieldName}-error`).text(message).addClass('show');
+        $(`input[name="${fieldName}"]`).addClass('input-error').removeClass('input-success');
+    }
+
+    // Show success state for a field
+    function showSuccess(fieldName) {
+        $(`#${fieldName}-error`).removeClass('show').text('');
+        $(`input[name="${fieldName}"]`).addClass('input-success').removeClass('input-error');
+    }
+
+    // Client-side validation
+    function validateForm() {
+        clearErrors();
         let isValid = true;
+
         let name = $('input[name="name"]').val().trim();
         let email = $('input[name="email"]').val().trim();
         let password = $('input[name="password"]').val();
         let confirmPassword = $('input[name="password_confirmation"]').val();
         let agree = $('#agree').is(':checked');
 
-        // Clear previous client-side errors
-        $('.text-danger').not('.server-error').remove();
-
         // Name validation
         if (name === '') {
-            $('input[name="name"]').after('<small class="text-danger">Full name is required.</small>');
+            showError('name', 'Full name is required.');
             isValid = false;
+        } else {
+            showSuccess('name');
         }
 
         // Email validation
         if (email === '') {
-            $('input[name="email"]').after('<small class="text-danger">Email is required.</small>');
+            showError('email', 'Email is required.');
             isValid = false;
         } else if (!validateEmail(email)) {
-            $('input[name="email"]').after('<small class="text-danger">Enter a valid email.</small>');
+            showError('email', 'Enter a valid email.');
             isValid = false;
+        } else {
+            showSuccess('email');
         }
 
         // Password validation
         if (password.length < 6) {
-            $('input[name="password"]').after('<small class="text-danger">Password must be at least 6 characters.</small>');
+            showError('password', 'Password must be at least 6 characters.');
             isValid = false;
+        } else {
+            showSuccess('password');
         }
 
         // Confirm password validation
         if (confirmPassword !== password) {
-            $('input[name="password_confirmation"]').after('<small class="text-danger">Passwords do not match.</small>');
+            showError('password_confirmation', 'Passwords do not match.');
             isValid = false;
+        } else if (confirmPassword !== '') {
+            showSuccess('password_confirmation');
         }
 
         // Terms & conditions checkbox
         if (!agree) {
-            $('#agree').closest('.common-check').append('<small class="text-danger">You must agree to terms.</small>');
+            showError('agree', 'You must agree to terms.');
             isValid = false;
+        } else {
+            showSuccess('agree');
         }
 
-        // If validation fails, prevent form submission and show errors
-        if (!isValid) {
+        return isValid;
+    }
+
+    // Email regex helper
+    function validateEmail(email) {
+        let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Handle form submission
+    $('#registerForm').on('submit', function(e) {
             e.preventDefault();
+
+        if (!validateForm()) {
             return false;
         }
 
-        // If all validations pass, show loading and submit form
-        const submitBtn = $(this).find('button[type="submit"]');
+        const submitBtn = $('#submitBtn');
         const originalText = submitBtn.text();
 
         // Show loading state
@@ -240,16 +275,106 @@ jQuery(document).ready(function ($) {
             window.toaster.loading('Creating your account and sending OTP...');
         }
 
-        // Allow form to submit normally
-        // The success message will be shown on the OTP form page
+        // Prepare form data
+        const formData = new FormData(this);
+
+        // Make AJAX request
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                // Hide loading toaster
+                if (window.toaster) {
+                    window.toaster.hide();
+                }
+
+                if (response.success) {
+                    // Show success message
+                    if (window.toaster) {
+                        window.toaster.success(response.message || 'Account created successfully! OTP sent to your email.');
+                    }
+
+                    // Redirect to OTP form after a short delay
+                    setTimeout(function() {
+                        window.location.href = '/otp-form';
+                    }, 2000);
+                } else {
+                    // Show error message
+                    if (window.toaster) {
+                        window.toaster.error(response.message || 'Something went wrong. Please try again.');
+                    }
+
+                    // Reset button
+                    submitBtn.prop('disabled', false).text(originalText);
+                }
+            },
+            error: function(xhr) {
+                // Hide loading toaster
+                if (window.toaster) {
+                    window.toaster.hide();
+                }
+
+                // Reset button
+                submitBtn.prop('disabled', false).text(originalText);
+
+                if (xhr.status === 422) {
+                    // Validation errors
+                    const errors = xhr.responseJSON.errors;
+                    clearErrors();
+
+                    $.each(errors, function(field, messages) {
+                        showError(field, messages[0]);
+                    });
+
+                    if (window.toaster) {
+                        window.toaster.error('Please fix the validation errors.');
+                    }
+                } else if (xhr.status === 500) {
+                    // Server error
+                    if (window.toaster) {
+                        window.toaster.error('Server error. Please try again later.');
+                    }
+                } else {
+                    // Other errors
+                    const response = xhr.responseJSON;
+                    if (response && response.message) {
+                        if (window.toaster) {
+                            window.toaster.error(response.message);
+                        }
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error('Something went wrong. Please try again.');
+                        }
+                    }
+                }
+            }
     });
     });
 
-    // Email regex helper
-    function validateEmail(email) {
-        let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
+    // Real-time validation on input change
+    $('input[name="name"], input[name="email"], input[name="password"], input[name="password_confirmation"]').on('input', function() {
+        const fieldName = $(this).attr('name');
+        const value = $(this).val().trim();
+
+        // Clear error when user starts typing
+        if (value !== '') {
+            $(`#${fieldName}-error`).removeClass('show').text('');
+            $(this).removeClass('input-error');
+        }
+    });
+
+    // Real-time validation for checkbox
+    $('#agree').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#agree-error').removeClass('show').text('');
+        }
+    });
 });
 </script>
 

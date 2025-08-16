@@ -1,4 +1,5 @@
 @extends('front.includes.container')
+@extends('front.includes.container')
 {{-- @section('title',  $product->metaname)
 @section('meta_keywords',$product->metakeyword)
 @section('meta_description', $product->metadescription) --}}
@@ -76,15 +77,88 @@
 
 /* badge button for free & paid */
 
+/* Improved badge styling for free & paid */
+.custom-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    min-width: 100px;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.custom-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.custom-badge:hover::before {
+    left: 100%;
+}
+
 .custom-badge.paid {
-        background: linear-gradient(135deg, #1e3c72, #2a5298); /* Deep Blue */
-        box-shadow: 0 0 6px rgba(30, 60, 114, 0.4);
+    background: var(--main-gradient);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.custom-badge.paid:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.custom-badge.free {
+    background: var(--main-gradient-rev);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.custom-badge.free:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+/* Badge with icon */
+.custom-badge.with-icon {
+    padding-left: 16px;
+    padding-right: 20px;
+}
+
+.custom-badge.with-icon i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* Responsive badge sizing */
+@media (max-width: 768px) {
+    .custom-badge {
+        padding: 10px 16px;
+        font-size: 12px;
+        min-width: 90px;
+        border-radius: 25px;
     }
 
-    .custom-badge.free {
-        background: linear-gradient(135deg, #00b09b, #96c93d); /* Fresh green */
-        box-shadow: 0 0 6px rgba(0, 176, 155, 0.4);
+    .custom-badge.with-icon i {
+        font-size: 14px;
+        margin-right: 6px;
     }
+}
 
     </style>
 @php
@@ -123,24 +197,61 @@
 
                         <ul class="breadcrumb-list flx-align gap-2 mb-2">
                             <li class="breadcrumb-list__item font-14 text-body">
-                                <a href="index.html" class="breadcrumb-list__link text-body hover-text-main">Home</a>
+                                <a href="{{ route('front.index') }}" class="breadcrumb-list__link text-body hover-text-main">Home</a>
                             </li>
                             <li class="breadcrumb-list__item font-14 text-body">
                                 <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
                             </li>
                             <li class="breadcrumb-list__item font-14 text-body">
-                                <a href="all-product.html" class="breadcrumb-list__link text-body hover-text-main">Products</a>
+                                <a href="{{ route('front.index') }}" class="breadcrumb-list__link text-body hover-text-main">Slidesbuy</a>
                             </li>
+
+                            @php
+                                // Get the first category from the product's category field
+                                $categoryIds = explode('|', $product->category);
+                                $firstCategoryId = !empty($categoryIds[0]) ? $categoryIds[0] : null;
+
+                                if ($firstCategoryId) {
+                                    $category = \App\Models\Category::where('id', $firstCategoryId)->where('status', 1)->first();
+
+                                    // Get parent category if exists
+                                    $parentCategory = null;
+                                    if ($category && $category->parent_category_id > 0) {
+                                        $parentCategory = \App\Models\Category::where('id', $category->parent_category_id)->where('status', 1)->first();
+                                    }
+                                }
+                            @endphp
+
+                            @if($firstCategoryId && $category)
+                                <li class="breadcrumb-list__item font-14 text-body">
+                                    <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                                </li>
+
+                                @if($parentCategory)
+                                    <li class="breadcrumb-list__item font-14 text-body">
+                                        <a href="{{ route('front.index') }}?category={{ $parentCategory->id }}" class="breadcrumb-list__link text-body hover-text-main">{{ $parentCategory->category_name }}</a>
+                                    </li>
+                                    <li class="breadcrumb-list__item font-14 text-body">
+                                        <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                                    </li>
+                                @endif
+
+                                <li class="breadcrumb-list__item font-14 text-body">
+                                    <a href="{{ route('front.index') }}?category={{ $category->id }}" class="breadcrumb-list__link text-body hover-text-main">{{ $category->category_name }}</a>
+                                </li>
+                                <li class="breadcrumb-list__item font-14 text-body">
+                                    <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                                </li>
+                            @endif
+
                             <li class="breadcrumb-list__item font-14 text-body">
-                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
-                            </li>
-                            <li class="breadcrumb-list__item font-14 text-body">
-                                <span class="breadcrumb-list__text">SaaS</span>
+                                <span class="breadcrumb-list__text">{{ $product->product_title }}</span>
                             </li>
                         </ul>
 
-                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">{{ $product->slug }}: {{ $product->product_title }}</h3>
+                        {{-- <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">{{ $product->slug }}: {{ $product->product_title }}</h3> --}}
 
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize"> {{ $product->product_title }}</h3>
                         <div class="breadcrumb-content flx-align gap-3">
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="text">By <a href="#" class="link text-main fw-600">Slidesbuy</a> </span>
@@ -389,8 +500,12 @@
                 <a href="#" class="link hover-text-decoration-underline font-14 text-main fw-500">View License Details</a>
             </div>
         </div>
-        <h6 class="product-sidebar__title">  <span class="custom-badge {{ ($product->sell_type ?? 1) == 0 ? 'free' : 'paid' }}">{{ ($product->sell_type ?? 1) == 0 ? 'Free' : 'Paid' }}</span>
-</h6>
+        <h6 class="product-sidebar__title">
+            <span class="custom-badge {{ ($product->sell_type ?? 1) == 0 ? 'free' : 'paid' }} with-icon">
+                <i class="fas {{ ($product->sell_type ?? 1) == 0 ? 'fa-gift' : 'fa-tag' }}"></i>
+                {{ ($product->sell_type ?? 1) == 0 ? 'Free' : 'Paid' }}
+            </span>
+        </h6>
     </div>
 
     <ul class="sidebar-list">

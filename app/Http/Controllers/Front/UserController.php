@@ -97,7 +97,7 @@ public function sendResetLinkEmail(Request $request)
 
     } catch (\Exception $e) {
         \Log::error('Password reset error: ' . $e->getMessage());
-        
+
         return response()->json([
             'status' => false,
             'message' => 'An error occurred while processing your request. Please try again later.'
@@ -332,14 +332,14 @@ public function register(Request $request)
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         return back()->withErrors($validator)->withInput();
     }
 
     // Generate OTP
     $otp = rand(100000, 999999);
     $otpExpiresAt = now()->addMinutes(2);
-    
+
     // Store data in session
     Session::put('register_data', $request->only('name', 'email', 'password'));
     Session::put('otp', $otp);
@@ -348,7 +348,7 @@ public function register(Request $request)
     try {
         // Send OTP email
         Mail::to($request->email)->send(new SendOtpMail($otp));
-        
+
         // Store OTP in database
         OtpVerification::updateOrCreate(
             ['email' => $request->email],
@@ -364,17 +364,17 @@ public function register(Request $request)
         }
 
         return redirect(url('/otp-form'))->with('success', 'OTP sent to your email.');
-        
+
     } catch (\Exception $e) {
         \Log::error('Registration error: ' . $e->getMessage());
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send OTP. Please try again later.'
             ], 500);
         }
-        
+
         return back()->with('error', 'Failed to send OTP: ' . $e->getMessage());
     }
 }
@@ -645,45 +645,45 @@ public function resendOtp(Request $request)
     }
     return redirect('/');
   }
-  
+
   public function wishlistAdd(Request $request){
     if(!Auth::check()){
       return response()->json(['status' => 'error', 'message' => 'Please login to add items to wishlist'], 401);
     }
-    
+
     $productId = $request->id;
-    
+
     // Check if product already in wishlist
     $exists = Auth::user()->wishlists()->where('product_id', $productId)->exists();
-    
+
     if($exists){
       return response()->json(['status' => 'error', 'message' => 'Product already in wishlist'], 400);
     }
-    
+
     try {
       // Add to wishlist
       Auth::user()->wishlists()->create([
         'product_id' => $productId
       ]);
-      
+
       $wishlistCount = Auth::user()->wishlists()->count();
       return response()->json(['status' => 'success', 'count' => $wishlistCount]);
     } catch (\Exception $e) {
       return response()->json(['status' => 'error', 'message' => 'Failed to add to wishlist: ' . $e->getMessage()], 500);
     }
   }
-  
+
   public function wishlistremove(Request $request){
     if(!Auth::check()){
       return response()->json(['status' => 'error', 'message' => 'Please login to remove items from wishlist'], 401);
     }
-    
+
     $productId = $request->id;
-    
+
     try {
       // Remove from wishlist
       Auth::user()->wishlists()->where('product_id', $productId)->delete();
-      
+
       $wishlistCount = Auth::user()->wishlists()->count();
       return response()->json(['status' => 'success', 'count' => $wishlistCount]);
     } catch (\Exception $e) {

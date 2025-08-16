@@ -694,7 +694,7 @@ Route::prefix('admin')->group(function() {
 
    Route::prefix('subscription')->group(function() {
         Route::get('/', 'Admin\SubscriptionController@index')->name('admin-subscriptionlist');
-        // Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
+        Route::get('/datatables', 'Admin\SubscriptionController@datatables')->name('admin-subscription-datatable');
         Route::get('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setupview');
         Route::post('/setup', 'Admin\SubscriptionController@subscriptionSetup')->name('admin-subscription-setup');
    });

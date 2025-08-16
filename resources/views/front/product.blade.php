@@ -1,5 +1,4 @@
 @extends('front.includes.container')
-@extends('front.includes.container')
 {{-- @section('title',  $product->metaname)
 @section('meta_keywords',$product->metakeyword)
 @section('meta_description', $product->metadescription) --}}
@@ -555,32 +554,64 @@
         <label class="fw-bold">Downloads Left</label>
         <div class="progress">
             @php
-                $remaining = max($downloadLimit - $downloadsUsed, 0);
-                $percentage = $downloadLimit > 0 ? ($remaining / $downloadLimit) * 100 : 0;
+                $remaining = 0;
+                $percentage = 0;
+
+                // Check if download limit is unlimited (0)
+                if ($downloadLimit == 0) {
+                    $remaining = 'Unlimited';
+                    $percentage = 100;
+                } else {
+                    $remaining = max($downloadLimit - $downloadsUsed, 0);
+                    $percentage = $downloadLimit > 0 ? ($remaining / $downloadLimit) * 100 : 0;
+                }
             @endphp
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ $percentage }}%;">
-                {{ $remaining }} of {{ $downloadLimit }}
+                @if($downloadLimit == 0)
+                    Unlimited Downloads
+                @else
+                    {{ $remaining }} of {{ $downloadLimit }}
+                @endif
             </div>
         </div>
     </div>
 @endif
 
-@if (session('error'))
-    <div class="alert alert-danger text-center mt-3">
-        {{ session('error') }}
-    </div>
-@endif
-
-{{-- @if ($activeSubscription && $totalDownloadLimit > 0)
-    <div class="text-center mt-4">
-        <p class="mb-0 fw-bold text-success">
-            Downloads Left: {{ $totalDownloadLimit - $downloadCount }} / {{ $totalDownloadLimit }}
-        </p>
-    </div>
-@endif --}}
+{{-- Remove the error display section since we don't want to show errors for already downloaded files --}}
 
 <div class="d-flex justify-content-center align-items-center gap-2 mt-5">
-    @if ($activeSubscription && $downloadLimitReached)
+    @php
+        // Check if user has already downloaded this file
+        $alreadyDownloaded = false;
+        if (Auth::check()) {
+            $alreadyDownloaded = \App\Models\Downloads::where('user_id', Auth::user()->id)
+                ->where('product_id', $product->id)
+                ->exists();
+        }
+    @endphp
+
+    @if ($alreadyDownloaded)
+        <div class="text-center w-100">
+            <button class="btn btn-secondary w-100 w-sm-auto mb-3" disabled>
+                <img src="{{ asset('assets/images/icons/check-circle.svg') }}" alt="Downloaded" class="me-2">
+                Already Downloaded
+            </button>
+            <div class="download-info">
+                <span class="text-muted d-block mb-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This file has already been downloaded to your device
+                </span>
+                <span class="text-primary d-block mb-2">
+                    <i class="fas fa-folder-open me-1"></i>
+                    Check your Downloads folder or browser's default download location
+                </span>
+                <span class="text-success d-block">
+                    <i class="fas fa-check me-1"></i>
+                    Please check your account downloads section - the file will be located there
+                </span>
+            </div>
+        </div>
+    @elseif ($activeSubscription && $downloadLimitReached)
         <a href="{{ route('front.subscription') }}" class="btn btn-danger w-100 w-sm-auto mt-3">
             Renew Subscription
         </a>
@@ -601,8 +632,37 @@
     @endif
 </div>
 
+{{-- Add some helpful styling for the download info --}}
+<style>
+.download-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 4px solid #28a745;
+}
 
+.download-info span {
+    font-size: 14px;
+    line-height: 1.5;
+}
 
+.download-info .text-muted {
+    color: #6c757d !important;
+}
+
+.download-info .text-primary {
+    color: #007bff !important;
+}
+
+.download-info .text-success {
+    color: #28a745 !important;
+}
+
+.download-info i {
+    width: 16px;
+    text-align: center;
+}
+</style>
 
 
     <!-- Author Details Start  http://127.0.0.1:8000/subscription/success/9-->

@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
 <!--end::Header-->
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -15,7 +15,7 @@
                     <h5 class="text-dark font-weight-bold my-1 mr-5">Product</h5>
                     <!--end::Page Title-->
                     <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-
+                        <li class="breadcrumb-item text-muted">
                             <a href="{{ route($list) }}" class="text-muted">List of Products</a>
                         </li>
                     </ul>
@@ -36,30 +36,29 @@
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
                             <h3 class="card-title">Edit Product</h3>
-
                         </div>
                         <!--begin::Form-->
                         <div class="alert alert-danger alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
-                                                <button type="button" class="close" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
-                                                <button type="button" class="close" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div> 
-                                             @php
-                                             if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
+                            <div></div>
+                            <button type="button" class="close" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
+                            <div></div>
+                            <button type="button" class="close" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                         @php
+                         if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
             $link=route('admin-productv-update',$product->id);
             $url=route('admin-productv-cropimage');
         }else{
             $link=route('admin-product-update',$product->id);
             $url=route('admin-product-cropimage');
         }
-                                            @endphp
+                         @endphp
                         <form method="POST" action="{{$link}}" enctype="multipart/form-data" id="formEdit" onsubmit="if(typeof CKEditor1 != 'undefined'){ CKEditor1.updateSourceElement(); } if(typeof CKEditor4 != 'undefined'){ CKEditor4.updateSourceElement(); } CKEditor2.updateSourceElement();CKEditor3.updateSourceElement();">
                             {{ csrf_field() }}
                             <input type="hidden" name="id" id="id" value="{{$product->id}}">
@@ -69,10 +68,9 @@
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-md-12 col-form-label">Vendor<span class="text-danger">*</span></label>
                                     <div class="col-lg-4 col-md-12">
-                                        
                                         <select class="form-control" id="vendor" name="vendor" >
                                             <option value="">Admin product</option>
-                                            @foreach($vendor as $v)  
+                                            @foreach($vendor as $v)
                                                <option data-productPrefix="{{$v->manufacturerID}}" data-vendorperscent="{{$v->vendorperscent}}" value="{{ $v->id }}" {{ ($v->id == $product->vendor) ? 'selected' : '' }}>{{$v->name.' / '.$StoreConfig->VendorIDPrefix.'-'.sprintf("%'03d", $v->id)}}</option>
                                             @endforeach
                                         </select>
@@ -84,7 +82,7 @@
                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Category<span class="text-danger">*</span></label>
                                 <div class="col-lg-10 col-md-12">
-                                    <select class="form-control" id="category" name="category[]" multiple> 
+                                    <select class="form-control" id="category" name="category[]" multiple>
                                         <option value="">Select</option>
                                         @foreach($category as $category)
                                         <option class="oprt" value="{{$category->id}}" {{ in_array($category->id,$product->category) ? 'selected' : '' }}>{{$category->category_name}}</option>
@@ -95,161 +93,14 @@
                                     </select>
                                 </div>
                             </div>
-                            {{-- <div class="form-group row">
-                                <label class="col-2 col-form-label">Sub Category</label>
-
-                                <div class="col-10">
-                                    <select class="form-control" id="subCategory" name="subCategory" >
-                                        <option value="">Select</option>
-                                        @foreach($data as $data)
-                                        <option value="{{$data->id}}" {{ ($product->sub_category == $data->id) ? 'selected' : '' }}>{{$data->category_name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div> --}}
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Product Title<span class="text-danger">*</span></label>
-
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="text" value="{{$product->product_title}}" id="productTitle" name="productTitle" />
                                 </div>
                             </div>
-                            
-                            @if(Auth::user()->is_vendor == null)
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Code<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="Code"></span>
-                                        </div>
-                                        <input class="form-control" type="text" value="{{$product->manufacturerCode}}" id="manufacturerCode" name="manufacturerCode" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Please enter your unique product code</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-12 col-lg-2 col-form-label">MRP<span class="text-danger">*</span></label>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="input-group">
-                                        <input class="form-control" type="number" id="mrp" name="mrp" value='{{ $product->mrp }}' />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
-                                <div class="col-lg-4 col-md-12">
-                                    <div class="input-group">
-                                        <input class="form-control" type="text" value="{{$product->manufacturerPrice }}" id="manufacturerPrice" name="manufacturerPrice" onkeyup="baseprice(this.value)"/>
-                                        <div class="input-group-append"><span class="input-group-text" id='Manufacturer'></span></div>
-                                        <input type="hidden" id="persenttest" value="">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Enter your Product amount without GST</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-2 col-form-label">Mark up Type<span class="text-danger">*</span></label>
-                                <div class="col-4">
-                                    <div class="radio-inline">
-                                        <label class="radio radio-outline radio-success"><input type="radio" onchange="mark_type_change(0)"   {{ ($product->mark_type == 0)?'checked':'' }} name="mark_type" value="0" required><span></span> Flat</label>
-                                        <label class="radio radio-outline radio-success"><input type="radio" onchange="mark_type_change(1)" {{ ($product->mark_type == 1)?'checked':'' }} name="mark_type" value="1"><span></span> %</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-12 col-lg-2 col-form-label">Mark up<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <div class="input-group">
-                                        <input class="form-control" onkeyup="markupPrice(this.value)"  type="number" min=0 max=100 value={{$product->markup}} id="markup" name="markup" required/>
-                                        <div class="input-group-append"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Enter Mark up Perscent </span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Our Price<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <input class="form-control" type="text" value="{{$product->product_base_price}}" id="basePrice" name="basePrice" />
-                                    <input class="form-control" type="hidden" value="{{$attributeTemplate}}" id="attributeTemplate" name="attributeTemplate" />
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>This is {{ $StoreConfig->store_name }} Price, No need to Enter</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-12 col-lg-2 col-form-label">Shipping Price<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <input class="form-control" type="number" value="{{$product->shipping_price}}" id="shipping_price" name="shipping_price" required/>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Shipping charger cnly for vendor</span>
-                                </div>
-                            </div>
-                            @else    
-                            @php
-                                $persenttest = App\Models\Vendor::findOrFail(Auth::user()->is_vendor);
-                            @endphp    
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Code<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="Code">{{$persenttest->manufacturerID}}</span>
-                                        </div>
-                                        <input class="form-control" type="text" value="{{$product->manufacturerCode}}" id="manufacturerCode" name="manufacturerCode" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Please enter your unique product code</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <input class="form-control" type="text" value="{{$product->manufacturerPrice }}" id="manufacturerPrice" name="manufacturerPrice" onkeyup="baseprice(this.value)" />
-                                </div>
-                                <div class="col-lg-2 col-md-12">
-                                    <h5 class="font-weight-bold text-dark">Vendor % = {{ $persenttest->vendorperscent}}</h5>
-                                    <input type="hidden" id="persenttest" value="{{ $persenttest->vendorperscent}}">
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Enter your Product amount without GST</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-12 col-lg-2 col-form-label">Mark up Perscent<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <div class="input-group">
-                                        <input class="form-control" onkeyup="markupPrice(this.value)"  type="number" min=0 max=100 value={{$product->markup}} id="markup" name="markup" required/>
-                                        <div class="input-group-append"><span class="input-group-text" id="Manufacturer">%</span></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>Enter Mark up Perscent </span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Our Price<span class="text-danger">*</span></label>
-                                <div class="col-lg-2 col-md-12">
-                                    <input class="form-control" type="text" value="{{$product->product_base_price}}" id="basePrice" name="basePrice" readonly/>
-                                    <input class="form-control" type="hidden" value="{{$attributeTemplate}}" id="attributeTemplate" name="attributeTemplate" />
-                                </div>
-                                <div class="col-lg-4 col-md-12">
-                                    <span>This is {{ $StoreConfig->store_name }} Price, No need to Enter</span>
-                                </div>
-                            </div>                           
-                            @endif
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">SKU Code<span class="text-danger">*</span></label>
-
                                 <div class="col-lg-3 col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -262,203 +113,133 @@
                                     <span>SKU is {{ $StoreConfig->store_name }}, Enter based on last SKU</span>
                                 </div>
                             </div>
-                            
-                            @if($attributeTemplate >0 )
-                            <h3 class="card-title">Attribute</h3>
-                                @foreach($processGroup as $key => $processGroup)
-                                    @php
-                                        if(!isset($processGroup[0])) continue;
-                                        if(!isset($attributeValues3[$processGroup[0]->id])){
-                                            $attributeValues3[$processGroup[0]->id] = [$processGroup[0]->id,''];
-                                        }
-                                    @endphp
-                                    
-                                    @if (!empty($processGroup[0]))
-                                        @switch($processGroup[0]->attribute_type)
-                                            @case (1)
-                                                @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                                
-                                                <div class="form-group row">
-                                                    <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                    
-                                                    <div class="col-lg-10 col-md-12">
-                                                        <input class="form-control" type="text" value="{{$attributeValues3[$processGroup[0]->id][1]}}" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}]" />
-                                                    </div>
-                                                </div>
-                                                @endif
-                                                @break
-                                            @case (2)
-                                                @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                                
-                                                <div class="form-group row">
-                                                    <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                    
-                                                    <div class="col-lg-10 col-md-12">
-                                                        <textarea name="attributes[{{$processGroup[0]->id}}]" id="ktckeditor4">{{$attributeValues3[$processGroup[0]->id][1]}}</textarea>
-                                                        <div class="fv-plugins-message-container"></div>
-                                                    </div>
-                                                </div>
-                                                @endif
-                                                @break
-                                            @case (3)
-                                            @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                                @php
-                                                    $attributeValues1=array_filter(explode(',',$processGroup[0]->attribute_values),'strlen');
-                                                    $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
-                                                    
-                                                @endphp
-                                                <div class="form-group row">
-                                                    <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                    
-                                                    <div class="col-lg-10 col-md-12">
-                                                      <select class="form-control" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}]" >
-                                                          @if($attributeValues>0)
-                                                          <option value="" >select {{$processGroup[0]->attribute_name}}</option>
-                                                              @foreach($attributeValues1 as $attributeValues1)
-                                                                  @if(array_key_exists($processGroup[0]->id,$attributeValues3) && $attributeValues3[$key][0]==$processGroup[0]->id)
-                                                                    <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',$attributeValues3[$key][1])))?'selected':'' }}>{{$attributeValues1}}</option>
-                                                                  @else
-                                                                    <option value="{{$attributeValues1}}">{{$attributeValues1}}</option>
-                                                                  @endif
-                                                              @endforeach
-                                                          @endif
-                                                      </select>
-                                                  </div>
-                                              </div>
-                                              @endif
-                                              @break
-                                            @case (4)
-                                                @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                                @php
-                                                
-                                                $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                                                $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
-                                                @endphp
-                                                <div class="form-group row">
-                                                    <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                    
-                                                    <div class="col-lg-10 col-md-12">
-                                                      <select class="form-control" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}][]" multiple>
-                                                          @if($attributeValues>0)
-                                                          <option value="" >select {{$processGroup[0]->attribute_name}}</option>
-                                                          @foreach($attributeValues1 as $attributeValues1)
-                                                          @php
-                                                          @endphp
-                                                          @if(array_key_exists($processGroup[0]->id,$attributeValues3) && $attributeValues3[$key][0]==$processGroup[0]->id)
-                                                          <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',$attributeValues3[$key][1])))?'selected':'' }}>{{$attributeValues1}}</option>
-                                                          @else
-                                                          <option value="{{$attributeValues1}}">{{$attributeValues1}}</option>
-                                                          @endif
-                                                          @endforeach
-                                                          @endif
-                                                      </select>
-                                                  </div>
-                                              </div>
-                                              @endif
-                                              @break
-                                          @case (5)
-                                            @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                              @php
-                                              
-                                              $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                                              $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
-                                              @endphp
-                                              <div class="form-group row">
-                                                <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                    
-                                                <div class="col-lg-10 col-md-12 col-form-label">
-                                                    <div class="form-check pl-0 checkbox-inline">
-                                                        @if($attributeValues>0)
-                                                        @foreach($attributeValues1 as $attributeValues1)
-                                                        <label class="checkbox checkbox-outline">
-                                                            <input type="checkbox" name="attributes[{{$processGroup[0]->id}}][]" {{(in_array($attributeValues1,explode(',',$attributeValues3[$key][1])))?'checked':'' }} value="{{$attributeValues1}}">
-                                                            <span></span>{{$attributeValues1}}</label>
-                                                            @endforeach
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endif
-                                                @break
-                                            @case (6)
-                                                @if(isset($attributeValues3[$processGroup[0]->id][1]))
-                                                @php
-                                                
-                                                    $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                                                    $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
-                                                @endphp
-                                                        <div class="form-group row">
-                                                            <label class="col-lg-2 col-md-12 col-form-label">{{$processGroup[0]->attribute_name}}</label>
-                                                            <div class="col-lg-10 col-md-12 col-form-label">
-                                                                <div class="form-check pl-0 checkbox-inline">
-                                                                    @if($attributeValues>0)
-                                                                        @foreach($attributeValues1 as $attributeValues1)
-                                                                        <label class="checkbox checkbox-outline">
-                                                                            <input type="radio" name="attributes[{{$processGroup[0]->id}}][]" {{(in_array($attributeValues1,explode(',',$attributeValues3[$key][1])))?'checked':'' }}  value="{{$attributeValues1}}">
-                                                                            <span></span>{{$attributeValues1}}</label>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                @break
-                                            @endswitch
-                                        @endif
-                                    @endforeach
-                                @endif
-                                
-                                 <!--End of seddion -->
-                                 
-                                <h3 class="card-title">Others</h3>
-                                <div class="form-group row">
-                                    <label class="col-lg-2 col-md-12 col-form-label">Tax<span class="text-danger">*</span></label>
-                                    <div class="col-lg-4 col-md-12">
-                                        <div class="input-group">
-                                            <select class="form-control" id="tax" name="tax"  required>
-                                                <option value="">select Tax</option>
-                                            @foreach($tax as $tax)
-                                                <option data-tax_type={{$tax->tax_type}} data-tax_rate={{$tax->tax_rate}} value="{{$tax->id}}" {{ ($product->tax == $tax->id) ? 'selected' : '' }} >{{$tax->tax_name}}</option>
-                                            @endforeach
-                                            </select>
-                                            <div class="input-group-append"><span class="input-group-text" id="showtax"></span></div>
-                                        </div>
-                                  </div>
-                              </div>
 
-                              <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Weight<span class="text-danger">*</span></label>
-
-                                <div class="col-lg-4 col-md-9">
-                                    <input type="text" name="weight" value="{{$product->weight}}" class="form-control" required>
+                            <!-- Restored: Manufacturer Code -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Code<span class="text-danger">*</span></label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="text" value="{{$product->manufacturerCode}}" id="manufacturerCode" name="manufacturerCode" />
                                 </div>
-                                <div class="col-lg-2 col-md-3">
-                                    <select name="weightUnit" class="form-control" >
-                                        <option value="1" {{ ($product->weight_unit == 1) ? 'selected' : '' }}>Gram</option>
-                                        <option value="2" {{ ($product->weight_unit == 2) ? 'selected' : '' }}>KG</option>
+                            </div>
+
+                            <!-- Restored: MRP -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">MRP<span class="text-danger">*</span></label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->mrp}}" id="mrp" name="mrp" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Manufacturer Price -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->manufacturerPrice}}" id="manufacturerPrice" name="manufacturerPrice" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Mark up Type -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Mark up Type</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <select name="mark_type" class="form-control">
+                                        <option value="percentage" {{ $product->mark_type == 'percentage' ? 'selected' : '' }}>Percentage</option>
+                                        <option value="fixed" {{ $product->mark_type == 'fixed' ? 'selected' : '' }}>Fixed Amount</option>
                                     </select>
                                 </div>
                             </div>
 
+                            <!-- Restored: Mark up -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Mark up</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->markup}}" id="markup" name="markup" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Our Price -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Our Price</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->ourPrice}}" id="ourPrice" name="ourPrice" readonly />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Shipping Price -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Shipping Price</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->shipping_price}}" id="shipping_price" name="shipping_price" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Weight -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Weight</label>
+                                <div class="col-lg-3 col-md-12">
+                                    <input class="form-control" type="number" step="0.01" value="{{$product->weight}}" id="weight" name="weight" />
+                                </div>
+                                <div class="col-lg-3 col-md-12">
+                                    <select name="weightUnit" class="form-control">
+                                        <option value="kg" {{ $product->weight_unit == 'kg' ? 'selected' : '' }}>KG</option>
+                                        <option value="g" {{ $product->weight_unit == 'g' ? 'selected' : '' }}>Grams</option>
+                                        <option value="lb" {{ $product->weight_unit == 'lb' ? 'selected' : '' }}>Pounds</option>
+                                        <option value="oz" {{ $product->weight_unit == 'oz' ? 'selected' : '' }}>Ounces</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Restored: Tax -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Tax</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <select name="tax" class="form-control">
+                                        <option value="">Select Tax</option>
+                                        @foreach($tax as $t)
+                                            <option value="{{$t->id}}" {{ $product->tax == $t->id ? 'selected' : '' }}>{{$t->tax_name}} ({{$t->tax_rate}}%)</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Restored: Delivery Date -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Delivery Date</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="date" value="{{$product->delivery_date}}" id="deliveryDate" name="deliveryDate" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Min Quantity -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Min Quantity<span class="text-danger">*</span></label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" value="{{$product->minquantity}}" id="minquantity" name="minquantity" />
+                                </div>
+                            </div>
+
+                            <!-- Restored: Quantity -->
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Quantity<span class="text-danger">*</span></label>
+                                <div class="col-lg-4 col-md-12">
+                                    <input class="form-control" type="number" value="{{$product->quantity == 'unlimited' ? '' : $product->quantity}}" id="quantity" name="quantity" />
+                                    <span class="form-text text-muted">Leave empty for unlimited</span>
+                                </div>
+                            </div>
+
+                            <!-- Restored: Product Description -->
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Product Description<span class="text-danger">*</span></label>
-
                                 <div class="col-lg-10 col-md-12">
-                                    <textarea name="productDescription" id="ktckeditor2">{{$product->product_description}}</textarea>
+                                    <textarea name="productDescription" id="ktckeditor1">{{$product->product_description}}</textarea>
                                     <div class="fv-plugins-message-container"></div>
                                 </div>
                             </div>
+
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Trending</label>
-
                                 <div class="col-lg-4 col-md-4 col-sm-4">
                                     <input data-switch="true" type="checkbox" checked="checked" data-on-color="success" data-off-color="danger" name="trending" {{ ($product->trending == 'on') ? 'checked' : '' }} />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Delivery Date</label>
-                                <div class="col-lg-4 col-md-12" >
-                                    <input type="text" name="deliveryDate" placeholder="Select Date" class="form-control" data-id="{{$product->delivery_date}}" value="{{ $product->delivery_date}}">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -475,27 +256,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Meta Keyword
-                                <span class="text-danger">*</span></label>
+                                <label class="col-lg-2 col-md-12 col-form-label">Meta Keyword<span class="text-danger">*</span></label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="text" value="{{ $product->metakeyword}}" id="metakeyword" name="metakeyword" required/>
                                 </div>
                                 <div class="col-lg-4 col-md-12">
                                     <span>Enter keyword separated by comma (E.g. Sarees, Pure)</span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Quantity
-                                <span class="text-danger">*</span></label>
-                                <div class="col-lg-4 col-md-12">
-                                    <input class="form-control" type="text" value="{{ $product->quantity}}" id="quantity" name="quantity" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Min Quantity
-                                <span class="text-danger">*</span></label>
-                                <div class="col-lg-4 col-md-12">
-                                    <input class="form-control" type="text" value="{{ $product->minquantity}}" id="minquantity" name="minquantity" required/>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -509,27 +275,35 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Sold Out</label>
-
                                 <div class="col-lg-4 col-md-4 col-sm-4">
                                     <input data-switch="true" type="checkbox"  data-on-color="success" data-off-color="danger" name="soldout" value="on" {{ ($product->soldout == 'on') ? 'checked' : '' }} />
                                 </div>
                             </div>
-
-                            <h3 class="card-title">Pictures</h3>
-
                             <div class="form-group row">
-                                <label class="col-lg-2 col-md-12 col-form-label">Image 1<span class="text-danger">*</span> </label>
+                                <label class="col-lg-2 col-md-12 col-form-label">Documents</label>
+                                <div class="col-lg-4 col-md-12">
+                                    <label class="col-form-label">Document Upload<span class="text-danger">*</span></label>
+                                    @if($product->document)
+                                        <div class="mb-2">
+                                            <strong>Current Document:</strong> {{ basename($product->document) }}
+                                        </div>
+                                    @endif
+                                    <input type="file" name="document" class="form-control" accept=".pdf,.doc,.docx,.zip,.rar"/>
+                                    <span class="form-text text-muted">Upload product document (PDF, DOC, ZIP, RAR). Leave empty to keep current document.</span>
+                                </div>
+                            </div>
+                            <h3 class="card-title">Pictures</h3>
+                            <div class="form-group row">
+                                <label class="col-lg-2 col-md-12 col-form-label">Image 1<span class="text-danger">*</span></label>
                                 <div class="col-lg-3 col-md-12">
-                                    <label for="image1"  ><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px"  src="{{ URL::asset('assets/media/products/'.$product->image1) }}"></label>
+                                    <label for="image1"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px"  src="{{ URL::asset('assets/media/products/'.$product->image1) }}"></label>
                                     <input type="hidden" name="image1" value="{{ $product->image1 }}">
                                     <input type="file" class="upload_image" id="image1" style="width:250px;border:2px dashed #222;height: 310px"  accept="image/*">
                                     <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Image 2</label>
-
                                 <div class="col-lg-3 col-md-9">
                                     <label for="image2">
                                         @if($product->image2)
@@ -541,7 +315,6 @@
                                     @endif
                                     </label>
                                     <input type="file" id="image2"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    
                                     <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                                 <div class="col-lg-2 col-md-3">
@@ -550,10 +323,8 @@
                                     </span>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Image 3</label>
-
                                 <div class="col-lg-3 col-md-9">
                                     <label for="image3">
                                         @if($product->image3)
@@ -565,7 +336,6 @@
                                     @endif
                                     </label>
                                     <input type="file" id="image3"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    
                                     <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
                                 </div>
                                 <div class="col-lg-2 col-md-3">
@@ -574,24 +344,20 @@
                                     </span>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Image 4</label>
-
                                 <div class="col-lg-3 col-md-9">
                                     <label for="image4">
                                         @if($product->image4)
                                     <img class="file-preview"  style="width:250px;border:2px dashed #222;height: 310px" src="{{ URL::asset('assets/media/products/'.$product->image4) }}">
-                                    <input type="hidden" name="image4" value="{{ $product->image4}}">
+                                    <input type="hidden" name="image4" value="{{ $product->image4 }}">
                                     @else
                                     <img class="file-preview"  style="width:250px;border:2px dashed #222;height: 310px">
                                     <input type="hidden" name="image4" value="">
                                     @endif
                                     </label>
-                                    <input type="file" id="image4" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    
+                                    <input type="file" id="image4"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
                                     <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
-                                   
                                 </div>
                                 <div class="col-lg-2 col-md-3">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -599,35 +365,29 @@
                                     </span>
                                 </div>
                             </div>
-
-
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Similar Products</label>
-
-                                
                                 <div class="col-lg-10 col-md-12">
-                                    <select name="similarProducts[]" id="similarProducts" class="form-control" multiple>
-                                        @foreach($similarProduct as $similarProduct)
-                                        <option value="{{$similarProduct->id}}" {{ in_array($similarProduct->id,explode(',',$product->similar_products)) ? 'selected' : '' }}>{{$similarProduct->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $similarProduct->product_sku}}</option>
+                                    <select class="form-control" id="similar_products" name="similar_products[]" multiple>
+                                        <option value="">Select Similar Products</option>
+                                        @foreach($products as $prod)
+                                            <option value="{{$prod->id}}" {{ in_array($prod->id, explode(',', $product->similar_products ?? '')) ? 'selected' : '' }}>{{$prod->product_title}}/SKU: {{$prod->product_sku}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Related Products</label>
-
-                                
                                 <div class="col-lg-10 col-md-12">
-                                    <select name="relatedProducts[]" id="relatedProducts" class="form-control" multiple>
-                                        @foreach($relatedProduct as $relatedProduct)
-                                        <option value="{{$relatedProduct->id}}" {{ in_array($relatedProduct->id,explode(',',$product->related_products)) ? 'selected' : '' }}>{{$relatedProduct->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $relatedProduct->product_sku}}</option>
+                                    <select class="form-control" id="related_products" name="related_products[]" multiple>
+                                        <option value="">Select Related Products</option>
+                                        @foreach($products as $prod)
+                                            <option value="{{$prod->id}}" {{ in_array($prod->id, explode(',', $product->related_products ?? '')) ? 'selected' : '' }}>{{$prod->product_title}}/SKU: {{$prod->product_sku}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-
+                            </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Cancel</button>
@@ -636,271 +396,94 @@
                         <!--end::Form-->
                     </div>
                     <!--end::Card-->
-
                 </div>
-
             </div>
         </div>
         <!--end::Container-->
     </div>
     <!--end::Entry-->
 </div>
-
 <!--end::Content-->
-<!--begin::Footer-->
-@endsection                     
+@endsection
 
 @push('script')
-<script>
-
-$('#category').select2({
-        allowClear: true,
-        dropdownAutoWidth:true,
-        width:'resolve',
-        dropdownCssClass: "test"
-    });
-    $('#relatedProducts').select2({
-        allowClear: true,
-        dropdownAutoWidth:true,
-        width:'resolve',
-    });
-    $('#similarProducts').select2({
-        allowClear: true,
-        dropdownAutoWidth:true,
-        width:'resolve',
-    });
-
-    $('.multis').select2({
-        allowClear: true,
-        dropdownAutoWidth:true,
-        width:'resolve',
-    });
-
-    $(document).ready(function(){
-        $("input[type=file]").css("display","none");
-    });
-   $("#category").change(function(){
-    var category=$("#category").val();
-    $.ajax({
-        type:"POST",
-        url:"{{route('getSubCategory')}}",
-        data:{"_token": "{{ csrf_token() }}",id:category},
-        success:function(data){
-            $.each(data, function(index, element) {
-                $("#subCategory").append('<option value="'+element["id"]+'">'+element["category_name"]+'</option>');
-
-            });
-        }
-    });
-});
-   $(".imagePreview").change(function(event){
-       var temp= $(this);
-            var reader = new FileReader();
-            var imageField = document.getElementsByClassName("file-preview");
-            reader.onload = function(){
-                if(reader.readyState == 2){
-                     temp.parent()[0].children[0].children[0].src=reader.result;
+    <script>
+        var objectB = new Object();
+        var objectA = new Object();
+        $(document).ready(function () {
+            $image_crop = $('#image_demo').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 128,
+                    height: 80,
+                    type: 'square' //circle
+                },
+                boundary: {
+                    width: 666,
+                    height: 242
                 }
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        
-   });
+            });
 
-   // Class definition
-
-   var KTBootstrapSwitch = function() {
-
-// Private functions
-var demos = function() {
- // minimum setup
- $('[data-switch=true]').bootstrapSwitch();
-};
-
-return {
- // public functions
- init: function() {
-     demos();
- },
-};
-}();
-
-jQuery(document).ready(function() {
-    KTBootstrapSwitch.init();
-});
-
-</script>
-<script>
-    var retu =  ($("#tax").find(':selected').data('tax_type')==1)?'%':'₹';
-    $("#showtax").html($("#tax").find(':selected').data('tax_rate')+" "+retu);
-
-    if($('#vendor').val() != ""){
-        $("#Manufacturer").html("Vendor "+$('#vendor').find(':selected').data('vendorperscent')+" %");
-        $("#Code").html($('#vendor').find(':selected').data('productprefix'));
-        $("#persenttest").val(Number($('#vendor').find(':selected').data('vendorperscent')));
-        }else{
-            $("#persenttest").val(Number(0));
-            $("#Code").html("Admin");
-            $("#Manufacturer").html("");
-        }
-        function mark_type_change(val){
-        if(val == 0){
-            var persent = Number($('#markup').val());
-            var manufacturerPrice = Number($('#manufacturerPrice').val());
-            $('#basePrice').val(Number((persent)+manufacturerPrice));
-            return;
-        }else{
-            if($('#markup').val() >100) $('#markup').val(100)
-            var persent = Number($('#markup').val());
-            var manufacturerPrice = Number($('#manufacturerPrice').val());
-            var onepersent = manufacturerPrice/100;
-            $('#basePrice').val(Number((onepersent*persent)+manufacturerPrice));
-        }
-    }
-
-    function baseprice(price){
-        if(document.querySelector('[name=mark_type]:checked').value == '0'){
-            var persent = Number($('#markup').val());
-            var manufacturerPrice = Number($('#manufacturerPrice').val());
-            $('#basePrice').val(Number((persent)+manufacturerPrice));
-            return;
-        }
-        if($('#markup').val() >100) $('#markup').val(100)
-        var persent = Number($('#markup').val());
-        var manufacturerPrice = Number($('#manufacturerPrice').val());
-        var onepersent = manufacturerPrice/100;
-        $('#basePrice').val(Number((onepersent*persent)+manufacturerPrice));
-    }
-    function markupPrice(price){
-        if(document.querySelector('[name=mark_type]:checked').value == '0'){
-            var persent = Number($('#markup').val());
-            var manufacturerPrice = Number($('#manufacturerPrice').val());
-            $('#basePrice').val(Number((persent)+manufacturerPrice));
-            return;
-        }
-        if($('#markup').val() >100) $('#markup').val(100)
-        var persent = Number($('#markup').val());
-        var manufacturerPrice = Number($('#manufacturerPrice').val());
-        var onepersent = manufacturerPrice/100;
-        $('#basePrice').val(Number((onepersent*persent)+manufacturerPrice));
-    }
-    $("#tax").change(function(){
-        if($('#tax').val() == ''){
-          $("#showtax").html(''); 
-          return;
-        }
-        var retu =  ($(this).find(':selected').data('tax_type')==1)?'%':'₹';
-        $("#showtax").html($(this).find(':selected').data('tax_rate')+" "+retu);
-    });
-    $("#vendor").change(function(){
-        if($(this).val() != ""){
-        $("#Manufacturer").html("Vendor "+$(this).find(':selected').data('vendorperscent')+" %");
-        $("#Code").html($(this).find(':selected').data('productprefix'));
-        $("#persenttest").val(Number($('#vendor').find(':selected').data('vendorperscent')));
-        }else{
-            $("#persenttest").val(Number(0));
-            $("#Code").html("Admin");
-            $("#Manufacturer").html("");
-        }
-    });
-    var objectB = new Object();
-    var objectA = new Object();
-
-    // Client-side image dimension validation
-    function validateImageDimensions(file, callback) {
-        var img = new Image();
-        img.onload = function() {
-            if (this.width === 290 && this.height === 160) {
-                callback(true);
-            } else {
-                alert('Image must be exactly 290×160 pixels. Current size: ' + this.width + '×' + this.height);
-                callback(false);
-            }
-        };
-        img.src = URL.createObjectURL(file);
-    }
-
-    $(document).ready(function(){
-        $image_crop = $('#image_demo').croppie({
-        enableExif: true,
-        viewport: {
-         width:290,
-          height:160,
-          type:'square' //circle
-        },
-        boundary:{
-          width:400,
-          height:300
-        }
-      });
-    
-      $('.upload_image').on('change', function(){
-        var file = this.files[0];
-        if (!file) return;
-
-        validateImageDimensions(file, function(isValid) {
-            if (isValid) {
-        objectB = this.parentElement;
-        objectA = this;
-        var reader = new FileReader();
-        reader.onload = function (event) {
-          $image_crop.croppie('bind', {
-            url: event.target.result
-          }).then(function(){
-            console.log('jQuery bind complete');
-          });
-        }
-                reader.readAsDataURL(file);
-        $('#uploadimageModal').modal('show');
-            } else {
-                // Clear the file input
-                this.value = '';
-            }
-        }.bind(this));
-      });
-    
-      $('.crop_image').click(function(event){
-          var id= $("#id").val();
-          var url= $("#url").val();
-          var table_colum = objectA.id;
-        $image_crop.croppie('result', {
-          type: 'canvas',
-          size: 'viewport'
-        }).then(function(response){
-            $.ajax({
-                url:url,
-                type: "POST",
-                data:{id:id,table_colum:table_colum,"image": response,"_token": "{{ csrf_token() }}"},
-                success:function(data){  
+            $('.upload_image').on('change', function () {
+                objectB = this.parentElement;
+                objectA = this;
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $image_crop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function () {
+                        console.log('jQuery bind complete');
+                    });
+                }
+                reader.readAsDataURL(this.files[0]);
+                $('#uploadimageModal').modal('show');
+            });
+            $('.crop_image').click(function (event) {
+                var id = $("#id").val();
+                var table_colum = objectA.id;
+                $image_crop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (response) {
+                    $.ajax({
+                        url: "{{ route('admin-product-cropimage') }}",
+                        type: "POST",
+                        data: { id: id, table_colum: table_colum, "image": response, "_token": "{{ csrf_token() }}" },
+                        success: function (data) {
+                            $('#uploadimageModal').modal('hide');
+                            objectB.children[1].value = data.Name;
+                        }
+                    });
                     objectB.children[0].children[0].src = response;
                     $('#uploadimageModal').modal('hide');
-                    objectB.children[0].children[1].value = data['Name'];
-                },error:function(data){
-                    $.notify("Reduce the quality & size of image !!","success");
-                }
+                })
             });
-            $('#uploadimageModal').modal('hide');
-        })
-      });
-        $('.deletSpan').on('click',function(){
-            this.parentElement.parentElement.children[1].children[0].children[0].src="";
-            this.parentElement.parentElement.children[1].children[0].children[1].value = "";
         });
-    });
-    
-    
+
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            debugger
+            output.onload = function () {
+                URL.revokeObjectURL(output.src) // free memory
+            }
+        };
     </script>
     <script>
-    ClassicEditor.create( document.querySelector( '#ktckeditor1' ) )
-        .then( editor => { window.CKEditor1 = editor;} )
-		.catch( error => { console.error( error ); });
-		ClassicEditor.create( document.querySelector( '#ktckeditor2' ) )
-        .then( editor => { window.CKEditor2 = editor;} )
-		.catch( error => { console.error( error ); });
-		ClassicEditor.create( document.querySelector( '#ktckeditor3' ) )
-        .then( editor => { window.CKEditor3 = editor;} )
-		.catch( error => { console.error( error ); });
-		ClassicEditor.create( document.querySelector( '#ktckeditor4' ) )
-        .then( editor => { window.CKEditor4 = editor;} )
-		.catch( error => { console.error( error ); });
- </script>
+        ClassicEditor.create(document.querySelector('#ktckeditor1'))
+            .then(editor => { window.CKEditor1 = editor; })
+            .catch(error => { console.error(error); });
+        ClassicEditor.create(document.querySelector('#ktckeditor2'))
+            .then(editor => { window.CKEditor2 = editor; })
+            .catch(error => { console.error(error); });
+        ClassicEditor.create(document.querySelector('#ktckeditor3'))
+            .then(editor => { window.CKEditor3 = editor; })
+            .catch(error => { console.error(error); });
+        ClassicEditor.create(document.querySelector('#ktckeditor4'))
+            .then(editor => { window.CKEditor4 = editor; })
+            .catch(error => { console.error(error); });
+        ClassicEditor.create(document.querySelector('#ktckeditor3'))
+            .then(editor => { window.CKEditor3 = editor; })
+            .catch(error => { console.error(error); });
+    </script>
 @endpush

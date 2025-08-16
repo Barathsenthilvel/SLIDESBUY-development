@@ -233,9 +233,15 @@ public function item(Request $request, $slug)
     $downloadsUsed = 0;
     $downloadsRemaining = 0;
     $activeSubscription = null;
+    $alreadyDownloaded = false;
 
     if (Auth::check()) {
         $user = Auth::user();
+
+        // Check if user has already downloaded this file (for both free and paid products)
+        $alreadyDownloaded = Downloads::where('user_id', $user->id)
+            ->where('product_id', $product->id)
+            ->exists();
 
         // Check if reviewed
         $reviewed = Review::where('product_id', $product->id)
@@ -251,25 +257,34 @@ public function item(Request $request, $slug)
 
         $activeSubscriptionIds = $activeSubscriptions->pluck('id');
 
-        // Total download limit from all active subscriptions
+        // Total download limit from all active plans
         $downloadLimit = $activeSubscriptions->sum(function ($subscription) {
-            return $subscription->plan ? $subscription->plan->download_limit : 0;
+            $limit = $subscription->plan ? $subscription->plan->download_limit : 0;
+            // If any plan has unlimited downloads (0), return 0 for unlimited
+            return $limit == 0 ? 0 : $limit;
         });
 
-        // Count downloads across active subscriptions
+        // Count downloads used by user across active subscriptions
         $downloadsUsed = Downloads::where('user_id', $user->id)
             ->whereIn('subscription_id', $activeSubscriptionIds)
             ->count();
 
-        $downloadsRemaining = max($downloadLimit - $downloadsUsed, 0);
-
-        $canDownload = $downloadsRemaining > 0;
-        $downloadLimitReached = !$canDownload;
+        // Calculate remaining (if unlimited, set to 0)
+        if ($downloadLimit == 0) {
+            $downloadsRemaining = 0; // Unlimited
+            $canDownload = true;
+            $downloadLimitReached = false;
+        } else {
+            $downloadsRemaining = max($downloadLimit - $downloadsUsed, 0);
+            $canDownload = $downloadsRemaining > 0;
+            $downloadLimitReached = !$canDownload;
+        }
 
         if ($downloadLimitReached && $downloadLimit > 0) {
             session()->flash('error', 'Your download limit has been reached. Please renew your subscription.');
         }
 
+        // Latest subscription (optional)
         $activeSubscription = $activeSubscriptions->sortByDesc('id')->first();
     }
 
@@ -317,7 +332,9 @@ public function item(Request $request, $slug)
         'canDownload',
         'downloadLimitReached',
         'downloadLimit',
-        'downloadsUsed'
+        'downloadsUsed',
+        'downloadsRemaining',
+        'alreadyDownloaded'
     ));
 }
 
@@ -326,9 +343,31 @@ public function item(Request $request, $slug)
 
 public function downloaddocuments($productId)
 {
-    // Serve free products without auth and without counting
     $product = Product::findOrFail($productId);
+    $user = auth()->user();
+
+    // Check if user has already downloaded this file (for both free and paid products)
+    $alreadyDownloaded = Downloads::where('user_id', $user->id)
+        ->where('product_id', $productId)
+        ->exists();
+
+    if ($alreadyDownloaded) {
+        // Show "Already Downloaded" for both free and paid products
+        return redirect()->back()->with('info', 'Already Downloaded');
+    }
+
+    // Handle free products
     if (($product->sell_type ?? 1) == 0) {
+        // Record the download for free products
+        Downloads::create([
+            'user_id' => $user->id,
+            'product_id' => $productId,
+            'download_date' => now(),
+            'subscription_id' => null, // No subscription for free products
+            'download_count' => 1
+        ]);
+
+        // Serve the file
         $filePath = $product->document;
         if (!Storage::disk('public')->exists($filePath)) {
             return redirect()->back()->with('error', 'File not found.');
@@ -336,8 +375,7 @@ public function downloaddocuments($productId)
         return Storage::disk('public')->download($filePath);
     }
 
-    $user = auth()->user();
-
+    // Handle paid products (existing logic)
     // Get all active subscriptions for paid downloads
     $activeSubscriptions = Subscription::where('user_id', $user->id)
         ->where('payment_status', 'success')
@@ -356,6 +394,12 @@ public function downloaddocuments($productId)
 
     foreach ($activeSubscriptions as $subscription) {
         $downloadLimit = $subscription->plan ? $subscription->plan->download_limit : 0;
+
+        // If download_limit is 0, it means unlimited downloads
+        if ($downloadLimit == 0) {
+            $usableSubscription = $subscription;
+            break;
+        }
 
         $downloadCount = Downloads::where('user_id', $user->id)
             ->where('subscription_id', $subscription->id)

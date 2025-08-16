@@ -327,8 +327,10 @@ class ProductController extends Controller
     	$tax = Tax::where('status','1')->get();
     	$category = Category::where('status','1')->where('parent_category_id','0')->get();
         $data=Category::where('status','1')->where('parent_category_id','!=','0')->get();
-        $similarProduct=Product::where('status','1')->get();
-        $relatedProduct=Product::where('status','1')->get();
+
+        // Fix: Change this to match what the view expects
+        $products = Product::where('status','1')->get();
+
         $vendor = Vendor::where('status','1')->get();
 
         if($attributeTemplate > 0){
@@ -341,10 +343,10 @@ class ProductController extends Controller
      	}
      	}
 
-		return view('admin.product.create',compact('attributeGroup','processGroup','category','attributeTemplate','tax','data','similarProduct','relatedProduct','vendor','Product_last','list','pricing_type'));
+		return view('admin.product.create',compact('attributeGroup','processGroup','category','attributeTemplate','tax','data','products','vendor','Product_last','list','pricing_type'));
         }
 
-        return view('admin.product.create',compact('attributeGroup','category','attributeTemplate','tax','data','similarProduct','relatedProduct','vendor','Product_last','list','pricing_type'));
+        return view('admin.product.create',compact('attributeGroup','category','attributeTemplate','tax','data','products','vendor','Product_last','list','pricing_type'));
 
        }
 
@@ -901,6 +903,145 @@ class ProductController extends Controller
             }
         }
         return ['Name'=>$imageName];
+    }
+
+    // Add wishlist functionality
+    public function addToWishlist(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+            $userId = Auth::user()->id;
+
+            // Check if product exists
+            $product = Product::findOrFail($productId);
+
+            // Check if already in wishlist
+            $existingWishlist = DB::table('wishlists')->where('user_id', $userId)->where('product_id', $productId)->first();
+
+            if ($existingWishlist) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Product already in wishlist'
+                ]);
+            }
+
+            // Add to wishlist
+            DB::table('wishlists')->insert([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product added to wishlist successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to add product to wishlist'
+            ]);
+        }
+    }
+
+    public function removeFromWishlist(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+            $userId = Auth::user()->id;
+
+            // Remove from wishlist
+            $deleted = DB::table('wishlists')->where('user_id', $userId)->where('product_id', $productId)->delete();
+
+            if ($deleted) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Product removed from wishlist successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Product not found in wishlist'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to remove product from wishlist'
+            ]);
+        }
+    }
+
+    public function getWishlist()
+    {
+        try {
+            $userId = Auth::user()->id;
+
+            $wishlistProducts = DB::table('wishlists')
+                ->join('products', 'wishlists.product_id', '=', 'products.id')
+                ->where('wishlists.user_id', $userId)
+                ->where('products.status', 1)
+                ->select('products.*', 'wishlists.created_at as added_to_wishlist')
+                ->orderBy('wishlists.created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $wishlistProducts
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch wishlist'
+            ]);
+        }
+    }
+
+    public function checkWishlistStatus(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+            $userId = Auth::user()->id;
+
+            $inWishlist = DB::table('wishlists')->where('user_id', $userId)->where('product_id', $productId)->exists();
+
+            return response()->json([
+                'status' => 'success',
+                'in_wishlist' => $inWishlist
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to check wishlist status'
+            ]);
+        }
+    }
+
+    public function getNewArrivals()
+    {
+        try {
+            $newArrivals = Product::where('status', 1)
+                ->where('created_at', '>=', now()->subDays(30)) // Products added in last 30 days
+                ->orderBy('created_at', 'desc')
+                ->take(20) // Limit to 20 products
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $newArrivals
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch new arrivals'
+            ]);
+        }
     }
 
 }

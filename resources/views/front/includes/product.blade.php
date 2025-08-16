@@ -3,7 +3,6 @@
 
 
 
-
 <section class="arrival-product padding-y-120 section-bg position-relative z-index-1">
     <img src="../assets/images/gradients/product-gradient.png" alt="" class="bg--gradient white-version">
 
@@ -20,7 +19,7 @@
             </li> --}}
         </ul>
 
-                <div class="tab-content" id="pills-tabContent">
+        <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
                 @php $products = collect($discounts['product'] ?? [])->take(8); @endphp
                 @if($products->isEmpty())
@@ -36,6 +35,11 @@
                             $data = $discountProduct->getproductPrice();
                             $rev = $discountProduct->reviewtotal();
                             $star = $rev->reviewtotal / 20;
+                            // Check if product is already in user's wishlist
+                            $inWishlist = false;
+                            if (Auth::check()) {
+                                $inWishlist = Auth::user()->wishlists()->where('product_id', $discountProduct->id)->exists();
+                            }
                         @endphp
                         <div class="col-6 col-md-3">
                             <div class="product-item ">
@@ -43,7 +47,14 @@
                                     <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
                                         <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="cover-img">
                                     </a>
-                                    <button type="button" class="product-item__wishlist"><i class="fas fa-heart"></i></button>
+                                    {{-- Fixed wishlist button with proper functionality --}}
+                                    <button type="button" 
+                                        class="product-item__wishlist wishlist-btn btn-wishlist {{ $inWishlist ? 'active in-wishlist' : '' }}"
+                                        data-product-id="{{ $discountProduct->id }}"
+                                        data-toggle="tooltip" 
+                                        title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                                        <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                                    </button>
                                 </div>
                                 <div class="product-item__content">
                                     <h6 class="product-item__title">
@@ -55,8 +66,8 @@
                                             <a href="profile.html" class="link hover-text-decoration-underline"> Slidesbuy</a>
                                         </span>
                                         <div class="flx-align gap-2">
-                                            @php $isFree = (($discountProduct->sell_type ?? 1) == 0); @endphp
-                                            <span class="badge {{ $isFree ? 'bg-success' : 'bg-primary' }}">{{ $isFree ? 'Free' : 'Paid' }}</span>
+                                            @php $isFree = (($discountProduct->sell_type ?? 1) == 1); @endphp
+                                            <span class="badge {{ $isFree ? 'bg-primary' : 'bg-success' }}">{{ $isFree ? 'Paid' : 'Free' }}</span>
                                         </div>
                                     </div>
                                     <div class="product-item__bottom flx-between gap-2">
@@ -78,8 +89,7 @@
                 @endif
             </div>
         </div>
-
-
     </div>
 </section>
 <!-- ======================= Arrival Products End ========================= -->
+

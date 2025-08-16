@@ -591,8 +591,8 @@
 
                                 <div class="col-10">
                                     <select name="similarProducts[]" id="similarProducts" class="form-control" multiple="multiple">
-                                        @foreach($similarProduct as $similarProduct)
-                                        <option value="{{$similarProduct->id}}" {{ (old('similarProducts') == $similarProduct->id) ? 'selected' : '' }}>{{$similarProduct->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $similarProduct->product_sku}}</option>
+                                        @foreach($products as $product)
+                                        <option value="{{$product->id}}" {{ (old('similarProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -604,8 +604,8 @@
 
                                 <div class="col-10">
                                     <select name="relatedProducts[]" id="relatedProducts" class="form-control" multiple="multiple">
-                                        @foreach($relatedProduct as $relatedProduct)
-                                        <option value="{{$relatedProduct->id}}" {{ (old('relatedProducts') == $relatedProduct->id) ? 'selected' : '' }}>{{$relatedProduct->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $relatedProduct->product_sku}}</option>
+                                        @foreach($products as $product)
+                                        <option value="{{$product->id}}" {{ (old('relatedProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
                                         @endforeach
                                     </select>
                                 </div>

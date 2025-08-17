@@ -39,26 +39,26 @@
                         </div>
                         <!--begin::Form-->
                         <div class="alert alert-danger alert-dismissible fade show" style="display:none" role="alert">
-                            <div></div>
-                            <button type="button" class="close" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
-                            <div></div>
-                            <button type="button" class="close" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                         @php
-                         if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
+                                                <div></div>
+                                                <button type="button" class="close" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
+                                                <div></div>
+                                                <button type="button" class="close" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                             @php
+                                             if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
             $link=route('admin-productv-update',$product->id);
             $url=route('admin-productv-cropimage');
         }else{
             $link=route('admin-product-update',$product->id);
             $url=route('admin-product-cropimage');
         }
-                         @endphp
+                                            @endphp
                         <form method="POST" action="{{$link}}" enctype="multipart/form-data" id="formEdit" onsubmit="if(typeof CKEditor1 != 'undefined'){ CKEditor1.updateSourceElement(); } if(typeof CKEditor4 != 'undefined'){ CKEditor4.updateSourceElement(); } CKEditor2.updateSourceElement();CKEditor3.updateSourceElement();">
                             {{ csrf_field() }}
                             <input type="hidden" name="id" id="id" value="{{$product->id}}">
@@ -115,46 +115,46 @@
                             </div>
 
                             <!-- Restored: Manufacturer Code -->
-                            <div class="form-group row">
+                                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Code<span class="text-danger">*</span></label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="text" value="{{$product->manufacturerCode}}" id="manufacturerCode" name="manufacturerCode" />
-                                </div>
-                            </div>
+                                                    </div>
+                                                </div>
 
                             <!-- Restored: MRP -->
-                            <div class="form-group row">
+                                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">MRP<span class="text-danger">*</span></label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" step="0.01" value="{{$product->mrp}}" id="mrp" name="mrp" />
-                                </div>
-                            </div>
+                                                    </div>
+                                                </div>
 
                             <!-- Restored: Manufacturer Price -->
-                            <div class="form-group row">
+                                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" step="0.01" value="{{$product->manufacturerPrice}}" id="manufacturerPrice" name="manufacturerPrice" />
-                                </div>
-                            </div>
+                                                  </div>
+                                              </div>
 
                             <!-- Restored: Mark up Type -->
-                            <div class="form-group row">
+                                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Mark up Type</label>
                                 <div class="col-lg-4 col-md-12">
                                     <select name="mark_type" class="form-control">
                                         <option value="percentage" {{ $product->mark_type == 'percentage' ? 'selected' : '' }}>Percentage</option>
                                         <option value="fixed" {{ $product->mark_type == 'fixed' ? 'selected' : '' }}>Fixed Amount</option>
-                                    </select>
-                                </div>
-                            </div>
+                                                      </select>
+                                                  </div>
+                                              </div>
 
                             <!-- Restored: Mark up -->
-                            <div class="form-group row">
+                                              <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Mark up</label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" step="0.01" value="{{$product->markup}}" id="markup" name="markup" />
-                                </div>
+                                                        </div>
                             </div>
 
                             <!-- Restored: Our Price -->
@@ -162,15 +162,15 @@
                                 <label class="col-lg-2 col-md-12 col-form-label">Our Price</label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" step="0.01" value="{{$product->ourPrice}}" id="ourPrice" name="ourPrice" readonly />
-                                </div>
-                            </div>
+                                                    </div>
+                                                </div>
 
                             <!-- Restored: Shipping Price -->
-                            <div class="form-group row">
+                                                        <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Shipping Price</label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" step="0.01" value="{{$product->shipping_price}}" id="shipping_price" name="shipping_price" />
-                                </div>
+                                                                </div>
                             </div>
 
                             <!-- Restored: Weight -->
@@ -186,24 +186,24 @@
                                         <option value="lb" {{ $product->weight_unit == 'lb' ? 'selected' : '' }}>Pounds</option>
                                         <option value="oz" {{ $product->weight_unit == 'oz' ? 'selected' : '' }}>Ounces</option>
                                     </select>
-                                </div>
-                            </div>
+                                                            </div>
+                                                        </div>
 
                             <!-- Restored: Tax -->
-                            <div class="form-group row">
+                                <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Tax</label>
-                                <div class="col-lg-4 col-md-12">
+                                    <div class="col-lg-4 col-md-12">
                                     <select name="tax" class="form-control">
                                         <option value="">Select Tax</option>
                                         @foreach($tax as $t)
                                             <option value="{{$t->id}}" {{ $product->tax == $t->id ? 'selected' : '' }}>{{$t->tax_name}} ({{$t->tax_rate}}%)</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                                            @endforeach
+                                            </select>
+                                  </div>
+                              </div>
 
                             <!-- Restored: Delivery Date -->
-                            <div class="form-group row">
+                              <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Delivery Date</label>
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="date" value="{{$product->delivery_date}}" id="deliveryDate" name="deliveryDate" />
@@ -216,7 +216,7 @@
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="number" value="{{$product->minquantity}}" id="minquantity" name="minquantity" />
                                 </div>
-                            </div>
+                                </div>
 
                             <!-- Restored: Quantity -->
                             <div class="form-group row">
@@ -407,13 +407,13 @@
 @endsection
 
 @push('script')
-    <script>
-        var objectB = new Object();
-        var objectA = new Object();
+<script>
+    var objectB = new Object();
+    var objectA = new Object();
         $(document).ready(function () {
-            $image_crop = $('#image_demo').croppie({
-                enableExif: true,
-                viewport: {
+        $image_crop = $('#image_demo').croppie({
+        enableExif: true,
+        viewport: {
                     width: 128,
                     height: 80,
                     type: 'square' //circle
@@ -425,40 +425,40 @@
             });
 
             $('.upload_image').on('change', function () {
-                objectB = this.parentElement;
-                objectA = this;
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    $image_crop.croppie('bind', {
-                        url: event.target.result
+        objectB = this.parentElement;
+        objectA = this;
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          $image_crop.croppie('bind', {
+            url: event.target.result
                     }).then(function () {
-                        console.log('jQuery bind complete');
-                    });
-                }
+            console.log('jQuery bind complete');
+          });
+        }
                 reader.readAsDataURL(this.files[0]);
-                $('#uploadimageModal').modal('show');
+        $('#uploadimageModal').modal('show');
             });
             $('.crop_image').click(function (event) {
                 var id = $("#id").val();
-                var table_colum = objectA.id;
-                $image_crop.croppie('result', {
-                    type: 'canvas',
-                    size: 'viewport'
+          var table_colum = objectA.id;
+        $image_crop.croppie('result', {
+          type: 'canvas',
+          size: 'viewport'
                 }).then(function (response) {
-                    $.ajax({
+            $.ajax({
                         url: "{{ route('admin-product-cropimage') }}",
-                        type: "POST",
+                type: "POST",
                         data: { id: id, table_colum: table_colum, "image": response, "_token": "{{ csrf_token() }}" },
                         success: function (data) {
-                            $('#uploadimageModal').modal('hide');
-                            objectB.children[1].value = data.Name;
-                        }
-                    });
-                    objectB.children[0].children[0].src = response;
                     $('#uploadimageModal').modal('hide');
-                })
+                            objectB.children[1].value = data.Name;
+                }
             });
+                    objectB.children[0].children[0].src = response;
+            $('#uploadimageModal').modal('hide');
+        })
         });
+    });
 
         var loadFile = function (event) {
             var output = document.getElementById('output');
@@ -485,5 +485,5 @@
         ClassicEditor.create(document.querySelector('#ktckeditor3'))
             .then(editor => { window.CKEditor3 = editor; })
             .catch(error => { console.error(error); });
-    </script>
+ </script>
 @endpush

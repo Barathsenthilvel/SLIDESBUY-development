@@ -76,6 +76,91 @@
 
 /* badge button for free & paid */
 
+/* Product Image Styling - Matching Product List UI */
+.product-details__thumb {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.main-product-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.main-product-image:hover {
+    transform: scale(1.02);
+}
+
+.product-thumbnails {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.thumbnail-item {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.thumbnail-item:hover {
+    border-color: var(--main);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.thumbnail-item.active {
+    border-color: var(--main);
+    box-shadow: 0 0 0 2px rgba(106, 66, 241, 0.2);
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.thumbnail-item:hover .thumbnail-image {
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-thumbnails {
+        gap: 10px;
+    }
+
+    .thumbnail-item {
+        width: 100px;
+        height: 70px;
+    }
+
+    .main-product-image {
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .thumbnail-item {
+        width: 80px;
+        height: 60px;
+    }
+}
+
 /* Improved badge styling for free & paid */
 .custom-badge {
     display: inline-flex;
@@ -342,11 +427,11 @@
     <div class="product-details">
 
         {{-- Main Image --}}
-<div class="product-details__thumb ratio-container">
+<div class="product-details__thumb">
     <img id="mainImage"
          src="{{ asset('assets/media/products/' . $product->image1) }}"
          alt="Main Product"
-         class="ratio-image">
+         class="main-product-image">
 </div>
 
 
@@ -391,25 +476,23 @@
         </div>
 
         {{-- Thumbnails Row --}}
-       <div class="d-flex gap-2 mt-3 overflow-auto" style="max-width: 100%; white-space: nowrap;">
-    @for($i = 2; $i <= 4; $i++)
-        @php
-            $imgField = 'image' . $i;
-            $filename = $product->$imgField;
-            $fullPath = public_path('assets/media/products/' . $filename);
-        @endphp
+        <div class="product-thumbnails mt-3">
+            @for($i = 2; $i <= 4; $i++)
+                @php
+                    $imgField = 'image' . $i;
+                    $filename = $product->$imgField;
+                    $fullPath = public_path('assets/media/products/' . $filename);
+                @endphp
 
-        @if(!empty($filename) && file_exists($fullPath))
-            <div class="thumb-box border p-1 me-2 d-inline-block"
-                 style="width: 150px; cursor: pointer;">  {{-- Increased from 80px to 150px --}}
-                <img src="{{ asset('assets/media/products/' . $filename) }}"
-                     class="img-fluid"
-                     alt="Thumbnail"
-                     style="width: 100%; height: auto;"> {{-- Make image fill container --}}
-            </div>
-        @endif
-    @endfor
-</div>
+                @if(!empty($filename) && file_exists($fullPath))
+                    <div class="thumbnail-item" data-src="{{ asset('assets/media/products/' . $filename) }}">
+                        <img src="{{ asset('assets/media/products/' . $filename) }}"
+                             alt="Thumbnail {{ $i }}"
+                             class="thumbnail-image">
+                    </div>
+                @endif
+            @endfor
+        </div>
 
 
     </div>
@@ -839,23 +922,26 @@
 <script>
 jQuery(document).ready(function ($) {
 
-    // live privew & screenshot
-    $('.thumb-box').on('click', function () {
-        const $thumbBox = $(this);
-        const $thumbImg = $thumbBox.find('img');
+    // Thumbnail click functionality
+    $('.thumbnail-item').on('click', function () {
+        const $thumbnail = $(this);
+        const newSrc = $thumbnail.data('src');
         const $mainImage = $('#mainImage');
         const $livePreviewLink = $('#livePreviewLink');
 
-        const currentMainSrc = $mainImage.attr('src');
-        const newSrc = $thumbImg.attr('src');
-
-        // Swap main image and clicked thumbnail
-        $mainImage.attr('src', newSrc).show();
-        $thumbImg.attr('src', currentMainSrc);
+        // Update main image
+        $mainImage.attr('src', newSrc);
 
         // Update Live Preview link href
-        $livePreviewLink.attr('href', newSrc).css('display', 'inline-flex');
+        $livePreviewLink.attr('href', newSrc);
+
+        // Update active state
+        $('.thumbnail-item').removeClass('active');
+        $thumbnail.addClass('active');
     });
+
+    // Set first thumbnail as active by default
+    $('.thumbnail-item:first').addClass('active');
 
     // Wishlist handled globally in container.blade.php
 

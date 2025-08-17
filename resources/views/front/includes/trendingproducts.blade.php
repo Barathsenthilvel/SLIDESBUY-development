@@ -1,3 +1,17 @@
+<!-- First: Load jQuery -->
+<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+<!-- Second: Load Bootstrap -->
+<script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
+
+<!-- Third: Load other plugins (including countdown.js) -->
+<script src="{{ asset('assets/js/countdown.js') }}"></script>
+<script src="{{ asset('assets/js/counterup.min.js') }}"></script>
+<script src="{{ asset('assets/js/slick.min.js') }}"></script>
+
+<!-- Last: Load your main.js -->
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
 <section class="selling-product padding-y-120 position-relative z-index-1 overflow-hidden">
     <img src="../assets/images/gradients/selling-gradient.png" alt="" class="bg--gradient">
 
@@ -20,8 +34,8 @@
             </a>
         </div>
 
-        <div class="selling-product-slider">
-            @foreach(($products ?? collect()) as $discountProduct)
+        <div class="selling-product-slider resource-slider">
+            @foreach($discounts['product'] as $discountProduct)
                 @php
                     $data = $discountProduct->getproductPrice();
                     $rev = $discountProduct->reviewtotal();
@@ -75,3 +89,4 @@
         </div>
     </div>
 </section>
+

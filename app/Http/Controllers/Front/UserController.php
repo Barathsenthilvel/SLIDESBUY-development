@@ -191,14 +191,22 @@ public function showResetForm(Request $request, $token)
         $order = Order::where('user_id',Auth::user()->id)->get()->unique('order_id')->sortByDesc('id');
         $Store = Storeconfiguration::findOrFail(1);
         $offset = ($page - 1)*$this->perpage;
-        $order = new LengthAwarePaginator($order->slice($offset, $this->perpage), $order->count(), $this->perpage ,$page);
+        $order = new LengthAwarePaginator($order->slice($offset, $this->perpage), $order->count(), $this->perpage, $page);
+
+        // Set the proper URL path for pagination
+        $order->setPath(request()->url());
+
         return view('front.orderlist',['order'=>$order,'Store'=>$Store]);
     }
     public function order(Request $request){
       $page = ($request->page == null) ? 1:$request->page;
       $order = Order::where('user_id',Auth::user()->id)->get()->unique('order_id')->sortByDesc('id');
       $offset = ($page - 1)*$this->perpage;
-      $order = new LengthAwarePaginator($order->slice($offset, $this->perpage), $order->count(), $this->perpage ,$page);
+      $order = new LengthAwarePaginator($order->slice($offset, $this->perpage), $order->count(), $this->perpage, $page);
+
+      // Set the proper URL path for pagination
+      $order->setPath(request()->url());
+
       $Store = Storeconfiguration::findOrFail(1);
       return view('front.vieworder', compact('order','Store'));
   }
@@ -308,22 +316,22 @@ public function signIn(Request $request)
 public function register(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|confirmed|min:6',
-        'agree' => 'accepted',
-    ], [
-        'name.required' => 'Full name is required.',
-        'name.string' => 'Full name must be a valid text.',
-        'name.max' => 'Full name cannot exceed 255 characters.',
-        'email.required' => 'Email address is required.',
-        'email.email' => 'Please enter a valid email address.',
-        'email.unique' => 'This email address is already registered. Please use a different email or login.',
-        'password.required' => 'Password is required.',
-        'password.confirmed' => 'Password confirmation does not match.',
-        'password.min' => 'Password must be at least 6 characters long.',
-        'agree.accepted' => 'You must agree to the terms and conditions.',
-    ]);
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email',
+    'password' => 'required|confirmed|min:6',
+    'agree' => 'accepted',
+  ], [
+    'name.required' => 'Full name is required.',
+    'name.string' => 'Full name must be a valid text.',
+    'name.max' => 'Full name cannot exceed 255 characters.',
+    'email.required' => 'Email address is required.',
+    'email.email' => 'Please enter a valid email address.',
+    'email.unique' => 'This email address is already registered. Please use a different email or login.',
+    'password.required' => 'Password is required.',
+    'password.confirmed' => 'Password confirmation does not match.',
+    'password.min' => 'Password must be at least 6 characters long.',
+    'agree.accepted' => 'You must agree to the terms and conditions.',
+  ]);
 
     if ($validator->fails()) {
         if ($request->ajax() || $request->wantsJson()) {

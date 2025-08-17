@@ -344,47 +344,8 @@
   // ========================= Wishlist Js End ===================
 
   // ========================= Selling Product Js Start ==============
-  $('.selling-product-slider').slick({
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
-    dots: true,
-    pauseOnHover: true,
-    arrows: true,
-    draggable: true,
-    speed: 900,
-    infinite: true,
-    prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
-    responsive: [
-      {
-        breakpoint: 1199,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 575,
-        settings: {
-          slidesToShow: 1,
-        }
-      },
-    ]
-  });
+  // Slider is now handled by the trending products include file
+  // This prevents conflicts with the working slider HTML
   // ========================= Selling Product Js End ===================
 
   // ========================= Testimonial Slider Js Start ==============

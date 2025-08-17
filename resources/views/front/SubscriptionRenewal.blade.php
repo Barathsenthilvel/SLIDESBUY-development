@@ -1,5 +1,4 @@
-@extends('front.layout')
-
+@extends('front.includes.container')
 @section('content')
 <!-- ==================== Page Header Start ==================== -->
 <section class="page-header padding-y-120">

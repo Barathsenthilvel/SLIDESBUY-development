@@ -48,10 +48,10 @@
                                         <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="cover-img">
                                     </a>
                                     {{-- Fixed wishlist button with proper functionality --}}
-                                    <button type="button" 
+                                    <button type="button"
                                         class="product-item__wishlist wishlist-btn btn-wishlist {{ $inWishlist ? 'active in-wishlist' : '' }}"
                                         data-product-id="{{ $discountProduct->id }}"
-                                        data-toggle="tooltip" 
+                                        data-toggle="tooltip"
                                         title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
                                         <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
                                     </button>
@@ -85,6 +85,15 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+                                @endif
+
+                <!-- View All Items Button - Only show when products exist -->
+                @if($products->count() > 0)
+                <div class="text-center mt-64">
+                    <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300">
+                        View All Items
+                    </a>
                 </div>
                 @endif
             </div>

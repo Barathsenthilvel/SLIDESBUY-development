@@ -170,7 +170,10 @@ class FrontendController extends Controller
             //     unset($temp[$key]->temp_price);
             // }
             $offset = ($page - 1)*$perpage;
-            $products = new LengthAwarePaginator($temp->slice($offset, $perpage), $temp->count(), $perpage ,$page);
+            $products = new LengthAwarePaginator($temp->slice($offset, $perpage), $temp->count(), $perpage, $page);
+
+            // Set the proper URL path for pagination
+            $products->setPath(request()->url());
 
 
         $attributeValues=Attribute::where('status','1')->get();
@@ -286,8 +289,12 @@ class FrontendController extends Controller
         }
 
         $offset = ($page - 1)*$perpage;
-            $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage ,$page);
-      return view('front.product-list',compact('products'));
+        $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage, $page);
+
+        // Set the proper URL path for pagination
+        $products->setPath(request()->url());
+
+        return view('front.product-list',compact('products'));
     }
 
     function sorts($product){

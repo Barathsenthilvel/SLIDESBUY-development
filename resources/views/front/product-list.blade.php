@@ -107,9 +107,10 @@
     }
 
     .list-grid-wrapper .product-item__thumb {
-        width: 100%;
+        width: 94%;
         height: auto;
         position: relative;
+        margin: 3% auto;
     }
 
     .list-grid-wrapper .product-item__thumb img {

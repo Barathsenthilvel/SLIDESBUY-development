@@ -54,20 +54,6 @@
     </div>
     <div class="account__right padding-t-120 flx-align">
 
-        <div class="dark-light-mode">
-             <!-- Light Dark Mode -->
- <div class="theme-switch-wrapper position-relative">
-    <label class="theme-switch" for="checkbox">
-        <input type="checkbox" class="d-none" id="checkbox">
-        <span class="slider text-black header-right__button white-version">
-            <img src="../assets/images/icons/sun.svg" alt="">
-        </span>
-        <span class="slider text-black header-right__button dark-version">
-            <img src="../assets/images/icons/moon.svg" alt="">
-        </span>
-    </label>
-</div>
-        </div>
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
@@ -103,7 +89,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" autocomplete="new-password">
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="Password" autocomplete="new-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
             </div>
             <div class="error-message" id="password-error"></div>

@@ -21,7 +21,7 @@
     </div>
     <div class="account__right padding-t-120 flx-align">
 
-        <div class="dark-light-mode">
+        {{-- <div class="dark-light-mode">
              <!-- Light Dark Mode -->
  <div class="theme-switch-wrapper position-relative">
     <label class="theme-switch" for="checkbox">
@@ -34,7 +34,7 @@
         </span>
     </label>
 </div>
-        </div>
+        </div> --}}
 
         <div class="account-content">
             <a href="index.html" class="logo mb-64">
@@ -90,7 +90,7 @@
         <div class="col-12">
             <label class="form-label mb-2 font-18 font-heading fw-600">Password</label>
             <div class="position-relative">
-                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="6+ characters, 1 Capital letter" required autocomplete="current-password">
+                <input type="password" name="password" class="common-input common-input--bg common-input--withIcon" placeholder="Password" required autocomplete="current-password">
                 <span class="input-icon"><img src="assets/images/icons/lock-icon.svg" alt=""></span>
                         <div class="error-msg password-error mt-1 text-danger"></div>
 

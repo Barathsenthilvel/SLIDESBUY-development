@@ -43,7 +43,7 @@
 <!-- ================================== Account Page Start =========================== -->
 <section class="account d-flex">
     <div class="account__left d-md-flex d-none flx-align section-bg position-relative z-index-1 overflow-hidden">
-        <img src="assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
+        <img src="../assets/images/shapes/pattern-curve-seven.png" alt="" class="position-absolute end-0 top-0 z-index--1 h-100">
         <div class="account-thumb">
             <img src="../assets/images/thumbs/banner-img.png" alt="">
             <div class="statistics animation bg-main text-center">

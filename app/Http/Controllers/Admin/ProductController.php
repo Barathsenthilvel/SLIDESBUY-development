@@ -493,10 +493,6 @@ class ProductController extends Controller
         return Storage::disk('public')->download($filePath, $product->product_title . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
     public function store(Request $request){
-        \Log::info('Product Attributes:', [
-            'all_request' => $request->all(),
-            'attributes' => $request->input('attributes', [])
-        ]);
     $attributeValues = [];
     $requestData = $request->all();
 
@@ -660,52 +656,56 @@ class ProductController extends Controller
         $getName = $request->route()->getName();
         if($getName == 'admin-product-edit') $list = 'admin-product';
         else $list = 'admin-productv2';
-        $attributeValues=[];
-        $attributeValues1=[];
-        $product=Product::findOrFail($id);
+
+        $product = Product::findOrFail($id);
         $product->category = explode("|",$product->category);
-        $attributeTemplate=$product->attribute_map;
-        $subCategory=$product->category;
-        $processGroup=[];
-        $attributeGroup = Attribute::where('status','1')->get();
-        $tax = Tax::where('status','1')->get();
-        $data=Category::where('status','1')->where('parent_category_id',$subCategory)->get();
+        $attributeTemplate = 1; // Force it to load attributes
+
         $category = Category::where('status','1')->where('parent_category_id','0')->get();
-        $similarProduct=Product::where('status','1')->where('id','!=',$id)->get();
-        $relatedProduct=Product::where('status','1')->where('id','!=',$id)->get();
+        $similarProduct = Product::where('status','1')->where('id','!=',$id)->get();
+        $relatedProduct = Product::where('status','1')->where('id','!=',$id)->get();
         $vendor = Vendor::where('status','1')->get();
+        $products = Product::where('status','1')->where('id','!=',$id)->get();
 
+        // Load all attributes for the form
+        $processGroup = [];
+        $allAttributes = Attribute::where('status','1')->get();
+        foreach($allAttributes as $attr) {
+            $processGroup[$attr->id] = collect([$attr]);
+        }
 
-        if($attributeTemplate > 0){
-        $mapGroup=MapGroup::where('status','1')->where('group_name',$attributeTemplate)->first();
-            if($mapGroup){
-            $attribute=explode(",",$mapGroup->attribute);
-                foreach($attribute as $attribute){
-                    $processGroup[$attribute]=Attribute::where('status','1')->where('id',$attribute)->get();
-                }
-            }
-        $attriputesCombined=explode('|',$product->attribute_values);
+        // Parse existing attribute values
+        $attributeValues = [];
+        $attributeValues1 = [];
+        $attriputesCombined = explode('|',$product->attribute_values);
         foreach($attriputesCombined as $key => $attriputesCombined){
-            $attributeValues[]=explode('-',$attriputesCombined);
-            $attributeValues1[]=$attributeValues[$key][0];
-            // array_shift($attributeValues[$key]);
-            // $attributeValues2[]=explode(',',$attributeValues[$key][0]);
+            if(!empty($attriputesCombined)) {
+                $attributeValues[] = explode('-',$attriputesCombined);
+                $attributeValues1[] = $attributeValues[$key][0];
+            }
         }
-        $attributeValues3=array_combine($attributeValues1, $attributeValues);
-        // dd($attributeValues3);
-        return view('admin.product.edit',compact('attributeGroup','processGroup','category','attributeTemplate','tax','attributeTemplate','data','product','attributeValues3','similarProduct','relatedProduct','vendor','list'));
+        $attributeValues3 = array_combine($attributeValues1, $attributeValues);
 
-        }
-
-        return view('admin.product.edit',compact('attributeGroup','category','attributeTemplate','tax','attributeTemplate','data','product','similarProduct','relatedProduct','vendor','list'));
+        return view('admin.product.edit',compact(
+            'processGroup',
+            'category',
+            'attributeTemplate',
+            'product',
+            'attributeValues3',
+            'similarProduct',
+            'relatedProduct',
+            'vendor',
+            'list',
+            'products'
+        ));
 
        }
 
        public function update(Request $request,$id){
-        $attributeValues=[];
-        $requestData=$request->all();
-        // $attributeTemplate=$requestData['attributeTemplate'];
-        $rules=[
+        $attributeValues = [];
+        $requestData = $request->all();
+
+        $rules = [
             'category'     => 'required',
             'basePrice'     => 'nullable',
             'skuCode'     => 'required|unique:products,product_sku,'.$id,
@@ -717,7 +717,7 @@ class ProductController extends Controller
             'productDescription' =>'required'
         ];
 
-        $customs=[
+        $customs = [
             'category.required'              => 'Category should be filled',
             'basePrice.required'             => 'Base Price should be filled',
             'skuCode.required'               => 'SKU  Code should be filled',
@@ -728,102 +728,66 @@ class ProductController extends Controller
             'productDescription.required'    => 'Product Description should be filled',
         ];
 
-
         $validator = Validator::make($request->all(), $rules,$customs);
 
         if ($validator->fails()) {
-            $subCategory=Category::where('parent_category_id',$request->input('category'))->where('status','1')->get();
-          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+            $subCategory = Category::where('parent_category_id',$request->input('category'))->where('status','1')->get();
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $data=Product::findOrFail($id);
+        $data = Product::findOrFail($id);
 
         $image1 = $request->image1;
         $image2 = $request->image2;
         $image3 = $request->image3;
         $image4 = $request->image4;
         $image5 = $request->image5;
-/*
-       if($attributeTemplate > 0){
-            $attributes = $request['attributes'];
-            $attributeValues = [];
-            if(is_array($attributes)){
-                foreach($attributes as $key =>$value){
-                    if(is_array($value)){
-                        $attributeValues[]=$key.'-'.implode(',',$value);
-                    }else{
-                        $getType=Attribute::findOrFail($key);
-                        $getAttri=$getType->attribute_values;
-                        if($getType->attribute_type == 2){
-                            if(empty($getAttri)){
-                                $getType->attribute_values=strip_tags($value);
-                                $getType->save();
-                            }else{
-                            if(in_array(strip_tags($value),explode(',',$getAttri))){
 
-                            }else{
-                                $getType->attribute_values=$getAttri.','.strip_tags($value);
-                                $getType->save();
-                            }
-                            $attributeValues[]=$key.'-'.$value;
+        // Process attributes
+        $attributes = $request['attributes'] ?? [];
+        $attributeValues = [];
 
-                        }}else{
-                            if(empty($getAttri)){
-                                $getType->attribute_values=$value;
-                                $getType->save();
-                            }else{
-                            if(in_array($value,explode(',',$getAttri))){
+        if (is_array($attributes)) {
+            foreach ($attributes as $key => $value) {
+                $getType = Attribute::find($key);
+                if (!$getType) continue;
 
-                            }else{
-                                $getType->attribute_values=$getAttri.','.$value;
-                                $getType->save();
-                            }
-                            $attributeValues[]=$key.'-'.$value;
-                        }
-
-                        }
+                if (is_array($value)) {
+                    // Handle multiple values (e.g. tags)
+                    $cleanValues = array_map('trim', $value);
+                    $attributeValues[] = $key . '-' . implode(',', $cleanValues);
+                } else {
+                    // Handle single value
+                    $cleanValue = trim($value);
+                    if (!empty($cleanValue)) {
+                        $attributeValues[] = $key . '-' . $cleanValue;
                     }
                 }
             }
-            $attribute_value=implode('|',$attributeValues);
         }
-        */
-        $data->category=(empty($requestData['category']))?'':implode('|',(array)$requestData['category']);
-        $data->product_title=$requestData['productTitle'];
+
+        $attribute_value = !empty($attributeValues) ? implode('|', $attributeValues) : '';
+
+        $data->category = (empty($requestData['category'])) ? '' : implode('|',(array)$requestData['category']);
+        $data->product_title = $requestData['productTitle'];
         $data->slug = Str::slug($data->product_title,'-');
-        $data->product_base_price=$requestData['basePrice'];
-        $data->product_sku=$requestData['skuCode'];
-        $data->attribute_values=($attributeTemplate > 0)?$attribute_value:'';
-        $data->tax=$requestData['tax'];
-        $data->weight = $requestData['weight'] ?? $data->weight;
-        $data->weight_unit = $requestData['weightUnit'] ?? $data->weight_unit;
-        $data->product_description=$requestData['productDescription'];
-        $data->trending = (isset($requestData['trending']))?$requestData['trending']:'off';
-        $data->metadescription=$requestData['metadescription'];
-        $data->metakeyword=$requestData['metakeyword'];
-        $data->quantity=($requestData['quantity'] == "")?'unlimited':$requestData['quantity'];
-        $data->minquantity=$requestData['minquantity'];
-        $data->soldout=(isset($requestData['soldout'])?$requestData['soldout']:'off');
+        $data->product_sku = $requestData['skuCode'];
+        $data->attribute_values = $attribute_value;
+        $data->product_description = $requestData['productDescription'];
+        $data->trending = (isset($requestData['trending'])) ? $requestData['trending'] : 'off';
+        $data->metadescription = $requestData['metadescription'];
+        $data->metakeyword = $requestData['metakeyword'];
         $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : ($data->sell_type ?? 1);
-        $data->delivery_date=$requestData['deliveryDate'];
-        $data->metaname=$requestData['metaname'];
-        $data->image1=$image1;
-        $data->image2=$image2;
-        $data->image3=$image3;
-        $data->image4=$image4;
-        $data->image5=$image5;
-        $data->similar_products=(empty($requestData['similarProducts']))?'':implode(',',(array)$requestData['similarProducts']);
-        $data->related_products=(empty($requestData['relatedProducts']))?'':implode(',',(array)$requestData['relatedProducts']);
-        $data->user_id=Auth::user()->id;
-        // $data->attribute_map=$requestData['attributeTemplate'];
-        $data->attribute_map = '';
+        $data->metaname = $requestData['metaname'];
+        $data->image1 = $image1;
+        $data->image2 = $image2;
+        $data->image3 = $image3;
+        $data->image4 = $image4;
+        $data->image5 = $image5;
+        $data->similar_products = (empty($requestData['similar_products'])) ? '' : implode(',', (array)$requestData['similar_products']);
+        $data->related_products = (empty($requestData['related_products'])) ? '' : implode(',', (array)$requestData['related_products']);
+        $data->user_id = Auth::user()->id;
         $data->vendor = $requestData['vendor'];
-        $data->manufacturerPrice = $requestData['manufacturerPrice'];
-        $data->manufacturerCode = $requestData['manufacturerCode'];
-        $data->markup = $requestData['markup'];
-        $data->mrp = $requestData['mrp'];
-        $data->mark_type = $requestData['mark_type'];
-        $data->shipping_price = $requestData['shipping_price'];
         $data->update();
 
         $data1['msg'] = 'Product Updated Successfully.';

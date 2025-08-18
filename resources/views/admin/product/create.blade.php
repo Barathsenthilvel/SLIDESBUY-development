@@ -474,9 +474,9 @@
                                 <div class="col-lg-4 col-md-12">
                                     <input class="form-control" type="text" value="" id="metakeyword" name="metakeyword" required/>
                                 </div>
-                                <div class="col-lg-4 col-md-12">
+                                {{-- <div class="col-lg-4 col-md-12">
                                     <span>Enter keyword separated by comma (E.g. Sarees, Pure)</span>
-                                </div>
+                                </div> --}}
                             </div>
                             @if($pricing_type == 'product')
                             <div class="form-group row">

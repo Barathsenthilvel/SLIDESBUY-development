@@ -217,10 +217,10 @@
 
 <footer class="footer-two section-bg position-relative z-index-1 overflow-hidden">
 
-    <img src="assets/images/gradients/footer-gradient-bg.png" alt="" class="bg--gradient">
+    <img src="../assets/images/gradients/footer-gradient-bg.png" alt="" class="bg--gradient">
 
-    <img src="assets/images/shapes/footer-pattern1.png" alt="" class="position-absolute end-0 top-0 z-index--1">
-    <img src="assets/images/shapes/footer-pattern2.png" alt="" class="position-absolute start-0 top-0 z-index--1">
+    <img src="../assets/images/shapes/footer-pattern1.png" alt="" class="position-absolute end-0 top-0 z-index--1">
+    <img src="../assets/images/shapes/footer-pattern2.png" alt="" class="position-absolute start-0 top-0 z-index--1">
 
     <div class="footer-inner padding-y-120">
         <div class="container container-two">

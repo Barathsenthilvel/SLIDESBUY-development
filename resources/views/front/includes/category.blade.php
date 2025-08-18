@@ -59,7 +59,7 @@
                   <div class="product-item__bottom flx-between gap-2">
                     <div>
                       {{-- You can customize these details as needed, below are placeholders --}}
-                      <span class="product-item__sales font-14 mb-0 text-white">100 Slides Count</span>
+                      <span class="product-item__sales font-14 mb-0 text-white">100 Slides </span>
                       {{-- <div class="d-flex align-items-center gap-1">
                         <ul class="star-rating">
                           <li class="star-rating__item font-11"><i class="fas fa-star"></i></li>

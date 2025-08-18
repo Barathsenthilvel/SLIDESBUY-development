@@ -176,15 +176,15 @@
 
 <!-- ====================== Newsletter Section Start ===================== -->
 <section class="newsletter position-relative z-index-1 overflow-hidden">
-    <img src="assets/images/gradients/newsletter-gradient-bg.png" alt="" class="bg--gradient">
+    <img src="..assets/images/gradients/newsletter-gradient-bg.png" alt="" class="bg--gradient">
 
-    <img src="assets/images/shapes/element1.png" alt="" class="element two">
-    <img src="assets/images/shapes/element2.png" alt="" class="element one">
+    <img src="../assets/images/shapes/element1.png" alt="" class="element two">
+    <img src="../assets/images/shapes/element2.png" alt="" class="element one">
 
-    <img src="assets/images/shapes/line-vector-one.png" alt="" class="line-vector one">
-    <img src="assets/images/shapes/line-vector-two.png" alt="" class="line-vector two">
+    <img src="../assets/images/shapes/line-vector-one.png" alt="" class="line-vector one">
+    <img src="../assets/images/shapes/line-vector-two.png" alt="" class="line-vector two">
 
-    <img src="../'assets/images/thumbs/newsletter-man.png" alt="" class="newsletter-man">
+    <img src="../assets/images/thumbs/newsletter-man.png" alt="" class="newsletter-man">
 
     <div class="container container-two">
         <div class="row justify-content-center">

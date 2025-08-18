@@ -467,12 +467,24 @@
             @php
                 $inWishlist = Auth::check() ? Auth::user()->wishlists()->where('product_id', $product->id)->exists() : false;
             @endphp
+            @auth
+
+
             <button type="button"
                     class="wishlist-btn btn-wishlist {{ $inWishlist ? 'active' : '' }}"
                     data-id="{{ $product->id }}"
                     title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
                 <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
             </button>
+
+            @else
+            <a href="{{ route('front.loginBlade') }}"
+               class="wishlist-btn btn-wishlist"
+               title="Sign up to add to Wishlist">
+                <i class="far fa-heart"></i>
+            </a>
+            @endauth
+
         </div>
 
         {{-- Thumbnails Row --}}
@@ -493,6 +505,13 @@
                 @endif
             @endfor
         </div>
+{{-- @dd($product->product_description); --}}
+        {{-- description --}}
+        <div class="product-details__description">
+            <p>{{ strip_tags($product->product_description) }}</p>
+        </div>
+
+
 
 
     </div>
@@ -699,10 +718,18 @@
             Renew Subscription
         </a>
     @elseif (($product->sell_type ?? 1) == 0)
+    @auth
         <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
             Download Free
         </a>
+        @else
+        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary w-50 w-sm-auto mt-3">
+            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
+            Download Free
+        </a>
+        @endauth
+
     @elseif ($activeSubscription && $canDownload)
         <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
@@ -756,11 +783,15 @@
     <ul class="meta-attribute">
         <li class="meta-attribute__item">
             <span class="name">Accessible</span>
+            {{-- <span class="custom-badge {{ ($product->sell_type ?? 1) == 0 ? 'free' : 'paid' }} with-icon">
+                <i class="fas {{ ($product->sell_type ?? 1) == 0 ? 'fa-gift' : 'fa-tag' }}"></i>
+                {{ ($product->sell_type ?? 1) == 0 ? 'Free' : 'Paid' }}
+            </span> --}}
             <span class="details">
-                @if($product->is_free)
-                    <span class="badge bg-success">Free</span>
-                @else
+                @if($product->sell_type == 1)
                     <span class="badge bg-primary">Paid</span>
+                @else
+                    <span class="badge bg-success">Free</span>
                 @endif
             </span>
         </li>
@@ -844,7 +875,7 @@
         </li>
 
 
-        <li class="meta-attribute__item">
+        {{-- <li class="meta-attribute__item">
             <span class="name">Copatible with</span>
             <span class="details">
                 <a href="#" class="hover-text-decoration-underline">Contact Form 7,</a>
@@ -898,7 +929,7 @@
                 <a href="#" class="hover-text-decoration-underline">saas,</a>
                 <a href="#" class="hover-text-decoration-underline">dashboard,</a>
             </span>
-        </li>
+        </li> --}}
     </ul>
     <!-- Meta Attribute List End -->
 </div>

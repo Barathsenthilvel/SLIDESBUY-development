@@ -651,7 +651,7 @@
     </div>
 @endif --}}
 
-@if ($activeSubscription)
+@if ($activeSubscription && ($showDownloadCount ?? false))
     <div class="mb-3">
         <label class="fw-bold">Downloads Left</label>
         <div class="progress">

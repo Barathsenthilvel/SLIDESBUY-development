@@ -66,10 +66,10 @@ class FrontendController extends Controller
         $Homeslider = Homeslider::where('status','1')->get();
         if($store->out_of_stock == 0){
           $Product = Product::where('status','1')->where('soldout','off')->get();
-          $trending = Product::where('status','1')->where('trending','on')->where('soldout','off')->orderBy('id','desc')->limit('4')->get();
+          $trending = Product::where('status','1')->where('trending',1)->where('soldout','off')->orderBy('id','desc')->limit('4')->get();
         }else{
           $Product = Product::where('status','1')->get();
-          $trending = Product::where('status','1')->where('trending','on')->orderBy('id','desc')->limit('4')->get();
+          $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         }
         // dd($Homecat);
         $fronCategory= Category::where('status',1)->where('parent_category_id',0)->get();
@@ -210,7 +210,7 @@ class FrontendController extends Controller
         $shopCategory=Category::with('products')->where('status','1')->get();
         $fronCategory= Category::with('subs')->where('status',1)->where('parent_category_id',0)->get();
 
-        $trending = Product::where('status','1')->where('trending','on')->orderBy('id','desc')->limit('4')->get();
+        $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         if(!empty($request->ajax)){
           return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','attributes','attributeValues','cat','subcat'));
         }

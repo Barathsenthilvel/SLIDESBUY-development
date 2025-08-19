@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -12,11 +12,11 @@
                                     <!--begin::Page Heading-->
                                     <div class="d-flex align-items-baseline flex-wrap mr-5">
                                         <!--begin::Page Title-->
-                                        <h5 class="text-dark font-weight-bold my-1 mr-5">Product</h5>
+                                        <h5 class="text-dark font-weight-bold my-1 mr-5">Slides</h5>
                                         <!--end::Page Title-->
                                             <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
                                             <li class="breadcrumb-item text-muted">
-                                                <a href="{{ route($list) }}" class="text-muted">List of Products</a>
+                                                <a href="{{ route($list) }}" class="text-muted">List of Slides</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -35,11 +35,11 @@
                                         <!--begin::Card-->
                                         <div class="card card-custom gutter-b example example-compact">
                                             <div class="card-header">
-                                                <h3 class="card-title">Add Product</h3>
-                                               
+                                                <h3 class="card-title">Add Slides</h3>
+
                                             </div>
-                                            
-                                            
+
+
                                             <form method="get" action="{{ route($list2) }}" enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="card-body">
@@ -60,7 +60,7 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    
+
                                                 </div>
                                                 <div class="card-footer">
                                                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
@@ -70,9 +70,9 @@
                                             <!--end::Form-->
                                         </div>
                                         <!--end::Card-->
-                                                        
+
                                     </div>
-                                  
+
                                 </div>
                             </div>
                             <!--end::Container-->
@@ -82,7 +82,7 @@
 
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection                     
+ @endsection
 
  @push('script')
 

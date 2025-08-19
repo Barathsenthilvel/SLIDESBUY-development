@@ -57,17 +57,9 @@ class ProductController extends Controller
             return $query->where('product_sku','like',"%{$search}%");
         })
         ->when($search[6],function($query,$search){
-            $search = \explode('-',$search);
-            $search = (empty($search[1]))?$search[0]:$search[1];
-            return $query->where('manufacturerCode','like',"%{$search}%");
+            return $query->where('trending','=',$search);
         })
         ->when($search[7],function($query,$search){
-            return $query->where('vendor','=',$search);
-        })
-        ->when($search[8],function($query,$search){
-            return $query->where('soldout','=',$search);
-        })
-        ->when($search[10],function($query,$search){
             return $query->where('status','=',$search);
         })
         ->when($order,function($query,$order){
@@ -80,14 +72,6 @@ class ProductController extends Controller
             }elseif($order[0]['column'] == 5){
                 return $query->orderBy('product_sku',$order[0]['dir']);
             }elseif($order[0]['column'] == 6){
-                return $query->orderBy('manufacturerCode',$order[0]['dir']);
-            }elseif($order[0]['column'] == 7){
-                return $query->orderBy('vendor',$order[0]['dir']);
-            }elseif($order[0]['column'] == 8){
-                return $query->orderBy('soldout',$order[0]['dir']);
-            }elseif($order[0]['column'] == 9){
-                return $query->orderBy('quantity',$order[0]['dir']);
-            }elseif($order[0]['column'] == 10){
                 return $query->orderBy('status',$order[0]['dir']);
             }
         })->get();
@@ -108,18 +92,6 @@ class ProductController extends Controller
             return $query->where('product_sku','like',"%{$search}%");
         })
         ->when($search[6],function($query,$search){
-            $search = \explode('-',$search);
-            $search = (empty($search[1]))?$search[0]:$search[1];
-            return $query->where('manufacturerCode','like',"%{$search}%");
-        })
-        ->when($search[7],function($query,$search){
-            return $query->where('vendor','=',$search);
-        })
-        ->when($search[8],function($query,$search){
-            return $query->where('soldout','=',$search);
-        })
-        ->when($search[10],function($query,$search){
-
             return $query->where('status','=',$search);
         })
         ->when($order,function($query,$order){
@@ -132,14 +104,6 @@ class ProductController extends Controller
             }elseif($order[0]['column'] == 5){
                 return $query->orderBy('product_sku',$order[0]['dir']);
             }elseif($order[0]['column'] == 6){
-                return $query->orderBy('manufacturerCode',$order[0]['dir']);
-            }elseif($order[0]['column'] == 7){
-                return $query->orderBy('vendor',$order[0]['dir']);
-            }elseif($order[0]['column'] == 8){
-                return $query->orderBy('soldout',$order[0]['dir']);
-            }elseif($order[0]['column'] == 9){
-                return $query->orderBy('quantity',$order[0]['dir']);
-            }elseif($order[0]['column'] == 10){
                 return $query->orderBy('status',$order[0]['dir']);
             }
         })->skip($request->start)->take($request->length)->get();
@@ -147,8 +111,6 @@ class ProductController extends Controller
             $datas[$key]->edit = route('admin-product-edit',$value->id);
             $datas[$key]->delete = route('admin-product-delete',$value->id);
             $datas[$key]->img_src = asset('/assets/media/products/'.$value->image1);
-            $datas[$key]->manufacturerCode = $value->Manufacturer();
-            $datas[$key]->vendor = $value->vendor();
             $datas[$key]->category = $value->getcategorys();
             $datas[$key]->temp_status = ['1'=>route('admin-product-status',['id1' => $value->id, 'id2' => 1]),'0'=>route('admin-product-status',['id1' => $value->id, 'id2' => 0])];
         }
@@ -619,7 +581,7 @@ class ProductController extends Controller
     $data->weight = '';
     $data->weight_unit = $requestData['weightUnit'] ?? null;
     $data->product_description = $requestData['productDescription'];
-    $data->trending = (isset($requestData['trending'])) ? 'on' : 'off';
+    $data->trending = (isset($requestData['trending'])) ? 1 : 0;
     $data->metadescription = $requestData['metadescription'];
     $data->metakeyword = $requestData['metakeyword'];
     $data->quantity ='';
@@ -774,7 +736,7 @@ class ProductController extends Controller
         $data->product_sku = $requestData['skuCode'];
         $data->attribute_values = $attribute_value;
         $data->product_description = $requestData['productDescription'];
-        $data->trending = (isset($requestData['trending'])) ? $requestData['trending'] : 'off';
+        $data->trending = (isset($requestData['trending'])) ? 1 : 0;
         $data->metadescription = $requestData['metadescription'];
         $data->metakeyword = $requestData['metakeyword'];
         $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : ($data->sell_type ?? 1);

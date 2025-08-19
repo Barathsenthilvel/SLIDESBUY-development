@@ -207,9 +207,10 @@
 
                                 <!-- Trending Field -->
                                 <div class="form-group row">
-                                    <label class="col-lg-2 col-md-12 col-form-label">Trending</label>
+                                    <label class="col-md-12 col-lg-2 col-form-label">Trending</label>
+
                                     <div class="col-lg-4 col-md-4 col-sm-4">
-                                        <input data-switch="true" type="checkbox" data-on-color="success" data-off-color="danger" name="trending" {{ ($product->trending == 'on') ? 'checked' : '' }} />
+                                        <input data-switch="true" type="checkbox" name="trending" data-on-color="success" data-off-color="danger" {{ ($product->trending == 1) ? 'checked' : '' }} />
                                     </div>
                                 </div>
 

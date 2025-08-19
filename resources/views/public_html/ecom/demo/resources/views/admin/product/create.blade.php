@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
 <!--end::Header-->
 <!--begin::Content-->
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -12,11 +12,11 @@
                 <!--begin::Page Heading-->
                 <div class="d-flex align-items-baseline flex-wrap mr-5">
                     <!--begin::Page Title-->
-                    <h5 class="text-dark font-weight-bold my-1 mr-5">Product</h5>
+                    <h5 class="text-dark font-weight-bold my-1 mr-5">Slides</h5>
                     <!--end::Page Title-->
                     <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route($list) }}" class="text-muted">List of Products</a>
+                            <a href="{{ route($list) }}" class="text-muted">List of Slides</a>
                         </li>
                     </ul>
                 </div>
@@ -35,7 +35,7 @@
                     <!--begin::Card-->
                     <div class="card card-custom gutter-b example example-compact">
                         <div class="card-header">
-                            <h3 class="card-title">Add Product</h3>
+                            <h3 class="card-title">Add Slides</h3>
 
                         </div>
                         <!--begin::Form-->
@@ -50,7 +50,7 @@
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
-                                            </div> 
+                                            </div>
                                              @php
                                              if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
                                                 $link=route('admin-productv-store');
@@ -71,7 +71,7 @@
                                 <div class="col-lg-4">
                                     <select class="form-control" id="vendor" name="vendor" >
                                         <option value="">Select</option>
-                                        @foreach($vendor as $v)                
+                                        @foreach($vendor as $v)
                                             <option data-productPrefix="{{$v->manufacturerID}}" data-vendorperscent="{{$v->vendorperscent}}" value="{{ $v->id }}">{{$v->name.' / '.$StoreConfig->VendorIDPrefix.'-'.sprintf("%'03d", $v->id)}}</option>
                                         @endforeach
                                     </select>
@@ -131,7 +131,7 @@
                                     <span>Please enter your unique product code</span>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
                                 <div class="col-lg-4 col-md-12">
@@ -185,7 +185,7 @@
                                     <span>Please enter your unique product code</span>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Manufacturer Price<span class="text-danger">*</span></label>
                                 <div class="col-lg-2 col-md-9">
@@ -220,9 +220,9 @@
                                 <div class="col-lg-4 col-md-12">
                                     <span>This is Silkastic Price, No need to Enter</span>
                                 </div>
-                            </div>                            
+                            </div>
                             @endif
-                        
+
 
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">SKU Code<span class="text-danger">*</span></label>
@@ -242,7 +242,7 @@
                                     <span>SKU is silkastic code, Enter based on last SKU</span>
                                 </div>
                             </div>
-                            
+
                             @if($attributeTemplate >0)
                             <h3 class="card-title">Attribute</h3>
                             @foreach($processGroup as $processGroup)
@@ -513,11 +513,11 @@
                                     </span>
                                 </div>
                             </div>
-                           
+
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Similar Products</label>
 
-                                
+
                                 <div class="col-10">
                                     <select name="similarProducts[]" id="similarProducts" class="form-control" multiple="multiple">
                                         @foreach($similarProduct as $similarProduct)
@@ -530,7 +530,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-2 col-md-12 col-form-label">Related Products</label>
 
-                                
+
                                 <div class="col-10">
                                     <select name="relatedProducts[]" id="relatedProducts" class="form-control" multiple="multiple">
                                         @foreach($relatedProduct as $relatedProduct)
@@ -560,7 +560,7 @@
 
 <!--end::Content-->
 <!--begin::Footer-->
-@endsection                     
+@endsection
 
 @push('script')
 <script>
@@ -614,7 +614,7 @@ $('#category').select2({
                 }
             }
             reader.readAsDataURL(event.target.files[0]);
-        
+
    });
 
    // Class definition
@@ -683,13 +683,13 @@ jQuery(document).ready(function() {
           height:800
         }
       });
-    
+
       $('.upload_image').on('change', function(){
         objectB = this.parentElement;
         objectA = this;
         var reader = new FileReader();
         reader.onload = function (event) {
-            
+
           $image_crop.croppie('bind', {
             url: event.target.result
           }).then(function(){
@@ -699,7 +699,7 @@ jQuery(document).ready(function() {
         reader.readAsDataURL(this.files[0]);
         $('#uploadimageModal').modal('show');
       });
-    
+
       $('.crop_image').click(function(event){
           var id= $("#id").val();
           var url= $("#url").val();
@@ -712,7 +712,7 @@ jQuery(document).ready(function() {
                 url:url,
                 type: "POST",
                 data:{id:id,table_colum:table_colum,"image": response,"_token": "{{ csrf_token() }}"},
-                success:function(data){  
+                success:function(data){
                     objectB.children[0].children[0].src = response;
                     $('#uploadimageModal').modal('hide');
                     objectB.children[0].children[1].value = data['Name'];
@@ -727,7 +727,7 @@ jQuery(document).ready(function() {
             this.parentElement.parentElement.children[1].children[0].children[0].src="";
             this.parentElement.parentElement.children[1].children[0].children[1].value = "";
         });
-    });  
+    });
 </script>
 <script>
     ClassicEditor.create( document.querySelector( '#ktckeditor1' ) )

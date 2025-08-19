@@ -248,32 +248,50 @@ public function item(Request $request, $slug)
             ->where('user_id', $user->id)
             ->exists();
 
-        // Get active subscriptions
+        // Get active subscriptions (include no-expiry, exclude expired)
         $activeSubscriptions = $user->subscriptions()
             ->where('is_active', 1)
-            ->where('expired_at', '>', now())
+            ->where(function ($q) {
+                $q->whereNull('expired_at')
+                  ->orWhere('expired_at', '>', now());
+            })
             ->with('plan')
             ->get();
 
         $activeSubscriptionIds = $activeSubscriptions->pluck('id');
 
-        // Total download limit from all active plans
-        $downloadLimit = $activeSubscriptions->sum(function ($subscription) {
-            $limit = $subscription->plan ? $subscription->plan->download_limit : 0;
-            // If any plan has unlimited downloads (0), return 0 for unlimited
-            return $limit == 0 ? 0 : $limit;
+        // Detect no-expiry or unlimited plans
+        $hasNoExpiry = $activeSubscriptions->contains(function ($subscription) {
+            return is_null($subscription->expired_at);
         });
+        $hasUnlimitedPlan = $activeSubscriptions->contains(function ($subscription) {
+            return $subscription->plan && (int) $subscription->plan->download_limit === 0;
+        });
+
+        // Total download limit from all active plans
+        if ($hasNoExpiry || $hasUnlimitedPlan) {
+            // Treat as unlimited and hide counters in the UI
+            $downloadLimit = 0;
+        } else {
+            $downloadLimit = $activeSubscriptions->sum(function ($subscription) {
+                return $subscription->plan ? (int) $subscription->plan->download_limit : 0;
+            });
+        }
 
         // Count downloads used by user across active subscriptions
         $downloadsUsed = Downloads::where('user_id', $user->id)
             ->whereIn('subscription_id', $activeSubscriptionIds)
             ->count();
 
-        // Calculate remaining (if unlimited, set to 0)
+        // Show/hide progress/count
+        $showDownloadCount = true;
+
+        // Calculate remaining (if unlimited, set to 0 and hide count)
         if ($downloadLimit == 0) {
             $downloadsRemaining = 0; // Unlimited
             $canDownload = true;
             $downloadLimitReached = false;
+            $showDownloadCount = false;
         } else {
             $downloadsRemaining = max($downloadLimit - $downloadsUsed, 0);
             $canDownload = $downloadsRemaining > 0;
@@ -334,7 +352,8 @@ public function item(Request $request, $slug)
         'downloadLimit',
         'downloadsUsed',
         'downloadsRemaining',
-        'alreadyDownloaded'
+        'alreadyDownloaded',
+        'showDownloadCount'
     ));
 }
 
@@ -376,11 +395,14 @@ public function downloaddocuments($productId)
     }
 
     // Handle paid products (existing logic)
-    // Get all active subscriptions for paid downloads
+    // Get all active subscriptions for paid downloads (include no-expiry, exclude expired)
     $activeSubscriptions = Subscription::where('user_id', $user->id)
         ->where('payment_status', 'success')
         ->where('is_active', 1)
-        ->where('expired_at', '>', now())
+        ->where(function ($q) {
+            $q->whereNull('expired_at')
+              ->orWhere('expired_at', '>', now());
+        })
         ->with('plan')
         ->orderBy('expired_at', 'desc')
         ->get();

@@ -89,7 +89,8 @@
                                     data-discount="{{ $plan->discount ?? 0 }}"
                                     data-discount-type="{{ $plan->discount_type ?? '' }}"
                                     data-validity="{{ $plan->validity }}"
-                                    data-downloads="{{ $plan->downloads ?? 'Unlimited' }}"
+                                    data-download-limit="{{ $plan->download_limit ?? 0 }}"
+                                    data-downloads="{{ $plan->download_limit == 0 ? 'Unlimited' : $plan->download_limit . ' downloads' }}"
                                     data-description="{{ $plan->description ?? 'Essential services to start your journey' }}">
                                     Get Started
                                     </a>
@@ -379,6 +380,191 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
+/* Enhanced Modal Styling */
+.plan-modal .modal-content {
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    border: none;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.plan-modal .modal-header {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    position: relative;
+    border-bottom: 1px solid #e9ecef;
+    padding: 20px 24px;
+}
+
+.plan-modal .brand-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.plan-modal .brand-badge img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.plan-modal .modal-title {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.plan-modal .modal-logo {
+    max-height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.plan-modal .modal-body {
+    position: relative;
+    padding: 24px;
+}
+
+.plan-modal .modal-footer {
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    padding: 20px 24px;
+    border-radius: 0 0 15px 15px;
+}
+
+.plan-modal .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+}
+
+.plan-modal .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.plan-modal .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+}
+
+.plan-modal .btn-secondary {
+    background: #6c757d;
+    border: none;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+}
+
+.plan-modal .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Enhanced line-by-line plan details layout */
+.plan-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #fafbfc;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #e9ecef;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #e9ecef;
+    position: relative;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item:first-child {
+    padding-top: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 140px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.detail-label::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    background: #007bff;
+    border-radius: 50%;
+}
+
+.detail-value {
+    flex: 1;
+    color: #212529;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detail-value .plan-price-final {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745 !important;
+    text-shadow: 0 1px 2px rgba(40, 167, 69, 0.2);
+}
+
+.detail-value .plan-price-original {
+    font-size: 1.1rem;
+    color: #6c757d !important;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.detail-value .discount-badge-attractive {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(238, 90, 36, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Remove hero section; use cleaner, line-by-line layout */
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+    from { transform: translateY(8px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
 .modal-header {
     border-bottom: 1px solid #e9ecef;
     background: #f8f9fa;
@@ -393,56 +579,49 @@
 </style>
 
 <!-- Plan Details Modal -->
-<div class="modal fade" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
+<div class="modal fade plan-modal" id="planDetailsModal" tabindex="-1" aria-labelledby="planDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="planDetailsModalLabel">Plan Details</h5>
+            <div class="modal-header align-items-center justify-content-center">
+                <img src="http://127.0.0.1:8000/assets/images/logo/slidesbuy.png" alt="Slidesbuy Logo" class="modal-logo">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="plan-details-container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-muted mb-2">Plan Name</h6>
-                            <h4 class="plan-name mb-3"></h4>
-
-                            <h6 class="text-muted mb-2">Description</h6>
-                            <p class="plan-description mb-3"></p>
-
-                            <h6 class="text-muted mb-2">Downloads</h6>
-                            <p class="plan-downloads mb-3"></p>
+                    <div class="plan-details-list">
+                        <div class="detail-item">
+                            <span class="detail-label">Plan Price:</span>
+                            <span class="detail-value">
+                                <span class="plan-price-original text-decoration-line-through text-muted" style="display: none;"></span>
+                                <span class="plan-price-final text-success"></span>
+                                <span class="discount-badge-attractive" style="display: none;"></span>
+                            </span>
                         </div>
-                                                <div class="col-md-6">
-                            <h6 class="text-muted mb-2">Plan Price</h6>
-                            <div class="price-container mb-3">
-                                <div class="price-display">
-                                    <div class="original-price-small" style="display: none;">
-                                        <span class="plan-price-original text-decoration-line-through text-muted"></span>
-                                    </div>
-                                    <div class="discounted-price-large">
-                                        <h3 class="plan-price-final text-success mb-0"></h3>
-                                        <span class="discount-badge-attractive" style="display: none;"></span>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <h6 class="text-muted mb-2">Validity</h6>
-                            <p class="plan-validity mb-3"></p>
+                        <div class="detail-item">
+                            <span class="detail-label">Description:</span>
+                            <span class="detail-value plan-description"></span>
                         </div>
-                    </div>
 
-                    <div class="plan-features mt-4">
-                        <h6 class="text-muted mb-2">Plan Features</h6>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Up to 30 members</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Collaboration</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Project management</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Case management</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Process management</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Workflow management</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Team management</li>
-                        </ul>
+                                                <div class="detail-item">
+                            <span class="detail-label">Downloads:</span>
+                            <span class="detail-value plan-downloads"></span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Content Access:</span>
+                            <span class="detail-value plan-content-access">All Content Access Yes</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Validity:</span>
+                            <span class="detail-value plan-validity"></span>
+                        </div>
+
+                        <div class="detail-item plan-discount-item" style="display: none;">
+                            <span class="detail-label">Discount:</span>
+                            <span class="detail-value plan-discount"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -525,6 +704,7 @@ jQuery(document).ready(function ($) {
             discount: parseFloat(button.data('discount')) || 0,
             discountType: button.data('discount-type') || '',
             validity: button.data('validity'),
+            downloadLimit: parseInt(button.data('download-limit')) || 0,
             downloads: button.data('downloads'),
             description: button.data('description')
         };
@@ -547,10 +727,31 @@ jQuery(document).ready(function ($) {
 
         // Function to populate plan details in modal
     function populatePlanDetails(planData) {
-        $('.plan-name').text(planData.name + ' Plan');
+        // Hide plan name per requirement; keep internal data if needed
+        $('.plan-name').text('');
+        $('.plan-name-hero').text('');
         $('.plan-description').text(planData.description);
-        $('.plan-downloads').text(planData.downloads + ' downloads');
+
+        // Set downloads text
+        if (planData.downloadLimit == 0) {
+            $('.plan-downloads').text('Unlimited downloads');
+        } else {
+            $('.plan-downloads').text(planData.downloadLimit + ' downloads');
+        }
+
         $('.plan-validity').text(planData.validity + ' days');
+
+        // Show/hide discount section
+        if (planData.discount > 0) {
+            $('.plan-discount-item').show();
+            if (planData.discountType === 'flat') {
+                $('.plan-discount').text('₹' + planData.discount + ' OFF');
+            } else if (planData.discountType === 'percentage') {
+                $('.plan-discount').text(planData.discount + '% OFF');
+            }
+        } else {
+            $('.plan-discount-item').hide();
+        }
 
         // Calculate discounted price
         let discountedPrice = calculateDiscountedPrice(planData.price, planData.discountType, planData.discount);

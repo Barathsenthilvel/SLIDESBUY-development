@@ -444,17 +444,17 @@
                                 <label class="col-md-12 col-lg-2 col-form-label">Trending</label>
 
                                 <div class="col-lg-4 col-md-4 col-sm-4">
-                                    <input data-switch="true" type="checkbox" checked="checked" name="trending" data-on-color="success" data-off-color="danger" name="trending" {{ (old('trending') == 'on') ? 'checked' : '' }} />
+                                    <input data-switch="true" type="checkbox" name="trending" data-on-color="success" data-off-color="danger" {{ (old('trending') == 1) ? 'checked' : '' }} />
                                 </div>
                             </div>
-                            @if($pricing_type == 'product')
+                            {{-- @if($pricing_type == 'product')
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Delivery Date</label>
                                 <div class="col-lg-3 col-md-12" >
                                     <input type="text" name="deliveryDate" class="form-control" placeholder="Select Date" value="3 to 5 Days"  >
                                 </div>
                             </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Meta Name</label>
                                 <div class="col-lg-4 col-md-12">
@@ -494,13 +494,13 @@
                                 </div>
                             </div>
                             @endif
-                            <div class="form-group row">
+                            {{-- <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Sold Out</label>
 
                                 <div class="col-lg-9 col-md-9 col-sm-12">
                                     <input data-switch="true" type="checkbox"  data-on-color="success" data-off-color="danger" name="soldout" value="on" {{ (old('soldout') == 'on') ? 'checked' : '' }} />
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <h3 class="card-title">Documents</h3>
                             <div class="form-group row">

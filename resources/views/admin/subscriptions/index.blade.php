@@ -47,6 +47,7 @@
                                                     <th>User</th>
                                                     <th>Plan</th>
                                                     <th>Price</th>
+                                                    <th>Final Price</th>
                                                     <th>Subscribed At</th>
                                                     <th>Expired At</th>
                                                 </tr>
@@ -78,6 +79,7 @@
                         { data: 'user', name: 'user' },
                         { data: 'plan', name: 'plan' },
                         { data: 'price', name: 'price' },
+                        { data: 'final_price', name: 'final_price' },
                         { data: 'subscribed_at', name: 'subscribed_at' },
                         { data: 'expired_at', name: 'expired_at' },
                      ],

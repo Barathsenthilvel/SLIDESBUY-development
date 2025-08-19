@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                         <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -15,13 +15,13 @@
                                         <h5 class="text-dark font-weight-bold my-1 mr-5">Slides</h5>
                                         <!--end::Page Title-->
                                         <!--begin::Breadcrumb-->
-                                       
+
                                         <!--end::Breadcrumb-->
                                     </div>
                                     <!--end::Page Heading-->
                                 </div>
                                 <!--end::Info-->
-                                
+
                             </div>
                         </div>
                         <!--end::Subheader-->
@@ -36,8 +36,8 @@
                                             <h3 class="card-label">List of Slides</h3>
                                         </div>
                                         <div class="card-toolbar">
-                                            
-                                            
+
+
 											<div class="dropdown dropdown-inline">
 											    <!--begin::Button-->
                                             <a href="{{route('admin-product-group')}}" class="btn btn-primary font-weight-bolder">
@@ -97,13 +97,10 @@
                                                     <th>Product</th>
                                                     <th>Image</th>
                                                     <th>Category</th>
-                                                    <th>Price</th>
+                                                    <th>Sell Type</th>
                                                     <th>SKU</th>
-                                                    <th>M-Code</th>
-                                                    <th>Admin / vendor</th>
-                                                    <th>Sold on/off</th>
-                                                    <th>Quantity</th>
-                                                    <th>status</th>
+                                                    <th>Trending</th>
+                                                    <th>Status</th>
                                                     <th>Option</th>
                                                 </tr>
                                             </thead>
@@ -113,7 +110,7 @@
                                                     <th>Product</th>
                                                     <th>Image</th>
                                                     <th>Category</th>
-                                                    <th>Price</th>
+                                                    <th>Sell Type</th>
                                                     <th>SKU</th>
                                                     <th>M-Code</th>
                                                     <th>Admin / vendor</th>
@@ -128,7 +125,7 @@
                                     </div>
                                 </div>
                                 <!--end::Card-->
-                               
+
                             </div>
                             <!--end::Container-->
                         </div>
@@ -136,8 +133,8 @@
                     </div>
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection   
- @push('script')                  
+ @endsection
+ @push('script')
      <script type="text/javascript">
         var KTDatatablesSearchOptionsColumnSearch1 = function() {
 
@@ -200,16 +197,7 @@ var initTable1 = function() {
                 data: 'product_sku'
             },
             {
-                data: 'manufacturerCode'
-            },
-            {
-                data: 'vendor'
-            },
-            {
-                data: 'soldout'
-            },
-            {
-                data: 'quantity'
+                data: 'trending'
             },
             {
                 data: 'status'
@@ -230,10 +218,10 @@ var initTable1 = function() {
                 switch (column.title()) {
                     case 'Sno':
                         break;
-                    case 'Slide':
+                    case 'Product':
                         input = $(`<input type="text" class="form-control form-control-sm form-filter datatable-input" data-col-index="` + column.index() + `"/>`);
                         break;
-                    case 'image':
+                    case 'Image':
                         break;
                     case 'Category':
                     input = $(`<select class="form-control form-control-sm form-filter datatable-input" title="Select" data-col-index="` + column.index() + `">
@@ -243,21 +231,18 @@ var initTable1 = function() {
                                     @endforeach
                                     </select>`);
                         break;
+                    case 'Sell Type':
+                        break;
                     case 'SKU':
                         input = $(`<input type="text" class="form-control form-control-sm form-filter datatable-input" data-col-index="` + column.index() + `"/>`);
                         break;
-                    case 'M-Code':
-                        input = $(`<input type="text" class="form-control form-control-sm form-filter datatable-input" data-col-index="` + column.index() + `"/>`);
-                        break;
-                    case 'Admin / vendor':
-                        break;
-                    case 'Sold on/off':
+                    case 'Trending':
                         input = $(`<select class="form-control form-control-sm form-filter datatable-input" title="Select" data-col-index="` + column.index() + `">
                                     <option value="">Select</option>
-                                    <option value="on">On</option>
-                                    <option value="off">Off</option></select>`);
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option></select>`);
                         break;
-                    case 'status':
+                    case 'Status':
                         input = $(`<select class="form-control form-control-sm form-filter datatable-input" title="Select" data-col-index="` + column.index() + `">
                                     <option value="">Select</option>
                                     <option value="1">Active</option>
@@ -379,9 +364,11 @@ var initTable1 = function() {
                 targets: 4,
                 width: '150px',
                 render:function(data, type, full, meta){
-                    return `MRP : ${full.mrp} </br>
-                            Vendor Price : ${full.manufacturerPrice} </br>
-                            Our Price : ${full.product_base_price}`
+                    if (full.sell_type == 0) {
+                        return '<span class="label label-lg label-light-success label-inline">Free</span>';
+                    } else {
+                        return '<span class="label label-lg label-light-primary label-inline">Paid</span>';
+                    }
                 }
             },
             {
@@ -393,53 +380,27 @@ var initTable1 = function() {
             },
             {
                 targets: 6,
-                orderable: false,
-                width: '200px',
+                width: '100px',
+                render: function(data, type, full, meta) {
+                    if (data == 1) {
+                        return '<span class="label label-lg label-light-success label-inline">Yes</span>';
+                    } else {
+                        return '<span class="label label-lg label-light-danger label-inline">No</span>';
+                    }
+                }
             },
             {
                 targets: 7,
                 width: '100px',
-            },
-            {
-                targets: 8,
-                width: '100px',
-                // render: function(data, type, full, meta) {
-                //     var status = {
-                //         On: {
-                //             'title': 'On',
-                //             'data' : 'on',
-                //             'class': 'label-light-primary'
-                //         },
-                //         Off: {
-                //             'title': 'Off',
-                //             'data' : 'off',
-                //             'class': ' label-light-danger'
-                //         }
-                //     };
-                //     var option = "";
-                //     for(var K in status){
-                //         var check = (status[K].data == data) ? 'selected':'';
-                //         option +='<option  value='+status[K].data+' ' +check+'>'+status[K].title +'</option>';
-                //     }
-                //     return '<select class="form-control form-control-sm form-filter datatable-input">'+option+'</select>';
-                // }
-            },
-            {
-                targets: 9,
-                width: '100px',
-            },
-            {
-                targets: 10,
-                width: '100px',
                 render: function(data, type, full, meta) {
                     var status = {
                         '1': {
-                            'title': 'Activate',
+                            'title': 'Active',
                             'data' : '1',
                             'class': 'label-light-primary'
                         },
                         '0': {
-                            'title': 'Deactivated',
+                            'title': 'Deactive',
                             'data' : '0',
                             'class': ' label-light-danger'
                         }
@@ -531,4 +492,4 @@ $('body').submit('#model',function(e){
 });
 
 </script>
- @endpush   
+ @endpush

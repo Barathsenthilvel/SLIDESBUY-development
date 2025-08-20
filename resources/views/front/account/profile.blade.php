@@ -52,9 +52,43 @@
             <div id="tab-content" class="account-card p-3">
                 <!-- Top metrics -->
                 <div class="row g-3 mb-2">
-                    <div class="col-sm-4"><div class="metric"><div class="value">{{ $totalDownloaded ?? ($downloads->count() ?? 0) }}</div><div class="label">Total Downloads</div></div></div>
-                    <div class="col-sm-4"><div class="metric"><div class="value">{{ $downloadLimit ?? 0 }}</div><div class="label">Plan Download Limit</div></div></div>
-                    <div class="col-sm-4"><div class="metric"><div class="value">{{ $remainingDownloads ?? 0 }}</div><div class="label">Downloads Left</div></div></div>
+                    <div class="col-sm-4">
+                        <div class="metric">
+                            <div class="value">{{ $totalDownloaded ?? ($downloads->count() ?? 0) }}</div>
+                            <div class="label">Total Downloads</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="metric">
+                            <div class="value">
+                                @if(!empty($isUnlimited) && $isUnlimited && empty($isExpired))
+                                    <i class="las la-infinity"></i>
+                                @else
+                                    {{ $downloadLimit ?? 0 }}
+                                @endif
+                            </div>
+                            <div class="label">Plan Download Limit</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="metric">
+                            <div class="value">
+                                @if(!empty($isExpired) && $isExpired)
+                                    0
+                                @elseif(!empty($isUnlimited) && $isUnlimited)
+                                    <i class="las la-infinity"></i>
+                                @else
+                                    {{ $remainingDownloads ?? 0 }}
+                                @endif
+                            </div>
+                            <div class="label">
+                                Downloads Left
+                                @if(!empty($isExpired) && $isExpired)
+                                    <span class="text-danger small d-block">Please renew the plan</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="downloads" class="tab-pane" style="display: none;">
                     <div class="table-responsive">

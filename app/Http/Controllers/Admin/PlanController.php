@@ -37,7 +37,6 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:45',
                 'price' => 'required|numeric|min:0',
@@ -48,22 +47,15 @@ class PlanController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Validation failed!',
-                    'messages' => $validator->errors(),
-                    'old' => $request->all()
-                ], 422);
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
-
-            // dd($validator->validated());
 
             Plan::create($validator->validated());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Plan created successfully!',
-            ], 201);
+            return redirect()->route('admin-subscription-setupview')
+                ->with('success', 'Plan created successfully!');
     }
 
 

@@ -97,7 +97,7 @@
                                 </li>
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">{{ $product['name'] }}</span>
-                                    <span class="text">₹{{ number_format($product['price'], 2) }}</span>
+                                    <span class="text">₹{{ number_format($product['price'] - ($product['discount_price'] ?? 0), 2) }}</span>
                                 </li>
                                 {{-- <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Project Management Dashboard </span>
@@ -113,11 +113,17 @@
                                 <img src="../assets/images/thumbs/rating-img.png" alt="">
                             </div>
                             <div class="flx-between gap-2">
-                                <p class="text">Please don’t forget to rating</p>
-                                <a  href="{{ route('login') }}" class="btn btn-main flx-align gap-2 pill">
-                                    Back To Home
-                                    <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span>
-                                </a>
+                                <p class="text">Please don't forget to rating</p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('download.invoice', $orderDetails['order_no']) }}" class="btn btn-outline-main flx-align gap-2 pill">
+                                        <span class="icon line-height-1 font-16"><i class="las la-download"></i></span>
+                                        Download Invoice
+                                    </a>
+                                    <a href="{{ route('login') }}" class="btn btn-main flx-align gap-2 pill">
+                                        Back To Home
+                                        <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -140,6 +140,10 @@ Route::get('/write-review/{product}', 'Front\ReviewController@create')->name('pr
 Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')
     ->middleware('auth')
     ->name('product.download');
+
+Route::get('/download/invoice/{orderNo}', 'Front\CheckoutController@downloadInvoice')
+    ->middleware('auth')
+    ->name('download.invoice');
 //new routes added
 
 Route::any('/sign-in','Front\UserController@signIn')->name('login.submit');

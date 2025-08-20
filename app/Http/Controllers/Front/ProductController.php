@@ -234,6 +234,9 @@ public function item(Request $request, $slug)
     $downloadsRemaining = 0;
     $activeSubscription = null;
     $alreadyDownloaded = false;
+    $hasExpiredSubscription = false;
+    $showDownloadCount = false;
+    $shouldShowRenew = false;
 
     if (Auth::check()) {
         $user = Auth::user();
@@ -260,7 +263,17 @@ public function item(Request $request, $slug)
 
         $activeSubscriptionIds = $activeSubscriptions->pluck('id');
 
-        // Detect no-expiry or unlimited plans
+        // Check for expired subscriptions to prompt renewal
+        $expiredSubscriptions = $user->subscriptions()
+            ->where('is_active', 1)
+            ->whereNotNull('expired_at')
+            ->where('expired_at', '<=', now())
+            ->get();
+
+        // Check if user has any expired subscriptions (for showing renew button)
+        $hasExpiredSubscription = $expiredSubscriptions->isNotEmpty();
+
+        // Detect no-expiry or unlimited plans from ACTIVE subscriptions only
         $hasNoExpiry = $activeSubscriptions->contains(function ($subscription) {
             return is_null($subscription->expired_at);
         });
@@ -268,7 +281,7 @@ public function item(Request $request, $slug)
             return $subscription->plan && (int) $subscription->plan->download_limit === 0;
         });
 
-        // Total download limit from all active plans
+        // Total download limit from ACTIVE subscriptions only (not expired)
         if ($hasNoExpiry || $hasUnlimitedPlan) {
             // Treat as unlimited and hide counters in the UI
             $downloadLimit = 0;
@@ -278,7 +291,7 @@ public function item(Request $request, $slug)
             });
         }
 
-        // Count downloads used by user across active subscriptions
+        // Count downloads used by user across ACTIVE subscriptions only (not expired)
         $downloadsUsed = Downloads::where('user_id', $user->id)
             ->whereIn('subscription_id', $activeSubscriptionIds)
             ->count();
@@ -286,17 +299,20 @@ public function item(Request $request, $slug)
         // Show/hide progress/count
         $showDownloadCount = true;
 
-        // Calculate remaining (if unlimited, set to 0 and hide count)
+        // Calculate remaining (if unlimited, set to 0; still show 100% bar with "Unlimited")
         if ($downloadLimit == 0) {
             $downloadsRemaining = 0; // Unlimited
             $canDownload = true;
             $downloadLimitReached = false;
-            $showDownloadCount = false;
+            // Keep $showDownloadCount = true so UI shows "Unlimited Downloads"
         } else {
             $downloadsRemaining = max($downloadLimit - $downloadsUsed, 0);
             $canDownload = $downloadsRemaining > 0;
             $downloadLimitReached = !$canDownload;
         }
+
+        // Show renew button if download limit reached OR if subscription expired
+        $shouldShowRenew = $downloadLimitReached || $hasExpiredSubscription;
 
         if ($downloadLimitReached && $downloadLimit > 0) {
             session()->flash('error', 'Your download limit has been reached. Please renew your subscription.');
@@ -353,7 +369,9 @@ public function item(Request $request, $slug)
         'downloadsUsed',
         'downloadsRemaining',
         'alreadyDownloaded',
-        'showDownloadCount'
+        'showDownloadCount',
+        'hasExpiredSubscription',
+        'shouldShowRenew'
     ));
 }
 

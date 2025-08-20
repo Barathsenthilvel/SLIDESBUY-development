@@ -458,31 +458,22 @@
                 }
             @endphp
 
-            <a href="#"
+            <button type="button"
                class="screenshot-btn btn btn-white pill px-sm-5"
                data-images='@json($images)'>
                 Screenshot
-            </a>
-
-            @php
-                $inWishlist = Auth::check() ? Auth::user()->wishlists()->where('product_id', $product->id)->exists() : false;
-            @endphp
-            @auth
-
-
-            <button type="button"
-                    class="wishlist-btn btn-wishlist {{ $inWishlist ? 'active' : '' }}"
-                    data-id="{{ $product->id }}"
-                    title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
-                <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
             </button>
 
-            @else
-            <a href="{{ route('front.loginBlade') }}"
-               class="wishlist-btn btn-wishlist"
-               title="Sign up to add to Wishlist">
-                <i class="far fa-heart"></i>
-            </a>
+            @auth
+                @php
+                    $inWishlist = Auth::user()->wishlists()->where('product_id', $product->id)->exists();
+                @endphp
+                <button type="button"
+                        class="wishlist-btn btn-wishlist {{ $inWishlist ? 'active' : '' }}"
+                        data-id="{{ $product->id }}"
+                        title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                </button>
             @endauth
 
         </div>
@@ -651,15 +642,25 @@
     </div>
 @endif --}}
 
-@if ($activeSubscription && ($showDownloadCount ?? false))
+@if (($shouldShowRenew ?? false))
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <span>
+            @if(($hasExpiredSubscription ?? false))
+                Your subscription has expired. Please renew to continue downloading.
+            @else
+                Your download limit has been reached. Please renew your subscription.
+            @endif
+        </span>
+        <a href="{{ route('front.subscription') }}" class="btn btn-main">Renew Subscription</a>
+    </div>
+@elseif ($activeSubscription && ($showDownloadCount ?? false))
     <div class="mb-3">
         <label class="fw-bold">Downloads Left</label>
-        <div class="progress">
+        <div class="progress custom-progress">
             @php
                 $remaining = 0;
                 $percentage = 0;
 
-                // Check if download limit is unlimited (0)
                 if ($downloadLimit == 0) {
                     $remaining = 'Unlimited';
                     $percentage = 100;
@@ -668,7 +669,7 @@
                     $percentage = $downloadLimit > 0 ? ($remaining / $downloadLimit) * 100 : 0;
                 }
             @endphp
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $percentage }}%;">
+            <div class="progress-bar custom-progress-bar" role="progressbar" style="width: {{ $percentage }}%;">
                 @if($downloadLimit == 0)
                     Unlimited Downloads
                 @else
@@ -730,6 +731,10 @@
         </a>
         @endauth
 
+    @elseif (($shouldShowRenew ?? false))
+        <a href="{{ route('front.subscription') }}" class="btn btn-danger w-100 w-sm-auto mt-3">
+            Renew Subscription
+        </a>
     @elseif ($activeSubscription && $canDownload)
         <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
@@ -771,6 +776,31 @@
 .download-info i {
     width: 16px;
     text-align: center;
+}
+</style>
+
+<style>
+.custom-progress {
+    background: rgba(106, 66, 241, 0.12);
+    background: color-mix(in srgb, hsl(var(--main)) 20%, transparent);
+    border-radius: 12px;
+    height: 24px;
+    position: relative;
+    overflow: hidden;
+}
+.custom-progress-bar {
+    background: var(--main-gradient);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(106, 66, 241, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    min-width: 60px;
+    transition: all 0.3s ease;
 }
 </style>
 
@@ -973,6 +1003,13 @@ jQuery(document).ready(function ($) {
 
     // Set first thumbnail as active by default
     $('.thumbnail-item:first').addClass('active');
+
+    // Prevent default navigation on screenshot trigger
+    $(document).on('click', '.screenshot-btn', function (e) {
+        e.preventDefault();
+        // Your modal/lightbox logic should go here, using data-images attribute
+        // Example: const images = $(this).data('images') || [];
+    });
 
     // Wishlist handled globally in container.blade.php
 

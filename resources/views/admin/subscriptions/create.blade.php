@@ -82,8 +82,11 @@
                                         <label class="col-2 col-form-label">Enter the Plan Name <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
-                                            <input type="text" name="name" class="form-control" required
+                                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" required
                                                 placeholder="Enter a Plan Name"   value="{{ old('name', $plan->name ?? '') }}">
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -91,17 +94,23 @@
                                         <label class="col-2 col-form-label">Enter the Price <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
-                                            <input type="text" name="price" class="form-control" required
+                                            <input type="text" name="price" class="form-control @error('price') is-invalid @enderror" required
                                                 placeholder="Price"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')"  value="{{ old('price', $plan->price ?? '') }}">
+                                            @error('price')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Enter the Discount</label>
                                         <div class="col-3">
-                                            <input type="text" name="discount" class="form-control" placeholder="Discount"
+                                            <input type="text" name="discount" class="form-control @error('discount') is-invalid @enderror" placeholder="Discount"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')" value="{{ old('discount', $plan->discount ?? '') }}">
+                                            @error('discount')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -109,11 +118,14 @@
                                         <label class="col-2 col-form-label">Select the Discount Type <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
-                                            <select name="discount_type" class="form-control" required>
+                                            <select name="discount_type" class="form-control @error('discount_type') is-invalid @enderror" required>
                                                 <option value="">Select Type</option>
                                                 <option value="flat"  {{ (old('discount_type', $plan->discount_type ?? '') == 'flat') ? 'selected' : '' }}>Flat</option>
                                                 <option value="percentage" {{ (old('discount_type', $plan->discount_type ?? '') == 'percentage') ? 'selected' : '' }}>Percentage</option>
                                             </select>
+                                            @error('discount_type')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -122,8 +134,11 @@
                                         <label class="col-2 col-form-label">Enter the Download Limit<span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
-                                            <input type="text" name="download_limit" class="form-control" required
+                                            <input type="text" name="download_limit" class="form-control @error('download_limit') is-invalid @enderror" required
                                                 placeholder="Enter the Document download limit"  value="{{ old('download_limit', $plan->download_limit ?? '') }}">
+                                            @error('download_limit')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -131,8 +146,11 @@
                                         <label class="col-2 col-form-label">Enter the Validity (Days) <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
-                                            <input type="number" name="validity" class="form-control" required
+                                            <input type="number" name="validity" class="form-control @error('validity') is-invalid @enderror" required
                                                 placeholder="Validity in days" min="1"  value="{{ old('validity', $plan->validity ?? '') }}">
+                                            @error('validity')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -467,5 +485,11 @@
         jQuery(document).ready(function () {
             KTTagify.init();
         });
+    </script>
+    <script>
+		// Disable global AJAX hijack for this form so server redirect + flash messages work
+		$(function(){
+			$('#formCreate').off('submit');
+		});
     </script>
 @endpush

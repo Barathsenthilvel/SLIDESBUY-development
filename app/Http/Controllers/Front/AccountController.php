@@ -54,27 +54,36 @@ class AccountController extends Controller
         ];
     });
 
-    // Determine the active subscription (unexpired), or fall back to the most recent
-    $activeSubscription = $subscriptions
-        ->filter(function ($s) {
-            return $s->expired_at && Carbon::parse($s->expired_at)->isFuture();
-        })
-        ->first() ?? $subscriptions->first();
+    // Determine active subscriptions (no expiry or future expiry)
+    $activeSubscriptions = $subscriptions->filter(function ($s) {
+        return is_null($s->expired_at) || Carbon::parse($s->expired_at)->isFuture();
+    });
+    $activeSubscription = $activeSubscriptions->first();
 
-    // Plan download limit comes from the active (or latest) subscription's plan
-    $downloadLimit = optional(optional($activeSubscription)->plan)->download_limit ?? 0;
+    // Flags for view logic
+    $isExpired = !$activeSubscription && $subscriptions->isNotEmpty();
+    $isUnlimited = $activeSubscription && (int) (optional($activeSubscription->plan)->download_limit ?? 0) === 0;
 
-    // Count downloads for the active subscription only (if present)
-    if ($activeSubscription) {
-        $downloadsForActive = $downloads->filter(function ($d) use ($activeSubscription) {
+    // Plan download limit comes from the active subscription plan (0 means unlimited)
+    $downloadLimit = $activeSubscription ? (int) (optional($activeSubscription->plan)->download_limit ?? 0) : 0;
+
+    // Count downloads for the active subscription only
+    $downloadsForActive = $activeSubscription
+        ? $downloads->filter(function ($d) use ($activeSubscription) {
             return optional($d->subscription)->id === $activeSubscription->id;
-        });
-    } else {
-        $downloadsForActive = $downloads;
-    }
+        })
+        : collect();
 
     $totalDownloaded = $downloadsForActive->count();
-    $remainingDownloads = max(0, $downloadLimit - $totalDownloaded);
+
+    // Compute remaining: unlimited shows as infinity in UI, expired shows 0
+    if ($isExpired) {
+        $remainingDownloads = 0;
+    } elseif ($isUnlimited) {
+        $remainingDownloads = null; // represent infinity in the view
+    } else {
+        $remainingDownloads = max(0, $downloadLimit - $totalDownloaded);
+    }
 
     return view('front.account.profile', compact(
         'user',
@@ -83,7 +92,9 @@ class AccountController extends Controller
         'totalDownloaded',
         'downloadLimit',
         'remainingDownloads',
-        'subscriptions'
+        'subscriptions',
+        'isUnlimited',
+        'isExpired'
     ));
 }
 

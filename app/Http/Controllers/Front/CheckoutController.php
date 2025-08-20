@@ -24,17 +24,18 @@ use Session;
 use Auth;
 use Redirect;
 use Stripe;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CheckoutController extends Controller{
     public function CustomerCancelOrderSingle(Request $request,Order $order){
             $cart = unserialize(bzdecompress(utf8_decode($order->card)));
             $item = $cart->singleorder[0];
             $amount = (int)($item['total']-$item['coupon_amount'])*100;
-            
+
             $Razorpay = unserialize(bzdecompress(utf8_decode($order->stripe_object)));
             $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
             $payment = $api->payment->fetch($Razorpay->id);
-            
+
             if($payment->status != 'captured'){
                 if($payment->status == 'refunded'){
                         $order->delivery_status = 'Canceled';
@@ -42,9 +43,9 @@ class CheckoutController extends Controller{
                         $order->payment_status = 'refund';
                         $order->update();
                 }
-                return response()->json(['status'=>"Your Payment status is $payment->status. Not able to Canceled order"]); 
+                return response()->json(['status'=>"Your Payment status is $payment->status. Not able to Canceled order"]);
             }
-            
+
             try{
                     $refund = $payment->fetch($payment->id)->refund(array("amount"=>$amount,"speed"=>"normal","receipt"=>"Order ID $order->map_id"));
                     $order->delivery_status = 'Canceled';
@@ -54,24 +55,24 @@ class CheckoutController extends Controller{
                     $order->refund_object = (isset($refund))?utf8_encode(bzcompress(serialize($refund), 9)):'';
                     $order->update();
             }catch(Razorpay\Api\Errors\ServerError $e){
-                return Redirect::back()->with('deleted', 'Error While Refund'); 
+                return Redirect::back()->with('deleted', 'Error While Refund');
             }catch(Exception $e){
-                 return Redirect::back()->with('deleted', 'Error While Refund'); 
-                return response()->json(['status'=>'Error While Refund']); 
+                 return Redirect::back()->with('deleted', 'Error While Refund');
+                return response()->json(['status'=>'Error While Refund']);
             }
             $this->singlesentMail($order,10);
             $this->sentSingleAdminMail($order,27);
             $this->singlesentMailcustomer($order,10);
-        return Redirect::back()->with('deleted', 'Your message has been sent successfully!'); 
+        return Redirect::back()->with('deleted', 'Your message has been sent successfully!');
     }
-    
+
     public function CustomerCancelOrder(Request $request,Order $order){
         // $date = date('y:m:d', strtotime('+3 days'));
         // if($order->updated_at < $date && $order->delivery_status == 'Delivered'){
             $Razorpay = unserialize(bzdecompress(utf8_decode($order->stripe_object)));
             $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
             $payment = $api->payment->fetch($Razorpay->id);
-           
+
             if($payment->status != 'captured'){
                 if($payment->status == 'refunded'){
                     $Order = Order::where('order_id',$order->order_id)->get();
@@ -84,9 +85,9 @@ class CheckoutController extends Controller{
                         // $order->refund_object = (isset($refund))?utf8_encode(bzcompress(serialize($refund), 9)):'';
                         $order->update();
                     }
-                    return response()->json(['status'=>"Your Payment status is $payment->status. Order Already Canceled"]); 
+                    return response()->json(['status'=>"Your Payment status is $payment->status. Order Already Canceled"]);
                 }
-                return response()->json(['status'=>"Your Payment status is $payment->status. Not able to Canceled order"]); 
+                return response()->json(['status'=>"Your Payment status is $payment->status. Not able to Canceled order"]);
             }
             $Order = Order::where('order_id',$order->order_id)->get();
             try{
@@ -100,12 +101,12 @@ class CheckoutController extends Controller{
                     $order->refund_object = (isset($refund))?utf8_encode(bzcompress(serialize($refund), 9)):'';
                     $order->update();
                 }
-                
+
             }catch(\Razorpay\Api\Errors\BadRequestError $e){
                 dd($e);
-                return response()->json(['status'=>'Error While Refund']); 
+                return response()->json(['status'=>'Error While Refund']);
             }
-            
+
             $cart = unserialize(bzdecompress(utf8_decode($order->card)));
             try{
             $mailTemplates = MailTemplate::where('template_name',10)->first();
@@ -119,13 +120,13 @@ class CheckoutController extends Controller{
             }
             $this->SentEmail($Order[0],10);
             $this->sentAdminMail($Order[0],26);
-        return response()->json(['status'=>'Order Cancelled Amount Refud in  2-3 Working Days']); 
+        return response()->json(['status'=>'Order Cancelled Amount Refud in  2-3 Working Days']);
     }
     public function deliveryaddress(Request $request){
         // $Order = Order::where('id',1)->first();
         // $this->sentAdminMail($Order,26);
         if(!Auth::check()){
-            return Redirect::back(); 
+            return Redirect::back();
         }
         $Cart = session()->get('cart');
         if(!$Cart){
@@ -156,7 +157,7 @@ class CheckoutController extends Controller{
         $Address = Address::where('user_id',Auth::user()->id)->where('id',$request->id)->first();
         $Cart = session()->get('cart');
         $store = Storeconfiguration::where('id',1)->first();
-        
+
         if(empty($Address)){
             $Cart->deliverycharge = 0;
             $deliveryCharge = (object)['delivery'=>null,'msg'=>'Add Address','fastdelivery'=>null];
@@ -164,7 +165,7 @@ class CheckoutController extends Controller{
             $Cart->total();
             return view('front.includes.cart_summery',compact('Cart','store','deliveryCharge'));
         }
-        
+
         $Address['fast'] = ($request->fast == 'fast')?true:false;
         $Cart->deliverycharge = 0;
         $deliveryCharge = $Address->delivery_charge($Cart->get_weight());
@@ -185,7 +186,7 @@ class CheckoutController extends Controller{
     }
     public function fail(Request $request){
         if(!Auth::check()){
-            return Redirect::back(); 
+            return Redirect::back();
         }
         $checkout_session = \session()->get('stripe_object');
             \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
@@ -235,9 +236,9 @@ class CheckoutController extends Controller{
         $Coupon = $this->AvailableCoupon();
         $Address = session()->get('Address');
         if(!Auth::check() || $Address == null){
-            return Redirect::back(); 
+            return Redirect::back();
         }
-       
+
         $Cart = session()->get('cart');
         if(!$Cart){
             return redirect('/');
@@ -275,13 +276,13 @@ class CheckoutController extends Controller{
         }
         return view('front.checkout',compact('Cart','Address','deliveryCharge','Coupon','response'));
     }
-    
+
     public function paymentpage(Request $request){
         $Address = session()->get('Address');
         if(!Auth::check() || $Address == null){
-            return Redirect::back(); 
+            return Redirect::back();
         }
-       
+
         $Cart = session()->get('cart');
         if(!$Cart){
             return redirect('/');
@@ -318,7 +319,7 @@ class CheckoutController extends Controller{
     }
     public function india(Request $request){
         $Address = Address::where('user_id',Auth::user()->id)->get();
-        return view('front.includes.wasttemplate',compact('Address')); 
+        return view('front.includes.wasttemplate',compact('Address'));
     }
     public function india1(Request $request){
         if($request->id == "100"){
@@ -326,7 +327,7 @@ class CheckoutController extends Controller{
             return view('front.includes.wasretemplate2',compact('State'));
             }else{
                 return view('front.includes.wasretemplate2');
-            }   
+            }
     }
     public function addAddress(Request $request){
         $Address = new Address();
@@ -348,7 +349,7 @@ class CheckoutController extends Controller{
     }
     public function order(Request $request){
         if(!Auth::check()){
-            return Redirect::back(); 
+            return Redirect::back();
         }
         $store = Storeconfiguration::where('id',1)->first();
         $cart = $request->session()->get('cart');
@@ -425,12 +426,12 @@ class CheckoutController extends Controller{
             }
             return view('front.order',compact('Order','cart','Address','error'));
         }else{
-            return Redirect::back(); 
+            return Redirect::back();
         }
         return "Some thin was wrong";
     }
     public function razorpay(){
-        
+
     }
     public function COD(Request $request){
         $store = Storeconfiguration::where('id',1)->first();
@@ -439,7 +440,7 @@ class CheckoutController extends Controller{
         $Random = time().rand();
         foreach ($cart->items as $key => $value) {
             # code...
-            
+
             $Order = new Order();
             $cart->productreducr();
             $cart->singleorder = [];
@@ -464,7 +465,7 @@ class CheckoutController extends Controller{
             $request['grandTotal'] = $cart->grandTotal;
             $request['payment_status'] = 'Pending';
             $request['vendor_id'] = $value->vendor;
-    
+
             $request['shipping_first_name'] = Auth::user()->name;
             $request['shipping_last_name'] =  Auth::user()->last_name;
             $request['shipping_address'] =  Auth::user()->address;
@@ -477,9 +478,9 @@ class CheckoutController extends Controller{
             $Order->fill($request->all())->save();
             $SavedOreder[] = $Order;
         }
-        
-            
-        
+
+
+
         if(count($SavedOreder) > 0){
             if($cart->CouponClass){
                 $this->CouponUsed($cart->CouponClass,$Random);
@@ -490,7 +491,7 @@ class CheckoutController extends Controller{
                 $ordersID[] = $store->OrderIDPrefix.sprintf('%03d',$Order->id);
             }
             foreach($SavedOreder as $Order){
-                
+
                 $error = "";
                 try{
                      $mailTemplates = MailTemplate::where('template_name',4)->where('status','1')->first();
@@ -511,25 +512,25 @@ class CheckoutController extends Controller{
                 }
                 break;
             }
-        
+
             return view('front.order',compact('Order','cart','Address','error','SavedOreder'));
         }else{
             \Session::put('success', 'try again to place order');
             return Redirect::back();
         }
     }
-    
+
     public function razorpayReturn(Request $request)
-    {        
+    {
         $store = Storeconfiguration::where('id',1)->first();
-        $input = $request->all();        
+        $input = $request->all();
         $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
         $SavedOreder = [];
         $init = true;
-        if(count($input)  && !empty($input['razorpay_payment_id'])) 
+        if(count($input)  && !empty($input['razorpay_payment_id']))
         {
-            try 
+            try
             {
                 $response = $api->payment->fetch($input['razorpay_payment_id']);
                 $cart = $request->session()->get('cart');
@@ -539,7 +540,7 @@ class CheckoutController extends Controller{
                     $cart->productreducr();
                     $cart->singleorder = [];
                     $cart->singleorder[] = $cart->items[$key];
-                
+
                     $Address = $request->session()->get('Address');
                     $request['card'] = utf8_encode(bzcompress(serialize($cart), 9));
                     $request['payment_method'] = $response->method;
@@ -560,7 +561,7 @@ class CheckoutController extends Controller{
                     $request['tax'] = $cart->tax;
                     $request['grandTotal'] = $cart->grandTotal;
                     $request['vendor_id'] = $value->vendor;
-                    
+
                     $request['shipping_first_name'] = Auth::user()->name;
                     $request['shipping_last_name'] =  Auth::user()->last_name;
                     $request['shipping_address'] =  Auth::user()->address;
@@ -570,7 +571,7 @@ class CheckoutController extends Controller{
                     $request['shipping_phone'] =  Auth::user()->Phone;
                     $request['shipping_street'] =  Auth::user()->street;
                     $request['shipping_country'] =  Auth::user()->getContry();
-                   
+
                     $Order->fill($request->all())->save();
                     if($init){
                         $Order->map_id = $Order->id;
@@ -581,16 +582,16 @@ class CheckoutController extends Controller{
                         $Order->map_id = $firstorder->id;
                         $Order->update();
                     }
-                    
+
                     $SavedOreder[] = $Order;
-                    
+
                 }
                 if(count($SavedOreder) > 0){
                     if($cart->CouponClass){
                         $this->CouponUsed($cart->CouponClass,$SavedOreder[0]->order_id);
                     }
                     $request->session()->forget('cart');
-                    
+
                     foreach($SavedOreder as $Order){
                         $error = "";
                         try{
@@ -609,22 +610,22 @@ class CheckoutController extends Controller{
                     $this->sentAdminMail($Order,26);
                     return view('front.order',compact('Order','cart','Address','error','SavedOreder'));
                 }else{
-                    return Redirect::back(); 
+                    return Redirect::back();
                 }
-            } 
-            catch (\Exception $e) 
+            }
+            catch (\Exception $e)
             {
                 return  $e->getMessage();
                 \Session::put('error',$e->getMessage());
                 return redirect()->back();
-            }            
+            }
         }
         \Session::put('success', 'Payment successful, your order will be despatched in the next 48 hours.');
         return redirect()->back();
     }
-    
-    
-    
+
+
+
     public function edit($id){
         $Address = Address::where('id',$id)->first();
         $Country = Country::where('status',1)->get();
@@ -660,7 +661,7 @@ class CheckoutController extends Controller{
         $Order  = Order::where('id',11)->first();
         $cart = unserialize(bzdecompress(utf8_decode($Order->card)));
         try{
-                
+
             $mailTemplates = MailTemplate::where('template_name',4)->where('status','1')->first();
             $mailContents=[
               'title'=>$mailTemplates->subject_mail,
@@ -672,8 +673,8 @@ class CheckoutController extends Controller{
                       $error = $e;
                   }
     }
-    
-    
+
+
      // ********************* coupon *********************** //
 
     public function removecoupon(Request $request){
@@ -694,18 +695,18 @@ class CheckoutController extends Controller{
         }else{
             $price = $cart->totalPrice;
         }
-  
+
         $Coupon = Coupon::where('status',1)->where('code','=',$request->code)->whereRaw("FIND_IN_SET('$user',userid)")->where('expirydate', '>=', $date)->where('OrderValue','<=',(int)$price)->first();
-        
+
         if(!$Coupon){
-            $Coupon = Coupon::where('status',1)->where('code','=',$request->code)->where('expirydate', '>=', $date)->where('OrderValue','<=',(int)$price)->first(); 
+            $Coupon = Coupon::where('status',1)->where('code','=',$request->code)->where('expirydate', '>=', $date)->where('OrderValue','<=',(int)$price)->first();
         }
-    
+
         if($Coupon){
             if($Coupon->count != 0){
                 if($this->checkvalicoupon($Coupon,$user)){
                     return response()->json(['status'=>false,'msg'=>'Coupon Already Taken ']);
-                }   
+                }
             }
             if($Coupon->user == 0){
                 $createdate = Auth::user()->created_at;
@@ -752,7 +753,7 @@ class CheckoutController extends Controller{
         $Address = session()->get('Address');
         return view('front.includes.checksummery',compact('Cart','Address'));
     }
-    
+
         public function paymentsummery(Request $request){
         $Cart = $request->session()->get('cart');
         $Address = session()->get('Address');
@@ -778,10 +779,10 @@ class CheckoutController extends Controller{
         $createdate = Auth::user()->created_at;
         $date = today()->format('Y-m-d');
         $valideCoupon = [];
-        
+
         $Coupon = Coupon::where('status',1)->where('OrderValue','<=',(int)$price)->where('expirydate', '>=', $date)->get();
         // $Coupon2 = Coupon::where('status',1)->where('userid',null)->where('OrderValue','<=',$price)->where('expirydate', '>=', $date)->get();
-        
+
         foreach ($Coupon as $key => $value) {
             # code...
             $CouponUsage = CouponUsage::where('coupenid',$value->id)->where('code',$value->code)->where('userid',$user)->count();
@@ -799,7 +800,7 @@ class CheckoutController extends Controller{
 
             $valideCoupon[] = $value;
         }
-        
+
         // foreach ($Coupon2 as $key => $value) {
         //     # code...
         //     $CouponUsage = CouponUsage::where('coupenid',$value->id)->where('code',$value->code)->where('userid',$user)->count();
@@ -817,9 +818,45 @@ class CheckoutController extends Controller{
 
         //     $valideCoupon[] = $value;
         // }
-       
+
         return $valideCoupon;
       }
+
+        public function downloadInvoice($orderNo)
+    {
+        try {
+            // Find the order by order number
+            $order = Order::where('order_id', $orderNo)->first();
+
+            if (!$order) {
+                return redirect()->back()->with('error', 'Order not found.');
+            }
+
+            // Check if user owns this order
+            if ($order->user_id != Auth::user()->id) {
+                return redirect()->back()->with('error', 'Unauthorized access.');
+            }
+
+            // Get order details
+            $cart = unserialize(bzdecompress(utf8_decode($order->card)));
+
+                        // Generate PDF content
+            $html = view('front.invoice.template', compact('order', 'cart'))->render();
+
+            // Create PDF using DomPDF
+            $pdf = Pdf::loadHTML($html);
+
+            // Set paper size and orientation
+            $pdf->setPaper('A4', 'portrait');
+
+            // Download the PDF
+            return $pdf->download("invoice-{$orderNo}.pdf");
+
+        } catch (\Exception $e) {
+            \Log::error('Invoice download error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to generate invoice. Please try again.');
+        }
+    }
 }
 
 

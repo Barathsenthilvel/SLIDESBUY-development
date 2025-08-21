@@ -86,9 +86,9 @@
 
                                             <div class="product-item__bottom flx-between gap-2">
                                                 <div>
-                                                    <span class="product-item__sales font-14 mb-2">
-                                                        {{ $product->sales ?? '1200' }} Downloads
-                                    </span>
+                                                                                <span class="product-item__sales font-14 mb-2">
+                                {{ $downloadCounts[$product->id] ?? 0 }} Downloads
+                            </span>
                                                     <div class="d-flex align-items-center gap-1">
                                                         <ul class="star-rating">
                                                             @for ($i = 1; $i <= 5; $i++)
@@ -196,11 +196,11 @@ $(document).ready(function() {
             if (data.status === 'success') {
                 // Update wishlist count in header
                 $('.wishlist-count').text(data.count);
-                
+
                 if (window.toaster) {
                     window.toaster.success('Removed from wishlist');
                 }
-                
+
                 // Refresh the page after successful removal
                 window.location.reload();
             } else {

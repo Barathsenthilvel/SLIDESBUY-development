@@ -14,13 +14,26 @@ class WishlistController extends Controller
     {
         $userId = Auth::id();
 
-        $wishlistProducts = DB::table('wishlists')
-            ->join('products', 'wishlists.product_id', '=', 'products.id')
+        $wishlistProducts = \App\Models\Product::join('wishlists', 'products.id', '=', 'wishlists.product_id')
             ->where('wishlists.user_id', $userId)
-            ->select('products.*')
+            ->where('products.status', 1)
             ->get();
 
-        return view('front.wishlist.list', compact('wishlistProducts'));
+        // Calculate download counts for wishlist products
+        $productIds = $wishlistProducts->pluck('id');
+        $downloadStats = \App\Models\Downloads::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, SUM(download_count) as total_downloads')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        // Build download counts map
+        $downloadCounts = [];
+        foreach ($downloadStats as $stat) {
+            $downloadCounts[$stat->product_id] = (int) ($stat->total_downloads ?? 0);
+        }
+
+        return view('front.wishlist.list', compact('wishlistProducts', 'downloadCounts'));
     }
 
     // Add product to wishlist

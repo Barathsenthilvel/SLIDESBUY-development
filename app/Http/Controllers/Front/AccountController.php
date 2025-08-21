@@ -54,27 +54,51 @@ class AccountController extends Controller
         ];
     });
 
-    // Determine active subscriptions (no expiry or future expiry)
+    // Get active subscriptions ordered by creation date (oldest first)
     $activeSubscriptions = $subscriptions->filter(function ($s) {
         return is_null($s->expired_at) || Carbon::parse($s->expired_at)->isFuture();
-    });
-    $activeSubscription = $activeSubscriptions->first();
+    })->sortBy('created_at');
+
+    // Find the current active subscription to use (prioritize oldest)
+    $currentActiveSubscription = null;
+    $downloadLimit = 0;
+    $totalDownloaded = 0;
+    $isUnlimited = false;
+
+    foreach ($activeSubscriptions as $subscription) {
+        $plan = $subscription->plan;
+        if (!$plan) continue;
+
+        $subscriptionDownloadLimit = (int) $plan->download_limit;
+        $subscriptionDownloadsUsed = $downloads->filter(function ($d) use ($subscription) {
+            return optional($d->subscription)->id === $subscription->id;
+        })->count();
+
+        // If unlimited plan
+        if ($subscriptionDownloadLimit === 0) {
+            $currentActiveSubscription = $subscription;
+            $downloadLimit = 0; // Unlimited
+            $totalDownloaded = $subscriptionDownloadsUsed;
+            $isUnlimited = true;
+            break;
+        }
+
+        // If limited plan and downloads remaining
+        if ($subscriptionDownloadsUsed < $subscriptionDownloadLimit) {
+            $currentActiveSubscription = $subscription;
+            $downloadLimit = $subscriptionDownloadLimit;
+            $totalDownloaded = $subscriptionDownloadsUsed;
+            break;
+        }
+
+        // If this plan is exhausted, continue to next plan
+    }
+
+    // Use current active subscription for the view
+    $activeSubscription = $currentActiveSubscription;
 
     // Flags for view logic
-    $isExpired = !$activeSubscription && $subscriptions->isNotEmpty();
-    $isUnlimited = $activeSubscription && (int) (optional($activeSubscription->plan)->download_limit ?? 0) === 0;
-
-    // Plan download limit comes from the active subscription plan (0 means unlimited)
-    $downloadLimit = $activeSubscription ? (int) (optional($activeSubscription->plan)->download_limit ?? 0) : 0;
-
-    // Count downloads for the active subscription only
-    $downloadsForActive = $activeSubscription
-        ? $downloads->filter(function ($d) use ($activeSubscription) {
-            return optional($d->subscription)->id === $activeSubscription->id;
-        })
-        : collect();
-
-    $totalDownloaded = $downloadsForActive->count();
+    $isExpired = !$currentActiveSubscription && $subscriptions->isNotEmpty();
 
     // Compute remaining: unlimited shows as infinity in UI, expired shows 0
     if ($isExpired) {
@@ -94,7 +118,9 @@ class AccountController extends Controller
         'remainingDownloads',
         'subscriptions',
         'isUnlimited',
-        'isExpired'
+        'isExpired',
+        'currentActiveSubscription',
+        'activeSubscription'
     ));
 }
 

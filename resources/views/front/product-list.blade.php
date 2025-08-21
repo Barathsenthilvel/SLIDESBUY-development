@@ -453,8 +453,9 @@ if (Auth::check()) {
                     </div>
                     <div class="product-item__bottom flx-between gap-2">
                         <div>
+                            {{-- @dd($discountProduct->downloads_count); --}}
                             <span class="product-item__sales font-14 mb-2">
-                                                {{ $discountProduct->sales ?? '100' }} Downloads
+                                {{ $downloadCounts[$discountProduct->id] ?? 0 }} Downloads (ID: {{ $discountProduct->id }})
                             </span>
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="star-rating">

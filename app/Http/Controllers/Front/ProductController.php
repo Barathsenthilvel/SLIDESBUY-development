@@ -251,7 +251,7 @@ public function item(Request $request, $slug)
             ->where('user_id', $user->id)
             ->exists();
 
-        // Get active subscriptions (include no-expiry, exclude expired)
+        // Get active subscriptions ordered by creation date (oldest first)
         $activeSubscriptions = $user->subscriptions()
             ->where('is_active', 1)
             ->where(function ($q) {
@@ -259,9 +259,8 @@ public function item(Request $request, $slug)
                   ->orWhere('expired_at', '>', now());
             })
             ->with('plan')
+            ->orderBy('created_at', 'asc') // Oldest first
             ->get();
-
-        $activeSubscriptionIds = $activeSubscriptions->pluck('id');
 
         // Check for expired subscriptions to prompt renewal
         $expiredSubscriptions = $user->subscriptions()
@@ -273,53 +272,85 @@ public function item(Request $request, $slug)
         // Check if user has any expired subscriptions (for showing renew button)
         $hasExpiredSubscription = $expiredSubscriptions->isNotEmpty();
 
-        // Detect no-expiry or unlimited plans from ACTIVE subscriptions only
-        $hasNoExpiry = $activeSubscriptions->contains(function ($subscription) {
-            return is_null($subscription->expired_at);
-        });
-        $hasUnlimitedPlan = $activeSubscriptions->contains(function ($subscription) {
-            return $subscription->plan && (int) $subscription->plan->download_limit === 0;
-        });
+        // Find the current active subscription to use (prioritize oldest)
+        $currentActiveSubscription = null;
+        $downloadLimit = 0;
+        $downloadsUsed = 0;
+        $hasUnlimitedPlan = false;
 
-        // Total download limit from ACTIVE subscriptions only (not expired)
-        if ($hasNoExpiry || $hasUnlimitedPlan) {
-            // Treat as unlimited and hide counters in the UI
-            $downloadLimit = 0;
-        } else {
-            $downloadLimit = $activeSubscriptions->sum(function ($subscription) {
-                return $subscription->plan ? (int) $subscription->plan->download_limit : 0;
-            });
+        foreach ($activeSubscriptions as $subscription) {
+            $plan = $subscription->plan;
+            if (!$plan) continue;
+
+            $subscriptionDownloadLimit = (int) $plan->download_limit;
+            $subscriptionDownloadsUsed = Downloads::where('user_id', $user->id)
+                ->where('subscription_id', $subscription->id)
+                ->count();
+
+            // If unlimited plan
+            if ($subscriptionDownloadLimit === 0) {
+                $currentActiveSubscription = $subscription;
+                $downloadLimit = 0; // Unlimited
+                $downloadsUsed = $subscriptionDownloadsUsed;
+                $hasUnlimitedPlan = true;
+                break;
+            }
+
+            // If limited plan and downloads remaining
+            if ($subscriptionDownloadsUsed < $subscriptionDownloadLimit) {
+                $currentActiveSubscription = $subscription;
+                $downloadLimit = $subscriptionDownloadLimit;
+                $downloadsUsed = $subscriptionDownloadsUsed;
+                break;
+            }
+
+            // If this plan is exhausted, continue to next plan
         }
 
-        // Count downloads used by user across ACTIVE subscriptions only (not expired)
-        $downloadsUsed = Downloads::where('user_id', $user->id)
-            ->whereIn('subscription_id', $activeSubscriptionIds)
-            ->count();
+        // If no current active subscription found, check if all plans are expired
+        if (!$currentActiveSubscription && $activeSubscriptions->isEmpty() && $hasExpiredSubscription) {
+            // All plans expired - show renew
+        }
 
-        // Show/hide progress/count
+                // Show/hide progress/count
         $showDownloadCount = true;
 
-        // Calculate remaining (if unlimited, set to 0; still show 100% bar with "Unlimited")
+        // Calculate remaining downloads
         if ($downloadLimit == 0) {
-            $downloadsRemaining = 0; // Unlimited
+            // Unlimited plan - user can always download
+            $downloadsRemaining = null; // null means unlimited
             $canDownload = true;
             $downloadLimitReached = false;
-            // Keep $showDownloadCount = true so UI shows "Unlimited Downloads"
+            $showDownloadCount = false; // Hide count for unlimited plans
         } else {
             $downloadsRemaining = max($downloadLimit - $downloadsUsed, 0);
             $canDownload = $downloadsRemaining > 0;
             $downloadLimitReached = !$canDownload;
+            $showDownloadCount = true;
         }
 
-        // Show renew button if download limit reached OR if subscription expired
-        $shouldShowRenew = $downloadLimitReached || $hasExpiredSubscription;
+        // Show renew button only if:
+        // 1. No current active subscription found (all plans exhausted/expired), OR
+        // 2. Download limit reached on current active subscription
+        $shouldShowRenew = false;
+        $errorMessage = null;
 
-        if ($downloadLimitReached && $downloadLimit > 0) {
-            session()->flash('error', 'Your download limit has been reached. Please renew your subscription.');
+        if (!$currentActiveSubscription && $hasExpiredSubscription) {
+            // No active subscription available, but user has expired ones - show renew
+            $shouldShowRenew = true;
+            $errorMessage = 'Your subscription has expired. Please renew to continue downloading.';
+        } elseif ($downloadLimitReached && $downloadLimit > 0) {
+            // Current active subscription exists but download limit reached
+            $shouldShowRenew = true;
+            $errorMessage = 'Your download limit has been reached. Please renew your subscription.';
         }
 
-        // Latest subscription (optional)
-        $activeSubscription = $activeSubscriptions->sortByDesc('id')->first();
+        if ($errorMessage) {
+            session()->flash('error', $errorMessage);
+        }
+
+        // Use current active subscription for the view
+        $activeSubscription = $currentActiveSubscription;
     }
 
     // Get discount if available
@@ -327,6 +358,17 @@ public function item(Request $request, $slug)
         ->where('product', 'LIKE', "%{$product->id}%")
         ->where('expiry_date', '>=', $date)
         ->first();
+
+        // Calculate download counts for the product
+    $downloadStats = Downloads::where('product_id', $product->id)
+        ->selectRaw('SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+        ->first();
+
+    // Add download counts as additional data to pass to view
+    $downloadCounts = [
+        'downloads_count' => $downloadStats->total_downloads ?? 0,
+        'download_users_count' => $downloadStats->unique_users ?? 0
+    ];
 
     // Related & Similar products (respecting stock settings)
     if ($store->out_of_stock == 0) {
@@ -355,6 +397,10 @@ public function item(Request $request, $slug)
             ->get();
     }
 
+    // Add download counts to related and similar products
+    $relateproduct = Product::addDownloadCounts($relateproduct);
+    $similarproduct = Product::addDownloadCounts($similarproduct);
+
     return view('front.product', compact(
         'product',
         'Review',
@@ -363,6 +409,8 @@ public function item(Request $request, $slug)
         'relateproduct',
         'similarproduct',
         'activeSubscription',
+        'activeSubscriptions',
+        'currentActiveSubscription',
         'canDownload',
         'downloadLimitReached',
         'downloadLimit',
@@ -371,7 +419,8 @@ public function item(Request $request, $slug)
         'alreadyDownloaded',
         'showDownloadCount',
         'hasExpiredSubscription',
-        'shouldShowRenew'
+        'shouldShowRenew',
+        'downloadCounts'
     ));
 }
 
@@ -422,33 +471,38 @@ public function downloaddocuments($productId)
               ->orWhere('expired_at', '>', now());
         })
         ->with('plan')
-        ->orderBy('expired_at', 'desc')
+        ->orderBy('created_at', 'asc') // Oldest first
         ->get();
 
     if ($activeSubscriptions->isEmpty()) {
         return redirect()->back()->with('error', 'No active subscription found.');
     }
 
-    // Find the first subscription with remaining download quota
+    // Find the current active subscription to use (prioritize oldest)
     $usableSubscription = null;
 
     foreach ($activeSubscriptions as $subscription) {
-        $downloadLimit = $subscription->plan ? $subscription->plan->download_limit : 0;
+        $plan = $subscription->plan;
+        if (!$plan) continue;
 
-        // If download_limit is 0, it means unlimited downloads
-        if ($downloadLimit == 0) {
-            $usableSubscription = $subscription;
-            break;
-        }
-
+        $downloadLimit = (int) $plan->download_limit;
         $downloadCount = Downloads::where('user_id', $user->id)
             ->where('subscription_id', $subscription->id)
             ->count();
 
+        // If unlimited plan
+        if ($downloadLimit === 0) {
+            $usableSubscription = $subscription;
+            break;
+        }
+
+        // If limited plan and downloads remaining
         if ($downloadCount < $downloadLimit) {
             $usableSubscription = $subscription;
             break;
         }
+
+        // If this plan is exhausted, continue to next plan
     }
 
     if (!$usableSubscription) {
@@ -460,6 +514,7 @@ public function downloaddocuments($productId)
         'user_id' => $user->id,
         'product_id' => $productId,
         'subscription_id' => $usableSubscription->id,
+        'download_count' => 1
     ]);
 
     // Serve the document

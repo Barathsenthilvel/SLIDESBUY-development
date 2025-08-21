@@ -9,6 +9,7 @@ use App\Models\Attribute;
 use App\Models\Tax;
 use App\Models\CustomerGroup;
 use App\Models\Vendor;
+use App\Models\Downloads;
 use Auth;
 class Product extends Model
 {
@@ -273,5 +274,38 @@ class Product extends Model
             $return .= $value->category_name.', ';
         }
         return $return;
+    }
+
+    public function downloads(){
+        return $this->hasMany(Downloads::class, 'product_id');
+    }
+
+    public function downloadCount(){
+        return $this->hasOne(Downloads::class, 'product_id')
+            ->selectRaw('product_id, SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+            ->groupBy('product_id');
+    }
+
+    // Static method to add download counts to any product collection
+    public static function addDownloadCounts($products)
+    {
+        if ($products->isEmpty()) {
+            return $products;
+        }
+
+        $productIds = $products->pluck('id');
+        $downloadStats = Downloads::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        foreach ($products as $product) {
+            $stats = $downloadStats->get($product->id);
+            $product->downloads_count = $stats ? $stats->total_downloads : 0;
+            $product->download_users_count = $stats ? $stats->unique_users : 0;
+        }
+
+        return $products;
     }
 }

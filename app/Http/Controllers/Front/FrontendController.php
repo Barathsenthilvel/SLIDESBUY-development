@@ -21,9 +21,11 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\Subscribes;
 use Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Downloads;
 use App\Mail\OrderMail;
 
 class FrontendController extends Controller
@@ -71,9 +73,30 @@ class FrontendController extends Controller
           $Product = Product::where('status','1')->get();
           $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         }
+
+        // Calculate download counts for all products
+        $allProductIds = $Product->pluck('id')->merge($trending->pluck('id'));
+        foreach($discount as $discountItem) {
+            if(isset($discountItem['product'])) {
+                $allProductIds = $allProductIds->merge($discountItem['product']->pluck('id'));
+            }
+        }
+
+        $downloadStats = Downloads::whereIn('product_id', $allProductIds)
+            ->selectRaw('product_id, COALESCE(SUM(download_count), COUNT(*)) as total_downloads')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        // Build download counts map
+        $downloadCounts = [];
+        foreach ($downloadStats as $stat) {
+            $downloadCounts[$stat->product_id] = (int) ($stat->total_downloads ?? 0);
+        }
+
         // dd($Homecat);
         $fronCategory= Category::where('status',1)->where('parent_category_id',0)->get();
-        return view('front.front',compact('Homeslider','Homecat','homeProduct','Product','trending','fronCategory','discount','Homecat2','Homecat3'));
+        return view('front.front',compact('Homeslider','Homecat','homeProduct','Product','trending','fronCategory','discount','Homecat2','Homecat3','downloadCounts'));
     }
 
     public function product($id){
@@ -265,11 +288,15 @@ class FrontendController extends Controller
         }
       });
 
-      if($store->out_of_stock == 0){
+                  if($store->out_of_stock == 0){
 
-        $products=$Product->where('status', 1)->where('soldout','off')->get();
+        $products=$Product->where('status', 1)->where('soldout','off')
+        ->withCount('downloads')
+        ->get();
       }else{
-        $products=$Product->where('status', 1)->get();
+        $products=$Product->where('status', 1)
+        ->withCount('downloads')
+        ->get();
       }
     //   $products=$Product->where('status', 1)->get();
         // dd($products);
@@ -294,7 +321,24 @@ class FrontendController extends Controller
         // Set the proper URL path for pagination
         $products->setPath(request()->url());
 
-        return view('front.product-list',compact('products'));
+        // Add download counts to paginated products (without mutating models)
+        $productIds = collect($products->items())->pluck('id');
+        $downloadStats = Downloads::whereIn('product_id', $productIds)
+          ->selectRaw('product_id, COALESCE(SUM(download_count), COUNT(*)) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+          ->groupBy('product_id')
+          ->get()
+          ->keyBy('product_id');
+
+        // Build a per-product downloads map for blade usage
+        $downloadCounts = [];
+        foreach ($downloadStats as $stat) {
+            $downloadCounts[$stat->product_id] = (int) ($stat->total_downloads ?? 0);
+        }
+
+        // Debug: Check what we're passing to the view
+        // dd($downloadCounts, $productIds->toArray());
+
+        return view('front.product-list',compact('products','shopCategory','fronCategory','min','max','trending','categorys','attributes','attributeValues','cat','subcat','downloadCounts'));
     }
 
     function sorts($product){

@@ -345,7 +345,7 @@
                                     <img src="{{ asset('assets/images/icons/cart-icon.svg') }}" alt="" class="white-version">
                                     <img src="{{ asset('assets/images/icons/cart-white.svg') }}" alt="" class="dark-version w-20">
                                 </span>
-                                <span class="text">158 Downloads</span>
+                                <span class="text">{{ $downloadCounts['downloads_count'] ?? 0 }} Downloads</span>
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">
@@ -643,15 +643,14 @@
 @endif --}}
 
 @if (($shouldShowRenew ?? false))
-    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+    <div class="alert alert-warning d-flex justify-content-between align-items-center mt-5 mb-5">
         <span>
-            @if(($hasExpiredSubscription ?? false))
+            @if(!($activeSubscription ?? null) && ($hasExpiredSubscription ?? false))
                 Your subscription has expired. Please renew to continue downloading.
             @else
                 Your download limit has been reached. Please renew your subscription.
             @endif
         </span>
-        <a href="{{ route('front.subscription') }}" class="btn btn-main">Renew Subscription</a>
     </div>
 @elseif ($activeSubscription && ($showDownloadCount ?? false))
     <div class="mb-3">
@@ -675,6 +674,16 @@
                 @else
                     {{ $remaining }} of {{ $downloadLimit }}
                 @endif
+            </div>
+        </div>
+    </div>
+@elseif ($activeSubscription && !($showDownloadCount ?? false))
+    <div class="mb-3">
+        <label class="fw-bold">Downloads Left</label>
+        <div class="progress custom-progress">
+            <div class="progress-bar custom-progress-bar bg-success" role="progressbar" style="width: 100%;">
+                {{-- <i class="fas fa-infinity me-2"></i> --}}
+                Unlimited Downloads
             </div>
         </div>
     </div>
@@ -718,7 +727,7 @@
         <a href="{{ route('front.subscription') }}" class="btn btn-danger w-100 w-sm-auto mt-3">
             Renew Subscription
         </a>
-    @elseif (($product->sell_type ?? 1) == 0)
+@elseif (($product->sell_type ?? 1) == 0)
     @auth
         <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">

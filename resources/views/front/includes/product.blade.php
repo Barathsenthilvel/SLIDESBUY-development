@@ -72,7 +72,9 @@
                                     </div>
                                     <div class="product-item__bottom flx-between gap-2">
                                         <div>
-                                            <span class="product-item__sales font-14 mb-2">{{ $discountProduct->sales ?? '10' }} Downloads</span>
+                                            <span class="product-item__sales font-14 mb-2">
+                                                {{ $downloadCounts[$discountProduct->id] ?? 0 }} Downloads
+                                            </span>
                                             <ul class="star-rating">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                     <li class="star-rating__item font-11"><i class="{{ $star >= $i ? 'fas fa-star' : 'far fa-star' }}"></i></li>

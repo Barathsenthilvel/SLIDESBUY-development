@@ -15,6 +15,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['downloads_count'];
+
     private $price = 0;
     private $offer = 0;
     private $isoffer = false;
@@ -282,7 +284,7 @@ class Product extends Model
 
     public function downloadCount(){
         return $this->hasOne(Downloads::class, 'product_id')
-            ->selectRaw('product_id, SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+            ->selectRaw('product_id, SUM(download_count) as total_downloads')
             ->groupBy('product_id');
     }
 
@@ -295,17 +297,40 @@ class Product extends Model
 
         $productIds = $products->pluck('id');
         $downloadStats = Downloads::whereIn('product_id', $productIds)
-            ->selectRaw('product_id, SUM(download_count) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
+            ->selectRaw('product_id, SUM(download_count) as total_downloads')
             ->groupBy('product_id')
             ->get()
             ->keyBy('product_id');
 
         foreach ($products as $product) {
             $stats = $downloadStats->get($product->id);
+            // Use dynamic properties that won't be saved to database
             $product->downloads_count = $stats ? $stats->total_downloads : 0;
-            $product->download_users_count = $stats ? $stats->unique_users : 0;
         }
 
         return $products;
+    }
+
+    // Static method to get download counts as a separate array
+    public static function getDownloadCounts($products)
+    {
+        if ($products->isEmpty()) {
+            return [];
+        }
+
+        $productIds = $products->pluck('id');
+        $downloadStats = Downloads::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, SUM(download_count) as total_downloads')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        $downloadCounts = [];
+        foreach ($productIds as $productId) {
+            $stats = $downloadStats->get($productId);
+            $downloadCounts[$productId] = $stats ? $stats->total_downloads : 0;
+        }
+
+        return $downloadCounts;
     }
 }

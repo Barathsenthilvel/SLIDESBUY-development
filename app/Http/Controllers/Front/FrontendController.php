@@ -74,24 +74,15 @@ class FrontendController extends Controller
           $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         }
 
-        // Calculate download counts for all products
-        $allProductIds = $Product->pluck('id')->merge($trending->pluck('id'));
+        // Get download counts as a separate array
+        $downloadCounts = Product::getDownloadCounts($Product);
+        $trendingDownloadCounts = Product::getDownloadCounts($trending);
+        
+        // Add download counts to discount products
         foreach($discount as $discountItem) {
             if(isset($discountItem['product'])) {
-                $allProductIds = $allProductIds->merge($discountItem['product']->pluck('id'));
+                $discountItem['downloadCounts'] = Product::getDownloadCounts($discountItem['product']);
             }
-        }
-
-        $downloadStats = Downloads::whereIn('product_id', $allProductIds)
-            ->selectRaw('product_id, COALESCE(SUM(download_count), COUNT(*)) as total_downloads')
-            ->groupBy('product_id')
-            ->get()
-            ->keyBy('product_id');
-
-        // Build download counts map
-        $downloadCounts = [];
-        foreach ($downloadStats as $stat) {
-            $downloadCounts[$stat->product_id] = (int) ($stat->total_downloads ?? 0);
         }
 
         // dd($Homecat);
@@ -193,6 +184,7 @@ class FrontendController extends Controller
             //     unset($temp[$key]->temp_price);
             // }
             $offset = ($page - 1)*$perpage;
+            $downloadCounts = Product::getDownloadCounts($temp);
             $products = new LengthAwarePaginator($temp->slice($offset, $perpage), $temp->count(), $perpage, $page);
 
             // Set the proper URL path for pagination
@@ -234,10 +226,11 @@ class FrontendController extends Controller
         $fronCategory= Category::with('subs')->where('status',1)->where('parent_category_id',0)->get();
 
         $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
+        $trendingDownloadCounts = Product::getDownloadCounts($trending);
         if(!empty($request->ajax)){
-          return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','attributes','attributeValues','cat','subcat'));
+          return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','attributes','attributeValues','cat','subcat','downloadCounts','trendingDownloadCounts'));
         }
-      return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','categorys','attributes','attributeValues','cat','subcat'));
+      return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','categorys','attributes','attributeValues','cat','subcat','downloadCounts','trendingDownloadCounts'));
     }
     public function filter(Request $request,$slug=null,$slug1=null){
         // dd($request->all());
@@ -291,11 +284,9 @@ class FrontendController extends Controller
                   if($store->out_of_stock == 0){
 
         $products=$Product->where('status', 1)->where('soldout','off')
-        ->withCount('downloads')
         ->get();
       }else{
         $products=$Product->where('status', 1)
-        ->withCount('downloads')
         ->get();
       }
     //   $products=$Product->where('status', 1)->get();
@@ -315,25 +306,14 @@ class FrontendController extends Controller
           $products = (new Collection($products))->SortBy('manufacturerPrice');
         }
 
+        // Get download counts as a separate array
+        $downloadCounts = Product::getDownloadCounts($products);
+        
         $offset = ($page - 1)*$perpage;
         $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage, $page);
 
         // Set the proper URL path for pagination
         $products->setPath(request()->url());
-
-        // Add download counts to paginated products (without mutating models)
-        $productIds = collect($products->items())->pluck('id');
-        $downloadStats = Downloads::whereIn('product_id', $productIds)
-          ->selectRaw('product_id, COALESCE(SUM(download_count), COUNT(*)) as total_downloads, COUNT(DISTINCT user_id) as unique_users')
-          ->groupBy('product_id')
-          ->get()
-          ->keyBy('product_id');
-
-        // Build a per-product downloads map for blade usage
-        $downloadCounts = [];
-        foreach ($downloadStats as $stat) {
-            $downloadCounts[$stat->product_id] = (int) ($stat->total_downloads ?? 0);
-        }
 
         // Debug: Check what we're passing to the view
         // dd($downloadCounts, $productIds->toArray());

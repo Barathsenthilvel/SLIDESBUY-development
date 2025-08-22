@@ -44,8 +44,11 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="prdname-wraper">
-                                        <div class="prdname">{{$discountProduct->product_title}}</div>
+                                                                            <div class="prdname-wraper">
+                                            <div class="prdname">{{$discountProduct->product_title}}</div>
+                                            <div class="download-count" style="font-size: 12px; color: #666; margin-bottom: 5px;">
+                                                {{ $downloadCounts[$discountProduct->id] ?? 0 }} Downloads
+                                            </div>
                                         <div class="star-rated">
                                                 <i class=" {{($star >= 1)?'fa fa-star':'fa fa-star-o'}}"></i>
                                                 <i class=" {{($star >= 2)?'fa fa-star':'fa fa-star-o'}}"></i>

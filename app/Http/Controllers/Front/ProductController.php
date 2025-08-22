@@ -242,7 +242,7 @@ public function item(Request $request, $slug)
     $activeSubscriptions = collect();
     $currentActiveSubscription = null;
     $hasExpiredSubscription = false;
-    
+
     if (Auth::check()) {
         $user = Auth::user();
 
@@ -403,8 +403,8 @@ public function item(Request $request, $slug)
     }
 
     // Get download counts for related and similar products
-    // $relateproductDownloadCounts = Product::getDownloadCounts($relateproduct);
-    // $similarproductDownloadCounts = Product::getDownloadCounts($similarproduct);
+    $relateproductDownloadCounts = Product::getDownloadCounts($relateproduct);
+    $similarproductDownloadCounts = Product::getDownloadCounts($similarproduct);
 
     return view('front.product', compact(
         'product',

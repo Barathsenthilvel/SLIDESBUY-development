@@ -219,6 +219,10 @@
 
   // Global wishlist functions
   function addToWishlist(productId) {
+    console.log('addToWishlist called with product ID:', productId);
+    console.log('CSRF token:', $('meta[name="csrf-token"]').attr('content'));
+    console.log('Current button state:', $(`.wishlist-btn[data-product-id="${productId}"]`).hasClass('active'));
+
     $.ajax({
       method: "POST",
       url: "/wishlistAdd",
@@ -227,22 +231,19 @@
         _token: $('meta[name="csrf-token"]').attr('content')
       },
       success: function(data) {
+        console.log('AJAX Success Response:', data);
         if (data.status === 'success') {
           // Update wishlist count in header
           $('.wishlist-count').text(data.count);
 
-          // Update wishlist button state
-          $(`.wishlist-btn[data-product-id="${productId}"]`).addClass('in-wishlist active').find('i').removeClass('far').addClass('fas');
+          // Update wishlist button state for all button types
+          const buttons = $(`.wishlist-btn[data-product-id="${productId}"], .product-item__wishlist[data-product-id="${productId}"], .btn-wishlist[data-product-id="${productId}"], .wishlist-btn[data-id="${productId}"], .product-item__wishlist[data-id="${productId}"], .btn-wishlist[data-id="${productId}"]`);
+          console.log('Found buttons to update:', buttons.length);
+          buttons.addClass('in-wishlist active').find('i').removeClass('far').addClass('fas');
+          console.log('Button updated successfully');
 
-          // Show success toast instead of page refresh
-          if (typeof toastr !== 'undefined') {
-            toastr.success('Added to wishlist successfully!');
-          } else if (window.toaster) {
-            window.toaster.success('Added to wishlist successfully!');
-          } else {
-            // Fallback notification
-            showCustomToast('Added to wishlist successfully!', 'success');
-          }
+          // Success - no notification needed
+          console.log('Product added to wishlist successfully');
         } else {
           if (typeof toastr !== 'undefined') {
             toastr.error(data.message || 'Error adding to wishlist');
@@ -254,6 +255,10 @@
         }
       },
       error: function(xhr) {
+        console.log('AJAX Error in addToWishlist:', xhr);
+        console.log('Error Status:', xhr.status);
+        console.log('Error Response:', xhr.responseText);
+
         if (xhr.status === 401) {
           // Redirect to login if not authenticated
           window.location.href = '/login';
@@ -283,18 +288,11 @@
           // Update wishlist count in header
           $('.wishlist-count').text(data.count);
 
-          // Update wishlist button state
-          $(`.wishlist-btn[data-product-id="${productId}"]`).removeClass('in-wishlist active').find('i').removeClass('fas').addClass('far');
+          // Update wishlist button state for all button types
+          $(`.wishlist-btn[data-product-id="${productId}"], .product-item__wishlist[data-product-id="${productId}"], .btn-wishlist[data-product-id="${productId}"], .wishlist-btn[data-id="${productId}"], .product-item__wishlist[data-id="${productId}"], .btn-wishlist[data-id="${productId}"]`).removeClass('in-wishlist active').find('i').removeClass('fas').addClass('far');
 
-          // Show success toast instead of page refresh
-          if (typeof toastr !== 'undefined') {
-            toastr.success('Removed from wishlist successfully!');
-          } else if (window.toaster) {
-            window.toaster.success('Removed from wishlist successfully!');
-          } else {
-            // Fallback notification
-            showCustomToast('Removed from wishlist successfully!', 'success');
-          }
+          // Success - no notification needed
+          console.log('Product removed from wishlist successfully');
         } else {
           if (typeof toastr !== 'undefined') {
             toastr.error(data.message || 'Error removing from wishlist');
@@ -306,6 +304,10 @@
         }
       },
       error: function(xhr) {
+        console.log('AJAX Error in removeFromWishlist:', xhr);
+        console.log('Error Status:', xhr.status);
+        console.log('Error Response:', xhr.responseText);
+
         if (xhr.status === 401) {
           // Redirect to login if not authenticated
           window.location.href = '/login';
@@ -324,21 +326,92 @@
 
   // Toggle wishlist function
   function toggleWishlist(productId) {
-    const btn = $(`.wishlist-btn[data-product-id="${productId}"]`);
-    if (btn.hasClass('in-wishlist')) {
+    console.log('toggleWishlist called with product ID:', productId);
+
+    const btn = $(`.wishlist-btn[data-product-id="${productId}"], .product-item__wishlist[data-product-id="${productId}"], .btn-wishlist[data-product-id="${productId}"], .wishlist-btn[data-id="${productId}"], .product-item__wishlist[data-id="${productId}"], .btn-wishlist[data-id="${productId}"]`);
+
+    console.log('Found buttons:', btn.length);
+    console.log('Button classes:', btn.attr('class'));
+
+    if (btn.hasClass('in-wishlist') || btn.hasClass('active')) {
+      console.log('Button is active, removing from wishlist');
       removeFromWishlist(productId);
     } else {
+      console.log('Button is not active, adding to wishlist');
       addToWishlist(productId);
     }
   }
 
-  // Wishlist click handler
-  $('.product-item__wishlist').on('click', function() {
-    const productId = $(this).data('product-id');
+    // Unified wishlist click handler for all wishlist buttons
+  $(document).on('click', '.product-item__wishlist, .wishlist-btn, .btn-wishlist', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log('Wishlist button clicked:', this);
+
+    // Skip if we're on the wishlist page (it has its own handler)
+    if ($(this).closest('.wishlist-section').length) {
+      console.log('Skipping wishlist page handler');
+      return;
+    }
+
+        const button = $(this);
+    const productId = button.data('product-id') || button.data('id');
+
+    // Fix: Handle multiple ways to check authentication
+    const authAttr = button.attr('data-auth');
+    let isAuthenticated = authAttr === 'true' || button.data('auth') === true;
+    const debugData = button.data('debug');
+
+    console.log('Product ID:', productId);
+    console.log('Button classes:', button.attr('class'));
+    console.log('Raw auth attribute:', authAttr);
+    console.log('Is authenticated:', isAuthenticated);
+    console.log('Debug data:', debugData);
+
+                // Fallback: Check debug data if button data fails
+    if (!isAuthenticated && debugData && debugData.auth === true) {
+      console.log('Falling back to debug data authentication');
+      isAuthenticated = true;
+    }
+
+    // Alternative: Check if user is already logged in by looking at button state
+    if (!isAuthenticated && button.hasClass('active') && button.hasClass('in-wishlist')) {
+      console.log('User appears to be authenticated (button is active), proceeding with wishlist action');
+      isAuthenticated = true;
+    }
+
+    // Additional fallback: Check if we're on a product page and user appears logged in
+    if (!isAuthenticated && button.hasClass('active')) {
+      console.log('Button is active, assuming user is authenticated');
+      isAuthenticated = true;
+    }
+
+    // Final authentication check
+    if (!isAuthenticated) {
+      console.log('User not authenticated, redirecting to login');
+      console.log('Debug info - Auth:', debugData?.auth, 'User ID:', debugData?.userId);
+
+      // Redirect to login page
+      window.location.href = '/sign-Up';
+      return;
+    }
+
+    // Additional check: Ensure user ID is available (but make it optional for now)
+    if (!debugData || !debugData.userId) {
+      console.log('User ID not available, but proceeding anyway (user appears authenticated)');
+      // Don't redirect, just log the warning
+    }
+
+    console.log('Authentication successful, proceeding with wishlist action');
+
     if (productId) {
+      console.log('Calling toggleWishlist with product ID:', productId);
       toggleWishlist(productId);
     } else {
-      $(this).toggleClass('active');
+      console.log('No product ID found, toggling active class');
+      // Fallback for buttons without product ID
+      button.toggleClass('active');
     }
   });
   // ========================= Wishlist Js End ===================
@@ -375,41 +448,47 @@
   // ========================= Testimonial Slider Js End ===================
 
   // ========================= Selling Product Js Start ==============
-  $('.resource-slider').slick({
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
-    dots: true,
-    pauseOnHover: true,
-    arrows: true,
-    draggable: true,
-    speed: 900,
-    infinite: true,
-    prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
-    responsive: [
-      {
-        breakpoint: 1199,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 575,
-        settings: {
-          slidesToShow: 1,
-        }
-      },
-    ]
-  });
+  // Initialize resource slider safely
+  if($('.resource-slider').length > 0 && typeof $.fn.slick !== 'undefined') {
+    try {
+      $('.resource-slider').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        speed: 900,
+        dots: true,
+        pauseOnHover: true,
+        arrows: true,
+        draggable: true,
+        infinite: true,
+        prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
+        responsive: [
+          {
+            breakpoint: 1199,
+            settings: {
+              slidesToShow: 3,
+            }
+          },
+          {
+            breakpoint: 991,
+            settings: {
+              slidesToShow: 2,
+            }
+          },
+          {
+            breakpoint: 575,
+            settings: {
+              slidesToShow: 1,
+            }
+          },
+        ]
+      });
+    } catch (error) {
+      console.log('Error initializing resource slider:', error);
+    }
+  }
   // ========================= Selling Product Js End ===================
 
   // ========================= Brand Slider Js Start ==============
@@ -1099,28 +1178,41 @@
 
 // Custom toast notification function
 function showCustomToast(message, type = 'info') {
-  // Remove existing toasts
-  $('.custom-toast').remove();
+  try {
+    // Remove existing toasts safely
+    const existingToasts = $('.custom-toast');
+    if (existingToasts.length > 0) {
+      existingToasts.remove();
+    }
 
-  const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+    const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
 
-  const toast = $(`
-    <div class="custom-toast position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-      <div class="toast align-items-center ${toastClass} text-white border-0" role="alert">
-        <div class="d-flex">
-          <div class="toast-body">
-            ${message}
+    const toast = $(`
+      <div class="custom-toast position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div class="toast align-items-center ${toastClass} text-white border-0" role="alert">
+          <div class="d-flex">
+            <div class="toast-body">
+              ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
           </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
       </div>
-    </div>
-  `);
+    `);
 
-  $('body').append(toast);
+    if (toast && $('body').length > 0) {
+      $('body').append(toast);
 
-  // Auto-remove after 3 seconds
-  setTimeout(function() {
-    toast.remove();
-  }, 3000);
+      // Auto-remove after 3 seconds
+      setTimeout(function() {
+        if (toast && toast.length > 0) {
+          toast.remove();
+        }
+      }, 3000);
+    }
+  } catch (error) {
+    console.log('Error in showCustomToast:', error);
+    // Fallback to simple alert if toast fails
+    alert(message);
+  }
 }

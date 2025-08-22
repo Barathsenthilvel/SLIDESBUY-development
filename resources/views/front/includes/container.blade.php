@@ -423,80 +423,7 @@ $('body').on('click','.btn.btn-link.btn-close',function(t){
         }
     });
 });
-$('body').on('click','.btn-wishlist',function(e){
-    e.preventDefault();
-    // If we're on the wishlist page, let the page-specific handler manage this (it refreshes after removal)
-    if ($(this).closest('.wishlist-section').length) {
-        return;
-    }
-    @if(Auth::check())
-        const button = $(this);
-        const productId = button.data('id') || button.data('product-id');
-        const isActive = button.hasClass('active');
-
-        if(!isActive){
-            // Add to wishlist
-            $.ajax({
-                method: "POST",
-                url: '{{route("wishlistAdd")}}',
-                data: {id: productId, _token: $('meta[name="csrf-token"]').attr('content')},
-                success: function(data) {
-                    button.addClass('active');
-                    const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
-                    $('.wishlist-count').text(newCount);
-
-                    // Update button appearance
-                    button.find('i').removeClass('far').addClass('fas');
-                    button.find('i').css('color', '#ff6b6b');
-
-                    if (window.toaster) {
-                        window.toaster.success('Added to wishlist');
-                    } else {
-                        toastr["success"]('Added to wishlist');
-                    }
-                },
-                error: function(error) {
-                    if (window.toaster) {
-                        window.toaster.error('Failed to add to wishlist');
-                    } else {
-                        toastr["error"]('Failed to add to wishlist');
-                    }
-                }
-            });
-        } else {
-            // Remove from wishlist
-            $.ajax({
-                method: "POST",
-                url: '{{route("wishlistremove")}}',
-                data: {id: productId, _token: $('meta[name="csrf-token"]').attr('content')},
-                success: function(data) {
-                    button.removeClass('active');
-                    const newCount = (typeof data === 'object' && data.count !== undefined) ? data.count : data;
-                    $('.wishlist-count').text(newCount);
-
-                    // Update button appearance
-                    button.find('i').removeClass('fas').addClass('far');
-                    button.find('i').css('color', '#666');
-
-                    if (window.toaster) {
-                        window.toaster.success('Removed from wishlist');
-                    } else {
-                        toastr["success"]('Removed from wishlist');
-                    }
-                },
-                error: function(error) {
-                    if (window.toaster) {
-                        window.toaster.error('Failed to remove from wishlist');
-                    } else {
-                        toastr["error"]('Failed to remove from wishlist');
-                    }
-                }
-            });
-        }
-    @else
-        window.location.href = "{{route('front.loginBlade')}}";
-    @endif
-});
+{{-- Wishlist functionality now handled by main.js --}}
 
     function myfunction(search,textsearch){
     window.location.href=search+'?search='+textsearch;
@@ -509,50 +436,7 @@ $('body').on('click','.btn-wishlist',function(e){
     </script>
     @stack('script') --}}
 
-    <script>
-    // Global wishlist handler (active; outside commented legacy block)
-    jQuery(function($){
-        $('body').on('click','.btn-wishlist',function(e){
-            e.preventDefault();
-            // Skip on wishlist page; it has its own optimized handler
-            if ($(this).closest('.wishlist-section').length) { return; }
-
-            if (!$('meta[name="csrf-token"]').length) { return; }
-
-            const button = $(this);
-            const productId = button.data('id') || button.data('product-id');
-            if (!productId) { return; }
-            const isActive = button.hasClass('active');
-
-            $.ajax({
-                method: 'POST',
-                url: isActive ? '{{ route("wishlistremove") }}' : '{{ route("wishlistAdd") }}',
-                data: { id: productId, _token: $('meta[name="csrf-token"]').attr('content') },
-                success: function(data){
-                    // Toggle active state and icon
-                    if (isActive) {
-                        button.removeClass('active');
-                        button.find('i').removeClass('fas').addClass('far').css('color', '#666');
-                    } else {
-                        button.addClass('active');
-                        button.find('i').removeClass('far').addClass('fas').css('color', '#ff6b6b');
-                    }
-                    const newCount = (data && typeof data === 'object' && data.count !== undefined) ? data.count : data;
-                    if (newCount !== undefined) { $('.wishlist-count').text(newCount); }
-
-                    if (window.toaster) {
-                        window.toaster.success(isActive ? 'Removed from wishlist' : 'Added to wishlist');
-                    }
-                },
-                error: function(){
-                    if (window.toaster) {
-                        window.toaster.error('Wishlist action failed');
-                    }
-                }
-            });
-        });
-    });
-    </script>
+    {{-- Wishlist functionality is now handled by main.js --}}
 </body>
 
 </html>

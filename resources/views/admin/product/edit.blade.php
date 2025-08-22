@@ -210,7 +210,18 @@
                                     <label class="col-md-12 col-lg-2 col-form-label">Trending</label>
 
                                     <div class="col-lg-4 col-md-4 col-sm-4">
-                                        <input data-switch="true" type="checkbox" name="trending" data-on-color="success" data-off-color="danger" {{ ($product->trending == 1) ? 'checked' : '' }} />
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="trending" name="trending" value="1" {{ ($product->trending == 1 || $product->trending == '1' || $product->trending == 'on' || $product->trending == true) ? 'checked' : '' }} />
+                                            <label class="custom-control-label" for="trending">
+                                                <span class="text-success font-weight-bold">ON</span> / <span class="text-danger font-weight-bold">OFF</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <small class="text-muted">Current value: {{ $product->trending ?? 'NULL' }} (Type: {{ gettype($product->trending) }})</small>
+                                        @if(config('app.debug'))
+                                            <br><small class="text-info">Debug: Raw value = "{{ var_export($product->trending, true) }}"</small>
+                                        @endif
                                     </div>
                                 </div>
 

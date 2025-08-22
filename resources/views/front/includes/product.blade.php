@@ -51,8 +51,11 @@
                                     <button type="button"
                                         class="product-item__wishlist wishlist-btn btn-wishlist {{ $inWishlist ? 'active in-wishlist' : '' }}"
                                         data-product-id="{{ $discountProduct->id }}"
-                                        data-toggle="tooltip"
-                                        title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                                        data-auth="{{ Auth::check() ? 'true' : 'false' }}"
+                                        data-user-id="{{ Auth::id() ?? '' }}"
+                                        data-in-wishlist="{{ $inWishlist ? 'true' : 'false' }}"
+                                        data-debug="{{ json_encode(['auth' => Auth::check(), 'inWishlist' => $inWishlist, 'userId' => Auth::id(), 'productId' => $discountProduct->id]) }}"
+                                        title="{{ Auth::check() ? ($inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist') : 'Login to add to Wishlist' }}">
                                         <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
                                     </button>
                                 </div>

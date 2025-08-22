@@ -21,13 +21,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
      <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    
+
     <!-- jQuery (Toastr depends on it) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    
+
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <!--additional -->
     <link href="{{URL::asset('assets/front/static/css/style.css')}}" rel="stylesheet" media='screen,print'>
     <link href="{{URL::asset('assets/front/static/css/responsive.css')}}" rel="stylesheet">
@@ -39,13 +39,13 @@
     <!--additional -->
     <style>
        body{
-         background-color: var(--tm-bgprimary) !important;  
+         background-color: var(--tm-bgprimary) !important;
        }
        .variant_active{
-         border: 3px solid green;    
+         border: 3px solid green;
        }
        .hyperlink{
-         cursor: auto !important;   
+         cursor: auto !important;
        }
        .header_color
        {
@@ -54,23 +54,23 @@
           .testimonial-section {
             background-color: #1a1a1a;
           }
-        
+
           .testimonial-box {
             border-radius: 1rem;
             padding: 2rem;
             text-align: center;
             min-height: 100%;
           }
-        
+
           .testimonial-content p {
             margin-bottom: 1rem;
           }
-        
+
           .testimonial-rating i {
             color: #fcd34d;
             font-size: 1.2rem;
           }
-        
+
           .cta-button {
             background-color: #f4c542;
             color: #1a1a1a;
@@ -81,7 +81,7 @@
             display: inline-block;
             margin-top: 1rem;
           }
-          
+
           .no-horizontal-padding > * {
           padding-right: 0px;
           padding-left: 0px;
@@ -140,8 +140,8 @@
             </div>
           </div>
         </div>
-		
-		
+
+
       </div>
     </nav>-->
 		<nav class="navbar navbar-expand-lg p-0 tm-primary-bg p-1">
@@ -188,9 +188,9 @@
       </div>
     </nav>
     <!-- HEader -->
-    
+
     <!-- Banner Section -->
-    
+
       <!-- <div class="container-fluid p-0 bg-white">
         <div class="row banner-slick">
           <div class="col-md-12">
@@ -229,10 +229,10 @@
               </div>
             </div>
           </div>
- 
+
         </div>
       </div> -->
-    
+
     <!-- Banner Section -->
 
     <!-- View Product -->
@@ -247,22 +247,22 @@
           <div class="col-md-6">
             <div class="v-product-show">
               <div class="v-sm-product">
-                
+
                   <div class="inner_photo_product">
                     <img class="show-box show-img active" src="{{URL::asset('assets/media/products/'.$product->image1)}}" alt="">
                   </div>
-                
-                
+
+
                   <div class="inner_photo_product">
                     <img class="show-box show-img " src="{{URL::asset('assets/media/products/'.$img2)}}" alt="">
                   </div>
-                
-                
+
+
                   <div class="inner_photo_product">
                     <img class="show-box show-img " src="{{URL::asset('assets/media/products/'.$img3)}}" alt="">
                   </div>
-                
-                
+
+
                   <div class="inner_photo_product">
                     <img class="show-box show-img " src="{{URL::asset('assets/media/products/'.$img4)}}" alt="">
                   </div>
@@ -376,7 +376,7 @@
               <div class="d-flex v-button gap-3">
                 <div class="v-cart-btn fw-semibold fs-5">
                   <a href="#" class="v-btn scroll-top-action">Order Now</a>
-                  
+
                 </div>
                 <div class="v-cart-btn zx-btn-bg fw-normal fs-6">
                   <a href="#" class="v-btn text-white hyperlink">Get 10% Off Your First Bag!" (No Chicory)</a>
@@ -497,7 +497,7 @@
                 <li>
                   <span>
                     <i class="fa-solid fa-star"></i>
-                  </span> Naturally Sweet, No Sugar Needed – Chicory enhances flavor while keeping it light on your system. 
+                  </span> Naturally Sweet, No Sugar Needed – Chicory enhances flavor while keeping it light on your system.
                 </li>
                 <li>
                   <span>
@@ -559,7 +559,7 @@
         <div class="row col-xs-12 col-sm-12 no-horizontal-padding">
           <h2 class="heading-font fw-bold text-center mb-4 header_color">What Coffee Lovers Are Saying</h2>
           <div class="testimonial-carousel">
-            
+
             <div class="testimonial-box p-sm-4">
               <div class="testimonial-img">
                 <!--<img src="{{ URL::asset('/assets/latest/img/Ellipse1.png')}}" alt="">-->
@@ -789,7 +789,7 @@
             <p class="heading-font fs-2 fw-bold text-center">Join Thousands of Happy Coffee Lovers </p>
             <!--<a href="#" class="fs-5 cta-button py-2 scroll-top-action">Order Now</a>-->
             <a href="#" class="fs-5 cta-button py-2 scroll-top-action">Order Now</a>
-            
+
           </div>
         </div>
       </div>
@@ -805,11 +805,11 @@
           <h3 class="text-center" style="color: var(--tm-bgprimary);">
             Choose Your Perfect Blend & Get the Best Deal
           </h3>
-          
+
         </div>
         <div class="row mt-5">
           <div class="col-lg-2"></div>
-          
+
           @foreach($similarproduct as $product)
           @if($product->id == 12 || $product->id == 13)
           <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -846,7 +846,7 @@
           @endforeach
           <div class="col-lg-2"></div>
         </div>
-          
+
           <div class="col-lg-2"></div>
         </div>
       </div>
@@ -876,18 +876,18 @@
               </ul>
             </div>
           </div>
-          
+
             <div class="offer-banner">
               <img src="{{ URL::asset('/assets/latest/img/4.png')}}" alt="">
             </div>
-          
+
         </div>
         <div class="offer-section rm-sec d-flex justify-content-between align-items-center">
-          
+
             <div class="offer-banner">
               <img src="{{ URL::asset('/assets/latest/img/6.png')}}" alt="">
             </div>
-          
+
           <div class="offer-detail p-5">
             <div class="offer-badge"> Subscribe Now & Save Your Perks </div>
             <div class="offer-list-rm mt-3">
@@ -1054,7 +1054,7 @@
                          <li>
                              Yes! We offer both whole bean and ground options, so you can brew it the way you love.
                          </li>
-                         
+
                      </ul>
                     </div>
                   </div>
@@ -1087,22 +1087,22 @@
                         <p>Bestie Beans works with **all brewing methods**, including: </p>
                       <ul>
                          <li>
-                             Drip Coffee Machine 
+                             Drip Coffee Machine
                          </li>
                           <li>
                             French Press
                          </li>
                           <li>
-                             Espresso Machine  
+                             Espresso Machine
                          </li>
                          <li>
                             Pour-Over
                          </li>
                           <li>
-                             Moka Pot  
+                             Moka Pot
                          </li>
                          <li>
-                             Cold Brew   
+                             Cold Brew
                          </li>
                      </ul>
                     </div>
@@ -1186,7 +1186,7 @@
                     <div class="faq-ans">
                       <ul>
                        <li>
-                           No! We dont offer COD.  
+                           No! We dont offer COD.
                        </li>
                      </ul>
                     </div>
@@ -1246,7 +1246,7 @@
                     <div class="faq-ans">
                       <ul>
                          <li>
-                             We stand by our coffee 100%! If you don't absolutely love it, we offer a **30-day money-back guarantee**.Just contact us, and we'll process a full refund—**no questions asked.** 
+                             We stand by our coffee 100%! If you don't absolutely love it, we offer a **30-day money-back guarantee**.Just contact us, and we'll process a full refund—**no questions asked.**
                          </li>
                      </ul>
                     </div>
@@ -1286,8 +1286,8 @@
               <p style="color: var(--tm-bgprimary);">Reach out to our support team via email or WhatsApp, and we'll assist you right</p>
                 <div style="color: var(--tm-bgprimary);margin-top: 10px;font-size: large;">
                     <span style="margin-right: 5px;">+91 90944 42772</span>
-                    <span><i class="fa fa-phone"></i></span>               
-                     <br> 
+                    <span><i class="fa fa-phone"></i></span>
+                     <br>
                     <span style="margin-right: 5px;">tuljavani@gmail.com</span>
                     <span><i class="fa fa-envelope"></i></span>
               </div>
@@ -1329,7 +1329,7 @@
         {
          $('html, body').animate({ scrollTop: 0 }, 500);
         }
-        
+
       $(document).ready(function() {
         $('.testimonial-carousel').slick({
           centerMode: true,
@@ -1425,11 +1425,11 @@ const viewcart = '{{route('view.cart')}}';
 
     //*************************************   Cart *****************************************************************************************************************************
     $(document).ready(function(){
-        
+
          $('.scroll-top-action').on('click',function(t){
-            triggertoTop();    
+            triggertoTop();
         })
-        
+
         $('.btn-cart1').on('click', function (t) {
             t.preventDefault();
             $.ajax({
@@ -1453,7 +1453,7 @@ const viewcart = '{{route('view.cart')}}';
             });
         });
         $('body').on('click','.btn-cart2',function (t) {
-            
+
             t.preventDefault();
             $.ajax({
                 method: "GET",
@@ -1472,7 +1472,7 @@ const viewcart = '{{route('view.cart')}}';
             });
         });
         $('body').on('click','.btn-cart3',function (t) {
-            
+
             var q = $(this).parent().find('.quantity').val();
             t.preventDefault();
             $.ajax({
@@ -1508,40 +1508,7 @@ $('body').on('click','.btn.btn-link.btn-close',function(t){
         }
     });
 });
-$('body').on('click','.btn-wishlist',function(e){
-    e.preventDefault();
-    @if(Auth::check())
-            if(!$(this).hasClass("added")){
-				$(this).addClass("added");
-            $.ajax({
-                method:"GET",
-                url:'{{route('wishlistAdd')}}',
-                data:{id:$(this).data('id')},
-                success:function(data){
-                    $('.wishlistcnt').text(data)
-					toastr["success"]('Added to wishlist');
-                 },
-                error:function(erroe){ }
-            });
-            }else{
-				$(this).removeClass("added");
-                $.ajax({
-                    method:"GET",
-                    url:'{{route('wishlistremove')}}',
-                    data:{id:$(this).data('id')},
-                    success:function(data){
-                        $('.wishlistcnt').text(data)
-                        toastr["error"]('Removed from wishlist');
-                    },
-                    error:function(erroe){ }
-                });
-            }
-            @else
-                window.location.href = "{{route('front.loginBlade')}}";
-            @endif
-    });
-    
-    });
+{{-- Wishlist functionality now handled by main.js --}}
 </script>
 <script>
 !function(f,b,e,v,n,t,s)
@@ -1558,7 +1525,7 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=698472925993707&ev=PageView&noscript=1"
 /></noscript>
-    
+
   </body>
   <footer>
     <div class="col-md-12 col-sm-12 col-xs-12 nopad footerinner-wraper">

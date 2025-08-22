@@ -1,16 +1,4 @@
-<!-- First: Load jQuery -->
-<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-
-<!-- Second: Load Bootstrap -->
-<script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
-
-<!-- Third: Load other plugins (including countdown.js) -->
-<script src="{{ asset('assets/js/countdown.js') }}"></script>
-<script src="{{ asset('assets/js/counterup.min.js') }}"></script>
-<script src="{{ asset('assets/js/slick.min.js') }}"></script>
-
-<!-- Last: Load your main.js -->
-<script src="{{ asset('assets/js/main.js') }}"></script>
+{{-- Scripts are loaded in the main layout, no need to load them again --}}
 
 <section class="selling-product padding-y-120 position-relative z-index-1 overflow-hidden">
     <img src="../assets/images/gradients/selling-gradient.png" alt="" class="bg--gradient">
@@ -47,6 +35,22 @@
                         <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">
                             <img src="{{ URL::asset('/assets/media/products/' . $discountProduct->image1) }}" alt="{{ $discountProduct->product_title }}" class="cover-img" style="width:100%; height:220px; object-fit:cover; border-radius:8px 8px 0 0;">
                         </a>
+                        @php
+                            $inWishlist = false;
+                            if (Auth::check()) {
+                                $inWishlist = Auth::user()->wishlists()->where('product_id', $discountProduct->id)->exists();
+                            }
+                        @endphp
+                        <button type="button"
+                                class="product-item__wishlist wishlist-btn btn-wishlist {{ $inWishlist ? 'active in-wishlist' : '' }}"
+                                data-product-id="{{ $discountProduct->id }}"
+                                data-auth="{{ Auth::check() ? 'true' : 'false' }}"
+                                data-user-id="{{ Auth::id() ?? '' }}"
+                                data-in-wishlist="{{ $inWishlist ? 'true' : 'false' }}"
+                                data-debug="{{ json_encode(['auth' => Auth::check(), 'inWishlist' => $inWishlist, 'userId' => Auth::id(), 'productId' => $discountProduct->id]) }}"
+                                title="{{ Auth::check() ? ($inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist') : 'Login to add to Wishlist' }}">
+                            <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                        </button>
                     </div>
                     <div class="product-item__content">
                         <h6 class="product-item__title">
@@ -91,4 +95,50 @@
         </div>
     </div>
 </section>
+
+<script>
+$(document).ready(function() {
+    // Initialize the trending products slider safely
+    if($('.resource-slider').length > 0 && typeof $.fn.slick !== 'undefined') {
+        try {
+            $('.resource-slider').slick({
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 2000,
+                speed: 900,
+                dots: true,
+                pauseOnHover: true,
+                arrows: true,
+                draggable: true,
+                infinite: true,
+                prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
+                responsive: [
+                    {
+                        breakpoint: 1199,
+                        settings: {
+                            slidesToShow: 3,
+                        }
+                    },
+                    {
+                        breakpoint: 991,
+                        settings: {
+                            slidesToShow: 2,
+                        }
+                    },
+                    {
+                        breakpoint: 575,
+                        settings: {
+                            slidesToShow: 1,
+                        }
+                    },
+                ]
+            });
+        } catch (error) {
+            console.log('Error initializing trending products slider:', error);
+        }
+    }
+});
+</script>
 

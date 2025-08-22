@@ -51,9 +51,31 @@
     </style>
 
 {{-- trending product slider --}}
-@php $trendingProducts = collect($trendingProduct ?? $trending ?? []); @endphp
+@php
+    // Debug: Check what data is available
+    $trendingProducts = collect($trending ?? $trendingProduct ?? []);
+
+    // Fallback: If no trending products, get some recent products
+    if($trendingProducts->count() == 0) {
+        $trendingProducts = \App\Models\Product::where('status', '1')
+            ->where('soldout', '!=', 'on')
+            ->orderBy('id', 'desc')
+            ->limit(4)
+            ->get();
+    }
+@endphp
+
 @if($trendingProducts->count() > 0)
 	@include('front.includes.trendingproducts', ['products' => $trendingProducts, 'downloadCounts' => $trendingDownloadCounts ?? $downloadCounts])
+@else
+	{{-- Show message when no trending products available --}}
+	<div class="text-center py-5">
+		<div class="alert alert-info" style="margin: 20px 0;">
+			<h4 class="mb-2">No Trending Products Available</h4>
+			<p class="text-muted mb-4">Currently there are no trending products to display.</p>
+			<p class="text-muted">To show trending products, mark some products as "trending" in the admin panel.</p>
+		</div>
+	</div>
 @endif
 
 
@@ -176,7 +198,7 @@
 
 <!-- ====================== Newsletter Section Start ===================== -->
 <section class="newsletter position-relative z-index-1 overflow-hidden">
-    <img src="..assets/images/gradients/newsletter-gradient-bg.png" alt="" class="bg--gradient">
+    <img src="../assets/images/gradients/newsletter-gradient-bg.png" alt="" class="bg--gradient">
 
     <img src="../assets/images/shapes/element1.png" alt="" class="element two">
     <img src="../assets/images/shapes/element2.png" alt="" class="element one">

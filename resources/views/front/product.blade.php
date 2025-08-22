@@ -2,8 +2,70 @@
 {{-- @section('title',  $product->metaname)
 @section('meta_keywords',$product->metakeyword)
 @section('meta_description', $product->metadescription) --}}
+
+@php
+    use App\Models\User;
+@endphp
+
 @section('content')
 
+@php
+    // Wishlist logic - defined at the top so it can be used throughout the view
+    $inWishlist = false;
+
+    // Try multiple authentication methods
+    $isAuthenticated = Auth::check();
+    $userId = Auth::id();
+    $sessionId = session()->getId();
+    $sessionData = session()->all();
+
+    // Alternative authentication checks
+    $sessionUserId = session('user_id') ?? 'No session user_id';
+    $hasSession = !empty($sessionId);
+
+    // Check if user is logged in via session
+    $isLoggedInViaSession = !empty($sessionUserId) && $sessionUserId !== 'No session user_id';
+
+    // Use session-based authentication if Auth::check() fails
+    if (!$isAuthenticated && $isLoggedInViaSession) {
+        $isAuthenticated = true;
+        $userId = $sessionUserId;
+    }
+
+    // Enhanced debugging
+    if ($isAuthenticated) {
+        try {
+            $user = Auth::user() ?? User::find($userId);
+            $userEmail = $user->email ?? 'No email';
+
+            // Try multiple ways to check wishlist status
+            $inWishlist = false;
+
+            // Method 1: Check via wishlists relationship
+            try {
+                $inWishlist = $user->wishlists()->where('product_id', $product->id)->exists();
+            } catch (Exception $e) {
+                // Method 2: Check via direct database query
+                $inWishlist = \DB::table('wishlists')
+                    ->where('user_id', $userId)
+                    ->where('product_id', $product->id)
+                    ->exists();
+            }
+
+            // Method 3: Check if product_id exists in user's wishlist field (if using old method)
+            if (!$inWishlist && !empty($user->wishlist)) {
+                $wishlistArray = explode(',', $user->wishlist);
+                $inWishlist = in_array($product->id, $wishlistArray);
+            }
+
+        } catch (Exception $e) {
+            $userEmail = 'Error: ' . $e->getMessage();
+            $inWishlist = false;
+        }
+    } else {
+        $userEmail = 'Not authenticated';
+    }
+@endphp
 
 <style>
 /* Attribute value styling */
@@ -250,15 +312,12 @@
     $rev = $product->reviewtotal();
     $star = $rev->reviewtotal/20;
 @endphp
-@if (Auth::check())
-@php
-	$array = \explode(',',Auth::user()->wishlist);
-@endphp
-@else
 @php
 	$array = [];
+	if (Auth::check()) {
+		$array = \explode(',',Auth::user()->wishlist);
+	}
 @endphp
-@endif
 <style>
     .common-section {
         padding: 70px 0 0 0;
@@ -335,7 +394,33 @@
 
                         {{-- <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">{{ $product->slug }}: {{ $product->product_title }}</h3> --}}
 
-                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize"> {{ $product->product_title }}</h3>
+                                                <h3 class="breadcrumb-two-content__title mb-3 text-capitalize"> {{ $product->product_title }}</h3>
+
+                        {{-- Debug Authentication Status --}}
+                        {{-- @if(config('app.debug'))
+                        <div class="alert alert-info" style="font-size: 12px; margin-top: 10px;">
+                            <strong>Debug Info:</strong><br>
+                            Auth Check: {{ $isAuthenticated ? 'TRUE' : 'FALSE' }}<br>
+                            User ID: {{ $userId ?? 'NULL' }}<br>
+                            User Email: {{ $userEmail }}<br>
+                            Session ID: {{ $sessionId }}<br>
+                            Has Session: {{ $hasSession ? 'TRUE' : 'FALSE' }}<br>
+                            Session User ID: {{ $sessionUserId }}<br>
+                            Session Auth: {{ $isLoggedInViaSession ? 'TRUE' : 'FALSE' }}<br>
+                            In Wishlist: {{ $inWishlist ? 'TRUE' : 'FALSE' }}<br>
+                            <button onclick="console.log('Session Data:', {{ json_encode($sessionData) }})" class="btn btn-sm btn-secondary mt-2">Log Session Data</button>
+                        </div>
+                        @endif --}}
+
+                        {{-- Authentication Test Script --}}
+                        {{-- <script>
+                            console.log('=== AUTHENTICATION DEBUG ===');
+                            console.log('PHP Auth Check:', {{ $isAuthenticated ? 'true' : 'false' }});
+                            console.log('PHP User ID:', {{ $userId ?? 'null' }});
+                            console.log('PHP In Wishlist:', {{ $inWishlist ? 'true' : 'false' }});
+                            console.log('Session ID:', '{{ session()->getId() }}');
+                        </script> --}}
+
                         <div class="breadcrumb-content flx-align gap-3">
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="text">By <a href="#" class="link text-main fw-600">Slidesbuy</a> </span>
@@ -428,11 +513,34 @@
     <div class="product-details">
 
         {{-- Main Image --}}
-<div class="product-details__thumb">
+<div class="product-details__thumb position-relative">
     <img id="mainImage"
          src="{{ asset('assets/media/products/' . $product->image1) }}"
          alt="Main Product"
          class="main-product-image">
+
+    {{-- Wishlist Button --}}
+    <button type="button"
+            class="product-item__wishlist wishlist-btn btn-wishlist {{ $inWishlist ? 'active in-wishlist' : '' }}"
+            data-product-id="{{ $product->id }}"
+            data-auth="{{ $isAuthenticated ? 'true' : 'false' }}"
+            data-user-id="{{ $userId }}"
+            data-in-wishlist="{{ $inWishlist ? 'true' : 'false' }}"
+            data-debug="{{ json_encode(['auth' => $isAuthenticated, 'inWishlist' => $inWishlist, 'userId' => $userId, 'productId' => $product->id]) }}"
+            title="{{ $isAuthenticated ? ($inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist') : 'Login to add to Wishlist' }}">
+        <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+    </button>
+
+    {{-- Debug Output for Testing --}}
+    @if(config('app.debug'))
+    <script>
+        console.log('=== PHP DEBUG ===');
+        console.log('PHP Auth Check:', {{ $isAuthenticated ? 'true' : 'false' }});
+        console.log('PHP User ID:', {{ $userId }});
+        console.log('PHP In Wishlist:', {{ $inWishlist ? 'true' : 'false' }});
+        console.log('Button data-auth:', '{{ $isAuthenticated ? 'true' : 'false' }}');
+    </script>
+    @endif
 </div>
 
 
@@ -465,17 +573,7 @@
                 Screenshot
             </button>
 
-            @auth
-                @php
-                    $inWishlist = Auth::user()->wishlists()->where('product_id', $product->id)->exists();
-                @endphp
-                <button type="button"
-                        class="wishlist-btn btn-wishlist {{ $inWishlist ? 'active' : '' }}"
-                        data-id="{{ $product->id }}"
-                        title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
-                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
-                </button>
-            @endauth
+{{-- Wishlist button moved to product image area --}}
 
         </div>
 
@@ -508,12 +606,7 @@
 
     </div>
 
-
-
 @endif
-
-
-
 
                                     <!-- Product Details Content End -->
                                     </div>

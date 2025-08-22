@@ -5180,19 +5180,56 @@ input[type=number] {
     color: #ff6b6b !important;
 }
 
-.product-item__wishlist.active {
+.product-item__wishlist.active,
+.wishlist-btn.active,
+.product-item__wishlist.in-wishlist,
+.wishlist-btn.in-wishlist {
     background: #333 !important;
     border-color: #333 !important;
     color: white !important;
 }
 
-.product-item__wishlist.active i {
+.product-item__wishlist.active i,
+.wishlist-btn.active i,
+.product-item__wishlist.in-wishlist i,
+.wishlist-btn.in-wishlist i {
     color: white !important;
 }
 
-.product-item__wishlist.active:hover {
+.product-item__wishlist.active:hover,
+.wishlist-btn.active:hover,
+.product-item__wishlist.in-wishlist:hover,
+.wishlist-btn.in-wishlist:hover {
     background: #000 !important;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ensure wishlist button is visible on product details page */
+.product-details__thumb .product-item__wishlist,
+.product-details__thumb .wishlist-btn,
+.product-details__thumb .btn-wishlist {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 10 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid #e1e5e9 !important;
+    border-radius: 50% !important;
+    width: 45px !important;
+    height: 45px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+}
+
+.product-details__thumb .product-item__wishlist:hover,
+.product-details__thumb .wishlist-btn:hover,
+.product-details__thumb .btn-wishlist:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
 }
 
 .product-item__content {

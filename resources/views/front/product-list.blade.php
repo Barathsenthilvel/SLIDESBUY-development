@@ -309,11 +309,11 @@
             <button type="button"
                     class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
                     data-product-id="{{ $discountProduct->id }}"
-                    data-container="body"
-                    data-toggle="popover"
-                    data-trigger="hover"
-                    data-placement="top"
-                    data-content="Wishlist">
+                    data-auth="{{ Auth::check() ? 'true' : 'false' }}"
+                    data-user-id="{{ Auth::id() ?? '' }}"
+                    data-in-wishlist="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'true' : 'false' }}"
+                    data-debug="{{ json_encode(['auth' => Auth::check(), 'inWishlist' => in_array($discountProduct->id, $wishlistProductIds), 'userId' => Auth::id(), 'productId' => $discountProduct->id]) }}"
+                    title="{{ Auth::check() ? 'Wishlist' : 'Login to add to Wishlist' }}">
                 <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
             </button>
         </div>
@@ -425,11 +425,11 @@ if (Auth::check()) {
                                 <button type="button"
                     class="product-item__wishlist wishlist-btn btn-wishlist {{ in_array($discountProduct->id, $wishlistProductIds) ? 'active in-wishlist' : '' }}"
                     data-product-id="{{ $discountProduct->id }}"
-                    data-container="body"
-                    data-toggle="popover"
-                    data-trigger="hover"
-                    data-placement="top"
-                    data-content="Wishlist">
+                    data-auth="{{ Auth::check() ? 'true' : 'false' }}"
+                    data-user-id="{{ Auth::id() ?? '' }}"
+                    data-in-wishlist="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'true' : 'false' }}"
+                    data-debug="{{ json_encode(['auth' => Auth::check(), 'inWishlist' => in_array($discountProduct->id, $wishlistProductIds), 'userId' => Auth::id(), 'productId' => $discountProduct->id]) }}"
+                    title="{{ Auth::check() ? 'Wishlist' : 'Login to add to Wishlist' }}">
                 <i class="{{ in_array($discountProduct->id, $wishlistProductIds) ? 'fas' : 'far' }} fa-heart"></i>
             </button>
                 </div>

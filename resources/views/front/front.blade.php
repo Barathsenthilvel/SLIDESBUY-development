@@ -20,7 +20,7 @@
 
 @if(count($homeProduct)>0)
     @foreach($homeProduct as $discounts)
-        @include('front.includes.product')
+        @include('front.includes.product', ['downloadCounts' => $downloadCounts])
     @endforeach
 @endif
 
@@ -53,7 +53,7 @@
 {{-- trending product slider --}}
 @php $trendingProducts = collect($trendingProduct ?? $trending ?? []); @endphp
 @if($trendingProducts->count() > 0)
-	@include('front.includes.trendingproducts', ['products' => $trendingProducts])
+	@include('front.includes.trendingproducts', ['products' => $trendingProducts, 'downloadCounts' => $trendingDownloadCounts ?? $downloadCounts])
 @endif
 
 
@@ -69,7 +69,7 @@
 
 @if(count($discount)>0)
     @foreach($discount as $discounts)
-        @include('front.includes.discount')
+        @include('front.includes.discount', ['downloadCounts' => $downloadCounts])
     @endforeach
 @endif
 

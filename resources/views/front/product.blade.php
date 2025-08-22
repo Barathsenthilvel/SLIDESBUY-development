@@ -345,7 +345,8 @@
                                     <img src="{{ asset('assets/images/icons/cart-icon.svg') }}" alt="" class="white-version">
                                     <img src="{{ asset('assets/images/icons/cart-white.svg') }}" alt="" class="dark-version w-20">
                                 </span>
-                                <span class="text">{{ $downloadCounts['downloads_count'] ?? 0 }} Downloads</span>
+                                     <span class="text">{{ $downloadCounts['downloads_count'] ?? 0 }} Downloads</span>
+                                <!-- <span class="text">{{ $downloadCounts[$product->id] ?? 0 }} Downloads</span> -->
                             </div>
                             <div class="breadcrumb-content__item text-heading fw-500 flx-align gap-2">
                                 <span class="icon">

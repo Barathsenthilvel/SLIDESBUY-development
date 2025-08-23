@@ -2,9 +2,35 @@
   "use strict";
 
   // ==========================================
-  //      Start Document Ready function
+  //      Document Ready function
   // ==========================================
-  $(document).ready(function () {
+  $(document).ready(function() {
+
+    console.log('Document ready - initializing sliders...');
+
+    // General error handler for slider initializations
+    window.handleSliderError = function(sliderName, error) {
+      console.log(`Error initializing ${sliderName}:`, error);
+    };
+
+    // Safe slider initialization function
+    window.initializeSlider = function(selector, options, sliderName) {
+      try {
+        if($(selector).length > 0 && typeof $.fn.slick !== 'undefined') {
+          $(selector).slick(options);
+          console.log(`${sliderName} initialized successfully`);
+        } else {
+          if($(selector).length === 0) {
+            console.log(`${sliderName} element not found on this page`);
+          }
+          if(typeof $.fn.slick === 'undefined') {
+            console.log('Slick slider library not loaded');
+          }
+        }
+      } catch (error) {
+        window.handleSliderError(sliderName, error);
+      }
+    };
 
     // ============================== Light & Dark Mode Js Start=====================
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
@@ -172,47 +198,53 @@
   // ================================ CountDown Js End =============================
 
   // ========================= popular Category Js Start ==============
-  $('.popular-slider').slick({
-    slidesToShow: 6,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
-    dots: false,
-    pauseOnHover: true,
-    arrows: true,
-    draggable: true,
-    speed: 900,
-    infinite: true,
-    prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
-    responsive: [
-      {
-        breakpoint: 1199,
-        settings: {
-          slidesToShow: 5,
-        }
-      },
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 4,
-        }
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 575,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-    ]
-  });
+  if($('.popular-slider').length > 0) {
+    try {
+      $('.popular-slider').slick({
+        slidesToShow: 6,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        speed: 1500,
+        dots: false,
+        pauseOnHover: true,
+        arrows: true,
+        draggable: true,
+        speed: 900,
+        infinite: true,
+        prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
+        responsive: [
+          {
+            breakpoint: 1199,
+            settings: {
+              slidesToShow: 5,
+            }
+          },
+          {
+            breakpoint: 991,
+            settings: {
+              slidesToShow: 4,
+            }
+          },
+          {
+            breakpoint: 767,
+            settings: {
+              slidesToShow: 3,
+            }
+          },
+          {
+            breakpoint: 575,
+            settings: {
+              slidesToShow: 2,
+            }
+          },
+        ]
+      });
+    } catch (error) {
+      console.log('Error initializing popular slider:', error);
+    }
+  }
   // ========================= popular Category Js End ===================
 
   // ========================= Wishlist Js Start ===================
@@ -393,7 +425,7 @@
       console.log('Debug info - Auth:', debugData?.auth, 'User ID:', debugData?.userId);
 
       // Redirect to login page
-      window.location.href = '/sign-Up';
+      window.location.href = '/sign-up';
       return;
     }
 
@@ -422,29 +454,31 @@
   // ========================= Selling Product Js End ===================
 
   // ========================= Testimonial Slider Js Start ==============
-  $('.testimonial-slider').slick({
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
-    dots: true,
-    pauseOnHover: true,
-    arrows: true,
-    draggable: true,
-    speed: 900,
-    infinite: true,
-    prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
-    responsive: [
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 1,
-        }
-      },
-    ]
-  });
+  if($('.testimonial-slider').length > 0) {
+    $('.testimonial-slider').slick({
+      slidesToShow: 2,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      speed: 1500,
+      dots: true,
+      pauseOnHover: true,
+      arrows: true,
+      draggable: true,
+      speed: 900,
+      infinite: true,
+      prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
+      nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
+      responsive: [
+        {
+          breakpoint: 991,
+          settings: {
+            slidesToShow: 1,
+          }
+        },
+      ]
+    });
+  }
   // ========================= Testimonial Slider Js End ===================
 
   // ========================= Selling Product Js Start ==============
@@ -492,47 +526,49 @@
   // ========================= Selling Product Js End ===================
 
   // ========================= Brand Slider Js Start ==============
-  $('.brand-slider').slick({
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    speed: 1500,
-    dots: false,
-    pauseOnHover: true,
-    arrows: false,
-    draggable: true,
-    speed: 900,
-    infinite: true,
-    prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
-    responsive: [
-      {
-        breakpoint: 1199,
-        settings: {
-          slidesToShow: 4,
-        }
-      },
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 4,
-        }
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 3,
-        }
-      },
-      {
-        breakpoint: 575,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-    ]
-  });
+  if($('.brand-slider').length > 0) {
+    $('.brand-slider').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      speed: 1500,
+      dots: false,
+      pauseOnHover: true,
+      arrows: false,
+      draggable: true,
+      speed: 900,
+      infinite: true,
+      prevArrow: '<button type="button" class="slick-prev"><i class="las la-arrow-left"></i></button>',
+      nextArrow: '<button type="button" class="slick-next"><i class="las la-arrow-right"></i></button>',
+      responsive: [
+        {
+          breakpoint: 1199,
+          settings: {
+            slidesToShow: 4,
+          }
+        },
+        {
+          breakpoint: 991,
+          settings: {
+            slidesToShow: 3,
+          }
+        },
+        {
+          breakpoint: 767,
+          settings: {
+            slidesToShow: 2,
+          }
+        },
+        {
+          breakpoint: 575,
+          settings: {
+            slidesToShow: 1,
+          }
+        },
+      ]
+    });
+  }
   // ========================= Brand Slider Js End ===================
 
 
@@ -1151,6 +1187,8 @@
       var earingChart = new ApexCharts(lineChart, options);
       earingChart.render();
     }
+
+    console.log('All sliders initialized successfully');
 
   });
   // ==========================================

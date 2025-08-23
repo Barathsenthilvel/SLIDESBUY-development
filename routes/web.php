@@ -40,11 +40,15 @@ Route::get('/', 'Front\FrontendController@index')->name('front.index');
 Route::post('/loginmobile', 'Front\UserController@signOnWithMobileNo')->name('login.mobile');
 Route::get('/sign-up', 'Front\UserController@LoadLogin')->name('front.loginBlade');
 Route::get('/thankyou', 'Front\UserController@thankyou')->name('thankyou');
+
+// Wishlist routes - accessible to both guest and authenticated users
+
+
 Route::middleware('auth')->group(function () {
-    Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
     Route::post('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
     Route::post('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
     Route::get('/wishlistTemplate', 'Front\UserController@wishlistTemplate')->name('wishlistTemplate');
+    Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
 });
 Route::get('/myaddress', 'Front\UserController@myaccount')->name('front.account');
 Route::get('/verification/{id}/{token}', 'Front\UserController@verify')->name('front.verify');
@@ -110,7 +114,7 @@ Route::get('/vieworder/order/{id}','Front\UserController@vieworder')->name('view
 Route::get('/repeartorder/{Order}','Front\UserController@repeartorder')->name('repeartorder');
 Route::get('/myorders','Front\UserController@order')->name('order');
 // Route::get('/purchase','Front\FrontendController@subscription')->name('front.subscription');
- Route::get('/Pricing-plan','Front\SubscriptionController@showPlans')->name('front.subscription');
+ Route::get('/pricing-plan','Front\SubscriptionController@showPlans')->name('front.subscription');
 //subscription forntend
 Route::middleware('auth')->group(function () {
 

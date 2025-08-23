@@ -44,7 +44,7 @@ class UserController extends Controller
     public $perpage = 5;
     public function __construct()
     {
-      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn','showLinkRequestForm','sendResetLinkEmail','showResetForm','resendOtp','reset']]);
+      $this->middleware('auth',['except'=>['index','register','login','otp-form','send-otp','checkout','contact','cart','logout','LoadLogin','myaccount','verify','forgotpassword','thankyou','contactus','termandconduction','aboutus','signOnWithMobileNo','showOtpForm','verifyOtp','showLoginForm','signIn','showLinkRequestForm','sendResetLinkEmail','showResetForm','resendOtp','reset','wishlist']]);
     }
 
     public function showLinkRequestForm()
@@ -647,11 +647,40 @@ public function resendOtp(Request $request)
   //     return view('front.includes.Ajax.thankyou');
   // }
   public function wishlist(){
-    if(Auth::check()){
-      $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');
-      return view('front.wishlist',compact('wishlistProducts'));
+    try {
+      if(auth()->check()){
+        $wishlistProducts = auth()->user()->wishlists()->with('product')->get()->pluck('product');
+
+        // Debug information
+        \Log::info('Wishlist Debug', [
+          'user_id' => auth()->id(),
+          'wishlist_count' => auth()->user()->wishlists()->count(),
+          'products_count' => $wishlistProducts->count(),
+          'products' => $wishlistProducts->toArray()
+        ]);
+
+        // Get download counts for wishlist products
+        $downloadCounts = [];
+        if($wishlistProducts->count() > 0) {
+            $downloadCounts = \App\Models\Product::getDownloadCounts($wishlistProducts);
+        }
+        return view('front.wishlist',compact('wishlistProducts', 'downloadCounts'));
+      } else {
+        // For guest users, show empty wishlist with login prompt
+        $wishlistProducts = collect(); // Empty collection
+        $downloadCounts = []; // Empty download counts
+        return view('front.wishlist',compact('wishlistProducts', 'downloadCounts'));
+      }
+    } catch (\Exception $e) {
+      \Log::error('Wishlist Error: ' . $e->getMessage());
+      \Log::error('Wishlist Error Stack: ' . $e->getTraceAsString());
+
+      // Return a simple error view or redirect
+      return response()->json([
+        'error' => 'Wishlist error: ' . $e->getMessage(),
+        'trace' => $e->getTraceAsString()
+      ], 500);
     }
-    return redirect('/');
   }
 
   public function wishlistAdd(Request $request){

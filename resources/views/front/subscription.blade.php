@@ -466,6 +466,119 @@
     transform: translateY(-1px);
 }
 
+/* Login Required Modal Styling */
+#loginRequiredModal .modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+#loginRequiredModal .modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 30px 24px 20px;
+    border-bottom: none;
+    position: relative;
+}
+
+#loginRequiredModal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+#loginRequiredModal .modal-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin: 0;
+}
+
+#loginRequiredModal .modal-logo {
+    filter: brightness(0) invert(1);
+    margin-bottom: 15px;
+}
+
+#loginRequiredModal .modal-body {
+    padding: 40px 30px;
+    background: white;
+}
+
+.login-required-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-icon {
+    color: #007bff;
+    animation: pulse 2s infinite;
+}
+
+.login-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.login-actions .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.login-actions .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.login-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+}
+
+.login-actions .btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.login-actions .btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    #loginRequiredModal .modal-body {
+        padding: 30px 20px;
+    }
+
+    .login-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login-actions .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
 /* Enhanced line-by-line plan details layout */
 .plan-details-list {
     display: flex;
@@ -633,6 +746,39 @@
     </div>
 </div>
 
+<!-- Login Required Modal -->
+<div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-center border-0">
+                <div class="w-100 text-center">
+                    <img src="{{ asset('assets/images/logo/slidesbuy.png') }}" alt="Slidesbuy Logo" class="modal-logo mb-3" style="max-height: 60px;">
+                    <h5 class="modal-title w-100">Hello User!</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeLoginModal()"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="login-required-content">
+                    <div class="login-icon mb-4">
+                        <i class="fas fa-user-lock fa-3x text-primary"></i>
+                    </div>
+                    <h4 class="mb-3">Please Login to Proceed</h4>
+                    <p class="text-muted mb-4">You need to be logged in to view plan details and make purchases.</p>
+
+                    <div class="login-actions">
+                        <a href="{{ route('login.form') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="{{ route('user.register') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {{--
 <div class="container">
@@ -690,8 +836,7 @@ jQuery(document).ready(function ($) {
         var isAuthenticated = @json(Auth::check());
 
         if (!isAuthenticated) {
-            alert("Please login to continue with the payment.");
-            window.location.href = "{{ route('front.loginBlade') }}";
+            $('#loginRequiredModal').modal('show');
             return false;
         }
 
@@ -714,6 +859,30 @@ jQuery(document).ready(function ($) {
 
         // Show modal
         $('#planDetailsModal').modal('show');
+    });
+
+    // Handle login required modal events
+    $('#loginRequiredModal').on('shown.bs.modal', function () {
+        // Auto-focus on login button for better accessibility
+        $('.login-actions .btn-primary').focus();
+    });
+
+    // Handle modal close events
+    $('#loginRequiredModal').on('hidden.bs.modal', function () {
+        // Reset any form states if needed
+        console.log('Login required modal closed');
+    });
+
+    // Close modal function
+    window.closeLoginModal = function() {
+        $('#loginRequiredModal').modal('hide');
+    };
+
+    // Close modal when clicking outside
+    $('#loginRequiredModal').on('click', function(e) {
+        if (e.target === this) {
+            $(this).modal('hide');
+        }
     });
 
     // Handle "Pay Now" button click

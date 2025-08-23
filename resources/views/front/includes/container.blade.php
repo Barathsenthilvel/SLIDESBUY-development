@@ -103,24 +103,32 @@
 }
 </style>
 
-<!-- jQuery -->
-<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-<!-- Bootstrap Bundle JS -->
-<script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
-<!-- Countdown -->
-<script src="{{ asset('assets/js/countdown.js') }}"></script>
-<!-- Counter Up -->
-<script src="{{ asset('assets/js/counterup.min.js') }}"></script>
-<!-- Slick JS -->
-<script src="{{ asset('assets/js/slick.min.js') }}"></script>
-<!-- Magnific Popup -->
-<script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
-<!-- Apex Chart -->
-<script src="{{ asset('assets/js/apexchart.js') }}"></script>
-<!-- Marquee -->
-<script src="{{ asset('assets/js/marquee.min.js') }}"></script>
-<!-- Main JS -->
-<script src="{{ asset('assets/js/main.js') }}"></script>
+    <!-- jQuery -->
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{{ asset('assets/js/boostrap.bundle.min.js') }}"></script>
+
+    <!-- Countdown JS (Fixed - no jQuery conflicts) -->
+    <script src="{{ asset('assets/js/countdown.js') }}"></script>
+
+    <!-- Other Scripts -->
+    <script src="{{ asset('assets/js/counterup.min.js') }}"></script>
+    <script src="{{ asset('assets/js/slick.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
+    <script src="{{ asset('assets/js/apexchart.js') }}"></script>
+    <script src="{{ asset('assets/js/marquee.min.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
+
+    <!-- jQuery Ready Check -->
+    <script>
+        // Ensure jQuery is loaded before running other scripts
+        if (typeof jQuery !== 'undefined') {
+            console.log('jQuery loaded successfully');
+        } else {
+            console.error('jQuery not loaded');
+        }
+    </script>
 
 
 

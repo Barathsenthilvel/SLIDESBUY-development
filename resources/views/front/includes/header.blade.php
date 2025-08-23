@@ -112,8 +112,8 @@
 <body>
 @php
 $wishlistcnt = 0;
-if(Auth::check()){
-    $wishlistcnt = Auth::user()->wishlists()->count();
+if(auth()->check()){
+    $wishlistcnt = auth()->user()->wishlists()->count();
 }
 @endphp
 <!--==================== Preloader Start ====================-->
@@ -197,51 +197,57 @@ if(Auth::check()){
     @endforeach
 </ul>
             <div class="header-right__inner d-lg-none my-3 gap-1 d-flex flx-align">
+                @if(!auth()->check())
+                    <a href="{{ route('user.register') }}" class="btn btn-main pill">
+                        <span class="icon-left icon">
+                        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
+                        </span>Create Account
+                    </a>
+                    <a href="{{ route('login.form') }}" class="btn btn-outline-main pill">
+                        <span class="icon-left icon">
+                        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
+                        </span>Login
+                    </a>
+                @else
+                    <div class="user-profile">
+                        <button class="user-profile__button flex-align">
+                            <span class="user-profile__thumb">
+                                <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
+                            </span>
+                        </button>
+                        <ul class="user-profile-dropdown">
+                            <li class="sidebar-list__item">
+                                <a href="{{ route('account.profile') }}" class="sidebar-list__link">
+                                    <span class="sidebar-list__icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
+                                    </span>
+                                    <span class="text">My Account</span>
+                                </a>
+                            </li>
 
-    <a href="register.html" class="btn btn-main pill">
-        <span class="icon-left icon">
-        <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
-        </span>Create Account
-    </a>
-    <div class="language-select flx-align select-has-icon">
-       <div class="user-profile">
-            <button class="user-profile__button flex-align">
-                <span class="user-profile__thumb">
-                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
-                </span>
-            </button>
-            <ul class="user-profile-dropdown">
-                <li class="sidebar-list__item">
-                    <a href="{{ route('account.profile') }}" class="sidebar-list__link">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon2.svg') }}" alt="" class="icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon-active2.svg') }}" alt="" class="icon icon-active">
-                        </span>
-                        <span class="text">My Account</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-list__item">
-                    <a href="setting.html" class="sidebar-list__link">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon-active10.svg') }}" alt="" class="icon icon-active">
-                        </span>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-                <li class="sidebar-list__item">
-                    <a href="login.html" class="sidebar-list__link">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon-active13.svg') }}" alt="" class="icon icon-active">
-                        </span>
-                        <span class="text">Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+                            <li class="sidebar-list__item">
+                                <a href="{{ route('account.profile') }}#profile" class="sidebar-list__link">
+                                    <span class="sidebar-list__icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon-active10.svg') }}" alt="" class="icon icon-active">
+                                    </span>
+                                    <span class="text">Settings</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-list__item">
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();" class="sidebar-list__link">
+                                    <span class="sidebar-list__icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">
+                                        <img src="{{ asset('assets/images/icons/sidebar-icon-active13.svg') }}" alt="" class="icon icon-active">
+                                    </span>
+                                    <span class="text">Logout</span>
+                                </a>
+                                <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+                            </li>
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -342,19 +348,19 @@ if(Auth::check()){
 
             <!-- Header Right start -->
             <div class="header-right flx-align">
-    @auth
+    @if(auth()->check())
     <a href="{{ route('wishlist') }}" class="header-right__button wishlist-btn position-relative">
         <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
         <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
         <span class="qty-badge font-12 wishlist-count">{{ $wishlistcnt }}</span>
     </a>
     @else
-    <a href="{{ route('front.loginBlade') }}" class="header-right__button wishlist-btn position-relative">
+    <a href="{{ route('login.form') }}" class="header-right__button wishlist-btn position-relative">
         <img src="{{ asset('assets/images/icons/heart.svg') }}" alt="" class="white-version">
-        <img src="{{ asset('assets/images/icons/heart-white.svg') }}" alt="" class="dark-version">
+        <img src="{{ asset('assets/icons/heart-white.svg') }}" alt="" class="dark-version">
         <span class="qty-badge font-12">0</span>
     </a>
-    @endauth
+    @endif
 
      <!-- Light Dark Mode -->
  <div class="theme-switch-wrapper position-relative">
@@ -376,9 +382,9 @@ if(Auth::check()){
                         <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
                     </span>Login / Signup
                     </a> --}}
-          @if(!Auth::check())
+          @if(!auth()->check())
             <li>
-                    <a href="{{route('front.loginBlade')}}" class="btn btn-main pill">
+                    <a href="{{route('login.form')}}" class="btn btn-main pill">
                     <span class="icon-left icon">
                         <img src="../assets/images/icons/user.svg" alt="">
                     </span>Login / Signup

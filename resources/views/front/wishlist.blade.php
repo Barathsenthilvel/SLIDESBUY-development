@@ -1,6 +1,98 @@
 @extends('front.includes.container')
 @section('content')
 
+<style>
+/* Guest Wishlist Message Styling */
+.guest-wishlist-message {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.guest-icon {
+    color: #6c757d;
+    animation: pulse 2s infinite;
+}
+
+.guest-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.guest-actions .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.guest-actions .btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.guest-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+}
+
+.guest-actions .btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.guest-actions .btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.empty-wishlist-message {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    color: #6c757d;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .guest-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .guest-actions .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .guest-wishlist-message,
+    .empty-wishlist-message {
+        padding: 30px 20px;
+    }
+}
+</style>
+
 <!-- ============================ Breadcrumb Start ================================== -->
 <div class="breadcrumb-section">
         <div class="container">
@@ -98,42 +190,49 @@
                                                             @endfor
                                                         </ul>
                                                         <span class="star-rating__text text-heading fw-500 font-14">
-                                                            ({{ $product->review_count ?? '16' }})
-                                        </span>
+                                                            {{ number_format($star, 1) }}
+                                                        </span>
                                                     </div>
-                                </div>
-
-                                                <div class="d-flex gap-2">
-                                                    <a href="{{ route('product.item', ['slug' => $product->slug]) }}"
-                                                       class="btn btn-outline-light btn-sm pill">
-                                                        View
-                                                    </a>
-                                    {{-- @if($product->soldout == 'off')
-                                                        <button class="btn btn-primary btn-sm pill" onclick="addToCart({{ $product->id }}, {{ $product->minquantity }})">
-                                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
-                                    @else
-                                                        <button class="btn btn-secondary btn-sm pill" disabled>
-                                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    @endif --}}
                                                 </div>
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="addToCart({{ $product->id }}, 1)">
+                                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                                </button>
                                             </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
-            @else
+                    @else
                         <div class="text-center py-5">
-                            <div class="empty-wishlist">
-                                <i class="fas fa-heart-broken fa-4x text-muted mb-4"></i>
-                                <h3 class="text-heading mb-3">Your wishlist is empty</h3>
-                                <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
-                                <a href="{{ route('front.index') }}" class="btn btn-primary">
-                                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
-                                </a>
-                            </div>
+                            @guest
+                                <div class="guest-wishlist-message mb-4">
+                                    <div class="guest-icon mb-3">
+                                        <i class="fas fa-user-lock fa-3x text-muted"></i>
+                                    </div>
+                                    <h4 class="text-heading mb-3">Welcome to Wishlist!</h4>
+                                    <p class="text-body mb-4">To save your favorite products and create your wishlist, please login to your account.</p>
+                                    <div class="guest-actions">
+                                        <a href="{{ route('login.form') }}" class="btn btn-primary me-3">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                                        </a>
+                                        <a href="{{ route('user.register') }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-user-plus me-2"></i>Register
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="empty-wishlist-message">
+                                    <div class="empty-icon mb-3">
+                                        <i class="fas fa-heart fa-3x text-muted"></i>
+                                    </div>
+                                    <h3 class="text-heading mb-3">Your wishlist is empty</h3>
+                                    <p class="text-body mb-4">Start browsing our amazing products and add them to your wishlist!</p>
+                                    <a href="{{ route('front.index') }}" class="btn btn-primary">
+                                        <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                                    </a>
+                                </div>
+                            @endguest
                         </div>
                     @endif
                 </div>
@@ -147,83 +246,90 @@
 
 @push('script')
 <script>
-function addToCart(productId, quantity) {
-    $.ajax({
-        method: "GET",
-        url: "{{ route('user.add.card') }}",
-        data: {
-            quantity: quantity,
-            id: productId
-        },
-        success: function(data) {
-            // Update cart count
-            $('.cart-count').text(data.totalitem);
-            $('.dropdown-box').load("{{ route('user.render.card') }}");
+// Ensure jQuery is available
+if (typeof jQuery !== 'undefined') {
+    console.log('jQuery available in wishlist view');
 
-            // Show success message
-            if (window.toaster) {
-                window.toaster.success('Added to Cart');
-            } else {
-                alert('Added to Cart');
+    function addToCart(productId, quantity) {
+        jQuery.ajax({
+            method: "GET",
+            url: "{{ route('user.add.card') }}",
+            data: {
+                quantity: quantity,
+                id: productId
+            },
+            success: function(data) {
+                // Update cart count
+                jQuery('.cart-count').text(data.totalitem);
+                jQuery('.dropdown-box').load("{{ route('user.render.card') }}");
+
+                // Show success message
+                if (window.toaster) {
+                    window.toaster.success('Added to Cart');
+                } else {
+                    alert('Added to Cart');
+                }
+            },
+            error: function() {
+                if (window.toaster) {
+                    window.toaster.error('Failed to add to cart');
+                } else {
+                    alert('Failed to add to cart');
+                }
             }
-        },
-        error: function() {
-            if (window.toaster) {
-                window.toaster.error('Failed to add to cart');
-            } else {
-                alert('Failed to add to cart');
-            }
-        }
+        });
+    }
+
+    // Wishlist page: remove item without full page refresh
+    jQuery(document).ready(function() {
+        jQuery(document).on('click', '.product-item__wishlist', function(e) {
+            e.preventDefault();
+            const button = jQuery(this);
+            const productId = button.data('product-id');
+            if (!productId) return;
+
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ route('wishlistremove') }}",
+                data: {
+                    id: productId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data.status === 'success') {
+                        // Update wishlist count in header
+                        jQuery('.wishlist-count').text(data.count);
+
+                        if (window.toaster) {
+                            window.toaster.success('Removed from wishlist');
+                        }
+
+                        // Refresh the page after successful removal
+                        window.location.reload();
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error(data.message || 'Failed to remove item');
+                        } else {
+                            alert(data.message || 'Failed to remove item');
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401) {
+                        window.location.href = '{{ route('login.form') }}';
+                    } else {
+                        if (window.toaster) {
+                            window.toaster.error('Failed to remove item from wishlist');
+                        } else {
+                            alert('Failed to remove item from wishlist');
+                        }
+                    }
+                }
+            });
+        });
     });
+} else {
+    console.error('jQuery not available in wishlist view');
 }
-
-// Wishlist page: remove item without full page refresh
-$(document).ready(function() {
-    $(document).on('click', '.product-item__wishlist', function(e) {
-        e.preventDefault();
-        const button = $(this);
-        const productId = button.data('product-id');
-        if (!productId) return;
-
-    $.ajax({
-            method: 'POST',
-        url: "{{ route('wishlistremove') }}",
-        data: {
-            id: productId,
-            _token: '{{ csrf_token() }}'
-        },
-        success: function(data) {
-            if (data.status === 'success') {
-                // Update wishlist count in header
-                $('.wishlist-count').text(data.count);
-
-                if (window.toaster) {
-                    window.toaster.success('Removed from wishlist');
-                }
-
-                // Refresh the page after successful removal
-                window.location.reload();
-            } else {
-                if (window.toaster) {
-                    window.toaster.error(data.message || 'Failed to remove item');
-                } else {
-                    alert(data.message || 'Failed to remove item');
-                }
-            }
-        },
-        error: function(xhr) {
-            if (xhr.status === 401) {
-                    window.location.href = '{{ route('login.form') }}';
-            } else {
-                if (window.toaster) {
-                    window.toaster.error('Failed to remove item from wishlist');
-                } else {
-                    alert('Failed to remove item from wishlist');
-                }
-            }
-        }
-    });
-    });
-});
 </script>
 @endpush

@@ -99,9 +99,17 @@
 <script>
 $(document).ready(function() {
     // Initialize the trending products slider safely
-    if($('.resource-slider').length > 0 && typeof $.fn.slick !== 'undefined') {
+    const resourceSlider = $('.resource-slider');
+
+    if(resourceSlider.length > 0 && typeof $.fn.slick !== 'undefined') {
         try {
-            $('.resource-slider').slick({
+            // Check if slider is already initialized
+            if(resourceSlider.hasClass('slick-initialized')) {
+                console.log('Resource slider already initialized');
+                return;
+            }
+
+            resourceSlider.slick({
                 slidesToShow: 4,
                 slidesToScroll: 1,
                 autoplay: true,
@@ -135,8 +143,18 @@ $(document).ready(function() {
                     },
                 ]
             });
+
+            console.log('Resource slider initialized successfully');
         } catch (error) {
             console.log('Error initializing trending products slider:', error);
+        }
+    } else {
+        // Log why slider wasn't initialized
+        if(resourceSlider.length === 0) {
+            console.log('Resource slider element not found on this page');
+        }
+        if(typeof $.fn.slick === 'undefined') {
+            console.log('Slick slider library not loaded');
         }
     }
 });

@@ -5172,13 +5172,11 @@ input[type=number] {
 .product-item__wishlist:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-    border-color: #ff6b6b !important;
-    color: #ff6b6b !important;
+    /* border-color: #ff6b6b !important;
+    color: #ff6b6b !important; */
 }
 
-.product-item__wishlist:hover i {
-    color: #ff6b6b !important;
-}
+
 
 .product-item__wishlist.active,
 .wishlist-btn.active,
@@ -5212,7 +5210,7 @@ input[type=number] {
     top: 15px !important;
     right: 15px !important;
     z-index: 10 !important;
-    background: rgba(255, 255, 255, 0.95) !important;
+    /* background: rgba(255, 255, 255, 0.95) !important; */
     border: 2px solid #e1e5e9 !important;
     border-radius: 50% !important;
     width: 45px !important;

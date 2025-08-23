@@ -425,16 +425,16 @@ $('body').on('click','.btn.btn-link.btn-close',function(t){
 });
 {{-- Wishlist functionality now handled by main.js --}}
 
-    function myfunction(search,textsearch){
+    {{-- function myfunction(search,textsearch){
     window.location.href=search+'?search='+textsearch;
-    }
+    } --}}
     @if($errors->any())
         @foreach ($errors->all() as $ERR)
             toastr["error"]('{{$ERR}}');
         @endforeach
     @endif
     </script>
-    @stack('script') --}}
+    @stack('script')
 
     {{-- Wishlist functionality is now handled by main.js --}}
 </body>

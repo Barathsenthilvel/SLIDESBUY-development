@@ -38,7 +38,7 @@ Route::get('/checkphone', 'Front\FrontendController@checkphone')->name('checkpho
 Route::get('/home', 'Front\FrontendController@index')->name('login');
 Route::get('/', 'Front\FrontendController@index')->name('front.index');
 Route::post('/loginmobile', 'Front\UserController@signOnWithMobileNo')->name('login.mobile');
-Route::get('/sign-Up', 'Front\UserController@LoadLogin')->name('front.loginBlade');
+Route::get('/sign-up', 'Front\UserController@LoadLogin')->name('front.loginBlade');
 Route::get('/thankyou', 'Front\UserController@thankyou')->name('thankyou');
 Route::middleware('auth')->group(function () {
     Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');

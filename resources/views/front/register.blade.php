@@ -1,15 +1,10 @@
-
 @extends('front.includes.container')
 @section('content')
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-    .sale-offer {
-    display: none;
-}
   body {
     margin: 0;
     height: 100vh;
@@ -27,7 +22,7 @@
     border-radius: 1rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -73,38 +68,51 @@
     position: relative;
     margin-bottom: 0.5rem;
   }
-
   .password-toggle {
-    position: absolute !important;
-    right: 12px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    /* background: rgba(0, 0, 0, 0.3) !important; */
-    border: none !important;
-    color: white !important;
-    cursor: pointer !important;
-    font-size: 16px !important;
-    transition: all 0.3s ease !important;
-    z-index: 999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 30px !important;
-    height: 30px !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    position: absolute;
+    right: 12px;
+    top: 34%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    /* Responsive positioning for all screen sizes */
+    @media (max-width: 1200px) {
+      right: 12px;
+      font-size: 16px;
+    }
+    @media (max-width: 992px) {
+      right: 12px;
+      font-size: 16px;
+    }
+    @media (max-width: 768px) {
+      right: 10px;
+      font-size: 14px;
+    }
+    @media (max-width: 576px) {
+      right: 8px;
+      font-size: 13px;
+    }
+    @media (max-width: 480px) {
+      right: 8px;
+      font-size: 12px;
+    }
+    @media (max-width: 375px) {
+      right: 6px;
+      font-size: 11px;
+    }
   }
-
   .password-toggle:hover {
-    background: rgba(0, 0, 0, 0.5) !important;
-    color: #60a5fa !important;
-    transform: translateY(-50%) scale(1.1) !important;
-  }
-
-  .password-toggle i {
-    font-size: 14px !important;
+    color: white;
   }
   .auth-btn {
     background: linear-gradient(90deg, #3b82f6, #8b5cf6);
@@ -142,20 +150,6 @@
     margin-bottom: 1.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  .forgot-password {
-    text-align: center;
-    margin: 1rem 0;
-  }
-  .forgot-password a {
-    color: #93c5fd;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-  .forgot-password a:hover {
-    color: #60a5fa;
-    text-decoration: underline;
-  }
   .error-message {
     color: #fca5a5;
     font-size: 0.875rem;
@@ -172,19 +166,33 @@
     height: 40px;
     filter: brightness(0) invert(1);
   }
-  .signup-link {
+  .login-link {
     text-align: center;
     margin-top: 1rem;
   }
-  .signup-link a {
+  .login-link a {
     color: #93c5fd;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
   }
-  .signup-link a:hover {
+  .login-link a:hover {
     color: #60a5fa;
     text-decoration: underline;
+  }
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+  }
+  .checkbox-container input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+  }
+  .checkbox-container label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
   }
   /* Hide header and footer */
   header, footer, .header, .footer {
@@ -206,58 +214,61 @@
   [class*="toggle"], [class*="menu"] {
     display: none !important;
   }
-
-  /* Ensure password icons are always visible */
-  .password-container {
-    position: relative !important;
-    margin-bottom: 0.5rem !important;
-    overflow: visible !important;
-  }
-
-  /* Override any conflicting styles */
-  .password-container * {
-    overflow: visible !important;
-  }
-    </style>
+</style>
 
 <div class="auth-container">
   <!-- Logo -->
   <div class="logo">
     <img src="{{ asset('assets/images/logo/slidesbuy.png') }}" alt="SLIDESBUY Logo">
-</div>
+  </div>
 
-  <!-- Login Form -->
-  <div id="loginForm">
-    <h2 class="title">Welcome Back</h2>
+  <!-- Register Form -->
+  <div id="registerForm">
+    <h2 class="title">Create Account</h2>
 
-    <form id="loginFormElement" action="{{ route('login.submit') }}" method="POST">
-    @csrf
+    <form id="registerFormElement" action="{{ route('user.register') }}" method="POST">
+      @csrf
+
+      <div class="password-container">
+        <input type="text" name="name" id="name" class="form-input" placeholder="Full Name" required>
+        <div class="error-message" id="name-error"></div>
+      </div>
 
       <div class="password-container">
         <input type="email" name="email" id="email" class="form-input" placeholder="Email Address" required>
         <div class="error-message" id="email-error"></div>
-    </div>
+      </div>
 
       <div class="password-container">
-        <input type="password" name="password" id="password" class="form-input" placeholder="Password" required autocomplete="current-password">
-        <button type="button" class="password-toggle" onclick="togglePassword()">
-          <i class="fas fa-eye"></i>
+        <input type="password" name="password" id="password" class="form-input" placeholder="Password" required autocomplete="new-password">
+        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+          👁️
         </button>
         <div class="error-message" id="password-error"></div>
-    </div>
+      </div>
 
-      <div class="forgot-password">
-        <a href="{{ route('password.request') }}">Forgot Password?</a>
-    </div>
+      <div class="password-container">
+        <input type="password" name="password_confirmation" id="password_confirmation" class="form-input" placeholder="Confirm Password" required autocomplete="new-password">
+        <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
+          👁️
+        </button>
+        <div class="error-message" id="password_confirmation-error"></div>
+      </div>
 
-      <button type="submit" class="auth-btn" id="loginBtn">Login to Your Journey</button>
+      <div class="checkbox-container">
+        <input type="checkbox" name="agree" id="agree" required>
+        <label for="agree">I agree to the terms & conditions</label>
+        <div class="error-message" id="agree-error"></div>
+      </div>
+
+      <button type="submit" class="auth-btn" id="submitBtn">Create Account</button>
     </form>
 
-    <div class="signup-link">
-      <p class="text-white">Don't have an account? <a href="{{ route('front.loginBlade') }}">Sign Up</a></p>
+    <div class="login-link">
+      <p class="text-white">Already have an account? <a href="{{ route('login.form') }}">Login</a></p>
     </div>
-            </div>
-        </div>
+  </div>
+</div>
 
 <canvas class="canvas"></canvas>
 
@@ -269,16 +280,16 @@
   gsap.from(".title", { opacity: 0, y: -20, duration: 0.8, delay: 0.2 });
 
   // Password Toggle Function
-  function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const toggleBtn = document.querySelector('.password-toggle');
+  function togglePassword(fieldId) {
+    const passwordInput = document.getElementById(fieldId);
+    const toggleBtn = passwordInput.nextElementSibling;
 
     if (passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Change to eye-slash
+      toggleBtn.textContent = '🙈';
     } else {
       passwordInput.type = 'password';
-      toggleBtn.innerHTML = '<i class="fas fa-eye"></i>'; // Change back to eye
+      toggleBtn.textContent = '👁️';
     }
   }
 
@@ -287,40 +298,6 @@
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
-
-  // Real-time validation
-  document.addEventListener('DOMContentLoaded', function() {
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-
-    // Email validation on input
-    emailInput.addEventListener('input', function() {
-      const email = this.value.trim();
-      const emailError = document.getElementById('email-error');
-
-      if (email === '') {
-        emailError.textContent = '';
-      } else if (!validateEmail(email)) {
-        emailError.textContent = 'Please enter a valid email format';
-      } else {
-        emailError.textContent = '';
-      }
-    });
-
-    // Password validation on input
-    passwordInput.addEventListener('input', function() {
-      const password = this.value;
-      const passwordError = document.getElementById('password-error');
-
-      if (password === '') {
-        passwordError.textContent = '';
-      } else if (password.length < 6) {
-        passwordError.textContent = 'Password must be at least 6 characters';
-      } else {
-        passwordError.textContent = '';
-      }
-    });
-  });
 
   // Particle Animation
   const canvas = document.querySelector(".canvas");
@@ -380,8 +357,24 @@
   // Form Handling
   document.addEventListener('DOMContentLoaded', function() {
     // Real-time validation
+    const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('password_confirmation');
+
+    // Name validation on input
+    nameInput.addEventListener('input', function() {
+      const name = this.value.trim();
+      const nameError = document.getElementById('name-error');
+
+      if (name === '') {
+        nameError.textContent = '';
+      } else if (name.length < 2) {
+        nameError.textContent = 'Name must be at least 2 characters';
+      } else {
+        nameError.textContent = '';
+      }
+    });
 
     // Email validation on input
     emailInput.addEventListener('input', function() {
@@ -411,18 +404,48 @@
       }
     });
 
-    // Login Form Handler
-    document.getElementById('loginFormElement').addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Confirm password validation on input
+    confirmPasswordInput.addEventListener('input', function() {
+      const confirmPassword = this.value;
+      const password = passwordInput.value;
+      const confirmPasswordError = document.getElementById('password_confirmation-error');
 
-            // Clear previous errors
+      if (confirmPassword === '') {
+        confirmPasswordError.textContent = '';
+      } else if (confirmPassword !== password) {
+        confirmPasswordError.textContent = 'Passwords do not match';
+      } else {
+        confirmPasswordError.textContent = '';
+      }
+    });
+
+    // Register Form Handler
+    document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Clear previous errors
+      document.getElementById('name-error').textContent = '';
       document.getElementById('email-error').textContent = '';
       document.getElementById('password-error').textContent = '';
+      document.getElementById('password_confirmation-error').textContent = '';
+      document.getElementById('agree-error').textContent = '';
 
       // Client-side validation
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      const agree = document.getElementById('agree').checked;
       let hasErrors = false;
+
+      // Name validation
+      if (name === '') {
+        document.getElementById('name-error').textContent = 'Full name is required';
+        hasErrors = true;
+      } else if (name.length < 2) {
+        document.getElementById('name-error').textContent = 'Name must be at least 2 characters';
+        hasErrors = true;
+      }
 
       // Email validation
       if (email === '') {
@@ -442,26 +465,41 @@
         hasErrors = true;
       }
 
+      // Confirm password validation
+      if (confirmPassword === '') {
+        document.getElementById('password_confirmation-error').textContent = 'Please confirm your password';
+        hasErrors = true;
+      } else if (confirmPassword !== password) {
+        document.getElementById('password_confirmation-error').textContent = 'Passwords do not match';
+        hasErrors = true;
+      }
+
+      // Terms & conditions checkbox
+      if (!agree) {
+        document.getElementById('agree-error').textContent = 'You must agree to terms & conditions';
+        hasErrors = true;
+      }
+
       if (hasErrors) {
         return;
       }
 
-      const loginBtn = document.getElementById('loginBtn');
-      const originalText = loginBtn.textContent;
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
 
-      loginBtn.disabled = true;
-      loginBtn.textContent = 'Logging in...';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating Account...';
 
       // Show loading toaster
-            let loadingToast = null;
-            if (window.toaster) {
-                loadingToast = window.toaster.loading('Logging in...');
-            }
+      let loadingToast = null;
+      if (window.toaster) {
+        loadingToast = window.toaster.loading('Creating your account...');
+      }
 
       const formData = new FormData(this);
 
       fetch(this.action, {
-                method: 'POST',
+        method: 'POST',
         body: formData,
         headers: {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -469,74 +507,66 @@
       })
       .then(response => response.json())
       .then(data => {
-                    // Hide loading toaster
-                    if (window.toaster && loadingToast) {
-                        window.toaster.hide(loadingToast);
-                    }
+        // Hide loading toaster
+        if (window.toaster && loadingToast) {
+          window.toaster.hide(loadingToast);
+        }
 
         if (data.success) {
-          // Show success toaster
-                        if (window.toaster) {
-                            window.toaster.success('Login successful! Redirecting...', 2000);
+          // Show success message
+          if (window.toaster) {
+            window.toaster.success('Account created successfully! Redirecting...', 2000);
           }
 
-          // Redirect or show success message
-          if (data.redirect) {
-            setTimeout(() => {
-              window.location.href = data.redirect;
-            }, 2000);
-                        } else {
-            // Default redirect to home
-                        setTimeout(() => {
-                            window.location.href = '/home';
-                        }, 2000);
-          }
-                    } else {
+          // Redirect to OTP form after a short delay
+          setTimeout(function() {
+            window.location.href = '/otp-form';
+          }, 2000);
+        } else {
           // Show error message
-          if (data.message) {
-            if (data.field === 'email') {
-              document.getElementById('email-error').textContent = data.message;
-            } else if (data.field === 'password') {
-              document.getElementById('password-error').textContent = data.message;
-                        } else {
-              document.getElementById('email-error').textContent = data.message;
-            }
-                        }
-                    }
+          if (window.toaster) {
+            window.toaster.error(data.message || 'Something went wrong. Please try again.');
+          }
+
+          // Reset button
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
       })
       .catch(error => {
-                    // Hide loading toaster
-                    if (window.toaster && loadingToast) {
-                        window.toaster.hide(loadingToast);
+        // Hide loading toaster
+        if (window.toaster && loadingToast) {
+          window.toaster.hide(loadingToast);
         }
+
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
 
         // Handle validation errors
         if (error.status === 422) {
           const errors = error.responseJSON.errors;
-                        if (errors.email) {
+          if (errors.name) {
+            document.getElementById('name-error').textContent = errors.name[0];
+          }
+          if (errors.email) {
             document.getElementById('email-error').textContent = errors.email[0];
-                        }
-                        if (errors.password) {
+          }
+          if (errors.password) {
             document.getElementById('password-error').textContent = errors.password[0];
-                        }
-                    } else {
+          }
+          if (errors.password_confirmation) {
+            document.getElementById('password_confirmation-error').textContent = errors.password_confirmation[0];
+          }
+          if (errors.agree) {
+            document.getElementById('agree-error').textContent = errors.agree[0];
+          }
+        } else {
           document.getElementById('email-error').textContent = 'An error occurred. Please try again.';
         }
-      })
-      .finally(() => {
-        loginBtn.disabled = false;
-        loginBtn.textContent = originalText;
-            });
-        });
+      });
     });
+  });
 </script>
 
-<!-- Load jQuery first -->
-<script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-
-<!-- Include Toaster System -->
-@include('front.includes.toaster')
-
 @endsection
-
-

@@ -1947,7 +1947,7 @@ button:focus {
 }
 
 .btn-lg {
-    padding: 22px 40px;
+    /* padding: 22px 40px; */
     font-size: 1rem;
 }
 

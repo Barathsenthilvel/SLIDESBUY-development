@@ -1,0 +1,140 @@
+@extends('front.includes.container')
+@section('content')
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+<!-- Include Toaster System -->
+@include('front.includes.toaster')
+
+<style>
+    .account-wrapper { min-height: 60vh; }
+    .account-card { border: 1px solid #eef1f5; border-radius: 14px; background: #fff; }
+    .account-nav .list-group-item { border: 0; border-left: 3px solid transparent; border-radius: 0; padding: 12px 14px; color: #334155; font-weight: 600; }
+    .account-nav .list-group-item:hover { background: #f8fafc; }
+    .account-nav .list-group-item.active { background: #eef7ff; color: #0b63f6; border-left-color: #0b63f6; }
+
+    .metric { border-radius: 12px; padding: 14px; background: #f8fafc; }
+    .metric .value { font-size: 22px; font-weight: 700; }
+    .metric .label { font-size: 13px; color: #64748b; }
+
+    .table-modern { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .table-modern thead th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #64748b; padding: 8px 12px; }
+    .table-modern tbody tr { background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+    .table-modern tbody td { padding: 14px 12px; vertical-align: middle; }
+    .badge-soft { background: #eef7ff; color: #0b63f6; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .btn-icon-only { width: 40px; height: 40px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-outline { border: 1px solid #e2e8f0; background: #fff; color: #0f172a; }
+    .btn-outline:hover { background: #0b63f6; border-color: #0b63f6; color: #fff; }
+
+    /* Active navigation styling */
+    .account-nav .list-group-item.active {
+        background: #eef7ff !important;
+        color: #0b63f6 !important;
+        border-left-color: #0b63f6 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Hover effects for navigation */
+    .account-nav .list-group-item:hover:not(.active) {
+        background: #f8fafc !important;
+        transform: translateX(5px);
+        transition: all 0.3s ease;
+    }
+</style>
+
+<div class="container container-two py-4 account-wrapper">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h3 class="mb-0">My Downloads</h3>
+    </div>
+    <div class="row g-3">
+        <div class="col-lg-3">
+            <div class="list-group account-nav shadow-sm rounded-3 overflow-hidden">
+                <a href="{{ route('account.profile') }}" class="list-group-item list-group-item-action">My Account</a>
+                <a href="{{ route('account.downloads') }}" class="list-group-item list-group-item-action active">My Downloads</a>
+                <a href="{{ route('account.subscriptions') }}" class="list-group-item list-group-item-action">Subscriptions</a>
+                <a href="{{ route('account.profile.edit') }}" class="list-group-item list-group-item-action">Profile Update</a>
+                <a href="#" class="list-group-item list-group-item-action" onclick="event.preventDefault(); document.getElementById('logout-form-account').submit();">Log Out</a>
+                <form id="logout-form-account" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="account-card p-3">
+                <div class="table-responsive">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Plan</th>
+                                <th>Downloaded</th>
+                                <th>Left</th>
+                                <th>Download</th>
+                                <th>Rating</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse(($downloads->groupBy('product_id') ?? collect()) as $productId => $groupedDownloads)
+                                @php
+                                    $first = $groupedDownloads->first();
+                                    $product = $first->product;
+                                    $plan = optional($first->subscription)->plan;
+                                    $downloadCount = $groupedDownloads->count();
+                                    $limit = optional($plan)->download_limit ?? 0;
+                                    $left = max($limit - $downloadCount, 0);
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-600">{{ $product->product_title ?? ('File #' . $productId) }}</span>
+                                            @if($product && $product->is_free)
+                                                <span class="badge-soft">Free</span>
+                                            @endif
+                                        </div>
+                                        <div class="text-muted small">{{ optional($groupedDownloads->first())->created_at->format('d M Y') }}</div>
+                                    </td>
+                                    <td><span class="badge-soft">{{ $plan->name ?? 'N/A' }}</span></td>
+                                    <td>{{ $downloadCount }}</td>
+                                    <td>{{ $left }}</td>
+                                    <td>
+                                        <a href="{{ route('download.file', $productId) }}" class="btn btn-outline btn-icon-only" title="Download">
+                                            <i class="las la-download"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if(optional($product)->rating)
+                                                ⭐ {{ $product->rating }} / 5
+                                            @else
+                                            —
+                                            @endif
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">Review coming soon</span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="7" class="text-center text-muted py-4">No downloads yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Handle navigation clicks
+    $('.account-nav .list-group-item').on('click', function(e) {
+        // Don't prevent default for logout
+        if ($(this).text().trim() === 'Log Out') {
+            return;
+        }
+
+        // Allow normal navigation for other links
+        return true;
+    });
+});
+</script>
+@endsection

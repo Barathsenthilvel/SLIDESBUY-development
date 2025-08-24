@@ -408,30 +408,6 @@ if(auth()->check()){
                     </a>
                 </li>
                 <li class="sidebar-list__item">
-                    <a class="dropdown-item" href="{{ route('account.profile') }}#downloads">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/download.svg') }}" alt="" class="icon">
-                        </span>
-                        <span class="text">My Downloads</span>
-                    </a>
-                </li>
-                <li class="sidebar-list__item">
-                    <a class="dropdown-item" href="{{ route('account.profile') }}#subscriptions">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/price-icon1.svg') }}" alt="" class="icon">
-                        </span>
-                        <span class="text">Subscriptions</span>
-                    </a>
-                </li>
-                <li class="sidebar-list__item">
-                    <a class="dropdown-item" href="{{ route('account.profile') }}#profile">
-                        <span class="sidebar-list__icon">
-                            <img src="{{ asset('assets/images/icons/sidebar-icon10.svg') }}" alt="" class="icon">
-                        </span>
-                        <span class="text">Profile Update</span>
-                    </a>
-                </li>
-                <li class="sidebar-list__item">
                     <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
                         <span class="sidebar-list__icon">
                             <img src="{{ asset('assets/images/icons/sidebar-icon13.svg') }}" alt="" class="icon">

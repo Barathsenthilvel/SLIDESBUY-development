@@ -99,7 +99,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title">
-                    <h2 class="text-heading">My Wishlist</h2>
+                    <h4 class="text-heading">My Wishlist</h2>
                 </div>
                 {{-- <nav class="breadcrumb-nav">
                     <ol class="breadcrumb">
@@ -216,7 +216,7 @@
                                         <a href="{{ route('login.form') }}" class="btn btn-primary me-3">
                                             <i class="fas fa-sign-in-alt me-2"></i>Login
                                         </a>
-                                        <a href="{{ route('user.register') }}" class="btn btn-outline-primary">
+                                        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary me-3">
                                             <i class="fas fa-user-plus me-2"></i>Register
                                         </a>
                                     </div>

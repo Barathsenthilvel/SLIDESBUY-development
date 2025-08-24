@@ -29,9 +29,18 @@ class AccountController extends Controller
 
 
 
-  public function index()
+  public function index(Request $request)
 {
     $user = auth()->user();
+
+    // Get the section from query parameter or default to 'profile'
+    $section = $request->get('section', 'profile');
+
+    // Validate section parameter
+    $validSections = ['downloads', 'subscriptions', 'profile', 'logout'];
+    if (!in_array($section, $validSections)) {
+        $section = 'profile';
+    }
 
     // Fetch all downloads for the user along with product and subscription plan
     $downloads = Downloads::with(['product', 'subscription.plan'])
@@ -120,10 +129,79 @@ class AccountController extends Controller
         'isUnlimited',
         'isExpired',
         'currentActiveSubscription',
-        'activeSubscription'
+        'activeSubscription',
+        'section'
     ));
 }
 
+// New method for downloads section
+public function downloads()
+{
+    $user = auth()->user();
+
+    // Fetch all downloads for the user along with product and subscription plan
+    $downloads = Downloads::with(['product', 'subscription.plan'])
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Group downloads by product to get count and details
+    $downloadsGrouped = $downloads->groupBy('product_id')->map(function ($items) {
+        return [
+            'count' => $items->count(),
+            'product' => $items->first()->product,
+            'downloads' => $items,
+        ];
+    });
+
+    return view('front.account.downloads', compact('user', 'downloads', 'downloadsGrouped'));
+}
+
+// New method for subscriptions section
+public function subscriptions()
+{
+    $user = auth()->user();
+
+    // Fetch ALL subscriptions directly from subscriptions table
+    $subscriptions = Subscription::with('plan')
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('front.account.subscriptions', compact('user', 'subscriptions'));
+}
+
+// New method for profile section
+public function profile()
+{
+    $user = auth()->user();
+
+    // Fetch basic user data for profile editing
+    $downloads = Downloads::with(['product', 'subscription.plan'])
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Get active subscriptions for metrics
+    $subscriptions = Subscription::with('plan')
+        ->where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Calculate metrics
+    $totalDownloaded = $downloads->count();
+    $activeSubscriptions = $subscriptions->filter(function ($s) {
+        return is_null($s->expired_at) || Carbon::parse($s->expired_at)->isFuture();
+    });
+
+    return view('front.account.profileedit', compact(
+        'user',
+        'downloads',
+        'subscriptions',
+        'totalDownloaded',
+        'activeSubscriptions'
+    ));
+}
 
 
 public function destroy(Request $request)

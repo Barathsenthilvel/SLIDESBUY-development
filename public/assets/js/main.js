@@ -376,19 +376,35 @@
 
     // Unified wishlist click handler for all wishlist buttons
   $(document).on('click', '.product-item__wishlist, .wishlist-btn, .btn-wishlist', function(e) {
+    const button = $(this);
+    const productId = button.data('product-id') || button.data('id');
+    const isHeaderButton = button.closest('.header-right').length > 0;
+    const debugInfo = button.data('debug');
+
+    console.log('Wishlist button clicked:', {
+      element: this,
+      productId: productId,
+      isHeaderButton: isHeaderButton,
+      debugInfo: debugInfo,
+      classes: button.attr('class'),
+      href: button.attr('href')
+    });
+
+    // If this is a header wishlist button (no product ID), allow normal navigation
+    if (!productId && isHeaderButton) {
+      console.log('Header wishlist button clicked, allowing navigation to:', button.attr('href'));
+      return; // Don't prevent default, let the link work normally
+    }
+
+    // For product wishlist buttons, prevent default and handle wishlist logic
     e.preventDefault();
     e.stopPropagation();
-
-    console.log('Wishlist button clicked:', this);
 
     // Skip if we're on the wishlist page (it has its own handler)
     if ($(this).closest('.wishlist-section').length) {
       console.log('Skipping wishlist page handler');
       return;
     }
-
-        const button = $(this);
-    const productId = button.data('product-id') || button.data('id');
 
     // Fix: Handle multiple ways to check authentication
     const authAttr = button.attr('data-auth');
@@ -447,6 +463,19 @@
     }
   });
   // ========================= Wishlist Js End ===================
+
+  // ========================= Header Wishlist Button Handler ===================
+  // Specific handler for header wishlist button to ensure navigation works
+  $(document).on('click', '#headerWishlistBtn', function(e) {
+    console.log('Header wishlist button clicked directly');
+    const href = $(this).attr('href');
+    console.log('Navigating to:', href);
+
+    // Allow normal navigation
+    return true;
+  });
+
+  // ========================= Header Wishlist Button Handler End ===================
 
   // ========================= Selling Product Js Start ==============
   // Slider is now handled by the trending products include file

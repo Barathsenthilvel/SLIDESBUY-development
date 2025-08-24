@@ -42,13 +42,12 @@ Route::get('/sign-up', 'Front\UserController@LoadLogin')->name('front.loginBlade
 Route::get('/thankyou', 'Front\UserController@thankyou')->name('thankyou');
 
 // Wishlist routes - accessible to both guest and authenticated users
-
+Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
 
 Route::middleware('auth')->group(function () {
     Route::post('/wishlistAdd', 'Front\UserController@wishlistAdd')->name('wishlistAdd');
     Route::post('/wishlistRemove', 'Front\UserController@wishlistremove')->name('wishlistremove');
     Route::get('/wishlistTemplate', 'Front\UserController@wishlistTemplate')->name('wishlistTemplate');
-    Route::get('/wishlist', 'Front\UserController@wishlist')->name('wishlist');
 });
 Route::get('/myaddress', 'Front\UserController@myaccount')->name('front.account');
 Route::get('/verification/{id}/{token}', 'Front\UserController@verify')->name('front.verify');
@@ -127,6 +126,9 @@ Route::middleware('auth')->group(function () {
     // routes/web.php
 // Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')->name('product.download');
     Route::get('/my-account','Front\AccountController@index')->name('account.profile');
+    Route::get('/my-account/downloads','Front\AccountController@downloads')->name('account.downloads');
+    Route::get('/my-account/subscriptions','Front\AccountController@subscriptions')->name('account.subscriptions');
+    Route::get('/my-account/profile','Front\AccountController@profile')->name('account.profile.edit');
     Route::post('/logout', 'Front\AccountController@destroy')->name('logout');
 Route::post('/account/update','Front\AccountController@update')->name('account.update');
 
@@ -136,7 +138,7 @@ Route::post('/update-password','Front\AccountController@changePassword')->name('
 Route::get('/download-file/{product}', 'Front\AccountController@download')->name('download.file');
 
 // Example route for writing a review for a product
-Route::get('/write-review/{product}', 'Front\ReviewController@create')->name('product.review.create');
+// Route::get('/write-review/{product}', 'Front\ReviewController@create')->name('product.review.create');
 
 
 });

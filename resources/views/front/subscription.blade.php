@@ -689,6 +689,104 @@
     background: #f8f9fa;
     border-radius: 0 0 15px 15px;
 }
+
+/* Modal close button styling */
+.btn-close {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 1050 !important;
+    cursor: pointer !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #666 !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-close:hover {
+    color: #333 !important;
+    transform: scale(1.1) !important;
+}
+
+.btn-close:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.25) !important;
+}
+
+/* Ensure modal header has proper positioning */
+.modal-header {
+    position: relative !important;
+}
+
+/* Modal logo styling */
+.modal-logo {
+    max-height: 60px !important;
+    margin: 0 auto !important;
+}
+
+/* Button consistency across subscription page */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger {
+    background-color: hsl(253, 88%, 58%) !important;
+    border-color: hsl(253, 88%, 58%) !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-warning:hover,
+.btn-danger:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover {
+    background-color: hsl(253, 88%, 48%) !important;
+    border-color: hsl(253, 88%, 48%) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(253, 88%, 58%, 0.3) !important;
+}
+
+/* Plan details button specific styling */
+.plan-details-btn {
+    background-color: hsl(253, 88%, 58%) !important;
+    border-color: hsl(253, 88%, 58%) !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.plan-details-btn:hover {
+    background-color: hsl(253, 88%, 48%) !important;
+    border-color: hsl(253, 88%, 48%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(253, 88%, 58%, 0.3) !important;
+}
 </style>
 
 <!-- Plan Details Modal -->
@@ -696,8 +794,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header align-items-center justify-content-center">
-                <img src="http://127.0.0.1:8000/assets/images/logo/slidesbuy.png" alt="Slidesbuy Logo" class="modal-logo">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img src="../assets/images/logo/slidesbuy.png" alt="Slidesbuy Logo" class="modal-logo">
+                <button type="button" class="btn-close" onclick="closeModal('planDetailsModal')" aria-label="Close">×</button>
             </div>
             <div class="modal-body">
                 <div class="plan-details-container">
@@ -739,7 +837,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('planDetailsModal')">Cancel</button>
                 <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
             </div>
         </div>
@@ -755,7 +853,7 @@
                     <img src="{{ asset('assets/images/logo/slidesbuy.png') }}" alt="Slidesbuy Logo" class="modal-logo mb-3" style="max-height: 60px;">
                     <h5 class="modal-title w-100">Hello User!</h5>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeLoginModal()"></button>
+                <button type="button" class="btn-close" onclick="closeModal('loginRequiredModal')" aria-label="Close" style="color: white; font-size: 24px;">×</button>
             </div>
             <div class="modal-body text-center">
                 <div class="login-required-content">
@@ -769,7 +867,7 @@
                         <a href="{{ route('login.form') }}" class="btn btn-primary btn-lg me-3">
                             <i class="fas fa-sign-in-alt me-2"></i>Login
                         </a>
-                        <a href="{{ route('user.register') }}" class="btn btn-outline-primary btn-lg">
+                        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary btn-lg me-3">
                             <i class="fas fa-user-plus me-2"></i>Register
                         </a>
                     </div>
@@ -829,6 +927,16 @@ jQuery(document).ready(function ($) {
     // Global variables to store plan data
     let currentPlanData = {};
 
+    // Debug modal functionality
+    console.log('Subscription page loaded, initializing modals...');
+
+    // Test modal functionality
+    if (typeof $.fn.modal === 'undefined') {
+        console.error('Bootstrap modal plugin not loaded!');
+    } else {
+        console.log('Bootstrap modal plugin loaded successfully');
+    }
+
     // Handle "Get Started" button click
     $('.plan-details-btn').on('click', function(e) {
         e.preventDefault();
@@ -836,6 +944,7 @@ jQuery(document).ready(function ($) {
         var isAuthenticated = @json(Auth::check());
 
         if (!isAuthenticated) {
+            console.log('User not authenticated, showing login modal');
             $('#loginRequiredModal').modal('show');
             return false;
         }
@@ -884,6 +993,62 @@ jQuery(document).ready(function ($) {
             $(this).modal('hide');
         }
     });
+
+    // Explicit close button handlers for Bootstrap 4 compatibility
+    $(document).on('click', '[data-dismiss="modal"]', function() {
+        var modalId = $(this).closest('.modal').attr('id');
+        $('#' + modalId).modal('hide');
+    });
+
+    // Alternative close button handler
+    $(document).on('click', '.btn-close', function() {
+        var modalId = $(this).closest('.modal').attr('id');
+        $('#' + modalId).modal('hide');
+    });
+
+    // Test function for modal closing
+    window.testCloseModal = function() {
+        console.log('testCloseModal function called');
+        var modal = $('#planDetailsModal');
+        console.log('Modal element:', modal);
+        console.log('Modal is visible:', modal.is(':visible'));
+        console.log('Modal has modal class:', modal.hasClass('modal'));
+        console.log('Bootstrap modal function available:', typeof modal.modal === 'function');
+
+        if (typeof modal.modal === 'function') {
+            console.log('Attempting to close modal...');
+            modal.modal('hide');
+        } else {
+            console.error('Bootstrap modal function not available');
+            // Fallback: hide the modal manually
+            modal.hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    };
+
+    // Reliable modal close function
+    window.closeModal = function(modalId) {
+        console.log('closeModal called for:', modalId);
+        var modal = $('#' + modalId);
+
+        if (modal.length === 0) {
+            console.error('Modal not found:', modalId);
+            return;
+        }
+
+        // Try Bootstrap modal first
+        if (typeof modal.modal === 'function') {
+            console.log('Using Bootstrap modal close');
+            modal.modal('hide');
+        } else {
+            console.log('Bootstrap modal not available, using manual close');
+            // Manual close
+            modal.hide();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+        }
+    };
 
     // Handle "Pay Now" button click
     $('.pay-now-btn').on('click', function() {

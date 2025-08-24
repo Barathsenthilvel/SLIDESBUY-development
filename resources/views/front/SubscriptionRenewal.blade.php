@@ -1,33 +1,45 @@
 @extends('front.includes.container')
 @section('content')
 <!-- ==================== Page Header Start ==================== -->
-<section class="page-header padding-y-120">
-    <div class="container container-two">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="page-header__content">
-                    <h2 class="page-header__title">Subscription and Renewal</h2>
-                    <ul class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('front.index') }}" class="breadcrumb-link">Home</a>
-                        </li>
-                        <li class="breadcrumb-item active">Subscription and Renewal</li>
-                    </ul>
+
+<section class="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
+    <div class="breadcrumb-two">
+        <img src="../assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
+        <div class="container container-two">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-two-content">
+                        <ul class="breadcrumb-list flx-align gap-2 mb-2">
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <a href="{{ route('front.index') }}" class="breadcrumb-list__link text-body hover-text-main">Home</a>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__icon font-10"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                            <li class="breadcrumb-list__item font-14 text-body">
+                                <span class="breadcrumb-list__text">Subscription and Renewal</span>
+                            </li>
+                        </ul>
+                        <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Subscription and Renewal</h3>
+
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <!-- ==================== Page Header End ==================== -->
 
 <!-- ==================== Subscription Content Start ==================== -->
-<section class="subscription-content padding-y-120">
+<section class="subscription-content ">
     <div class="container container-two">
         <div class="row">
             <div class="col-lg-12">
-                <div class="content-wrapper">
+                <div class="content-wrapper mt-5 mb-5">
                     <h3 class="content-title mb-4">Subscription and Renewal Policy</h3>
-                    
+
                     <div class="content-section mb-5">
                         <h4 class="section-title">1. Subscription Plans</h4>
                         <p>We offer various subscription plans to meet your needs:</p>

@@ -33,8 +33,8 @@
 <div class="terms-content padding-y-80">
     <div class="container container-two">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="terms-wrapper">
+            <div class="col-lg-12">
+                <div class="terms-wrapper mt-5 mb-5">
                     <h4 class="terms-title mb-4">1. Acceptance of Terms</h4>
                     <p class="terms-text mb-4">By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
 

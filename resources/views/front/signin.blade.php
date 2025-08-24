@@ -167,6 +167,8 @@
   .logo {
     text-align: center;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
   }
   .logo img {
     height: 40px;

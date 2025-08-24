@@ -823,12 +823,12 @@
         </a>
 @elseif (($product->sell_type ?? 1) == 0)
     @auth
-        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
+        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-100 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
             Download Free
         </a>
         @else
-        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary w-50 w-sm-auto mt-3">
+        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary w-100 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
             Download Free
         </a>
@@ -839,7 +839,7 @@
             Renew Subscription
         </a>
     @elseif ($activeSubscription && $canDownload)
-        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-50 w-sm-auto mt-3">
+        <a href="{{ route('product.download', $product->id) }}" class="btn btn-primary w-100 w-sm-auto mt-3">
             <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
             Download
         </a>

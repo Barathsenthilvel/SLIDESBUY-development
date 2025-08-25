@@ -573,7 +573,7 @@ jQuery(document).ready(function ($) {
                 if (response.success) {
                     // Show success message
                     if (window.toaster) {
-                        window.toaster.success(response.message || 'Account created successfully! OTP sent to your email.');
+                        window.toaster.success(response.message || 'Account created successfully! Welcome email sent to your inbox.');
                     }
 
                     // Redirect to OTP form after a short delay

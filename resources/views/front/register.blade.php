@@ -515,7 +515,7 @@
         if (data.success) {
           // Show success message
           if (window.toaster) {
-            window.toaster.success('Account created successfully! Redirecting...', 2000);
+            window.toaster.success('Account created successfully! OTP sent to your email. Redirecting...', 2000);
           }
 
           // Redirect to OTP form after a short delay

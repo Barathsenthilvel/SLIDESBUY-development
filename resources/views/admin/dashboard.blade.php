@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -149,7 +149,7 @@
 										</div>
 										<!--end::Stats Widget 29-->
 									</div>
-									
+
 									<div class="col-xl-3">
 										<!--begin::Stats Widget 30-->
 										<div class="card card-custom bg-info card-stretch gutter-b">
@@ -166,8 +166,8 @@
 													</svg>
 													<!--end::Svg Icon-->
 												</span>
-												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">{{$dashboad['Vendor']}}</span>
-												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-vendor')}}">Vendor</a></span>
+												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">₹{{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
+												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-subscriptionlist')}}">Subscription Revenue</a></span>
 											</div>
 											<!--end::Body-->
 										</div>
@@ -192,18 +192,18 @@
 														</g>
 													</svg>
 													<!--end::Svg Icon-->
-													
+
 												</span>
 												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">{{$dashboad['Product']}}</span>
-												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-product')}}">Product</a></span>
+												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-product')}}">Slides</a></span>
 											    </div>
 											    <div>
 											        @if(Auth::user()->is_vendor == null)
-											        <span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-product-group')}}">Add Product</a></span>
+											        <span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-product-group')}}">Add Slides</a></span>
 											        @else
-											        <span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-productv-group')}}">Add Product</a></span>
+											        <span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-productv-group')}}">Add Slides</a></span>
 											        @endif
-											        
+
 											    </div>
 											</div>
 											<!--end::Body-->
@@ -226,8 +226,16 @@
 													</svg>
 													<!--end::Svg Icon-->
 												</span>
-												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 text-hover-primary d-block">{{(Auth::user()->is_vendor)?count($dashboad['VendorNewOrder']):$dashboad['Order']}}</span>
+												{{-- <span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 text-hover-primary d-block">{{(Auth::user()->is_vendor)?count($dashboad['VendorNewOrder']):$dashboad['Order']}}</span> --}}
+												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">{{$dashboad['ActiveSubscriptions']}}</span>
 												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-order')}}">Order</a></span>
+												<div class="mt-2">
+													<span class="font-weight-bold text-white font-size-sm">
+														<a style="color: #ffffff !important;" href="{{route('admin-subscriptionlist')}}">
+															Active Subscriptions: {{$dashboad['ActiveSubscriptions']}}
+														</a>
+													</span>
+												</div>
 											</div>
 											<!--end::Body-->
 										</div>
@@ -271,6 +279,76 @@
 												<!--begin::Chart-->
 												<div id="chart3"></div>
 												<!--end::Chart-->
+											</div>
+										</div>
+										<!--end::Card-->
+									</div>
+									<div class="col-lg-12">
+										<!--begin::Card-->
+										<div class="card card-custom gutter-b">
+											<div class="card-header">
+												<div class="card-title">
+													<h3 class="card-label">Subscription Overview</h3>
+												</div>
+												<div class="card-toolbar">
+													<a href="{{route('admin-subscriptionlist')}}" class="btn btn-primary btn-sm">View All Subscriptions</a>
+												</div>
+											</div>
+											<div class="card-body">
+												<div class="row">
+													<div class="col-md-3">
+														<div class="d-flex align-items-center">
+															<div class="symbol symbol-50 symbol-light-success mr-5">
+																<span class="symbol-label">
+																	<i class="fas fa-money-bill-wave fa-2x text-success"></i>
+																</span>
+															</div>
+															<div class="d-flex flex-column">
+																<span class="text-dark font-weight-bold font-size-h4">₹{{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
+																<span class="text-muted font-size-sm">Total Revenue</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="d-flex align-items-center">
+															<div class="symbol symbol-50 symbol-light-warning mr-5">
+															<span class="symbol-label">
+																<i class="fas fa-calendar-alt fa-2x text-warning"></i>
+															</span>
+															</div>
+															<div class="d-flex flex-column">
+																<span class="text-dark font-weight-bold font-size-h4">₹{{number_format($dashboad['MonthlySubscriptionRevenue'], 2)}}</span>
+																<span class="text-muted font-size-sm">This Month</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="d-flex align-items-center">
+															<div class="symbol symbol-50 symbol-light-primary mr-5">
+																<span class="symbol-label">
+																	<i class="fas fa-users fa-2x text-primary"></i>
+																</span>
+															</div>
+															<div class="d-flex flex-column">
+																<span class="text-dark font-weight-bold font-size-h4">{{$dashboad['ActiveSubscriptions']}}</span>
+																<span class="text-muted font-size-sm">Active</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="d-flex align-items-center">
+															<div class="symbol symbol-50 symbol-light-info mr-5">
+															<span class="symbol-label">
+																<i class="fas fa-chart-line fa-2x text-info"></i>
+															</span>
+															</div>
+															<div class="d-flex flex-column">
+																<span class="text-dark font-weight-bold font-size-h4">{{$dashboad['TotalSubscriptions']}}</span>
+																<span class="text-muted font-size-sm">Total</span>
+															</div>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
 										<!--end::Card-->
@@ -387,7 +465,7 @@
 																	</span>
 																</td>
                                                             </tr>
-                                                            @endforeach 
+                                                            @endforeach
 														</tbody>
 													</table>
 												</div>
@@ -450,7 +528,7 @@
 																	</span>
 																</td>
                                                             </tr>
-                                                            @endforeach 
+                                                            @endforeach
 														</tbody>
 													</table>
 												</div>
@@ -461,7 +539,7 @@
 										<!--end::Base Table Widget 3-->
 									</div>
 									@endif
-									<div class="col-xl-6">
+									{{-- <div class="col-xl-6">
 										<!--begin::Base Table Widget 3-->
 										<div class="card card-custom card-stretch gutter-b">
 											<!--begin::Header-->
@@ -515,7 +593,7 @@
 																	<span class="text-muted font-weight-bold">{{ date('Y-m-d h:i',strtotime($NewOrder->created_at))}}</span>
 																</td>
                                                             </tr>
-                                                            @endforeach 
+                                                            @endforeach
 														</tbody>
 													</table>
 												</div>
@@ -524,7 +602,7 @@
 											<!--begin::Body-->
 										</div>
 										<!--end::Base Table Widget 3-->
-									</div>
+									</div> --}}
 									@if(!Auth::user()->is_vendor)
                                     <div class="col-xl-6">
 										<!--begin::Base Table Widget 3-->
@@ -576,7 +654,7 @@
 																	<span class="text-muted font-weight-bold">{{ date('Y-m-d h:i',strtotime($NewOrder->created_at))}}</span>
 																</td>
                                                             </tr>
-                                                            @endforeach 
+                                                            @endforeach
 														</tbody>
 													</table>
 												</div>
@@ -609,47 +687,69 @@
 													<table class="table table-borderless table-vertical-center">
 														<thead>
 															<tr>
-																<th class="p-0" style="width: 50px">Order ID</th>
-																<th class="text-center" style="min-width: 140px">Item Count</th>
+																<th class="p-0" style="width: 50px">User</th>
+																<th class="text-center" style="min-width: 140px">Plan</th>
 																<th class="text-center" style="min-width: 100px">Amount</th>
-																<!--<th class="text-center" style="min-width: 100px">Order status</th>-->
-																<th class="text-center" style="min-width: 100px">Order On</th>
-																<th class="text-center" style="min-width: 100px"></th>
+																<th class="text-center" style="min-width: 100px">Status</th>
+																<th class="text-center" style="min-width: 100px">Subscribed On</th>
+																<th class="text-center" style="min-width: 100px">Action</th>
 															</tr>
 														</thead>
 														<tbody>
-                                                            @foreach ($dashboad['VendorNewOrder']->take(5) as $NewOrder)
-															<tr>
-																<td class="pl-0 ">
-																	<a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{$StoreConfig->OrderIDPrefix}}{{ $NewOrder->map_id }}</a>
-																</td>
-																<td class="text-center">
-																    @foreach($NewOrder['vendorItems'] as $item)
-																	@endforeach
-																	<span class="text-muted font-weight-bold">{{ count($NewOrder['vendorItems']) }}</span><br>
-																</td>
-																<td class="text-center">
-																    @php
-																        $total = 0;
-																    @endphp
-																	@foreach($NewOrder['vendorItems'] as $item)
-																	@php
-																	    $total += $item['total']+(float)$item['producttaaAmount']-(float)$item['coupon_amount'];
-																	@endphp
-																	@endforeach
-																	<span class="text-muted font-weight-bold">{{ round($total,2) }}</span><br>
-																</td>
-																<!--<td class="text-center">-->
-																<!--	<span class="text-muted font-weight-bold">{{ $NewOrder->delivery_status}}</span>-->
-																<!--</td>-->
-																<td class="text-center">
-																	<span class="text-muted font-weight-bold">{{ date('Y-m-d h:i',strtotime($NewOrder->created_at))}}</span>
-																</td>
-																<td class="text-center">
-																    <span class="text-muted font-weight-bold"><a href="{{ route('admin-order-view',$NewOrder->map_id) }}">Update</a></span>
-																</td>
-                                                            </tr>
-                                                            @endforeach 
+                                                            @if(count($dashboad['RecentlySubscribed']) > 0)
+                                                                @foreach ($dashboad['RecentlySubscribed'] as $subscription)
+																<tr>
+																	<td class="pl-0">
+																		<div class="d-flex align-items-center">
+																			<div class="symbol symbol-40 symbol-light-primary mr-4">
+																				<span class="symbol-label">
+																					<i class="fas fa-user fa-lg text-primary"></i>
+																				</span>
+																			</div>
+																			<div class="d-flex flex-column">
+																				<a href="#" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">
+																					{{ $subscription->user->name ?? 'N/A' }}
+																				</a>
+																				<span class="text-muted font-size-sm">{{ $subscription->user->email ?? 'N/A' }}</span>
+																			</div>
+																		</div>
+																	</td>
+																	<td class="text-center">
+																		<span class="badge badge-primary badge-pill font-weight-bold">
+																			{{ $subscription->plan->name ?? 'N/A' }}
+																		</span>
+																	</td>
+																	<td class="text-center">
+																		<span class="text-muted font-weight-bold">₹{{ number_format($subscription->discount_price, 2) }}</span>
+																	</td>
+																	<td class="text-center">
+																		@if($subscription->is_active && (!$subscription->expired_at || $subscription->expired_at > now()))
+																			<span class="badge badge-success badge-pill">Active</span>
+																		@else
+																			<span class="badge badge-danger badge-pill">Expired</span>
+																		@endif
+																	</td>
+																	<td class="text-center">
+																		<span class="text-muted font-weight-bold">{{ date('M d, Y', strtotime($subscription->created_at)) }}</span>
+																	</td>
+																	<td class="text-center">
+																		<span class="text-muted font-weight-bold">
+																			<a href="{{ route('admin-subscriptionlist') }}" class="btn btn-sm btn-light-primary">View</a>
+																		</span>
+																	</td>
+																</tr>
+																@endforeach
+															@else
+																<tr>
+																	<td colspan="6" class="text-center py-4">
+																		<div class="d-flex flex-column align-items-center">
+																			<i class="fas fa-users fa-3x text-muted mb-3"></i>
+																			<span class="text-muted font-size-lg">No recent subscriptions found</span>
+																			<small class="text-muted">New subscriptions will appear here</small>
+																		</div>
+																	</td>
+																</tr>
+															@endif
 														</tbody>
 													</table>
 												</div>
@@ -670,7 +770,7 @@
                     <!--begin::Footer-->
  @endsection
  @push('script')
- <script>   
+ <script>
     // Shared Colors Definition
 const primary = '#6993FF';
 const success = '#1BC5BD';
@@ -698,7 +798,7 @@ function generateBubbleData(baseval, count, yrange) {
       var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;;
       var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
       var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
-  
+
       series.push([x, y, z]);
       baseval += 86400000;
       i++;
@@ -855,7 +955,7 @@ $("#Year").change(function(){
 		NetSales = [];
 		NumberOrders = [];
 		total = [];
-		for(var key in data){ 
+		for(var key in data){
 			Mounth.push(TempKey);
 			NetSales.push(ChartData[TempKey]['grandTotal']);
 			total.push(ChartData[TempKey]['total'])

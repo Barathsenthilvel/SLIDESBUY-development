@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RegisterMail;
 use App\Mail\UserForgetMail;
+use App\Mail\WelcomeMail;
 use App\Models\Order;
 use App\Models\Orderlog;
 use App\Models\Address;
@@ -466,18 +467,30 @@ public function verifyOtp(Request $request)
         ->first();
 
     if ($otpRecord) {
-        User::create([
+        // Create the user
+        $user = User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        // Send welcome email
+        try {
+            Mail::to($data['email'])->send(new WelcomeMail([
+                'name' => $data['name'],
+                'email' => $data['email']
+            ]));
+        } catch (\Exception $e) {
+            \Log::error('Welcome email error: ' . $e->getMessage());
+            // Don't fail the registration if welcome email fails
+        }
 
         Session::forget('register_data');
         OtpVerification::where('email', $data['email'])->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Account created successfully!',
+            'message' => 'Account created successfully! Welcome email sent.',
             'redirect' => url('/login')
         ]);
     } else {

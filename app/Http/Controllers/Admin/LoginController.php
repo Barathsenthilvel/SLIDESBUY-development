@@ -12,6 +12,8 @@ use App\Models\Vendor;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Subscription;
+use App\Models\Storeconfiguration;
 use App\Models\MailTemplate;
 use Auth;
 use Validator;
@@ -25,11 +27,11 @@ use Illuminate\Support\Facades\Request as Input;
 class LoginController extends Controller
 {
 
-    public function __construct() 
+    public function __construct()
     {
       $this->middleware('auth:webadmin',['except'=>['showLoginForm','login','forgot']]);
     }
- 
+
     public function showLoginForm()
     {
       return view('admin.login');
@@ -83,7 +85,7 @@ class LoginController extends Controller
       }
 
       // if unsuccessful, then redirect back to the login with the form data
-          return redirect()->back()->withInput($request->input())->withErrors(['Credentials Doesn\'t Match !' ]); 
+          return redirect()->back()->withInput($request->input())->withErrors(['Credentials Doesn\'t Match !' ]);
 
     }
     public function logout(Request $request) {
@@ -105,9 +107,23 @@ class LoginController extends Controller
       }else{
           $dashboad['Cancellec_order'] = Order::orderBy('id','desc')->where('delivery_status','Canceled')->limit(5)->get();
       }
-      
-      
+
+
       $dashboad['Vendor'] = Vendor::where('status','1')->count();
+
+      // Subscription data
+      $dashboad['TotalSubscriptionRevenue'] = Subscription::where('payment_status', 'success')->sum('discount_price');
+      $dashboad['ActiveSubscriptions'] = Subscription::where('payment_status', 'success')
+          ->where('is_active', 1)
+          ->where(function($query) {
+              $query->whereNull('expired_at')
+                    ->orWhere('expired_at', '>', now());
+          })->count();
+      $dashboad['TotalSubscriptions'] = Subscription::where('payment_status', 'success')->count();
+      $dashboad['MonthlySubscriptionRevenue'] = Subscription::where('payment_status', 'success')
+          ->whereMonth('created_at', now()->month)
+          ->whereYear('created_at', now()->year)
+          ->sum('discount_price');
       if(Auth::user()->is_vendor ==""){
         $dashboad['NewProduct'] = Product::where('status','1')->orderBy('id','desc')->limit(5)->get();
         $dashboad['NewOrder'] = Order::orderBy('id','desc')->limit(5)->get()->unique('order_id')->sortByDesc('id');
@@ -115,7 +131,7 @@ class LoginController extends Controller
         $dashboad['NewProduct'] = Product::where('status','1')->where("vendor",Auth::user()->is_vendor)->orderBy('id','desc')->limit(5)->get();
         $dashboad['NewOrder'] = Order::orderBy('id','desc')->where("vendor_id",Auth::user()->is_vendor)->limit(5)->get()->unique('order_id')->sortByDesc('id');
       }
-      
+
     if(Auth::user()->is_vendor){
         $I = 0;
         $dashboad['VendorNewOrder'] = Order::orderBy('id','desc')->get()->unique('order_id')->sortByDesc('id')->filter(function($Order){
@@ -141,12 +157,19 @@ class LoginController extends Controller
     //   dd($dashboad['VendorNewOrder']);
       $dashboad['NewCustomer'] = User::orderBy('id','desc')->limit(5)->get();
       $dashboad['Review'] = Review::orderBy('id','desc')->limit(5)->get();
+
+      // Recently subscribed users
+      $dashboad['RecentlySubscribed'] = Subscription::with(['user', 'plan'])
+          ->where('payment_status', 'success')
+          ->orderBy('created_at', 'desc')
+          ->limit(5)
+          ->get();
       $dashboad['vendore'] = Vendor::orderBy('id','desc')->limit(5)->get()->unique('order_id')->sortByDesc('id')->groupBy('name');
       $year = Order::all()->groupBy(function($item){
         return $item->created_at->format('Y');
       });
       $Temp = [];
-      foreach($year as $key => $post){ 
+      foreach($year as $key => $post){
         $Temp[] = $key;
       }
       $dashboad['Years'] = $Temp;
@@ -163,10 +186,14 @@ class LoginController extends Controller
         }
       }
       $dashboad['sales'] = json_encode($data);
+
+      // Get store configuration
+      $StoreConfig = Storeconfiguration::where('id', 1)->first();
+
       // dd($dashboad);
-      return view('admin.dashboard',compact('dashboad'));
+      return view('admin.dashboard',compact('dashboad', 'StoreConfig'));
     }
-    
+
 function vendorAdminSales($Order){
       $grandTotal = 0;
       $count = 0;
@@ -174,7 +201,7 @@ function vendorAdminSales($Order){
       $netamountGstorder = $this->netamountGstorder($Order);
       return ['grandTotal' =>round($netamountGstorder['netamount'],2),'total'=>round($netamountGstorder['total'],2),'ordercount'=>intval($netamountGstorder['ordercount'])];
     }
-    
+
     public function netamountGstorder($Order){
       $netamount = 0;
       $total = 0;
@@ -206,12 +233,12 @@ function vendorAdminSales($Order){
     }
 
     public function getproductamount($items,$card){
-        
+
         if(Auth::user()->is_vendor){
             return ['netamount'=>$items->manufacturerPrice ,'total'=>$items->manufacturerPrice+$items->shipping_price];
         }
-        
-        
+
+
       $netamount = 0;
       $total = 0;
         $count = count($card->items);
@@ -221,7 +248,7 @@ function vendorAdminSales($Order){
     //   }else{
     //     $amount = $items->manufacturerPrice;
     //   }
-      
+
     //   if($items->CustomerGroup->type == 1){
     //     $amount = $amount - ((float)($amount/100)*(float)$items->CustomerGroup->amount);
     //   }else{
@@ -232,10 +259,10 @@ function vendorAdminSales($Order){
     //       $amount = $amount - (float)$items->discount->number;
     //     }else{
     //       $amount = $amount - ($amount/100)*$items->discount->number;
-    //     }  
+    //     }
     //   }
     //   echo ($amount * $items->quantity)+ $items->producttaaAmount,'<br>';
-    
+
         // $amount = $amount* $items->quantity;
         $amount = $items->total - $items->coupon_amount;
         return ['netamount'=>$amount ,'total'=>$amount+$items->producttaaAmount+$deliverycharde];
@@ -261,7 +288,7 @@ function vendorAdminSales($Order){
                             })
                             ->addColumn('action', function(Admin $data) {
                                 return '<div class="action-list"><a href="' . route('admin-user-edit',$data->id) . '"> <i class="fas fa-edit"></i>Edit</a><a href="' . route('admin-user-delete',$data->id) . '"  class="delete"><i class="fas fa-trash-alt"></i>Delete</a></div>';
-                            }) 
+                            })
                             ->rawColumns(['role','status','action'])
                             ->toJson(); //--- Returning Json Data To Client Side
     }
@@ -302,17 +329,17 @@ function vendorAdminSales($Order){
     if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-        
+
         if ($validator->fails()) {
           return redirect()->back()->withErrors($validator->getMessageBag()->toArray());
         }
-        if ($file = $request->file('userImage')) 
-         {      
+        if ($file = $request->file('userImage'))
+         {
             $userFile = time().$file->getClientOriginalName();
-            $file->move(public_path().'/assets/media/users',$userFile); 
+            $file->move(public_path().'/assets/media/users',$userFile);
         }else{
           $userFile='';
-        } 
+        }
 
         $data = new Admin;
 
@@ -362,13 +389,13 @@ function vendorAdminSales($Order){
     if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-        
+
         $data = Admin::findOrFail($id);
 
-        if ($file = $request->file('userImage')) 
-         {      
+        if ($file = $request->file('userImage'))
+         {
             $userFile = time().$file->getClientOriginalName();
-            $file->move(public_path().'/assets/media/users',$userFile); 
+            $file->move(public_path().'/assets/media/users',$userFile);
             if($data->web_image != null)
                 {
                     if (file_exists(public_path().'/assets/media/users/'.$data->web_image)) {
@@ -426,13 +453,13 @@ function vendorAdminSales($Order){
     $user = Admin::find(Auth::guard('webadmin')->user()->id);
     $oldpassword = $request->input('oldPassword');
 
-        if (!Hash::check($oldpassword, $user->password)) { 
+        if (!Hash::check($oldpassword, $user->password)) {
 
           return response()->json(array('errors' => ['Entered Password is invalid']));
         }
 
           $validator = Validator::make($request->all(), $rules,$customs);
-        
+
         if ($validator->fails()) {
 
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
@@ -458,7 +485,7 @@ function vendorAdminSales($Order){
         return response()->json($data1);
         //--- Redirect Section Ends
     }
-    
+
        public function getOrder(Request $request){
       $search = $request->search;
       $result = Order::where('order_id','LIKE',"%{$search}%")->orderBy('id','desc')->limit(6)->get();

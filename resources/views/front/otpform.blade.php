@@ -604,7 +604,7 @@
 
                 if (response.success) {
                     if (window.toaster) {
-                        window.toaster.success('🎉 Account created successfully! Redirecting to login...', 3000);
+                        window.toaster.success('🎉 Account created successfully! Welcome email sent to your inbox. Redirecting to login...', 3000);
                     }
 
                     setTimeout(() => {

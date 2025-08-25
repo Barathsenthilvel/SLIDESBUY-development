@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Mail\SubscriptionMail;
+use Illuminate\Support\Facades\Mail;
 use Session;
 
 class RazorpayPaymentController extends Controller
@@ -64,7 +66,7 @@ class RazorpayPaymentController extends Controller
 
 public function payment(Request $request)
 {
-  
+
     // Initialize Razorpay API
     $api = new \Razorpay\Api\Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
@@ -112,10 +114,25 @@ public function payment(Request $request)
     $subscription->is_active = true;
     $subscription->save();
 
+    // Send subscription confirmation email
+    try {
+        Mail::to($user->email)->send(new SubscriptionMail(
+            $subscription->toArray(),
+            $plan->toArray(),
+            [
+                'name' => $user->name,
+                'email' => $user->email
+            ]
+        ));
+    } catch (\Exception $e) {
+        \Log::error('Subscription email error: ' . $e->getMessage());
+        // Don't fail the subscription if email fails
+    }
+
     // Send success response to front end
     return response()->json([
         'success' => true,
-        'message' => 'Payment successful! Subscription activated.',
+        'message' => 'Payment successful! Subscription activated. Confirmation email sent.',
         'plan_id' => $plan->id,
         'redirect_url' => route('subscription.success', ['id' => $subscription->id]),
     ]);

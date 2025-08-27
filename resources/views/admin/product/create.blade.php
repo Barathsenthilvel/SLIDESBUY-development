@@ -101,7 +101,7 @@
                                 <div class="col-lg-4 col-md-12">
                                     <select class="form-control" id="subCategory" name="subCategory" >
                                         <option value="">Select</option>
-                                        @if(old('category'))
+                                        @if(old('category') && isset($data) && is_array($data) && count($data) > 0)
                                         @foreach($data as $data)
                                         <option value="{{$data->id}}" {{ (old('subCategory') == $data->id) ? 'selected' : '' }}>{{$data->category_name}}</option>
                                         @endforeach
@@ -307,22 +307,16 @@
                             @break
                             @case (3)
                             @php
-                            $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                            $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
+                            $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
                             @endphp
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
                                 <div class="col-lg-10 col-md-12">
                                   <select class="form-control multis" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}]" >
-                                      @if($attributeValues>0)
+                                      @if(count($attributeValues1) > 0)
                                       <option value="" >select {{$processGroup[0]->attribute_name}}</option>
-                                      @foreach($attributeValues1 as $attributeValues1)
-                                      @php
-                                      if(old('attributes[$processGroup[0]->attribute_name]')){
-                                      var_dump(old('attributes[$processGroup[0]->attribute_name]'));exit;
-                                        }
-                                      @endphp
-                                      <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',old('attributes[$processGroup[0]->attribute_name]')))?'selected':'')}}>{{$attributeValues1}}</option>
+                                      @foreach($attributeValues1 as $attributeValue)
+                                      <option value="{{$attributeValue}}" {{(in_array($attributeValue,explode(',',old('attributes[$processGroup[0]->attribute_name]')))?'selected':'')}}>{{$attributeValue}}</option>
                                       @endforeach
                                       @endif
                                   </select>
@@ -331,14 +325,13 @@
                           @break
                             @case (4)
                             @php
-                            $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                            $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
+                            $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
                             @endphp
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
                                 <div class="col-lg-10 col-md-12">
                                   <select class="form-control multis" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}][]" multiple>
-                                      @foreach($attributeValues as $value)
+                                      @foreach($attributeValues1 as $value)
                                           @php
                                               $value = trim($value);
                                               $oldValues = old("attributes.{$processGroup[0]->id}") ?? [];
@@ -356,19 +349,18 @@
                           @break
                           @case (5)
                           @php
-                          $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                          $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
+                          $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
                           @endphp
                           <div class="form-group row">
                             <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
 
                             <div class="col-lg-4 col-md-12 col-form-label">
                                 <div class="form-check pl-0 checkbox-inline">
-                                    @if($attributeValues>0)
-                                    @foreach($attributeValues1 as $attributeValues1)
+                                    @if(count($attributeValues1) > 0)
+                                    @foreach($attributeValues1 as $attributeValue)
                                     <label class="checkbox checkbox-outline">
-                                        <input type="checkbox" name="attributes[{{$processGroup[0]->id}}][]" value="{{$attributeValues1}}">
-                                        <span></span>{{$attributeValues1}}</label>
+                                        <input type="checkbox" name="attributes[{{$processGroup[0]->id}}][]" value="{{$attributeValue}}">
+                                        <span></span>{{$attributeValue}}</label>
                                         @endforeach
                                         @endif
                                     </div>
@@ -377,19 +369,18 @@
                             @break
                             @case (6)
                             @php
-                            $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                            $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
+                            $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
                             @endphp
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
 
                                 <div class="col-lg-4 col-md-12 col-form-label">
                                     <div class="form-check pl-0 checkbox-inline">
-                                        @if($attributeValues>0)
-                                        @foreach($attributeValues1 as $attributeValues1)
+                                        @if(count($attributeValues1) > 0)
+                                        @foreach($attributeValues1 as $attributeValue)
                                         <label class="checkbox checkbox-outline">
-                                            <input type="radio" name="attributes[{{$processGroup[0]->id}}][]" value="{{$attributeValues1}}">
-                                            <span></span>{{$attributeValues1}}</label>
+                                            <input type="radio" name="attributes[{{$processGroup[0]->id}}][]" value="{{$attributeValue}}">
+                                            <span></span>{{$attributeValue}}</label>
                                             @endforeach
                                             @endif
                                         </div>
@@ -591,9 +582,11 @@
 
                                 <div class="col-10">
                                     <select name="similarProducts[]" id="similarProducts" class="form-control" multiple="multiple">
-                                        @foreach($products as $product)
-                                        <option value="{{$product->id}}" {{ (old('similarProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
-                                        @endforeach
+                                        @if(isset($products) && is_array($products) && count($products) > 0)
+                                            @foreach($products as $product)
+                                            <option value="{{$product->id}}" {{ (old('similarProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -604,9 +597,11 @@
 
                                 <div class="col-10">
                                     <select name="relatedProducts[]" id="relatedProducts" class="form-control" multiple="multiple">
-                                        @foreach($products as $product)
-                                        <option value="{{$product->id}}" {{ (old('relatedProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
-                                        @endforeach
+                                        @if(isset($products) && is_array($products) && count($products) > 0)
+                                            @foreach($products as $product)
+                                            <option value="{{$product->id}}" {{ (old('relatedProducts') == $product->id) ? 'selected' : '' }}>{{$product->product_title}}/SKU: {{$StoreConfig->productIdprefix}}{{  $product->product_sku}}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>

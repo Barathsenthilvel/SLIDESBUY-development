@@ -177,7 +177,7 @@
                 </div>
 
                 <!-- Filter Form -->
-                <form action="#" class="filter-form pb-4" style="display: block;">
+                {{-- <form action="#" class="filter-form pb-4" style="display: block;">
                     <div class="row gy-3">
                         <div class="col-sm-4 col-xs-6">
                             <div class="flx-between gap-1">
@@ -212,7 +212,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form> --}}
             </div>
         </div>
 

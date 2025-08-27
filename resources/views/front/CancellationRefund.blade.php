@@ -33,113 +33,59 @@
 <!-- ==================== Page Header End ==================== -->
 
 <!-- ==================== Cancellation Content Start ==================== -->
-<section class="cancellation-content ">
+<div class="disclaimer-content ">
     <div class="container container-two">
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-lg-12">
-                <div class="content-wrapper mt-5 mb-5">
-                    <h3 class="content-title mb-4">Cancellation and Refund Policy</h3>
+                <div class="disclaimer-wrapper mt-5 mb-5">
+                    <h4 class="disclaimer-title mb-4">1. General Information</h4>
+                    <p class="disclaimer-text mb-4">The information provided on this website is for general informational purposes only. While we strive to keep the information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on the website for any purpose.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">1. Order Cancellation</h4>
-                        <p>You may cancel your order under the following conditions:</p>
-                        <ul class="feature-list">
-                            <li><strong>Before Processing:</strong> Orders can be cancelled within 2 hours of placement if not yet processed</li>
-                            <li><strong>During Processing:</strong> Cancellation may be possible but subject to approval</li>
-                            <li><strong>After Processing:</strong> Orders cannot be cancelled once processing has begun</li>
-                        </ul>
-                        <p>To cancel an order, please contact our customer support team with your order number and reason for cancellation.</p>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">2. No Professional Advice</h4>
+                    <p class="disclaimer-text mb-4">The information on this website is not intended to constitute professional advice. Any reliance you place on such information is therefore strictly at your own risk. We recommend consulting with qualified professionals for specific advice tailored to your situation.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">2. Refund Policy</h4>
-                        <p>We offer refunds under the following circumstances:</p>
-                        <div class="refund-table">
-                            <div class="refund-row">
-                                <div class="refund-condition">Digital Products (Slides/Templates)</div>
-                                <div class="refund-status">No Refund</div>
-                                <div class="refund-reason">Once downloaded, digital products cannot be refunded</div>
-                            </div>
-                            <div class="refund-row">
-                                <div class="refund-condition">Subscription Services</div>
-                                <div class="refund-status">Partial Refund</div>
-                                <div class="refund-reason">Pro-rated refund for unused portion of subscription</div>
-                            </div>
-                            <div class="refund-row">
-                                <div class="refund-condition">Technical Issues</div>
-                                <div class="refund-status">Full Refund</div>
-                                <div class="refund-reason">If we cannot provide the service due to technical problems</div>
-                            </div>
-                            <div class="refund-row">
-                                <div class="refund-condition">Duplicate Charges</div>
-                                <div class="refund-status">Full Refund</div>
-                                <div class="refund-reason">Immediate refund for accidental duplicate charges</div>
-                            </div>
-                        </div>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">3. Website Availability</h4>
+                    <p class="disclaimer-text mb-4">We do not guarantee that our website will be available at all times or that it will be free from errors or interruptions. We reserve the right to modify, suspend, or discontinue the website or any part of it at any time without notice.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">3. Refund Process</h4>
-                        <p>When a refund is approved, the process follows these steps:</p>
-                        <ol class="process-list">
-                            <li>Refund request is reviewed by our support team (1-2 business days)</li>
-                            <li>Approved refunds are processed within 3-5 business days</li>
-                            <li>Refund is credited back to the original payment method</li>
-                            <li>You receive a confirmation email with refund details</li>
-                        </ol>
-                        <p><strong>Note:</strong> The time for the refund to appear in your account depends on your bank or payment provider (typically 5-10 business days).</p>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">4. External Links</h4>
+                    <p class="disclaimer-text mb-4">Our website may contain links to external websites that are not provided or maintained by us. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites. The inclusion of any links does not necessarily imply a recommendation or endorse the views expressed within them.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">4. Non-Refundable Items</h4>
-                        <p>The following items are non-refundable:</p>
-                        <ul class="non-refundable-list">
-                            <li>Digital downloads (slides, templates, graphics)</li>
-                            <li>Custom design services</li>
-                            <li>Consultation fees</li>
-                            <li>Processing fees and taxes</li>
-                            <li>Gift cards and promotional credits</li>
-                        </ul>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">5. Product Information</h4>
+                    <p class="disclaimer-text mb-4">Product descriptions, specifications, and pricing information are provided for informational purposes only. We reserve the right to modify or discontinue products at any time. Product images are for illustration purposes and may not reflect the exact appearance of the actual product.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">5. How to Request a Refund</h4>
-                        <p>To request a refund, please follow these steps:</p>
-                        <ol class="process-list">
-                            <li>Contact our customer support team via email or live chat</li>
-                            <li>Provide your order number and reason for refund</li>
-                            <li>Include any relevant screenshots or documentation</li>
-                            <li>Wait for our response (typically within 24 hours)</li>
-                        </ol>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">6. User-Generated Content</h4>
+                    <p class="disclaimer-text mb-4">We are not responsible for any user-generated content posted on our website, including comments, reviews, or other submissions. Users are solely responsible for the content they post, and we reserve the right to remove any content that violates our terms of service.</p>
 
-                    <div class="content-section mb-5">
-                        <h4 class="section-title">6. Exceptions</h4>
-                        <p>We may make exceptions to our refund policy in special circumstances:</p>
-                        <ul class="exception-list">
-                            <li>Medical emergencies preventing use of the service</li>
-                            <li>Death of the account holder</li>
-                            <li>Extended technical issues on our platform</li>
-                            <li>Legal requirements in your jurisdiction</li>
-                        </ul>
-                        <p>All exceptions are reviewed on a case-by-case basis by our management team.</p>
-                    </div>
+                    <h4 class="disclaimer-title mb-4">7. Limitation of Liability</h4>
+                    <p class="disclaimer-text mb-4">In no event shall Slidesbuy, its directors, employees, partners, agents, suppliers, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of the website or any products or services.</p>
 
-                    <div class="content-section">
-                        <h4 class="section-title">7. Contact Information</h4>
-                        <p>For cancellation and refund requests, please contact us:</p>
-                        <ul class="contact-list">
-                            <li><strong>Email:</strong> refunds@slidesbuy.com</li>
-                            <li><strong>Phone:</strong> +1 (555) 123-4567</li>
-                            <li><strong>Live Chat:</strong> Available 24/7 on our website</li>
-                            <li><strong>Response Time:</strong> Within 24 hours during business days</li>
-                        </ul>
+                    <h4 class="disclaimer-title mb-4">8. Indemnification</h4>
+                    <p class="disclaimer-text mb-4">You agree to indemnify and hold harmless Slidesbuy and its affiliates from and against any claims, damages, obligations, losses, liabilities, costs, or debt arising from your use of the website or violation of any terms of service.</p>
+
+                    <h4 class="disclaimer-title mb-4">9. Intellectual Property</h4>
+                    <p class="disclaimer-text mb-4">All content on this website, including but not limited to text, graphics, logos, images, audio clips, digital downloads, and software, is the property of Slidesbuy or its content suppliers and is protected by international copyright laws.</p>
+
+                    <h4 class="disclaimer-title mb-4">10. Privacy and Security</h4>
+                    <p class="disclaimer-text mb-4">While we implement reasonable security measures to protect your personal information, we cannot guarantee that our website will be completely secure. We are not responsible for any unauthorized access to or use of your personal information.</p>
+
+                    <h4 class="disclaimer-title mb-4">11. Changes to Disclaimer</h4>
+                    <p class="disclaimer-text mb-4">We reserve the right to modify this disclaimer at any time. Changes will be effective immediately upon posting on the website. Your continued use of the website after any changes constitutes acceptance of the modified disclaimer.</p>
+
+                    <h4 class="disclaimer-title mb-4">12. Governing Law</h4>
+                    <p class="disclaimer-text mb-4">This disclaimer is governed by and construed in accordance with applicable laws. Any disputes arising from the use of this website shall be subject to the exclusive jurisdiction of the courts in the applicable jurisdiction.</p>
+
+                    <h4 class="disclaimer-title mb-4">13. Contact Information</h4>
+                    <p class="disclaimer-text mb-4">If you have any questions about this disclaimer or our website, please contact us at legal@slidesbuy.com or through our customer support channels.</p>
+
+                    <div class="disclaimer-notice mt-5 p-4 bg-light rounded">
+                        <h5 class="disclaimer-notice-title mb-3">Important Notice</h5>
+                        <p class="disclaimer-notice-text mb-0">By using our website, you acknowledge that you have read, understood, and agree to be bound by this disclaimer. If you do not agree with any part of this disclaimer, please do not use our website or services.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 <!-- ==================== Cancellation Content End ==================== -->
 
 <style>

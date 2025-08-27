@@ -81,22 +81,26 @@
             <div class="col-lg-7 ps-lg-5">
                 <div class="card common-card p-sm-4">
                     <div class="card-body">
-                        <form action="#" autocomplete="off">
+                        <form id="contactForm" action="{{ route('front.contact') }}" method="POST" autocomplete="off">
+                            @csrf
                             <div class="row gy-4">
                                 <div class="col-sm-6 col-xs-6">
                                     <label for="name" class="form-label mb-2 font-18 font-heading fw-600">Full Name</label>
-                                    <input type="text" class="common-input common-input--grayBg border" id="name" placeholder="Your name here">
+                                    <input type="text" class="common-input common-input--grayBg border" id="name" name="userName" placeholder="Your name here" required>
                                 </div>
                                 <div class="col-sm-6 col-xs-6">
                                     <label for="email" class="form-label mb-2 font-18 font-heading fw-600">Your Mail</label>
-                                    <input type="email" class="common-input common-input--grayBg border" id="email" placeholder="Your email here ">
+                                    <input type="email" class="common-input common-input--grayBg border" id="email" name="email" placeholder="Your email here " required>
                                 </div>
                                 <div class="col-sm-12">
                                     <label for="message" class="form-label mb-2 font-18 font-heading fw-600">Your Message</label>
-                                    <textarea class="common-input common-input--grayBg border" id="message" placeholder="Write Your Message Here"></textarea>
+                                    <textarea class="common-input common-input--grayBg border" id="message" name="comment" placeholder="Write Your Message Here" required></textarea>
                                 </div>
                                 <div class="col-sm-12">
-                                    <button class="btn btn-main btn-lg pill w-100"> Submit Now </button>
+                                    <button type="submit" class="btn btn-main btn-lg pill w-100" id="contactSubmitBtn"> Submit Now </button>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div id="contactInlineAlert" style="display:none;" class="mt-2"></div>
                                 </div>
                             </div>
                         </form>

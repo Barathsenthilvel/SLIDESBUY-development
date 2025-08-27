@@ -68,9 +68,9 @@ Route::get('/email', function(){
   return new AdminMails() ;
 });
 
-Route::get('/Privacy_Policy', 'Front\FrontendController@Privacy_Policy')->name('front.Privacy_Policy');
-Route::get('/Shipping_Policy', 'Front\FrontendController@Shipping_Policy')->name('front.Shipping_Policy');
-Route::get('/Terms_Conditions', 'Front\FrontendController@TermsConditions')->name('front.TermsConditions');
+Route::get('/privacy_policy', 'Front\FrontendController@Privacy_Policy')->name('front.Privacy_Policy');
+Route::get('/shipping_policy', 'Front\FrontendController@Shipping_Policy')->name('front.Shipping_Policy');
+Route::get('/terms_conditions', 'Front\FrontendController@TermsConditions')->name('front.TermsConditions');
 Route::get('/duties_customs_taxes', 'Front\FrontendController@CustomsTaxes')->name('front.CustomsTaxes');
 Route::get('/FAQ', 'Front\FrontendController@FAQ')->name('front.FAQ');
 Route::get('/About', 'Front\FrontendController@About')->name('front.about');

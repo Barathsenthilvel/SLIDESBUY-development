@@ -7,11 +7,12 @@
                         <table border="0" cellpadding="20" cellspacing="0" width="100%">
                             <tbody>
                                 <tr>
-                                    <td align="left" style="background-color: #f3ecee;margin-right:10px"><a
+                                    <td align="center" style="background-color: #f3ecee;margin-right:10px"><a
                                             href="{{route('front.index')}}"
                                             rel="noreferrer"><img
                                                 src="{{URL::asset('assets/media/banner/'.$StoreConfig->invert_logo)}}"
-                                                 border="0"  style="width: 128px;height: 80px;"></a></td>
+                                                 border="0"  style="width: 128px;height: 80px; display:block; margin:0 auto;"></a></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

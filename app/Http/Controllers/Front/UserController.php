@@ -740,6 +740,7 @@ public function resendOtp(Request $request)
       return response()->json(['status' => 'error', 'message' => 'Failed to remove from wishlist: ' . $e->getMessage()], 500);
     }
   }
+
    public function contact(Request $request){
       $requestData=$request->all();
         $Store = Storeconfiguration::findOrFail(1);
@@ -770,23 +771,31 @@ public function resendOtp(Request $request)
       ];
     $contactbcc[] = $mailTemplates->bcc_mail;
 
-      Mail::to($email)->bcc($contactbcc)->send(new ContactMails($mailContents));
+      // Send mails after the HTTP response without a queue worker
+      app()->terminating(function () use ($email, $contactbcc, $mailContents, $emails, $request, $mailTemplates, $customerName, $customerMessage) {
+          try {
+              Mail::to($email)->bcc($contactbcc)->send(new ContactMails($mailContents));
+          } catch (\Throwable $e) {
+              \Log::error('Contact user mail failed: '.$e->getMessage());
+          }
 
-
-      if (Mail::failures()) {
-        // return failed mails
-        return redirect()->back()->withError("Enter Validate Email Id");
-    }
-
-      \Mail::send('mails.contact', array(
-        'name' => $customerName,
-        'email' => $email,
-        'subject' => $mailTemplates->subject_mail,
-        'form_message' => $customerMessage,
-    ), function($message) use ($emails,$request,$mailTemplates,$contactbcc){
-        $message->from($request->get('email'));
-        $message->to($emails, 'Hello Admin')->bcc($contactbcc)->subject($mailTemplates->subject_mail);
-    });
+          try {
+              \Mail::send('mails.contact', array(
+                'name' => $customerName,
+                'email' => $email,
+                'subject' => $mailTemplates->subject_mail,
+                'form_message' => $customerMessage,
+              ), function($message) use ($emails,$request,$mailTemplates,$contactbcc){
+                  $message->from($request->get('email'));
+                  $message->to($emails, 'Hello Admin')->bcc($contactbcc)->subject($mailTemplates->subject_mail);
+              });
+          } catch (\Throwable $e) {
+              \Log::error('Contact admin mail failed: '.$e->getMessage());
+          }
+      });
+       if ($request->ajax() || $request->wantsJson()) {
+           return response()->json(['success' => true, 'message' => 'Mail Sent']);
+       }
        return redirect()->back()->withSuccess("Mail Sent");
     }
   public function wishlistTemplate(){

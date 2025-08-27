@@ -8,11 +8,12 @@
                         <table border="0" cellpadding="20" cellspacing="0" width="100%">
                             <tbody>
                                 <tr>
-                                    <td align="left" style="background-color: #f3ecee;margin-right:10px"><a
-                                            href="{{route('front.index')}}"
-                                            rel="noreferrer"><img
-                                                src="{{URL::asset('assets/media/banner/'.$StoreConfig->invert_logo)}}"
-                                                 border="0"  style="width: 128px;height: 80px;"></a></td>
+                                    <td align="center" style="background-color: #f3ecee;margin-right:10px">
+                                        <a href="{{route('front.index')}}" rel="noreferrer">
+                                            <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->invert_logo)}}" border="0"  style="width: 128px;height: 80px; display:block; margin:0 auto;">
+                                        </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -27,7 +28,7 @@ style="border-bottom:1px solid rgb(204,204,204)">
 <div style="clear:both">
 <p>Name:<span>{{$name}}</span></p>
 <p>Message:<span>{{$form_message}}</span></p>
-<p>Phonr No :<span>{{$customermobile ?? ''}}</span></p>
+{{-- Phone removed as requested --}}
 </div>
 </td>
 </tr>

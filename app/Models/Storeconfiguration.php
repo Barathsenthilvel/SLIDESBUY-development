@@ -16,6 +16,7 @@ class Storeconfiguration extends Authenticatable
     'Contact_Us_Emails_BCC','product_list','time_zone','is_configure_product_available','is_quality_increase_decrease','is_attribute_seperate_link','is_manufacture_attribute','is_customer_group_category','is_customer_field_customer_group',
     'Order_Emails_From','billing_address','location_address','ownershiptype','OrderIDPrefix','CustomerIDPrefix','VendorIDPrefix','productIdprefix'
 ];
+
 public function currencysymbol(){
     $Currency = Currency::find($this->default_currency)->first();
     if(!empty($Currency)){
@@ -23,6 +24,7 @@ public function currencysymbol(){
     }
     return null;
 }
+
     public function Order_Emails_BCC(){
         $email = json_decode($this->Order_Emails_To);
         $Email = [];

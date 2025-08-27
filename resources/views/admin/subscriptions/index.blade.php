@@ -45,6 +45,7 @@
                                                 <tr>
                                                     <th>Sno</th>
                                                     <th>User</th>
+                                                    <th>Customer Email</th>
                                                     <th>Plan</th>
                                                     <th>Price</th>
                                                     <th>Final Price</th>
@@ -78,6 +79,7 @@
                columns: [
                         { data: 'DT_RowIndex', name: 'DT_RowIndex'},
                         { data: 'user', name: 'user' },
+                        { data: 'customer_email', name: 'customer_email' },
                         { data: 'plan', name: 'plan' },
                         { data: 'price', name: 'price' },
                         { data: 'final_price', name: 'final_price' },

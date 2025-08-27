@@ -124,6 +124,20 @@ class LoginController extends Controller
           ->whereMonth('created_at', now()->month)
           ->whereYear('created_at', now()->year)
           ->sum('discount_price');
+
+      // Build last 12 months subscription amounts (month-on-month)
+      $subscriptionMonthlyLabels = [];
+      $subscriptionMonthlyAmounts = [];
+      for ($i = 11; $i >= 0; $i--) {
+          $pointDate = now()->subMonths($i);
+          $subscriptionMonthlyLabels[] = $pointDate->format('M Y');
+          $subscriptionMonthlyAmounts[] = Subscription::where('payment_status', 'success')
+              ->whereYear('created_at', $pointDate->year)
+              ->whereMonth('created_at', $pointDate->month)
+              ->sum('discount_price');
+      }
+      $dashboad['SubscriptionMonthlyLabels'] = $subscriptionMonthlyLabels;
+      $dashboad['SubscriptionMonthlyAmounts'] = $subscriptionMonthlyAmounts;
       if(Auth::user()->is_vendor ==""){
         $dashboad['NewProduct'] = Product::where('status','1')->orderBy('id','desc')->limit(5)->get();
         $dashboad['NewOrder'] = Order::orderBy('id','desc')->limit(5)->get()->unique('order_id')->sortByDesc('id');

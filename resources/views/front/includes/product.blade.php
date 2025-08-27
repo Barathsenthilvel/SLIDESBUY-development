@@ -10,7 +10,7 @@
 
     <div class="container container-two">
         <div class="section-heading">
-            <h3 class="section-heading__title">New Arrival Slides</h3>
+            <h3 class="section-heading__title">{{ $discounts['Homeslider']->title ?? 'New Arrival Slides' }}</h3>
         </div>
 
         <ul class="nav common-tab justify-content-center nav-pills mb-48" id="pills-tab" role="tablist">

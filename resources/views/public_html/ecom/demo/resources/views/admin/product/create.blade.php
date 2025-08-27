@@ -267,7 +267,7 @@
                             @break
                             @case (3)
                             @php
-                            $attributeValues1=explode(',',$processGroup[0]->attribute_values);
+                            $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
                             $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
                             @endphp
                             <div class="form-group row">
@@ -276,11 +276,6 @@
                                   <select class="form-control multis" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}]" >
                                       @if($attributeValues>0)
                                       @foreach($attributeValues1 as $attributeValues1)
-                                      @php
-                                      if(old('attributes[$processGroup[0]->attribute_name]')){
-                                      var_dump(old('attributes[$processGroup[0]->attribute_name]'));exit;
-                                        }
-                                      @endphp
                                       <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',old('attributes[$processGroup[0]->attribute_name]')))?'selected':'')}}>{{$attributeValues1}}</option>
                                       @endforeach
                                       @endif
@@ -290,23 +285,16 @@
                           @break
                             @case (4)
                             @php
-                            $attributeValues1=explode(',',$processGroup[0]->attribute_values);
-                            $attributeValues=(count($attributeValues1)>0)?count($attributeValues1):'0';
+                            $attributeValues1 = array_filter(array_map('trim', explode(',', (string)($processGroup[0]->attribute_values ?? ''))));
+                            $oldValues = old("attributes.{$processGroup[0]->id}") ?? [];
                             @endphp
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">{{$processGroup[0]->attribute_name}}</label>
                                 <div class="col-lg-10 col-md-12">
                                   <select class="form-control multis" id="{{$processGroup[0]->attribute_name}}" name="attributes[{{$processGroup[0]->id}}][]" multiple>
-                                      @if($attributeValues>0)
-                                      @foreach($attributeValues1 as $attributeValues1)
-                                      @php
-                                      if(old('attributes[$processGroup[0]->attribute_name][]')){
-                                      var_dump(old('attributes[$processGroup[0]->attribute_name][]'));exit;
-                                        }
-                                      @endphp
-                                      <option value="{{$attributeValues1}}" {{(in_array($attributeValues1,explode(',',old('attributes[$processGroup[0]->attribute_name][]')))?'selected':'')}}>{{$attributeValues1}}</option>
+                                      @foreach($attributeValues1 as $val)
+                                      <option value="{{$val}}" {{ in_array($val, $oldValues) ? 'selected' : '' }}>{{$val}}</option>
                                       @endforeach
-                                      @endif
                                   </select>
                               </div>
                           </div>

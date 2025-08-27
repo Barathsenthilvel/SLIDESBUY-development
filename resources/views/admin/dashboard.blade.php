@@ -244,7 +244,7 @@
 								</div>
                                 <!--begin::Row-->
 								<div class="row">
-									<div class="col-lg-6">
+									{{-- <div class="col-lg-6">
 										<!--begin::Card-->
 										<div class="card card-custom gutter-b">
 											<div class="card-header">
@@ -266,8 +266,8 @@
 											</div>
 										</div>
 										<!--end::Card-->
-									</div>
-									<div class="col-lg-6">
+									</div> --}}
+									<div class="col-lg-12">
 										<!--begin::Card-->
 										<div class="card card-custom gutter-b">
 											<div class="card-header">
@@ -626,67 +626,6 @@
 													<table class="table table-borderless table-vertical-center">
 														<thead>
 															<tr>
-																<th class="p-0" style="width: 50px">Details</th>
-																<th class="text-center" style="min-width: 60px">Order ID</th>
-																<th class="text-center" style="min-width: 140px">Order Status</th>
-																<th class="text-center" style="min-width: 100px">pay Status</th>
-																<th class="text-center" style="min-width: 100px">Order On</th>
-															</tr>
-														</thead>
-														<tbody>
-                                                            @foreach ($dashboad['NewOrder'] as $NewOrder)
-															<tr>
-																<td class="pl-0 py-5">
-																	<span class="text-muted font-weight-bold">{{ $NewOrder->first_name.' '.$NewOrder->last_name}}</span><br>
-                                                                    <span class="text-muted font-weight-bold">{{ $NewOrder->phone}}</span><br>
-                                                                    <span class="text-muted font-weight-bold">{{ $NewOrder->email}}</span>
-																</td>
-																<td class="text-center">
-																	<a href="{{route('admin-order-view',[$NewOrder->id])}}" class="text-dark font-weight-bolder text-hover-primary mb-1 font-size-lg">{{$StoreConfig->OrderIDPrefix}}{{ $NewOrder->map_id }}</a>
-																</td>
-																<td class="text-center">
-																	<span class="text-muted font-weight-bold">{{ $NewOrder->delivery_status}}</span>
-																</td>
-																<td class="text-center">
-																	<span class="text-muted font-weight-bold">{{ $NewOrder->payment_status}}</span>
-																</td>
-																<td class="text-center">
-																	<span class="text-muted font-weight-bold">{{ date('Y-m-d h:i',strtotime($NewOrder->created_at))}}</span>
-																</td>
-                                                            </tr>
-                                                            @endforeach
-														</tbody>
-													</table>
-												</div>
-												<!--end::table-->
-											</div>
-											<!--begin::Body-->
-										</div>
-										<!--end::Base Table Widget 3-->
-									</div>
-									@else
-									<div class="col-xl-6">
-										<!--begin::Base Table Widget 3-->
-										<div class="card card-custom card-stretch gutter-b">
-											<!--begin::Header-->
-											<div class="card-header border-0 pt-5">
-												<h3 class="card-title align-items-start flex-column">
-													<span class="card-label font-weight-bolder text-dark">New Orders</span>
-												</h3>
-												<!--<div class="card-toolbar" style="width: 275px">-->
-            <!--                                        <input class="form-control" type="text" value="" id="Search_order" placeholder="Order id"/>-->
-            <!--                                        <div class="searchResult">-->
-            <!--                                        </div>-->
-												<!--</div>-->
-											</div>
-											<!--end::Header-->
-											<!--begin::Body-->
-											<div class="card-body pt-2 pb-0">
-												<!--begin::Table-->
-												<div class="table-responsive">
-													<table class="table table-borderless table-vertical-center">
-														<thead>
-															<tr>
 																<th class="p-0" style="width: 50px">User</th>
 																<th class="text-center" style="min-width: 140px">Plan</th>
 																<th class="text-center" style="min-width: 100px">Amount</th>
@@ -696,8 +635,8 @@
 															</tr>
 														</thead>
 														<tbody>
-                                                            @if(count($dashboad['RecentlySubscribed']) > 0)
-                                                                @foreach ($dashboad['RecentlySubscribed'] as $subscription)
+															@if(count($dashboad['RecentlySubscribed']) > 0)
+																@foreach ($dashboad['RecentlySubscribed'] as $subscription)
 																<tr>
 																	<td class="pl-0">
 																		<div class="d-flex align-items-center">
@@ -789,6 +728,12 @@ for(var TempKey in ChartData){
 	total.push(ChartData[TempKey]['total'])
 	NumberOrders.push(ChartData[TempKey]['ordercount']);
 }
+
+// Subscription MoM data
+var SubscriptionMonthlyLabels = JSON.parse(JSON.stringify(@php echo json_encode($dashboad['SubscriptionMonthlyLabels']) @endphp));
+var SubscriptionMonthlyAmounts = JSON.parse(JSON.stringify(@php echo json_encode($dashboad['SubscriptionMonthlyAmounts']) @endphp));
+// Align subscription data order to match Mounth (which is current -> older)
+var SubscriptionAmountsForOrderGraph = (SubscriptionMonthlyAmounts && SubscriptionMonthlyAmounts.slice) ? SubscriptionMonthlyAmounts.slice().reverse() : [];
 
 // Class definition
 function generateBubbleData(baseval, count, yrange) {
@@ -885,6 +830,9 @@ var CustomKTWidgets = function () {
 			series: [{
 				name: 'Order Count',
 				data: NumberOrders
+			},{
+				name: 'Subscription Amount (₹)',
+				data: SubscriptionAmountsForOrderGraph
 			}],
 			chart: {
 				type: 'bar',
@@ -910,7 +858,7 @@ var CustomKTWidgets = function () {
 			},
 			yaxis: {
 				title: {
-					text: 'Order Count'
+					text: 'Count / ₹'
 				}
 			},
 			fill: {
@@ -918,12 +866,13 @@ var CustomKTWidgets = function () {
 			},
 			tooltip: {
 				y: {
-					formatter: function (val) {
-						return val ;
+					formatter: function (val, opts) {
+						var seriesName = opts && opts.seriesIndex === 1 ? '₹ ' : '';
+						return seriesName + val;
 					}
 				}
 			},
-			colors: [primary,success]
+			colors: [primary, success]
 		};
 
 		chart3 = new ApexCharts(document.querySelector(apexChart), options);

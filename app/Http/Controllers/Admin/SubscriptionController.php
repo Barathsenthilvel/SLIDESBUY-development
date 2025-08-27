@@ -29,6 +29,9 @@ class SubscriptionController extends Controller
 				// dd($subscription);
 				return $subscription->user ? $subscription->user->name : 'N/A';
 			})
+			->addColumn('customer_email', function ($subscription) {
+				return $subscription->user ? $subscription->user->email : 'N/A';
+			})
 			->editColumn('plan', function ($subscription) {
 				return $subscription->plan ? $subscription->plan->name : 'N/A';
 			})

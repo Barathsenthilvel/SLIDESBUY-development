@@ -108,7 +108,32 @@
 
 /* Ensure header sits above page content */
 .header { position: relative; z-index: 1500; }
-    </style>
+
+/* Add mega menu styles */
+.mega-parent { position: static; }
+.mega-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: #ffffff;
+    z-index: 2100;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    border-radius: 12px;
+}
+.mega-columns { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 16px; }
+.mega-col .mega-title { display:block; font-weight: 700; padding: 8px 0; color: #0f172a; text-decoration: none; }
+.mega-col .mega-list { list-style: none; padding: 0; margin: 0; }
+.mega-col .mega-list li a { display:block; padding: 6px 0; color:#334155; text-decoration:none; }
+.mega-col .mega-list li a:hover { color:#6a42f1; }
+
+/* Show on hover */
+.nav-menu__item.mega-parent:hover > .mega-menu { display: block; }
+
+/* Keep classic submenu behavior for non-mega items */
+</style>
 <body>
 @php
 $wishlistcnt = 0;
@@ -312,28 +337,28 @@ if(auth()->check()){
                     <a href="{{ route($headmenus['page_link'][$keys]) }}" class="nav-menu__link">{{ $menuName }}</a>
                 </li>
             @else
-                <li class="nav-menu__item has-submenu">
+                <li class="nav-menu__item mega-parent">
                     <a href="javascript:void(0)" class="nav-menu__link">{{ $menuName }}</a>
-                    <ul class="nav-submenu">
-                        @foreach($headmenus['page_link'][$keys] as $cateNames)
-                            @if(count($cateNames[1]) > 0 && $cateNames[0]->parent_category_id == 0)
-                                <li class="nav-submenu__item has-submenu">
-                                    <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
-                                    <ul class="nav-submenu">
-                                        @foreach($cateNames[1] as $subCat)
-                                            <li class="nav-submenu__item">
-                                                <a href="{{ route('front.getCategory', $subCat->Category_url) }}" class="nav-submenu__link">{{ $subCat->category_name }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </li>
-                            @elseif(count($cateNames[1]) == 0 && $cateNames[0]->parent_category_id == 0)
-                                <li class="nav-submenu__item">
-                                    <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="nav-submenu__link">{{ $cateNames[0]->category_name }}</a>
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul>
+                    <div class="mega-menu">
+                        <div class="mega-columns">
+                            @foreach($headmenus['page_link'][$keys] as $cateNames)
+                                @if($cateNames[0]->parent_category_id == 0)
+                                    <div class="mega-col">
+                                        <a href="{{ route('front.getCategory', $cateNames[0]->Category_url) }}" class="mega-title">{{ $cateNames[0]->category_name }}</a>
+                                        @if(count($cateNames[1]) > 0)
+                                            <ul class="mega-list">
+                                                @foreach($cateNames[1] as $subCat)
+                                                    <li>
+                                                        <a href="{{ route('front.getCategory', $subCat->Category_url) }}">{{ $subCat->category_name }}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
                 </li>
             @endif
         @endforeach
@@ -363,7 +388,7 @@ if(auth()->check()){
     @endif
 
      <!-- Light Dark Mode -->
- <div class="theme-switch-wrapper position-relative">
+ <div class="theme-switch-wrapper position-relative d-none">
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" class="d-none" id="checkbox">
         <span class="slider text-black header-right__button white-version">

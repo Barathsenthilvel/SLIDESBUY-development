@@ -582,10 +582,20 @@ Route::prefix('admin')->group(function() {
             Route::get('/delete/{id}', 'Admin\ReviewController@destroy')->name('admin-review-delete')->middleware('permissions:admin-review3');
             Route::get('/review/{id}', 'Admin\ReviewController@review')->name('admin-review-node')->middleware('permissions:admin-review2');
             });
-            Route::prefix('SubScribers')->group(function() {
-              Route::get('/index', 'Admin\SubscribesController@index')->name('admin-SubScribers')->middleware('permissions:admin-SubScribers');
-              Route::get('/datatables', 'Admin\SubscribesController@datatables')->name('admin-SubScribers-datatables');
-              });
+            // Route::prefix('SubScribers')->group(function() {
+            //   Route::get('/index', 'Admin\SubscribesController@index')->name('admin-SubScribers')->middleware('permissions:admin-SubScribers');
+            //   Route::get('/datatables', 'Admin\SubscribesController@datatables')->name('admin-SubScribers-datatables');
+            //   });
+
+              // ... existing code ...
+
+Route::prefix('SubScribers')->group(function() {
+    Route::get('/index', 'Admin\SubscribesController@index')->name('admin-SubScribers')->middleware('permissions:admin-SubScribers');
+    Route::get('/datatables', 'Admin\SubscribesController@datatables')->name('admin-SubScribers-datatables');
+});
+
+// ... existing code ...
+
                Route::prefix('report')->group(function() {
                 Route::get('/index', 'Admin\SalesController@index')->name('admin-report')->middleware('permissions:admin-report');
                 Route::post('/salesReport', 'Admin\SalesController@salesReport')->name('admin-report-get');

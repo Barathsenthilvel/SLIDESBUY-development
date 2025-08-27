@@ -28,6 +28,7 @@ use App\Models\Order;
 use App\Models\Downloads;
 use App\Mail\OrderMail;
 
+
 class FrontendController extends Controller
 {
     public function index(){
@@ -77,7 +78,7 @@ class FrontendController extends Controller
         // Get download counts as a separate array
         $downloadCounts = Product::getDownloadCounts($Product);
         $trendingDownloadCounts = Product::getDownloadCounts($trending);
-        
+
         // Add download counts to discount products
         foreach($discount as $discountItem) {
             if(isset($discountItem['product'])) {
@@ -308,7 +309,7 @@ class FrontendController extends Controller
 
         // Get download counts as a separate array
         $downloadCounts = Product::getDownloadCounts($products);
-        
+
         $offset = ($page - 1)*$perpage;
         $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage, $page);
 
@@ -376,24 +377,41 @@ class FrontendController extends Controller
 
     }
         public function Subscribes(Request $request){
-                 	$rules=[
-     		'email'     => 'required|unique:subscribes,email,'.$request->email,
-		    ];
+        $rules = [
+            'email' => 'required|email|unique:subscribes,email',
+        ];
 
-		$customs=[
-			'email.unique' 	         => 'News letter already signed up'
-		];
+        $customs = [
+            'email.required' => 'Email address is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email is already subscribed to our newsletter.'
+        ];
 
-		$validator = Validator::make($request->all(), $rules,$customs);
+        $validator = Validator::make($request->all(), $rules, $customs);
 
         if ($validator->fails()) {
             $msg = $validator->getMessageBag()->toArray();
-          return response()->json(array('error' => $msg['email'] ));
+            return response()->json(['error' => $msg['email'][0]]);
         }
-      $Subscribes = new Subscribes;
-      $Subscribes->email = $request->email;
-      $Subscribes->save();
-      return response()->json(['msg'=>'Thanks for news letter sign up']);
+
+        try {
+            // Create new subscription
+            $subscribes = new Subscribes;
+            $subscribes->email = $request->email;
+            $subscribes->save();
+
+            return response()->json([
+                'msg' => 'Thank you for subscribing to our newsletter!',
+                'status' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Newsletter subscription failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Something went wrong. Please try again later.',
+                'status' => 'error'
+            ]);
+        }
     }
 
         public function Privacy_Policy(){

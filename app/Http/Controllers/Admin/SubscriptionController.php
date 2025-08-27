@@ -55,12 +55,27 @@ class SubscriptionController extends Controller
 				}
 				return '₹' . number_format($final, 2);
 			})
+			->addColumn('current_status', function ($subscription) {
+				$now = Carbon::now();
+				$expiredAt = $subscription->expired_at;
+
+				if (!$expiredAt) {
+					return '<span class="badge badge-warning">No Expiry Date</span>';
+				}
+
+				if ($now->gt($expiredAt)) {
+					return '<span class="badge badge-danger">Expired</span>';
+				} else {
+					return '<span class="badge badge-success">Active</span>';
+				}
+			})
 			->editColumn('subscribed_at', function ($subscription) {
 				return $subscription->subscribed_at ? $subscription->subscribed_at->format('Y-m-d') : Carbon::today()->format('Y-m-d H:i:s');
 			})
 			->editColumn('expired_at', function ($subscription) {
 				return $subscription->expired_at ? $subscription->expired_at->format('Y-m-d H:i:s') : Carbon::tomorrow()->format('Y-m-d H:i:s');
 			})
+			->rawColumns(['current_status'])
 			->make(true);
 	}
 

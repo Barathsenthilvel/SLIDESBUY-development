@@ -215,8 +215,9 @@
                     <h3 class="newsletter-content__title text-white mb-2 text-center">Get update Newsletter</h3>
                     <p class="newsletter-content__desc pb-2 text-white text-center font-18 fw-300">Subscribe our newsletter to get the latest news</p>
 
-                    <form action="#" class="mt-4 newsletter-box position-relative">
-                        <input type="text" class="form-control common-input common-input--lg pill text-white" placeholder="Enter Mail">
+                    <form action="{{ route('Subscribes') }}" method="POST" class="mt-4 newsletter-box position-relative" id="newsletterForm">
+                        @csrf
+                        <input type="email" name="email" class="form-control common-input common-input--lg pill text-white" placeholder="Enter Mail" required>
                         <button type="submit" class="btn btn-main btn-lg pill flx-align gap-1">Subscribe <span class="text d-sm-flex d-none">Now</span> </button>
                     </form>
 
@@ -229,5 +230,55 @@
 
 @endsection
 @push('script')
+<script>
+$(document).ready(function(){
+    $('#newsletterForm').submit(function(e){
+        e.preventDefault();
 
+        var email = $(this).find('input[name="email"]').val();
+        var form = $(this);
+        var submitBtn = form.find('button[type="submit"]');
+
+        // Show loading state
+        submitBtn.prop('disabled', true).html('Subscribing...');
+
+        $.ajax({
+            url: "{{ route('Subscribes') }}",
+            type: 'POST',
+            data: {
+                email: email,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response){
+                if(response.msg){
+                    console.log(response.msg +'asasasasas');
+                    // Success message - show for 2 seconds then hide
+                    form.html('<div class="alert alert-success text-center"><i class="fas fa-check-circle"></i> ' + response.msg + '</div>');
+
+                    // Hide message after 2 seconds and reset form
+                    setTimeout(function(){
+                        form[0].reset();
+                        form.html('<form action="{{ route("Subscribes") }}" method="POST" class="mt-4 newsletter-box position-relative" id="newsletterForm">@csrf<input type="email" name="email" class="form-control common-input common-input--lg pill text-white" placeholder="Enter Mail" required><button type="submit" class="btn btn-main btn-lg pill flx-align gap-1">Subscribe <span class="text d-sm-flex d-none">Now</span> </button></form>');
+                    }, 2000);
+
+                } else if(response.error){
+                    // Error message
+                    form.html('<div class="alert alert-danger text-center"><i class="fas fa-exclamation-circle"></i> ' + response.error + '</div>');
+                    // Reset form after 3 seconds
+                    setTimeout(function(){
+                        location.reload();
+                    }, 3000);
+                }
+            },
+            error: function(xhr, status, error){
+                // Handle AJAX errors
+                form.html('<div class="alert alert-danger text-center"><i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.</div>');
+                setTimeout(function(){
+                    location.reload();
+                }, 3000);
+            }
+        });
+    });
+});
+</script>
 @endpush

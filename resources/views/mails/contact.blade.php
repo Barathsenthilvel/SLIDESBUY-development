@@ -26,9 +26,44 @@ style="border-bottom:1px solid rgb(204,204,204)">
 <tr>
 <td style="padding:10px 20px 20px;font-family:Arial,Helvetica,sans-serif">
 <div style="clear:both">
-<p>Name:<span>{{$name}}</span></p>
-<p>Message:<span>{{$form_message}}</span></p>
-{{-- Phone removed as requested --}}
+<h3 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px;">
+    New Contact Form Submission
+</h3>
+
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <p style="margin: 0 0 15px 0; font-size: 16px;">
+        <strong style="color: #007bff;">Name:</strong>
+        <span style="color: #333;">{{$name}}</span>
+    </p>
+
+    <p style="margin: 0 0 15px 0; font-size: 16px;">
+        <strong style="color: #007bff;">Email:</strong>
+        <span style="color: #333;">{{$email}}</span>
+    </p>
+
+    <p style="margin: 0 0 15px 0; font-size: 16px;">
+        <strong style="color: #007bff;">User Status:</strong>
+        <span style="color: #333;">{{ isset($isLoggedIn) && $isLoggedIn ? 'Logged In User' : 'Guest User' }}</span>
+    </p>
+
+    @if(isset($userDisplayName) && $userDisplayName != 'Customer')
+    <p style="margin: 0 0 15px 0; font-size: 16px;">
+        <strong style="color: #007bff;">Username:</strong>
+        <span style="color: #333;">{{$userDisplayName}}</span>
+    </p>
+    @endif
+
+    <p style="margin: 0; font-size: 16px;">
+        <strong style="color: #007bff;">Message:</strong>
+    </p>
+    <div style="background-color: white; padding: 15px; border-left: 4px solid #007bff; margin-top: 10px; border-radius: 4px;">
+        <p style="margin: 0; color: #333; line-height: 1.6;">{{$form_message}}</p>
+    </div>
+</div>
+
+<p style="font-size: 14px; color: #666; margin-top: 20px;">
+    <strong>Note:</strong> This is a new contact form submission that requires your attention.
+</p>
 </div>
 </td>
 </tr>

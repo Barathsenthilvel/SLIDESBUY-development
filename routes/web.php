@@ -348,7 +348,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/edit/{id}', 'Admin\BannerController@edit')->name('admin-banner-edit')->middleware('permissions:admin-banner2');
     Route::post('/edit/{id}', 'Admin\BannerController@update')->name('admin-banner-update');
     Route::get('/delete/{id}', 'Admin\BannerController@destroy')->name('admin-banner-delete')->middleware('permissions:admin-banner3');
-        Route::post('/crop', 'Admin\BannerController@cropimage')->name('admin-Banner-cropimage');
+
 
     });
 
@@ -466,7 +466,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/datatables', 'Admin\CategoryController@datatables')->name('admin-category-datatables');
     Route::get('/status/{id1}/{id2}', 'Admin\CategoryController@status')->name('admin-category-status')->middleware('permissions:admin-category2');
     Route::get('/delete/{id}', 'Admin\CategoryController@destroy')->name('admin-category-delete')->middleware('permissions:admin-category3');
-    Route::post('/crop', 'Admin\CategoryController@cropimage')->name('admin-category-cropimage');
+
     });
 
     Route::group(['prefix'=>'blog','middleware'=>'permissions:admin-blog'],function() {
@@ -478,7 +478,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/datatables', 'Admin\BlogController@datatables')->name('admin-blog-datatables');
     Route::get('/status/{id1}/{id2}', 'Admin\BlogController@status')->name('admin-blog-status')->middleware('permissions:admin-blog2');
     Route::get('/delete/{id}', 'Admin\BlogController@destroy')->name('admin-blog-delete')->middleware('permissions:admin-blog3');
-    Route::post('/crop', 'Admin\BlogController@cropimage')->name('admin-blog-cropimage');
+
     });
 
     Route::group(['prefix'=>'store','middleware'=>'permissions:admin-store'],function() {
@@ -490,7 +490,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/datatables', 'Admin\StoreController@datatables')->name('admin-store-datatables');
     Route::get('/status/{id1}/{id2}', 'Admin\StoreController@status')->name('admin-store-status')->middleware('permissions:admin-store2');
     Route::get('/delete/{id}', 'Admin\StoreController@destroy')->name('admin-store-delete')->middleware('permissions:admin-store3');
-        Route::post('/crop', 'Admin\StoreController@cropimage')->name('admin-store-cropimage');
+
 
     });
 
@@ -641,15 +641,25 @@ Route::prefix('SubScribers')->group(function() {
     });
 
         Route::group(['prefix'=>'coupon','middleware'=>'permissions:admin-coupon'],function() {
-            Route::get('/index', 'Admin\CouponController@index')->name('admin-coupon-index')->middleware('permissions:admin-coupon-index');
-            Route::get('/create', 'Admin\CouponController@create')->name('admin-coupon-create')->middleware('permissions:admin-coupon-index1');
-            Route::get('/getuser', 'Admin\CouponController@getuser')->name('admin-coupon-getuser');
-            Route::get('/datatables', 'Admin\CouponController@datatables')->name('admin-coupon-datatables');
-            Route::post('/store', 'Admin\CouponController@store')->name('admin-coupon-store');
-            Route::get('/status/{id1}/{id2}', 'Admin\CouponController@status')->name('admin-coupon-status');
-            Route::get('/delete/{id}', 'Admin\CouponController@destroy')->name('admin-coupon-delete')->middleware('permissions:admin-coupon-index3');
-            Route::get('/view/{id}', 'Admin\CouponController@views')->name('admin-coupon-view')->middleware('permissions:admin-coupon-index');
-        });
+        Route::get('/index', 'Admin\CouponController@index')->name('admin-coupon-index')->middleware('permissions:admin-coupon-index');
+        Route::get('/create', 'Admin\CouponController@create')->name('admin-coupon-create')->middleware('permissions:admin-coupon-index1');
+        Route::get('/getuser', 'Admin\CouponController@getuser')->name('admin-coupon-getuser');
+        Route::get('/datatables', 'Admin\CouponController@datatables')->name('admin-coupon-datatables');
+        Route::post('/store', 'Admin\CouponController@store')->name('admin-coupon-store');
+        Route::get('/status/{id1}/{id2}', 'Admin\CouponController@status')->name('admin-coupon-status');
+        Route::get('/delete/{id}', 'Admin\CouponController@destroy')->name('admin-coupon-delete')->middleware('permissions:admin-coupon-index3');
+        Route::get('/view/{id}', 'Admin\CouponController@views')->name('admin-coupon-view')->middleware('permissions:admin-coupon-index');
+    });
+
+    Route::group(['prefix'=>'contact','middleware'=>'permissions:admin-contact'],function() {
+        Route::get('/index', 'Admin\ContactController@index')->name('admin-contact');
+        Route::get('/datatables', 'Admin\ContactController@datatables')->name('admin-contact-datatables');
+        Route::get('/view/{id}', 'Admin\ContactController@view')->name('admin-contact-view');
+        Route::get('/status/{id1}/{id2}', 'Admin\ContactController@status')->name('admin-contact-status');
+        Route::get('/delete/{id}', 'Admin\ContactController@destroy')->name('admin-contact-delete');
+        Route::get('/mark-all-read', 'Admin\ContactController@markAllAsRead')->name('admin-contact-mark-all-read');
+        Route::get('/delete-all', 'Admin\ContactController@deleteAll')->name('admin-contact-delete-all');
+    });
 
     Route::group(['prefix'=>'product','middleware'=>'permissions:admin-product'],function() {
     Route::get('/index', 'Admin\ProductController@index')->name('admin-product');
@@ -663,7 +673,7 @@ Route::prefix('SubScribers')->group(function() {
     Route::get('/edit/{id}', 'Admin\ProductController@edit')->name('admin-product-edit')->middleware('permissions:admin-product2');
     Route::get('/delete/{id}', 'Admin\ProductController@destroy')->name('admin-product-delete')->middleware('permissions:admin-product3');
     Route::post('/edit/{id}', 'Admin\ProductController@update')->name('admin-product-update')->middleware('permissions:admin-product2');
-    Route::post('/crop', 'Admin\ProductController@cropimage')->name('admin-product-cropimage')->middleware('permissions:admin-product1');
+
 
     });
 
@@ -679,7 +689,7 @@ Route::prefix('SubScribers')->group(function() {
     Route::get('/edit/{id}', 'Admin\ProductController@edit')->name('admin-productv-edit')->middleware('permissions:admin-productv22');
     Route::get('/delete/{id}', 'Admin\ProductController@destroy')->name('admin-productv-delete')->middleware('permissions:admin-productv23');
 
-    Route::post('/crop', 'Admin\ProductController@cropimage')->name('admin-productv-cropimage')->middleware('permissions:admin-productv2');
+
 
     Route::post('/edit/{id}', 'Admin\ProductController@update')->name('admin-productv-update')->middleware('permissions:admin-productv22');
 

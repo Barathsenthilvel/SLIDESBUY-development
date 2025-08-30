@@ -24,6 +24,8 @@ class ContactMails extends Mailable
         $this->body = $mailContents['body'];
         $this->customerName = $mailContents['customerName'];
         $this->customerMessage = $mailContents['customerMessage'];
+        $this->userDisplayName = $mailContents['userDisplayName'] ?? 'Customer';
+        $this->isLoggedIn = $mailContents['isLoggedIn'] ?? false;
     }
 
     /**
@@ -33,6 +35,14 @@ class ContactMails extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->subject)->markdown('mails.thank')->with(['mail_data'=>$this->mail_data,'footer'=>$this->footer,'body'=>$this->body,'customerName'=>$this->customerName,'customerMessage'=>$this->customerMessage]);
+        return $this->subject($this->subject)->markdown('mails.thank')->with([
+            'mail_data'=>$this->mail_data,
+            'footer'=>$this->footer,
+            'body'=>$this->body,
+            'customerName'=>$this->customerName,
+            'customerMessage'=>$this->customerMessage,
+            'userDisplayName'=>$this->userDisplayName,
+            'isLoggedIn'=>$this->isLoggedIn
+        ]);
     }
 }

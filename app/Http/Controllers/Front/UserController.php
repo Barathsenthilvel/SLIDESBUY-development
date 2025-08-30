@@ -742,61 +742,151 @@ public function resendOtp(Request $request)
   }
 
    public function contact(Request $request){
-      $requestData=$request->all();
-        $Store = Storeconfiguration::findOrFail(1);
-        $contact_to = json_decode($Store->Contact_Us_Emails_To, true);
-        $contact_bcc = json_decode($Store->Contact_Us_Emails_BCC, true);
-        $emails = [];
-        $contactbcc = [];
-        foreach($contact_to as $c){
-            $emails[] = $c['value'];
+      $requestData = $request->all();
 
-        }
-        foreach($contact_bcc as $c){
-            $contactbcc[] = $c['value'];
-        }
+      // Validate the request
+      $validator = \Validator::make($requestData, [
+          'userName' => 'required|string|max:255',
+          'email' => 'required|email|max:255',
+          'comment' => 'required|string|max:1000',
+      ]);
 
-      $email=$requestData['email'];
-      $customerName=$requestData['userName'];
-      $customerMessage=$requestData['comment'];
-      $mailTemplates = MailTemplate::where('template_name','3')->where('status','1')->first();
+      if ($validator->fails()) {
+          if ($request->ajax() || $request->wantsJson()) {
+              return response()->json(['success' => false, 'errors' => $validator->errors()]);
+          }
+          return redirect()->back()->withErrors($validator)->withInput();
+      }
 
+      try {
+          // No database storage needed - just send emails
 
-       $mailContents=[
-          'title'=>$mailTemplates->subject_mail,
-          'body'=>$mailTemplates->content_mail,
-          'footer'=>$mailTemplates->footer_mail,
-          'customerName'=>$customerName,
-          'customerMessage'=>$customerMessage,
-      ];
-    $contactbcc[] = $mailTemplates->bcc_mail;
+          // Get store configuration
+          $Store = Storeconfiguration::findOrFail(1);
+          $contact_to = json_decode($Store->Contact_Us_Emails_To, true);
+          $contact_bcc = json_decode($Store->Contact_Us_Emails_BCC, true);
+          $emails = [];
+          $contactbcc = [];
 
-      // Send mails after the HTTP response without a queue worker
-      app()->terminating(function () use ($email, $contactbcc, $mailContents, $emails, $request, $mailTemplates, $customerName, $customerMessage) {
-          try {
-              Mail::to($email)->bcc($contactbcc)->send(new ContactMails($mailContents));
-          } catch (\Throwable $e) {
-              \Log::error('Contact user mail failed: '.$e->getMessage());
+          // Check if contact emails are configured
+          if (empty($contact_to)) {
+              \Log::warning('Contact Us Emails To not configured in store settings, using default admin email');
+              $contact_to = [['value' => config('mail.from.address', 'admin@example.com')]];
           }
 
-          try {
-              \Mail::send('mails.contact', array(
-                'name' => $customerName,
-                'email' => $email,
-                'subject' => $mailTemplates->subject_mail,
-                'form_message' => $customerMessage,
-              ), function($message) use ($emails,$request,$mailTemplates,$contactbcc){
-                  $message->from($request->get('email'));
-                  $message->to($emails, 'Hello Admin')->bcc($contactbcc)->subject($mailTemplates->subject_mail);
-              });
-          } catch (\Throwable $e) {
-              \Log::error('Contact admin mail failed: '.$e->getMessage());
+          foreach($contact_to as $c){
+              $emails[] = $c['value'];
           }
-      });
-       if ($request->ajax() || $request->wantsJson()) {
-           return response()->json(['success' => true, 'message' => 'Mail Sent']);
-       }
-       return redirect()->back()->withSuccess("Mail Sent");
+          foreach($contact_bcc as $c){
+              $contactbcc[] = $c['value'];
+          }
+
+          $email = $requestData['email'];
+          $customerName = $requestData['userName'];
+          $customerMessage = $requestData['comment'];
+
+          // Check if user is logged in
+          $isLoggedIn = Auth::check();
+          $userDisplayName = $isLoggedIn ? Auth::user()->name : 'Customer';
+          // Try to find mail template by ID first, then by template_name
+          $mailTemplates = MailTemplate::where('id', 3)->where('status', '1')->first();
+
+          if (!$mailTemplates) {
+              $mailTemplates = MailTemplate::where('template_name', '3')->where('status', '1')->first();
+          }
+
+          // Debug: Log available mail templates
+          $allTemplates = MailTemplate::where('status', '1')->get();
+          \Log::info('Available mail templates: ' . $allTemplates->pluck('id', 'template_name'));
+
+          // Use default values if mail template not found
+          if (!$mailTemplates) {
+              \Log::warning('Contact mail template not found, using default values');
+              $mailTemplates = (object) [
+                  'subject_mail' => 'Contact Form Submission - ' . config('app.name'),
+                  'content_mail' => 'Thank you for contacting us. We have received your message and will get back to you soon.',
+                  'footer_mail' => 'Best regards, ' . config('app.name') . ' Team',
+                  'bcc_mail' => null
+              ];
+          }
+
+          $mailContents = [
+              'title' => $mailTemplates->subject_mail,
+              'body' => $mailTemplates->content_mail,
+              'footer' => $mailTemplates->footer_mail,
+              'customerName' => $customerName,
+              'customerMessage' => $customerMessage,
+              'userDisplayName' => $userDisplayName,
+              'isLoggedIn' => $isLoggedIn,
+          ];
+
+          if ($mailTemplates->bcc_mail) {
+              $contactbcc[] = $mailTemplates->bcc_mail;
+          }
+
+          // Send mails after the HTTP response without a queue worker
+          app()->terminating(function () use ($email, $contactbcc, $mailContents, $emails, $request, $mailTemplates, $customerName, $customerMessage, $userDisplayName, $isLoggedIn) {
+              // Test basic mail functionality first
+              try {
+                  \Log::info('Testing basic mail functionality');
+                  \Mail::raw('Test mail from contact form', function($message) use ($email) {
+                      $message->to($email)->subject('Test Mail');
+                  });
+                  \Log::info('Basic mail test successful');
+              } catch (\Throwable $e) {
+                  \Log::error('Basic mail test failed: ' . $e->getMessage());
+              }
+              try {
+                  \Log::info('Sending contact user mail to: ' . $email);
+                  \Log::info('Mail contents: ' . json_encode($mailContents));
+                  Mail::to($email)->bcc($contactbcc)->send(new ContactMails($mailContents));
+                  \Log::info('Contact user mail sent successfully');
+              } catch (\Throwable $e) {
+                  \Log::error('Contact user mail failed: '.$e->getMessage());
+                  \Log::error('Stack trace: ' . $e->getTraceAsString());
+              }
+
+              try {
+                  \Log::info('Sending contact admin mail to: ' . implode(', ', $emails));
+                  \Mail::send('mails.contact', array(
+                    'name' => $customerName,
+                    'email' => $email,
+                    'subject' => $mailTemplates->subject_mail,
+                    'form_message' => $customerMessage,
+                    'userDisplayName' => $userDisplayName,
+                    'isLoggedIn' => $isLoggedIn,
+                  ), function($message) use ($emails,$request,$mailTemplates,$contactbcc){
+                      $message->from($request->get('email'));
+                      $message->to($emails, 'Hello Admin')->bcc($contactbcc)->subject($mailTemplates->subject_mail);
+                  });
+                  \Log::info('Contact admin mail sent successfully');
+              } catch (\Throwable $e) {
+                  \Log::error('Contact admin mail failed: '.$e->getMessage());
+                  \Log::error('Stack trace: ' . $e->getTraceAsString());
+              }
+          });
+
+                    if ($request->ajax() || $request->wantsJson()) {
+              return response()->json([
+                  'success' => true,
+                  'message' => 'Thank you for your message! We have received your inquiry and will get back to you soon. Your feedback is important to us.'
+              ]);
+          }
+
+          return redirect()->back()->withSuccess("Thank you for your message! We have received your inquiry and will get back to you soon.");
+
+      } catch (\Exception $e) {
+          \Log::error('Contact form error: ' . $e->getMessage());
+
+                    if ($request->ajax() || $request->wantsJson()) {
+              return response()->json([
+                  'success' => false,
+                  'message' => 'We apologize, but there was an issue sending your message. Please try again or contact us directly if the problem persists.'
+              ]);
+          }
+
+          return redirect()->back()->withErrors(['error' => 'We apologize, but there was an issue sending your message. Please try again.'])->withInput();
+      }
     }
   public function wishlistTemplate(){
     $wishlistProducts = Auth::user()->wishlists()->with('product')->get()->pluck('product');

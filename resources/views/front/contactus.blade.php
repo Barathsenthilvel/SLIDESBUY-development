@@ -111,7 +111,179 @@
     </div>
 </section>
 
+@push('styles')
+<style>
+.alert {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+}
 
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-left: 5px solid #28a745;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border-left: 5px solid #dc3545;
+}
+
+.alert i {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.alert strong {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.alert.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#contactInlineAlert {
+    animation: slideInDown 0.5s ease-out;
+}
+
+#contactSubmitBtn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#contactSubmitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#contactSubmitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#contactSubmitBtn .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('#contactForm').on('submit', function(e) {
+        e.preventDefault();
+
+        // Get form data
+        var formData = $(this).serialize();
+        var submitBtn = $('#contactSubmitBtn');
+        var originalText = submitBtn.text();
+
+        // Disable submit button and show loading state
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Sending...');
+
+        // Hide any previous alerts
+        $('#contactInlineAlert').hide();
+
+        // Make AJAX request
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                                if (response.success) {
+                    // Show success toaster message
+                    $('#contactInlineAlert')
+                        .removeClass('alert-danger')
+                        .addClass('alert alert-success')
+                        .html('<div class="d-flex align-items-center"><i class="fas fa-check-circle me-2"></i><div><strong>Message Sent Successfully!</strong><br>' + response.message + '</div></div>')
+                        .show();
+
+                    // Reset form
+                    $('#contactForm')[0].reset();
+
+                    // Scroll to alert
+                    $('html, body').animate({
+                        scrollTop: $('#contactInlineAlert').offset().top - 100
+                    }, 500);
+
+                    // Auto-hide success message after 8 seconds
+                    setTimeout(function() {
+                        $('#contactInlineAlert').fadeOut();
+                    }, 8000);
+                } else {
+                    // Show error message
+                    $('#contactInlineAlert')
+                        .removeClass('alert-success')
+                        .addClass('alert alert-danger')
+                        .html('<div class="d-flex align-items-center"><i class="fas fa-exclamation-circle me-2"></i><div><strong>Oops!</strong><br>' + response.message + '</div></div>')
+                        .show();
+                }
+            },
+            error: function(xhr) {
+                var message = 'An error occurred. Please try again.';
+
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errors = xhr.responseJSON.errors;
+                    var errorMessages = [];
+
+                    for (var field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errorMessages.push(errors[field][0]);
+                        }
+                    }
+
+                    message = errorMessages.join('<br>');
+                }
+
+                // Show error message
+                $('#contactInlineAlert')
+                    .removeClass('alert-success')
+                    .addClass('alert alert-danger')
+                    .html('<div class="d-flex align-items-center"><i class="fas fa-exclamation-circle me-2"></i><div><strong>Error!</strong><br>' + message + '</div></div>')
+                    .show();
+            },
+            complete: function() {
+                // Re-enable submit button and restore original text
+                submitBtn.prop('disabled', false).html(originalText);
+            }
+        });
+    });
+
+    // Hide alert when user starts typing
+    $('#contactForm input, #contactForm textarea').on('input', function() {
+        $('#contactInlineAlert').hide();
+    });
+});
+</script>
+@endpush
+
+@endsection
 
 {{-- new theme end --}}
-@endsection

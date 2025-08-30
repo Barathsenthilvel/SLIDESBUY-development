@@ -31,7 +31,7 @@ class StoreController extends Controller
                             })
                             ->addColumn('action', function(Storeconfiguration $data) {
                                 return '<div class="action-list"><a href="' . route('admin-store-edit',$data->id) . '"> <i class="fas fa-edit"></i>Edit</a></div>';
-                            }) 
+                            })
                             ->rawColumns(['position','status','action'])
                             ->toJson(); //--- Returning Json Data To Client Side
     }
@@ -48,8 +48,20 @@ class StoreController extends Controller
     public function edit($id){
 		$data=Storeconfiguration::findOrFail($id);
         $currency = Currency::where('status',1)->get();
+
+        // Test: Check if we can read session data
+        \Log::info('Edit method - Session data:', [
+            'success' => session('success'),
+            'error' => session('error'),
+            'has_errors' => session()->has('errors')
+        ]);
+
 		return view('admin.storeconfig.edit',compact('data','currency'));
 	}
+
+
+
+
     public function destroy($id)
     {
         $data = Storeconfiguration::findOrFail($id);
@@ -60,42 +72,319 @@ class StoreController extends Controller
         return response()->json($data1);
         //--- Redirect Section Ends
     }
-    public function update(Request $request,$id){
-        $input = $request->all();
-        if($request->file('fav_icon')){
-        $rules = [
-                  'fav_icon'   => 'required|dimensions:max_width=43,max_height=38,min_width=43,min_height=38'
-                ];
-      $customs = [
-            'fav_icon.required'   => 'Favicon field should be filled.',
-            'fav_icon.max_width'   => 'Favicon maximum width 43px.',
-            'fav_icon.max_height'   => 'Favicon maximum height 38px.',
-            'fav_icon.min_width'   => 'Favicon minimum width 43px.',
-            'fav_icon.min_height'   => 'Favicon minimum height 38px.'
-          ];
 
-        $validator = Validator::make($request->all(), $rules,$customs);
-        
+
+    public function update(Request $request,$id){
+        // Debug: Log the incoming request
+        \Log::info('Store update request received', [
+            'id' => $id,
+            'method' => $request->method(),
+            'has_files' => $request->hasFile('logo') || $request->hasFile('invert_logo') || $request->hasFile('fav_icon'),
+            'all_input' => $request->all()
+        ]);
+
+        // Test: Check if we can access the method at all
+        \Log::info('Update method accessed successfully');
+
+        // Test: Check if we can access basic request data
+        \Log::info('Request data test:', [
+            'url' => $request->url(),
+            'full_url' => $request->fullUrl(),
+            'headers' => $request->headers->all(),
+            'user_agent' => $request->userAgent()
+        ]);
+
+        $input = $request->all();
+
+        // Validation rules for required fields
+        $rules = [
+            'store_name' => 'required|string|max:255',
+            'default_currency' => 'required|exists:currencies,id',
+            'ownershiptype' => 'required|string|max:100',
+            'pricing_type' => 'required|string|max:50',
+            'CustomerIDPrefix' => 'required|string|max:10',
+            'productIdprefix' => 'required|string|max:10',
+            'Store_Meta_Title' => 'nullable|string|max:255',
+            'Order_Emails_To' => 'required|string',
+            'Contact_Us_Emails_To' => 'required|string',
+            'Contact_Us_Emails_BCC' => 'required|string',
+        ];
+
+      $customs = [
+            'store_name.required' => 'Store Name is required.',
+            'store_name.max' => 'Store Name cannot exceed 255 characters.',
+            'default_currency.required' => 'Default Currency is required.',
+            'default_currency.exists' => 'Selected currency is invalid.',
+            'ownershiptype.required' => 'Ownership Type is required.',
+            'pricing_type.required' => 'Pricing Type is required.',
+            'CustomerIDPrefix.required' => 'Customer ID Prefix is required.',
+            'CustomerIDPrefix.max' => 'Customer ID Prefix cannot exceed 10 characters.',
+            'productIdprefix.required' => 'Product ID Prefix is required.',
+            'productIdprefix.max' => 'Product ID Prefix cannot exceed 10 characters.',
+            'Order_Emails_To.required' => 'Order Emails To is required.',
+            'Contact_Us_Emails_To.required' => 'Contact Us Emails To is required.',
+            'Contact_Us_Emails_BCC.required' => 'Contact Us Emails BCC is required.',
+        ];
+
+        // Validation rules for image fields
+        $imageRules = [];
+        $imageCustoms = [];
+
+        if($request->file('logo')){
+            $imageRules['logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $imageCustoms['logo.image'] = 'Logo must be an image file.';
+            $imageCustoms['logo.mimes'] = 'Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 2MB.';
+            $imageCustoms['logo.max'] = 'Logo size must be less than 2MB.';
+        }
+
+        if($request->file('invert_logo')){
+            $imageRules['invert_logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $imageCustoms['invert_logo.image'] = 'Invert Logo must be an image file.';
+            $imageCustoms['invert_logo.mimes'] = 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 2MB.';
+            $imageCustoms['invert_logo.max'] = 'Invert Logo size must be less than 2MB.';
+        }
+
+        if($request->file('fav_icon')){
+            $imageRules['fav_icon'] = 'mimes:ico,png,jpg,jpeg,gif,svg|max:512';
+            $imageCustoms['fav_icon.mimes'] = 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file. Maximum size: 512KB.';
+            $imageCustoms['fav_icon.max'] = 'Favicon size must be less than 512KB.';
+        }
+
+        // Merge all validation rules
+        $allRules = array_merge($rules, $imageRules);
+        $allCustoms = array_merge($customs, $imageCustoms);
+
+                // Validate all fields
+        \Log::info('Validation rules:', $allRules);
+        \Log::info('Validation customs:', $allCustoms);
+
+        $validator = Validator::make($request->all(), $allRules, $allCustoms);
+
         if ($validator->fails()) {
-          return redirect()->back()->withErrors($validator->getMessageBag()->toArray());
+            \Log::error('Validation failed:', [
+                'errors' => $validator->errors()->toArray(),
+                'input' => $request->all()
+            ]);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-        }
+
+        \Log::info('Validation passed successfully');
+
         $data = Storeconfiguration::findOrFail($id);
-        if ($file = $request->file('fav_icon')) 
-            {              
-                $name = time().$file->getClientOriginalName();
-                $file->move(public_path().'/assets/media/banner/',$name);
-                if($data->fav_icon != null)
-                {
-                    if (file_exists(public_path().'/assets/media/banner/'.$data->fav_icon)) {
-                        unlink(public_path().'/assets/media/banner/'.$data->fav_icon);
-                    }
-                }            
+        \Log::info('Store configuration found:', ['id' => $id, 'current_data' => $data->toArray()]);
+
+        // Handle logo upload
+        \Log::info('Processing logo field:', [
+            'has_file' => $request->hasFile('logo'),
+            'logo_old' => $request->input('logo_old'),
+            'current_logo' => $data->logo
+        ]);
+
+                if ($file = $request->file('logo')) {
+            // Get file extension
+            $extension = $file->getClientOriginalExtension();
+            // Create shorter filename: timestamp_logo.extension
+            $name = time() . '_logo.' . $extension;
+            \Log::info('Uploading new logo:', ['original_name' => $file->getClientOriginalName(), 'new_name' => $name]);
+
+            $file->move(public_path().'/assets/media/banner/', $name);
+
+            // Delete old logo if exists
+            if($data->logo != null && file_exists(public_path().'/assets/media/banner/'.$data->logo)) {
+                unlink(public_path().'/assets/media/banner/'.$data->logo);
+                \Log::info('Old logo deleted:', ['old_logo' => $data->logo]);
+            }
+
+            $input['logo'] = $name;
+            \Log::info('Logo updated:', ['new_logo' => $name]);
+        } else {
+            // Keep old logo if no new one uploaded
+            $input['logo'] = $request->input('logo_old', $data->logo);
+            \Log::info('Logo unchanged:', ['logo' => $input['logo']]);
+        }
+
+        // Handle invert_logo upload
+        if ($file = $request->file('invert_logo')) {
+            // Get file extension
+            $extension = $file->getClientOriginalExtension();
+            // Create shorter filename: timestamp_invert_logo.extension
+            $name = time() . '_invert_logo.' . $extension;
+            $file->move(public_path().'/assets/media/banner/', $name);
+
+            // Delete old invert_logo if exists
+            if($data->invert_logo != null && file_exists(public_path().'/assets/media/banner/'.$data->invert_logo)) {
+                unlink(public_path().'/assets/media/banner/'.$data->invert_logo);
+            }
+
+            $input['invert_logo'] = $name;
+        } else {
+            // Keep old invert_logo if no new one uploaded
+            $input['invert_logo'] = $request->input('invert_logo_old', $data->invert_logo);
+        }
+
+                // Handle fav_icon upload
+        if ($file = $request->file('fav_icon')) {
+            // Get file extension
+            $extension = $file->getClientOriginalExtension();
+            // Create shorter filename: timestamp_favicon.extension
+            $name = time() . '_favicon.' . $extension;
+            $file->move(public_path().'/assets/media/banner/', $name);
+
+            // Delete old fav_icon if exists
+            if($data->fav_icon != null && file_exists(public_path().'/assets/media/banner/'.$data->fav_icon)) {
+                unlink(public_path().'/assets/media/banner/'.$data->fav_icon);
+            }
+
             $input['fav_icon'] = $name;
-            } 
-        $data->update($input);
-        $data1['msg'] = 'Store Configuration Updated Successfully.';
-        return response()->json($data1);
+        } else {
+            // Keep old fav_icon if no new one uploaded
+            $input['fav_icon'] = $request->input('fav_icon_old', $data->fav_icon);
+        }
+
+        try {
+            \Log::info('Starting email field processing');
+
+            // Process Tagify email fields - extract email values from JSON
+            if (isset($input['Order_Emails_To']) && is_string($input['Order_Emails_To'])) {
+                $emails = json_decode($input['Order_Emails_To'], true);
+                if (is_array($emails)) {
+                    $input['Order_Emails_To'] = implode(',', array_column($emails, 'value'));
+                }
+            }
+
+            if (isset($input['Order_Emails_BCC']) && is_string($input['Order_Emails_BCC'])) {
+                $emails = json_decode($input['Order_Emails_BCC'], true);
+                if (is_array($emails)) {
+                    $input['Order_Emails_BCC'] = implode(',', array_column($emails, 'value'));
+                }
+            }
+
+            if (isset($input['Contact_Us_Emails_To']) && is_string($input['Contact_Us_Emails_To'])) {
+                $emails = json_decode($input['Contact_Us_Emails_To'], true);
+                if (is_array($emails)) {
+                    $input['Contact_Us_Emails_To'] = implode(',', array_column($emails, 'value'));
+                }
+            }
+
+            if (isset($input['Contact_Us_Emails_BCC']) && is_string($input['Contact_Us_Emails_BCC'])) {
+                $emails = json_decode($input['Contact_Us_Emails_BCC'], true);
+                if (is_array($emails)) {
+                    $input['Contact_Us_Emails_BCC'] = implode(',', array_column($emails, 'value'));
+                }
+            }
+
+            // Ensure all required fields are present and properly formatted
+            $requiredFields = [
+                'store_name' => $input['store_name'] ?? '',
+                'default_currency' => $input['default_currency'] ?? '',
+                'ownershiptype' => $input['ownershiptype'] ?? '',
+                'pricing_type' => $input['pricing_type'] ?? '',
+                'CustomerIDPrefix' => $input['CustomerIDPrefix'] ?? '',
+                'productIdprefix' => $input['productIdprefix'] ?? '',
+                'Store_Meta_Title' => $input['Store_Meta_Title'] ?? '',
+                'Order_Emails_To' => $input['Order_Emails_To'] ?? '',
+                'Contact_Us_Emails_To' => $input['Contact_Us_Emails_To'] ?? '',
+                'Contact_Us_Emails_BCC' => $input['Contact_Us_Emails_BCC'] ?? '',
+            ];
+
+            // Add image fields
+            if (isset($input['logo'])) {
+                $requiredFields['logo'] = $input['logo'];
+            }
+            if (isset($input['invert_logo'])) {
+                $requiredFields['invert_logo'] = $input['invert_logo'];
+            }
+            if (isset($input['fav_icon'])) {
+                $requiredFields['fav_icon'] = $input['fav_icon'];
+            }
+
+            // Remove any null or empty values that might cause issues
+            $cleanInput = array_filter($requiredFields, function($value) {
+                return $value !== null && $value !== '';
+            });
+
+            // Debug: Log the final input data
+            \Log::info('Store update input data:', $cleanInput);
+            \Log::info('Store configuration model before update:', $data->toArray());
+
+            // Check if the model is dirty (has changes)
+            \Log::info('Model is dirty:', ['isDirty' => $data->isDirty(), 'getDirty' => $data->getDirty()]);
+
+            // Log which fields will be updated
+            \Log::info('Fields to be updated:', array_keys($cleanInput));
+
+            // Log the current values vs new values for key fields
+            foreach ($cleanInput as $field => $value) {
+                if (isset($data->$field)) {
+                    \Log::info("Field: {$field}", [
+                        'current' => $data->$field,
+                        'new' => $value,
+                        'changed' => $data->$field != $value
+                    ]);
+                }
+            }
+
+            // Update the store configuration with all required fields
+            try {
+                \Log::info('About to update database with fields:', array_keys($cleanInput));
+                \Log::info('Update data:', $cleanInput);
+
+                $result = $data->update($cleanInput);
+
+                // Debug: Log the update result
+                \Log::info('Store update result:', ['result' => $result, 'id' => $id]);
+
+                // Refresh the model to see the updated data
+                $data->refresh();
+                \Log::info('Store configuration model after update:', $data->toArray());
+
+                if ($result) {
+                    // Log the final state after successful update
+                    $data->refresh();
+                    \Log::info('Store configuration successfully updated. Final state:', $data->toArray());
+
+                    // Check if all required fields were actually saved
+                    $savedFields = [];
+                    foreach ($cleanInput as $field => $value) {
+                        if (isset($data->$field)) {
+                            $savedFields[$field] = $data->$field;
+                        }
+                    }
+                    \Log::info('Fields successfully saved:', $savedFields);
+
+                                                            // Test: Log the success message being set
+                    \Log::info('Setting success message in session');
+
+                    // Redirect back to edit page with success message
+                    $response = redirect()->back()->with('success', '✅ Store Configuration Updated Successfully! All fields have been saved.');
+
+                    // Log the response
+                    \Log::info('Success response created - staying on edit page', ['response_type' => get_class($response)]);
+
+                    return $response;
+                } else {
+                    \Log::error('Update returned false - no rows were affected');
+                    return redirect()->back()->with('error', 'Failed to update store configuration.')->withInput();
+                }
+            } catch (\Illuminate\Database\QueryException $e) {
+                \Log::error('Database query error:', ['error' => $e->getMessage(), 'sql' => $e->getSql()]);
+
+                // Check if it's a column length issue
+                if (strpos($e->getMessage(), 'Data too long for column') !== false) {
+                    $errorMsg = '❌ File upload failed: One or more filenames are too long for the database. Please use shorter filenames.';
+                } else {
+                    $errorMsg = '❌ Database error: ' . $e->getMessage();
+                }
+
+                return redirect()->back()->with('error', $errorMsg)->withInput();
+            } catch (\Exception $e) {
+                \Log::error('General update error:', ['error' => $e->getMessage()]);
+                return redirect()->back()->with('error', '❌ Update error: ' . $e->getMessage())->withInput();
+            }
+        } catch (\Exception $e) {
+            \Log::error('Store update error:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect()->back()->with('error', 'Error updating store configuration: ' . $e->getMessage())->withInput();
+        }
     }
     public function cropimage(Request $request){
         $data = $request->image;
@@ -107,7 +396,7 @@ class StoreController extends Controller
     if($request->id !== "0"){
         $Storeconfiguration = Storeconfiguration::findOrFail($request->id);
         if($request->table_colum === 'logo'){
-            if($Storeconfiguration->logo != null){ 
+            if($Storeconfiguration->logo != null){
                 if (file_exists(public_path().'/assets/media/banner/'.$Storeconfiguration->logo)) {
                     unlink(public_path().'/assets/media/banner/'.$Storeconfiguration->logo);
                 }
@@ -116,7 +405,7 @@ class StoreController extends Controller
             $Storeconfiguration->update();
         }
         if($request->table_colum === 'Watermark'){
-            if($Storeconfiguration->Watermark != null){ 
+            if($Storeconfiguration->Watermark != null){
                 if (file_exists(public_path().'/assets/media/banner/'.$Storeconfiguration->Watermark)) {
                     unlink(public_path().'/assets/media/banner/'.$Storeconfiguration->Watermark);
                 }
@@ -125,7 +414,7 @@ class StoreController extends Controller
             $Storeconfiguration->update();
         }
         if($request->table_colum === 'invert_logo'){
-            if($Storeconfiguration->Watermark != null){ 
+            if($Storeconfiguration->Watermark != null){
                 if (file_exists(public_path().'/assets/media/banner/'.$Storeconfiguration->invert_logo)) {
                     unlink(public_path().'/assets/media/banner/'.$Storeconfiguration->invert_logo);
                 }

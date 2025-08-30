@@ -1,6 +1,70 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
+<style>
+    /* Enhanced toaster styling */
+    .notifyjs-bootstrap-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        padding: 15px 20px;
+        font-weight: 500;
+    }
+
+    .notifyjs-bootstrap-error {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        padding: 15px 20px;
+        font-weight: 500;
+    }
+
+    /* Alert styling */
+    .alert {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #dc3545, #fd7e14);
+        color: white;
+    }
+
+    .alert .close {
+        color: white;
+        opacity: 0.8;
+    }
+
+    .alert .close:hover {
+        opacity: 1;
+    }
+
+    /* Animation for alerts */
+    .alert.fade.show {
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
                     <!--end::Header-->
                     <!--begin::Content-->
                         <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -15,13 +79,13 @@
                                         <h5 class="text-dark font-weight-bold my-1 mr-5">Store Config</h5>
                                         <!--end::Page Title-->
                                         <!--begin::Breadcrumb-->
-                                       
+
                                         <!--end::Breadcrumb-->
                                     </div>
                                     <!--end::Page Heading-->
                                 </div>
                                 <!--end::Info-->
-                                
+
                             </div>
                         </div>
                         <!--end::Subheader-->
@@ -29,6 +93,35 @@
                         <div class="d-flex flex-column-fluid">
                             <!--begin::Container-->
                             <div class="container">
+                                <!-- Session Messages -->
+                                @if(session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <div>
+                                                <strong>Success:</strong> {{ session('success') }}
+                                            </div>
+                                        </div>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                @endif
+
+                                @if(session('error'))
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            <div>
+                                                <strong>Error:</strong> {{ session('error') }}
+                                            </div>
+                                        </div>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                @endif
+
                                 <!--begin::Card-->
                                 <div class="card card-custom gutter-b">
                                     <div class="card-header flex-wrap py-3">
@@ -64,13 +157,13 @@
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-                                          
+
                                         </table>
                                         <!--end: Datatable-->
                                     </div>
                                 </div>
                                 <!--end::Card-->
-                               
+
                             </div>
                             <!--end::Container-->
                         </div>
@@ -78,10 +171,36 @@
                     </div>
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection   
- @push('script')                  
+ @endsection
+ @push('script')
      <script type="text/javascript">
         $(function(){
+            // Show toaster notification if success message exists
+            @if(session('success'))
+                // Show toaster notification
+                $.notify("{{ session('success') }}", "success");
+
+                // Auto-hide success alert after 5 seconds
+                setTimeout(function() {
+                    $('.alert-success').fadeOut();
+                }, 5000);
+            @endif
+
+            @if(session('error'))
+                // Show toaster notification
+                $.notify("{{ session('error') }}", "error");
+
+                // Auto-hide error alert after 8 seconds
+                setTimeout(function() {
+                    $('.alert-danger').fadeOut();
+                }, 8000);
+            @endif
+
+            // Handle alert dismissal
+            $('.alert .close').on('click', function() {
+                $(this).closest('.alert').fadeOut();
+            });
+
         var table = $('#geniustable').DataTable({
                processing: false,
                serverSide: true,
@@ -91,7 +210,7 @@
                         { data: 'name', name: 'name' },
                         { data: 'status', searchable: false, orderable: false},
                         { data: 'action', searchable: false, orderable: false },
-                        
+
 
                      ],
                 drawCallback : function( settings ) {
@@ -118,4 +237,4 @@ $(document).on('change','.droplinks',function () {
 {{-- DATA TABLE ENDS--}}
 
 </script>
- @endpush   
+ @endpush

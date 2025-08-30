@@ -35,10 +35,19 @@ class ProductController extends Controller
         foreach($columns as $colum){
             $search[] = $colum['search']['value'];
         }
+
+        // Debug: Log user info
+        \Log::info('User ID: ' . Auth::id());
+        \Log::info('User is_vendor: ' . Auth::user()->is_vendor);
+
         if(Auth::user()->is_vendor != null){
-            $datas = Product::where('vendor',Auth::user()->is_vendor);
+            // If user is a vendor, show only their products
+            $datas = Product::where('vendor', Auth::user()->is_vendor);
+            \Log::info('Filtering by vendor: ' . Auth::user()->is_vendor);
         }else{
-            $datas = Product::where('vendor','=',null);
+            // If user is admin, show ALL products (both admin and vendor products)
+            $datas = Product::query();
+            \Log::info('Admin user - showing all products');
         }
         $recordsTotal = $datas->get()->count();
 
@@ -110,8 +119,10 @@ class ProductController extends Controller
         foreach ($datas as $key => $value) {
             $datas[$key]->edit = route('admin-product-edit',$value->id);
             $datas[$key]->delete = route('admin-product-delete',$value->id);
-            $datas[$key]->img_src = asset('/assets/media/products/'.$value->image1);
+            $datas[$key]->img_src = asset('assets/media/products/'.$value->image1);
             $datas[$key]->category = $value->getcategorys();
+            $datas[$key]->basePrice = $value->product_base_price ?? '';
+            $datas[$key]->trending = $value->trending ?? 0;
             $datas[$key]->temp_status = ['1'=>route('admin-product-status',['id1' => $value->id, 'id2' => 1]),'0'=>route('admin-product-status',['id1' => $value->id, 'id2' => 0])];
         }
         return response()->json(['data'=>$datas,'recordsFiltered'=>$recordsFiltered,'recordsTotal'=>$recordsTotal]);
@@ -126,9 +137,11 @@ class ProductController extends Controller
             $search[] = $colum['search']['value'];
         }
         if(Auth::user()->is_vendor != null){
-            $datas = Product::where('vendor',Auth::user()->is_vendor);
+            // If user is a vendor, show only their products
+            $datas = Product::where('vendor', Auth::user()->is_vendor);
         }else{
-            $datas = Product::where('vendor','!=',null);
+            // If user is admin, show only vendor products (for vendor management)
+            $datas = Product::where('vendor', '!=', null);
         }
         // $datas = Product::where('vendor','!=',null);
         $recordsTotal = $datas->get()->count();
@@ -237,7 +250,7 @@ class ProductController extends Controller
         foreach ($datas as $key => $value) {
             $datas[$key]->edit = route('admin-productv-edit',$value->id);
             $datas[$key]->delete = route('admin-productv-delete',$value->id);
-            $datas[$key]->img_src = asset('/assets/media/products/'.$value->image1);
+            $datas[$key]->img_src = asset('assets/media/products/'.$value->image1);
             $datas[$key]->manufacturerCode = $value->Manufacturer();
             $datas[$key]->vendor = $value->vendor();
             $datas[$key]->category = $value->getcategorys();
@@ -463,13 +476,13 @@ class ProductController extends Controller
 
     $rules = [
         'category'         => 'required',
-        'basePrice'        => 'nulable',
+        'basePrice'        => 'nullable',
         'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
         'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
-        'image1'           => 'required|string',
-        'image2'           => 'nullable|string',
-        'image3'           => 'nullable|string',
-        'image4'           => 'nullable|string',
+        'image1'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+        'image2'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+        'image3'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+        'image4'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
         'document' => 'required|file|mimes:pdf,ppt,pptx|max:10240',
         'productDescription' => 'required'
     ];
@@ -484,7 +497,23 @@ class ProductController extends Controller
         'document.required' => 'Document should be uploaded',
             'document.mimes' => 'Document must be a PDF or PPT/PPTX file',
             'document.max' => 'Document size must not exceed 10MB',
-        'image1.required'           => 'Image 1 should be filled',
+        'image1.required'           => 'Image 1 is required',
+        'image1.image'              => 'Image 1 must be an image file',
+        'image1.mimes'              => 'Image 1 must be a valid image format (jpeg, png, jpg, gif, webp)',
+        'image1.max'                => 'Image 1 size must not exceed 2MB',
+        'image1.dimensions'         => 'Image 1 must be exactly 856×550 pixels',
+        'image2.image'              => 'Image 2 must be an image file',
+        'image2.mimes'              => 'Image 2 must be a valid image format (jpeg, png, jpg, gif, webp)',
+        'image2.max'                => 'Image 2 size must not exceed 2MB',
+        'image2.dimensions'         => 'Image 2 must be exactly 856×550 pixels',
+        'image3.image'              => 'Image 3 must be an image file',
+        'image3.mimes'              => 'Image 3 must be a valid image format (jpeg, png, jpg, gif, webp)',
+        'image3.max'                => 'Image 3 size must not exceed 2MB',
+        'image3.dimensions'         => 'Image 3 must be exactly 856×550 pixels',
+        'image4.image'              => 'Image 4 must be an image file',
+        'image4.mimes'              => 'Image 4 must be a valid image format (jpeg, png, jpg, gif, webp)',
+        'image4.max'                => 'Image 4 size must not exceed 2MB',
+        'image4.dimensions'         => 'Image 4 must be exactly 856×550 pixels',
         'productDescription.required' => 'Product Description should be filled',
     ];
 
@@ -504,13 +533,39 @@ class ProductController extends Controller
             $documentPath = $file->store('documents', 'public'); // Store in storage/app/public/documents
         }
 
+        // Handle image uploads
+    $image1 = null;
+    $image2 = null;
+    $image3 = null;
+    $image4 = null;
 
+    if ($request->hasFile('image1')) {
+        $file = $request->file('image1');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/media/products'), $fileName);
+        $image1 = $fileName;
+    }
 
-    $image1 = $request->image1;
-    $image2 = $request->image2;
-    $image3 = $request->image3;
-    $image4 = $request->image4;
-    $image5 = $request->image5;
+    if ($request->hasFile('image2')) {
+        $file = $request->file('image2');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/media/products'), $fileName);
+        $image2 = $fileName;
+    }
+
+    if ($request->hasFile('image3')) {
+        $file = $request->file('image3');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/media/products'), $fileName);
+        $image3 = $fileName;
+    }
+
+    if ($request->hasFile('image4')) {
+        $file = $request->file('image4');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/media/products'), $fileName);
+        $image4 = $fileName;
+    }
 
     // Process attributes
     $attributes = $request['attributes'] ?? [];
@@ -574,42 +629,48 @@ class ProductController extends Controller
     $data->category = (empty($requestData['category'])) ? '' : implode('|', (array)$requestData['category']);
     $data->product_title = $requestData['productTitle'];
     $data->slug = Str::slug($data->product_title, '-');
-    $data->product_base_price = '';
+    $data->product_base_price = $requestData['basePrice'] ?? '';
     $data->product_sku = $requestData['skuCode'];
     $data->attribute_values = !empty($attributeValues) ? implode('|', $attributeValues) : '';
-    $data->tax = '';
-    $data->weight = '';
+    $data->tax = $requestData['tax'] ?? '';
+    $data->weight = $requestData['weight'] ?? '';
     $data->weight_unit = $requestData['weightUnit'] ?? null;
     $data->product_description = $requestData['productDescription'];
     $data->trending = (isset($requestData['trending'])) ? 1 : 0;
-    $data->metadescription = $requestData['metadescription'];
-    $data->metakeyword = $requestData['metakeyword'];
-    $data->quantity ='';
-    $data->minquantity = '';
+    $data->metadescription = $requestData['metadescription'] ?? '';
+    $data->metakeyword = $requestData['metakeyword'] ?? '';
+    $data->quantity = $requestData['quantity'] ?? '';
+    $data->minquantity = $requestData['minquantity'] ?? '';
     $data->soldout = (isset($requestData['soldout'])) ? 'on' : 'off';
     $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : 1; // default paid
-    $data->metaname = $requestData['metaname'];
-    $data->delivery_date = '';
+    $data->metaname = $requestData['metaname'] ?? '';
+    $data->delivery_date = $requestData['deliveryDate'] ?? '';
     $data->image1 = $image1;
     $data->image2 = $image2;
     $data->image3 = $image3;
     $data->image4 = $image4;
-    $data->image5 = $image5;
+    // $data->image5 = $image5;
     $data->document = $documentPath;
     $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
     $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
     $data->user_id = Auth::user()->id;
     $data->attribute_map = ''; // Removed template map
-    $data->vendor = $requestData['vendor'];
-    $data->manufacturerPrice = '';
-    $data->manufacturerCode ='';
-    $data->markup = '';
-    $data->mrp = '';
-    $data->mark_type = '';
-        $data->shipping_price = '';
+    $data->vendor = $requestData['vendor'] ?? '';
+    $data->manufacturerPrice = $requestData['manufacturerPrice'] ?? '';
+    $data->manufacturerCode = $requestData['manufacturerCode'] ?? '';
+    $data->markup = $requestData['markup'] ?? '';
+    $data->mrp = $requestData['mrp'] ?? '';
+    $data->mark_type = $requestData['mark_type'] ?? '';
+    $data->shipping_price = $requestData['shipping_price'] ?? '';
+    $data->status = 1; // Set status to active by default
     $data->save();
 
-    return response()->json(['msg' => 'New product Added Successfully.']);
+    // Return success with redirect URL
+    return response()->json([
+        'msg' => 'New product Added Successfully.',
+        'redirect' => route('admin-product'),
+        'success' => true
+    ]);
 }
 
 
@@ -672,10 +733,10 @@ class ProductController extends Controller
             'basePrice'     => 'nullable',
             'skuCode'     => 'required|unique:products,product_sku,'.$id,
             'productTitle' => 'required|unique:products,product_title,'.$id,
-            'image1' => 'required|string',
-            'image2' => 'nullable|string',
-            'image3' => 'nullable|string',
-            'image4' => 'nullable|string',
+            'image1' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+            'image2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+            'image3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+            'image4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
             'productDescription' =>'required'
         ];
 
@@ -686,7 +747,22 @@ class ProductController extends Controller
             'skuCode.unique'               => 'SKU  Code should be unique',
             'productTitle.required'          => 'Product Name should be filled',
             'productTitle.unique'            => 'Product Name already taken',
-            'image1.required'                => 'Image 1 should be filled',
+            'image1.image'                  => 'Image 1 must be an image file',
+            'image1.mimes'                  => 'Image 1 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'image1.max'                    => 'Image 1 size must not exceed 2MB',
+            'image1.dimensions'             => 'Image 1 must be exactly 856×550 pixels',
+            'image2.image'                  => 'Image 2 must be an image file',
+            'image2.mimes'                  => 'Image 2 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'image2.max'                    => 'Image 2 size must not exceed 2MB',
+            'image2.dimensions'             => 'Image 2 must be exactly 856×550 pixels',
+            'image3.image'                  => 'Image 3 must be an image file',
+            'image3.mimes'                  => 'Image 3 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'image3.max'                    => 'Image 3 size must not exceed 2MB',
+            'image3.dimensions'             => 'Image 3 must be exactly 856×550 pixels',
+            'image4.image'                  => 'Image 4 must be an image file',
+            'image4.mimes'                  => 'Image 4 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'image4.max'                    => 'Image 4 size must not exceed 2MB',
+            'image4.dimensions'             => 'Image 4 must be exactly 856×550 pixels',
             'productDescription.required'    => 'Product Description should be filled',
         ];
 
@@ -699,11 +775,40 @@ class ProductController extends Controller
 
         $data = Product::findOrFail($id);
 
-        $image1 = $request->image1;
-        $image2 = $request->image2;
-        $image3 = $request->image3;
-        $image4 = $request->image4;
-        $image5 = $request->image5;
+                // Handle image uploads for update
+        $image1 = $data->image1; // Keep existing image if no new one uploaded
+        $image2 = $data->image2;
+        $image3 = $data->image3;
+        $image4 = $data->image4;
+        // $image5 = $data->image5;
+
+        if ($request->hasFile('image1')) {
+            $file = $request->file('image1');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/media/products'), $fileName);
+            $image1 = $fileName;
+        }
+
+        if ($request->hasFile('image2')) {
+            $file = $request->file('image2');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/media/products'), $fileName);
+            $image2 = $fileName;
+        }
+
+        if ($request->hasFile('image3')) {
+            $file = $request->file('image3');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/media/products'), $fileName);
+            $image3 = $fileName;
+        }
+
+        if ($request->hasFile('image4')) {
+            $file = $request->file('image4');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/media/products'), $fileName);
+            $image4 = $fileName;
+        }
 
         // Process attributes
         $attributes = $request['attributes'] ?? [];
@@ -737,19 +842,28 @@ class ProductController extends Controller
         $data->attribute_values = $attribute_value;
         $data->product_description = $requestData['productDescription'];
         $data->trending = (isset($requestData['trending'])) ? 1 : 0;
-        $data->metadescription = $requestData['metadescription'];
-        $data->metakeyword = $requestData['metakeyword'];
+        $data->metadescription = $requestData['metadescription'] ?? $data->metadescription;
+        $data->metakeyword = $requestData['metakeyword'] ?? $data->metakeyword;
         $data->sell_type = isset($requestData['sell_type']) ? (int)$requestData['sell_type'] : ($data->sell_type ?? 1);
-        $data->metaname = $requestData['metaname'];
+        $data->metaname = $requestData['metaname'] ?? $data->metaname;
         $data->image1 = $image1;
         $data->image2 = $image2;
         $data->image3 = $image3;
         $data->image4 = $image4;
-        $data->image5 = $image5;
-        $data->similar_products = (empty($requestData['similar_products'])) ? '' : implode(',', (array)$requestData['similar_products']);
-        $data->related_products = (empty($requestData['related_products'])) ? '' : implode(',', (array)$requestData['related_products']);
+        // $data->image5 = $image5;
+        $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
+        $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
         $data->user_id = Auth::user()->id;
-        $data->vendor = $requestData['vendor'];
+        $data->vendor = $requestData['vendor'] ?? $data->vendor;
+        $data->manufacturerPrice = $requestData['manufacturerPrice'] ?? $data->manufacturerPrice;
+        $data->manufacturerCode = $requestData['manufacturerCode'] ?? $data->manufacturerCode;
+        $data->markup = $requestData['markup'] ?? $data->markup;
+        $data->mrp = $requestData['mrp'] ?? $data->mrp;
+        $data->mark_type = $requestData['mark_type'] ?? $data->mark_type;
+        $data->shipping_price = $requestData['shipping_price'] ?? $data->shipping_price;
+        $data->tax = $requestData['tax'] ?? $data->tax;
+        $data->quantity = $requestData['quantity'] ?? $data->quantity;
+        $data->minquantity = $requestData['minquantity'] ?? $data->minquantity;
         $data->update();
 
         $data1['msg'] = 'Product Updated Successfully.';

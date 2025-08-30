@@ -52,6 +52,12 @@
                                                 </svg>
                                                 <!--end::Svg Icon-->
                                             </span>Add Slide</a>
+                                            <button type="button" class="btn btn-secondary font-weight-bolder ml-2" onclick="refreshTable()">
+                                                <i class="la la-refresh"></i> Refresh List
+                                            </button>
+                                            <button type="button" class="btn btn-info font-weight-bolder ml-2" onclick="testTable()">
+                                                <i class="la la-info"></i> Test Table
+                                            </button>
                                             <!--end::Button-->
 												<button type="button" class="btn btn-secondary font-weight-bolder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 												<i class="la la-download"></i>Download</button>
@@ -142,9 +148,12 @@ $.fn.dataTable.Api.register('column().title()', function() {
     return $(this.header()).text().trim();
 });
 
+// Declare table variable globally
+window.table = null;
+
 var initTable1 = function() {
     // begin first table
-    var table = $('#kt_datatable1').DataTable({
+    window.table = $('#kt_datatable1').DataTable({
         responsive: true,
         buttons: [
 				'print',
@@ -177,6 +186,10 @@ var initTable1 = function() {
                 // parameters for custom backend script demo
                 "_token": "{{ csrf_token() }}"
             },
+            dataSrc: function(json) {
+                console.log('Datatable response:', json);
+                return json.data;
+            }
         },
         columns: [{
                 data: 'id'
@@ -191,7 +204,7 @@ var initTable1 = function() {
                 data: 'category'
             },
             {
-                data: 'manufacturerPrice'
+                data: 'basePrice'
             },
             {
                 data: 'product_sku'
@@ -209,7 +222,7 @@ var initTable1 = function() {
         ],
         initComplete: function() {
             var thisTable = this;
-            var rowFilter = $('<tr class="filter"></tr>').appendTo($(table.table().header()));
+            var rowFilter = $('<tr class="filter"></tr>').appendTo($(window.table.table().header()));
 
             this.api().columns().every(function() {
                 var column = this;
@@ -417,22 +430,22 @@ var initTable1 = function() {
     });
 		$('#export_copy').on('click', function(e) {
 			e.preventDefault();
-			table.button(1).trigger();
+			window.table.button(1).trigger();
 		});
 
 		$('#export_excel').on('click', function(e) {
 			e.preventDefault();
-			table.button(2).trigger();
+			window.table.button(2).trigger();
 		});
 
 		$('#export_csv').on('click', function(e) {
 			e.preventDefault();
-			table.button(3).trigger();
+			window.table.button(3).trigger();
 		});
 
 		$('#export_pdf').on('click', function(e) {
 			e.preventDefault();
-			table.button(4).trigger();
+			window.table.button(4).trigger();
 		});
 };
 
@@ -451,6 +464,35 @@ jQuery(document).ready(function() {
 KTDatatablesSearchOptionsColumnSearch1.init();
 });
 
+// Function to refresh the datatable
+function refreshTable() {
+    if (window.table && typeof window.table !== 'undefined') {
+        window.table.ajax.reload();
+        $.notify("List refreshed successfully!", "success");
+    } else {
+        $.notify("Table not initialized yet!", "warning");
+    }
+}
+
+// Function to test the datatable
+function testTable() {
+    console.log('Table variable:', window.table);
+    if (window.table && typeof window.table !== 'undefined') {
+        console.log('Table is defined');
+        console.log('Table data:', window.table.data());
+        console.log('Table settings:', window.table.settings());
+
+        // Try to get the current data
+        var data = window.table.data();
+        console.log('Current table data:', data);
+
+        $.notify("Table is working! Check console for details.", "success");
+    } else {
+        console.log('Table is not defined');
+        $.notify("Table is not defined!", "warning");
+    }
+}
+
 $(document).on('change','.status',function () {
 
         var data = $(this).val();
@@ -466,30 +508,8 @@ $(document).on('change','.status',function () {
         $.notify("Status Updated Successfully.","success");
       });
 
-$('body').submit('#model',function(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const url = e.target.action;
-    $.ajax({
-        method:"POST",
-        url:url,
-        data:formData,
-        cache: false,
-        processData: false,
-        contentType: false,
-        success:function(data){
-            if(data.msg){
-            $('#exampleModal').modal('hide');
-            $.notify(data.msg,"success");
-            }
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
-        }
-    });
-});
+// Form submission is now handled in create.blade.php
+// This prevents conflicts between different pages
 
 </script>
  @endpush

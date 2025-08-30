@@ -51,19 +51,31 @@
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
+
+                                            {{-- <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                                <div><strong>Note:</strong> Images will be automatically stored in <code>public/assets/media/products/</code> directory when you submit the form. Make sure your images are exactly 856×550 pixels for optimal display.</div>
+                                                <button type="button" class="close" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div> --}}
                                              @php
                                              if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
                                                 $link=route('admin-productv-store');
-                                                $url=route('admin-productv-cropimage');
                                             }else{
                                                 $link=route('admin-product-store');
-                                                $url=route('admin-product-cropimage');
                                             }
                                             @endphp
                         <form method="POST" action="{{$link}}" enctype="multipart/form-data" id="formCreate" onreset="CKEditor1.setData(''); CKEditor2.setData('');" onsubmit="if(typeof CKEditor1 != 'undefined'){ CKEditor1.updateSourceElement(); } if(typeof CKEditor3 != 'undefined'){ CKEditor3.updateSourceElement(); } CKEditor2.updateSourceElement();">
                             {{ csrf_field() }}
                             <input type="hidden" id="id" value=0>
-                            <input type="hidden" id="url" name="url" value="{{$url}}">
+
+                            <!-- Success/Error Message Area -->
+                            <div id="messageArea" style="display: none;" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <span id="messageText"></span>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <div class="card-body">
                                 @if (Auth::user()->is_vendor == null)
 
@@ -497,9 +509,6 @@
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Document Upload<span class="text-danger">*</span> </label>
                                 <div class="col-lg-3 col-md-10">
-                                    <label for="document">
-                                        <input type="hidden" name="document" value="">
-                                    </label>
                                     <input type="file" id="document" name="document" style="width:250px;padding:20px;border:2px dashed #222;" accept=".pdf,.ppt,.pptx">
                                 </div>
                             </div>
@@ -518,11 +527,13 @@
                             <div class="form-group row">
                                 <label class="col-md-12 col-lg-2 col-form-label">Image 1<span class="text-danger">*</span> </label>
                                 <div class="col-lg-3 col-md-10">
-                                    <label for="image1"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                        <input type="hidden" name="image1" value="">
-                                    </label>
-                                    <input type="file"  id="image1"  class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                    <div class="image-upload-container">
+                                        <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image1').click();" title="Click to upload image">
+                                            <span>Click to upload Image 1</span>
+                                        </div>
+                                        <input type="file" name="image1" id="image1" class="upload_image" style="display:none;" accept="image/*">
+                                    </div>
+                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                 </div>
                             </div>
 
@@ -530,11 +541,13 @@
                                 <label class="col-md-12 col-lg-2 col-form-label">Image 2</label>
 
                                 <div class="col-lg-3 col-md-10">
-                                    <label for="image2"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                        <input type="hidden" name="image2" value="">
-                                    </label>
-                                    <input type="file"  id="image2" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                    <div class="image-upload-container">
+                                        <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image2').click();" title="Click to upload image">
+                                            <span>Click to upload Image 2</span>
+                                        </div>
+                                        <input type="file" name="image2" id="image2" class="upload_image" style="display:none;" accept="image/*">
+                                    </div>
+                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -547,11 +560,13 @@
                                 <label class="col-md-12 col-lg-2 col-form-label">Image 3</label>
 
                                 <div class="col-lg-3 col-md-10">
-                                    <label for="image3"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                        <input type="hidden" name="image3" value="">
-                                    </label>
-                                    <input type="file"  id="image3" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                    <div class="image-upload-container">
+                                        <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image3').click();" title="Click to upload image">
+                                            <span>Click to upload Image 3</span>
+                                        </div>
+                                        <input type="file" name="image3" id="image3" class="upload_image" style="display:none;" accept="image/*">
+                                    </div>
+                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -564,10 +579,13 @@
                                 <label class="col-md-12 col-lg-2 col-form-label">Image 4</label>
 
                                 <div class="col-lg-3 col-md-10">
-                                    <label for="image4"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                        <input type="hidden" name="image4" value=""></label>
-                                    <input type="file"  id="image4" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                    <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                    <div class="image-upload-container">
+                                        <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image4').click();" title="Click to upload image">
+                                            <span>Click to upload Image 4</span>
+                                        </div>
+                                        <input type="file" name="image4" id="image4" class="upload_image" style="display:none;" accept="image/*">
+                                    </div>
+                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -628,6 +646,35 @@
 <!--begin::Footer-->
 @endsection
 
+@push('style')
+<style>
+.image-upload-container {
+    position: relative;
+}
+
+.file-preview {
+    transition: all 0.3s ease;
+}
+
+.file-preview:hover {
+    border-color: #007bff !important;
+    background-color: #e3f2fd !important;
+}
+
+.file-preview img {
+    border-radius: 4px;
+}
+
+.upload_image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+</style>
+@endpush
+
 @push('script')
 <script>
 
@@ -654,8 +701,8 @@ $('#category').select2({
     });
 
     $(document).ready(function(){
-        // $("input[type=file]").css("display","none");
-        $('.upload_image').css("display","none");
+        // File inputs are now hidden with display:none in HTML
+        // No need to hide them with JavaScript
     });
    $("#category").change(function(){
     var category=$("#category").val();
@@ -768,17 +815,16 @@ jQuery(document).ready(function() {
             $("#Code").html("Admin");
         }
     });
-    var objectB = new Object();
-    var objectA = new Object();
+
 
     // Client-side image dimension validation
     function validateImageDimensions(file, callback) {
         var img = new Image();
         img.onload = function() {
-            if (this.width === 290 && this.height === 160) {
+            if (this.width === 856 && this.height === 550) {
                 callback(true);
             } else {
-                alert('Image must be exactly 290×160 pixels. Current size: ' + this.width + '×' + this.height);
+                alert('Image must be exactly 856×550 pixels. Current size: ' + this.width + '×' + this.height);
                 callback(false);
             }
         };
@@ -786,70 +832,112 @@ jQuery(document).ready(function() {
     }
 
     $(document).ready(function(){
-        $image_crop = $('#image_demo').croppie({
-        enableExif: true,
-        viewport: {
-          width:290,
-          height:160,
-          type:'square' //circle
-        },
-        boundary:{
-          width:400,
-          height:300
-        }
-      });
-
-      $('.upload_image').on('change', function(){
+            $('.upload_image').on('change', function(){
         var file = this.files[0];
         if (!file) return;
 
         validateImageDimensions(file, function(isValid) {
             if (isValid) {
-                objectB = this.parentElement;
-                objectA = this;
                 var reader = new FileReader();
                 reader.onload = function (event) {
-                  $image_crop.croppie('bind', {
-                    url: event.target.result
-                  }).then(function(){
-                    console.log('jQuery bind complete');
-                  });
-                }
+                    // Find the preview container and update it to show the image
+                    var previewContainer = $(this).closest('.form-group').find('.file-preview');
+                    previewContainer.html('<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">');
+                }.bind(this);
                 reader.readAsDataURL(file);
-                $('#uploadimageModal').modal('show');
             } else {
                 // Clear the file input
                 this.value = '';
+                // Reset the preview to default state
+                var previewContainer = $(this).closest('.form-group').find('.file-preview');
+                var imageNumber = $(this).attr('id').replace('image', '');
+                previewContainer.html('<span>Click to upload Image ' + imageNumber + '</span>');
             }
         }.bind(this));
       });
+            $('.deletSpan').on('click',function(){
+            // Get the image number from the file input ID
+            var fileInput = $(this).closest('.form-group').find('input[type="file"]');
+            var imageNumber = fileInput.attr('id').replace('image', '');
 
-      $('.crop_image').click(function(event){
-          var id= $("#id").val();
-          var url= $("#url").val();
-          var table_colum = objectA.id;
-        $image_crop.croppie('result', {
-          type: 'canvas',
-          size: 'viewport'
-        }).then(function(response){
-            $.ajax({
-                url:url,
-                type: "POST",
-                data:{id:id,table_colum:table_colum,"image": response,"_token": "{{ csrf_token() }}"},
-                success:function(data){
-                    objectB.children[0].children[0].src = response;
-                    $('#uploadimageModal').modal('hide');
-                    objectB.children[0].children[1].value = data['Name'];
-                },error:function(data){
-                    $.notify("Reduce the quality & size of image !!","success");
+            // Reset the preview to default state
+            var previewContainer = $(this).closest('.form-group').find('.file-preview');
+            previewContainer.html('<span>Click to upload Image ' + imageNumber + '</span>');
+
+            // Clear the file input
+            fileInput.val('');
+        });
+    });
+
+    // Form submission handler
+    $('#formCreate').on('submit', function(e) {
+        e.preventDefault();
+
+        // Show loading indicator
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Creating...');
+
+        const formData = new FormData(this);
+        const url = this.action;
+
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log('Success response:', data);
+                if (data.success && data.redirect) {
+                    // Show success message in the message area
+                    $('#messageText').text(data.msg);
+                    $('#messageArea').removeClass('alert-danger').addClass('alert-success').show();
+
+                    // Redirect to the list page after a short delay
+                    setTimeout(function() {
+                        window.location.href = data.redirect;
+                    }, 1500);
+                } else if (data.msg) {
+                    // Show success message in the message area
+                    $('#messageText').text(data.msg);
+                    $('#messageArea').removeClass('alert-danger').addClass('alert-success').show();
+
+                    // Reset form
+                    $('#formCreate')[0].reset();
+                    // Reset CKEditor content
+                    if (typeof CKEditor1 !== 'undefined') CKEditor1.setData('');
+                    if (typeof CKEditor2 !== 'undefined') CKEditor2.setData('');
+                    if (typeof CKEditor3 !== 'undefined') CKEditor3.setData('');
+                    if (typeof CKEditor4 !== 'undefined') CKEditor4.setData('');
                 }
-            });
-            $('#uploadimageModal').modal('hide');
-        })
-      });
-      $('.deletSpan').on('click',function(){
-            this.parentElement.parentElement.children[1].children[0].children[0].src="";
-            this.parentElement.parentElement.children[1].children[0].children[1].value = "";
+            },
+            error: function(xhr, status, error) {
+                console.log('Error response:', xhr.responseText);
+                console.log('Status:', status);
+                console.log('Error:', error);
+
+                var errorMsg = "Something went wrong!";
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.errors) {
+                        errorMsg = Object.values(response.errors).flat().join('\n');
+                    } else if (response.message) {
+                        errorMsg = response.message;
+                    }
+                } catch (e) {
+                    // If parsing fails, use default error message
+                }
+
+                // Show error message in the message area
+                $('#messageText').text(errorMsg);
+                $('#messageArea').removeClass('alert-success').addClass('alert-danger').show();
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false).text(originalText);
+            }
         });
     });
 </script>

@@ -480,7 +480,8 @@ Route::prefix('admin')->group(function() {
     Route::get('/delete/{id}', 'Admin\BlogController@destroy')->name('admin-blog-delete')->middleware('permissions:admin-blog3');
 
     });
-
+    Route::post('/admin/category/cropimage', 'Admin\CategoryController@cropImage')->name('admin-category-cropimage');
+    Route::post('/admin/product/cropimage','Admin\BlogController@cropImage')->name('admin-product-cropimage');
     Route::group(['prefix'=>'store','middleware'=>'permissions:admin-store'],function() {
     Route::get('/index', 'Admin\StoreController@index')->name('admin-store');
     // Route::get('/create', 'Admin\CategoryController@create')->name('admin-category-create');

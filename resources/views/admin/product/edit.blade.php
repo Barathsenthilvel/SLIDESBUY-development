@@ -1,5 +1,19 @@
 @extends('layout.admin')
 
+@php
+    // Helper function to get the correct image path
+    function getImagePath($imageName) {
+        if (empty($imageName)) return null;
+
+        // Check if image exists in the assets/media/products directory
+        if (file_exists(public_path('assets/media/products/' . $imageName))) {
+            return asset('assets/media/products/' . $imageName);
+        }
+
+        return null; // Image not found
+    }
+@endphp
+
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <div class="subheader py-2 py-lg-6 subheader-solid" id="kt_subheader">
@@ -42,17 +56,14 @@
                         @php
                         if(Auth::user()->is_vendor != null || Auth::user()->is_vendor != ""){
                             $link=route('admin-productv-update',$product->id);
-                            $url=route('admin-productv-cropimage');
                         }else{
                             $link=route('admin-product-update',$product->id);
-                            $url=route('admin-product-cropimage');
                         }
                         @endphp
 
                         <form method="POST" action="{{$link}}" enctype="multipart/form-data" id="formEdit" onsubmit="if(typeof CKEditor1 != 'undefined'){ CKEditor1.updateSourceElement(); } CKEditor2.updateSourceElement();">
                             {{ csrf_field() }}
                             <input type="hidden" name="id" id="id" value="{{$product->id}}">
-                            <input type="hidden" name="url" id="url" value="{{$url}}">
                             <input type="hidden" name="attributeTemplate" value="{{$attributeTemplate}}">
 
                             <div class="card-body">
@@ -280,27 +291,38 @@
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-md-12 col-form-label">Image 1<span class="text-danger">*</span></label>
                                     <div class="col-lg-3 col-md-12">
-                                        <label for="image1"><img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px" src="{{ URL::asset('assets/media/products/'.$product->image1) }}"></label>
-                                        <input type="hidden" name="image1" value="{{ $product->image1 }}">
-                                        <input type="file" class="upload_image" id="image1" style="width:250px;border:2px dashed #222;height: 310px" accept="image/*">
-                                        <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                        <div class="image-upload-container">
+                                            @if($product->image1 && getImagePath($product->image1))
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image1').click();" title="Click to upload image">
+                                                    <img src="{{ getImagePath($product->image1) }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>Image not found</span>'">
+                                                </div>
+                                            @else
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image1').click();" title="Click to upload image">
+                                                    <span>Click to upload Image 1</span>
+                                                </div>
+                                            @endif
+                                            <input type="file" name="image1" id="image1" class="upload_image" style="display:none;" accept="image/*">
+                                        </div>
+                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-md-12 col-form-label">Image 2</label>
                                     <div class="col-lg-3 col-md-9">
-                                        <label for="image2">
-                                            @if($product->image2)
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px" src="{{ URL::asset('assets/media/products/'.$product->image2) }}">
-                                            <input type="hidden" name="image2" value="{{ $product->image2 }}">
+                                        <div class="image-upload-container">
+                                            @if($product->image2 && getImagePath($product->image2))
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height:160px;cursor:pointer;background-color:#f8f9fa;display:flex:align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image2').click();" title="Click to upload image">
+                                                    <img src="{{ getImagePath($product->image2) }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>Image not found</span>'">
+                                                </div>
                                             @else
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                            <input type="hidden" name="image2" value="">
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image2').click();" title="Click to upload image">
+                                                    <span>Click to upload Image 2</span>
+                                                </div>
                                             @endif
-                                        </label>
-                                        <input type="file" id="image2" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                        <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                            <input type="file" name="image2" id="image2" class="upload_image" style="display:none;" accept="image/*">
+                                        </div>
+                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -312,17 +334,19 @@
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-md-12 col-form-label">Image 3</label>
                                     <div class="col-lg-3 col-md-9">
-                                        <label for="image3">
-                                            @if($product->image3)
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px" src="{{ URL::asset('assets/media/products/'.$product->image3) }}">
-                                            <input type="hidden" name="image3" value="{{ $product->image3 }}">
+                                        <div class="image-upload-container">
+                                            @if($product->image3 && getImagePath($product->image3))
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height:160px;cursor:pointer;background-color:#f8f9fa;display:flex:align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image3').click();" title="Click to upload image">
+                                                    <img src="{{ getImagePath($product->image3) }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>Image not found</span>'">
+                                                </div>
                                             @else
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                            <input type="hidden" name="image3" value="">
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image3').click();" title="Click to upload image">
+                                                    <span>Click to upload Image 3</span>
+                                                </div>
                                             @endif
-                                        </label>
-                                        <input type="file" id="image3" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                        <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                            <input type="file" name="image3" id="image3" class="upload_image" style="display:none;" accept="image/*">
+                                        </div>
+                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -334,17 +358,19 @@
                                 <div class="form-group row">
                                     <label class="col-lg-2 col-md-12 col-form-label">Image 4</label>
                                     <div class="col-lg-3 col-md-9">
-                                        <label for="image4">
-                                            @if($product->image4)
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px" src="{{ URL::asset('assets/media/products/'.$product->image4) }}">
-                                            <input type="hidden" name="image4" value="{{ $product->image4 }}">
+                                        <div class="image-upload-container">
+                                            @if($product->image4 && getImagePath($product->image4))
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height:160px;cursor:pointer;background-color:#f8f9fa;display:flex:align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image4').click();" title="Click to upload image">
+                                                    <img src="{{ getImagePath($product->image4) }}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>Image not found</span>'">
+                                                </div>
                                             @else
-                                            <img class="file-preview" style="width:250px;border:2px dashed #222;height: 310px">
-                                            <input type="hidden" name="image4" value="">
+                                                <div class="file-preview" style="width:250px;border:2px dashed #222;height: 160px;cursor:pointer;background-color:#f8f9fa;display:flex;align-items:center;justify-content:center;color:#6c757d;font-size:14px;" onclick="document.getElementById('image4').click();" title="Click to upload image">
+                                                    <span>Click to upload Image 4</span>
+                                                </div>
                                             @endif
-                                        </label>
-                                        <input type="file" id="image4" class="upload_image" style="width:250px;padding:20px;border:2px dashed #222;" accept="image/*">
-                                        <span class="form-text text-muted">Image width and height: 290×160 pixels</span>
+                                            <input type="file" name="image4" id="image4" class="upload_image" style="display:none;" accept="image/*">
+                                        </div>
+                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -393,11 +419,37 @@
 </div>
 @endsection
 
+@push('style')
+<style>
+.image-upload-container {
+    position: relative;
+}
+
+.file-preview {
+    transition: all 0.3s ease;
+}
+
+.file-preview:hover {
+    border-color: #007bff !important;
+    background-color: #e3f2fd !important;
+}
+
+.file-preview img {
+    border-radius: 4px;
+}
+
+.upload_image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+</style>
+@endpush
+
 @push('script')
 <script>
-    var objectB = new Object();
-    var objectA = new Object();
-
     $(document).ready(function () {
         // Select2 initialization
         $('#category').select2({
@@ -411,60 +463,77 @@
             width: 'resolve',
         });
 
-        // Image crop functionality
-        $image_crop = $('#image_demo').croppie({
-            enableExif: true,
-            viewport: {
-                width: 128,
-                height: 80,
-                type: 'square'
-            },
-            boundary: {
-                width: 666,
-                height: 242
-            }
-        });
+        // Image upload functionality with dimension validation
+        function validateImageDimensions(file, callback) {
+            var img = new Image();
+            img.onload = function() {
+                if (this.width === 856 && this.height === 550) {
+                    callback(true);
+                } else {
+                    alert('Image must be exactly 856×550 pixels. Current size: ' + this.width + '×' + this.height);
+                    callback(false);
+                }
+            };
+            img.src = URL.createObjectURL(file);
+        }
 
         $('.upload_image').on('change', function () {
-            objectB = this.parentElement;
-            objectA = this;
-            var reader = new FileReader();
-            reader.onload = function (event) {
-                $image_crop.croppie('bind', {
-                    url: event.target.result
-                }).then(function () {
-                    console.log('jQuery bind complete');
-                });
-            }
-            reader.readAsDataURL(this.files[0]);
-            $('#uploadimageModal').modal('show');
+            var file = this.files[0];
+            if (!file) return;
+
+            validateImageDimensions(file, function(isValid) {
+                if (isValid) {
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        // Find the preview container and update it to show the image
+                        var previewContainer = $(this).closest('.form-group').find('.file-preview');
+                        previewContainer.html('<img src="' + event.target.result + '" style="width:100%;height:100%;object-fit:cover;">');
+                    }.bind(this);
+                    reader.readAsDataURL(file);
+                } else {
+                    // Clear the file input
+                    this.value = '';
+                    // Reset the preview to default state
+                    var previewContainer = $(this).closest('.form-group').find('.file-preview');
+                    var imageNumber = $(this).attr('id').replace('image', '');
+                    previewContainer.html('<span>Click to upload Image ' + imageNumber + '</span>');
+                }
+            }.bind(this));
         });
 
-        $('.crop_image').click(function (event) {
-            var id = $("#id").val();
-            var table_colum = objectA.id;
-            $image_crop.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (response) {
-                $.ajax({
-                    url: "{{ route('admin-product-cropimage') }}",
-                    type: "POST",
-                    data: { id: id, table_colum: table_colum, "image": response, "_token": "{{ csrf_token() }}" },
-                    success: function (data) {
-                        $('#uploadimageModal').modal('hide');
-                        objectB.children[1].value = data.Name;
-                    }
-                });
-                objectB.children[0].children[0].src = response;
-                $('#uploadimageModal').modal('hide');
-            })
-        });
+        // $('.crop_image').click(function (event) {
+        //     var id = $("#id").val();
+        //     var table_colum = objectA.id;
+        //     $image_crop.croppie('result', {
+        //         type: 'canvas',
+        //         size: 'viewport'
+        //     }).then(function (response) {
+        //         $.ajax({
+        //             url: "{{ route('admin-product-cropimage') }}",
+        //             type: "POST",
+        //             data: { id: id, table_colum: table_colum, "image": response, "_token": "{{ csrf_token() }}" },
+        //             success: function (data) {
+        //                 $('#uploadimageModal').modal('hide');
+        //                 objectB.children[1].value = data.Name;
+        //             }
+        //         });
+        //         objectB.children[0].children[0].src = response;
+        //         $('#uploadimageModal').modal('hide');
+        //     })
+        // });
 
         // Delete image functionality
         $('.deletSpan').on('click', function(){
-            this.parentElement.parentElement.children[1].children[0].children[0].src = "";
-            this.parentElement.parentElement.children[1].children[0].children[1].value = "";
+            // Get the image number from the file input ID
+            var fileInput = $(this).closest('.form-group').find('input[type="file"]');
+            var imageNumber = fileInput.attr('id').replace('image', '');
+
+            // Reset the preview to default state
+            var previewContainer = $(this).closest('.form-group').find('.file-preview');
+            previewContainer.html('<span>Click to upload Image ' + imageNumber + '</span>');
+
+            // Clear the file input
+            fileInput.val('');
         });
     });
 </script>

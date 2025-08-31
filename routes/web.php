@@ -87,6 +87,7 @@ Route::post('/generateotp', 'Front\CartController@generateOTP')->name('generateO
 
 
 Route::get('/emailtest', 'Front\CheckoutController@checkmail');
+
 // Route::get('/login', 'Front\UserController@index')->name('login.index');
 Route::get('/shop-detail/{id}', 'Front\FrontendController@product')->name('front.product');
 Route::get('/shop/{category?}/{sub?}', 'Front\FrontendController@getCategory')->name('front.getCategory');
@@ -660,6 +661,7 @@ Route::prefix('SubScribers')->group(function() {
         Route::get('/delete/{id}', 'Admin\ContactController@destroy')->name('admin-contact-delete');
         Route::get('/mark-all-read', 'Admin\ContactController@markAllAsRead')->name('admin-contact-mark-all-read');
         Route::get('/delete-all', 'Admin\ContactController@deleteAll')->name('admin-contact-delete-all');
+        Route::get('/export', 'Admin\ContactController@exportContacts')->name('admin-contact-export');
     });
 
     Route::group(['prefix'=>'product','middleware'=>'permissions:admin-product'],function() {

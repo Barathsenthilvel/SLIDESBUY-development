@@ -270,13 +270,12 @@
                 <div class="col-xl-1 d-xl-block d-none"></div>
                 <div class="col-xl-3 col-sm-6 col-xs-6">
                     <div class="footer-widget">
-                        <h5 class="footer-widget__title">Quick Links </h5>
+                        <h5 class="footer-widget__title">Quick Links</h5>
                         <ul class="footer-lists">
-                            <li class="footer-lists__item"><a href="dashboard.html" class="footer-lists__link">Home </a></li>
-                            <li class="footer-lists__item"><a href="login.html" class="footer-lists__link">Price plan </a></li>
-                            <li class="footer-lists__item"><a href="register.html" class="footer-lists__link">Contact us </a></li>
-                            <li class="footer-lists__item"><a href="blog.html" class="footer-lists__link">Login </a></li>
-
+                            <li class="footer-lists__item"><a href="{{ route('front.index') }}" class="footer-lists__link">Home</a></li>
+                            <li class="footer-lists__item"><a href="{{ route('front.subscription') }}" class="footer-lists__link">Price Plan</a></li>
+                            <li class="footer-lists__item"><a href="{{ route('front.contactus') }}" class="footer-lists__link">Contact Us</a></li>
+                            <li class="footer-lists__item"><a href="{{ route('login.form') }}" class="footer-lists__link">Login</a></li>
                         </ul>
                     </div>
                 </div>

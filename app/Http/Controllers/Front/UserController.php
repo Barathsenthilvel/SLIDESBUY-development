@@ -12,6 +12,7 @@ use App\Mail\SendOtpMail;
 use Illuminate\Support\Facades\Validator;
 use App\Models\MailTemplate;
 use App\Mail\ContactMails;
+use App\Models\Contact;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as Input;
 use App\Models\Cart;
@@ -759,26 +760,56 @@ public function resendOtp(Request $request)
       }
 
       try {
-          // No database storage needed - just send emails
+          // Store the contact message in database
+          $contact = new \App\Models\Contact();
+          $contact->name = $requestData['userName'];
+          $contact->email = $requestData['email'];
+          $contact->message = $requestData['comment'];
+          $contact->ip_address = $request->ip();
+          $contact->user_agent = $request->userAgent();
+          $contact->status = \App\Models\Contact::STATUS_UNREAD;
+          $contact->save();
 
-          // Get store configuration
-          $Store = Storeconfiguration::findOrFail(1);
-          $contact_to = json_decode($Store->Contact_Us_Emails_To, true);
-          $contact_bcc = json_decode($Store->Contact_Us_Emails_BCC, true);
+          \Log::info('Contact message saved to database with ID: ' . $contact->id);
+
+          // Get store configuration with fallback
+          try {
+              $Store = Storeconfiguration::findOrFail(1);
+          } catch (\Exception $e) {
+              \Log::error('Store configuration not found, using default values');
+              $Store = null;
+          }
+
           $emails = [];
           $contactbcc = [];
 
-          // Check if contact emails are configured
-          if (empty($contact_to)) {
-              \Log::warning('Contact Us Emails To not configured in store settings, using default admin email');
-              $contact_to = [['value' => config('mail.from.address', 'admin@example.com')]];
+          // Check if contact emails are configured and provide fallbacks
+          if ($Store && !empty($Store->Contact_Us_Emails_To)) {
+              $contact_to = json_decode($Store->Contact_Us_Emails_To, true);
+              if (is_array($contact_to)) {
+                  foreach($contact_to as $c){
+                      if (isset($c['value']) && !empty($c['value'])) {
+                          $emails[] = $c['value'];
+                      }
+                  }
+              }
           }
 
-          foreach($contact_to as $c){
-              $emails[] = $c['value'];
+          if ($Store && !empty($Store->Contact_Us_Emails_BCC)) {
+              $contact_bcc = json_decode($Store->Contact_Us_Emails_BCC, true);
+              if (is_array($contact_bcc)) {
+                  foreach($contact_bcc as $c){
+                      if (isset($c['value']) && !empty($c['value'])) {
+                          $contactbcc[] = $c['value'];
+                      }
+                  }
+              }
           }
-          foreach($contact_bcc as $c){
-              $contactbcc[] = $c['value'];
+
+          // Ensure we have at least one email to send to
+          if (empty($emails)) {
+              $emails = [config('mail.from.address', 'admin@example.com')];
+              \Log::warning('No valid admin emails found, using default from address');
           }
 
           $email = $requestData['email'];
@@ -788,6 +819,7 @@ public function resendOtp(Request $request)
           // Check if user is logged in
           $isLoggedIn = Auth::check();
           $userDisplayName = $isLoggedIn ? Auth::user()->name : 'Customer';
+
           // Try to find mail template by ID first, then by template_name
           $mailTemplates = MailTemplate::where('id', 3)->where('status', '1')->first();
 
@@ -795,17 +827,13 @@ public function resendOtp(Request $request)
               $mailTemplates = MailTemplate::where('template_name', '3')->where('status', '1')->first();
           }
 
-          // Debug: Log available mail templates
-          $allTemplates = MailTemplate::where('status', '1')->get();
-          \Log::info('Available mail templates: ' . $allTemplates->pluck('id', 'template_name'));
-
           // Use default values if mail template not found
           if (!$mailTemplates) {
               \Log::warning('Contact mail template not found, using default values');
               $mailTemplates = (object) [
-                  'subject_mail' => 'Contact Form Submission - ' . config('app.name'),
+                  'subject_mail' => 'Thank You for Contacting Us - ' . config('app.name', 'SLIDESBUY'),
                   'content_mail' => 'Thank you for contacting us. We have received your message and will get back to you soon.',
-                  'footer_mail' => 'Best regards, ' . config('app.name') . ' Team',
+                  'footer_mail' => 'Best regards, ' . config('app.name', 'SLIDESBUY') . ' Team',
                   'bcc_mail' => null
               ];
           }
@@ -824,52 +852,51 @@ public function resendOtp(Request $request)
               $contactbcc[] = $mailTemplates->bcc_mail;
           }
 
-          // Send mails after the HTTP response without a queue worker
-          app()->terminating(function () use ($email, $contactbcc, $mailContents, $emails, $request, $mailTemplates, $customerName, $customerMessage, $userDisplayName, $isLoggedIn) {
-              // Test basic mail functionality first
-              try {
-                  \Log::info('Testing basic mail functionality');
-                  \Mail::raw('Test mail from contact form', function($message) use ($email) {
-                      $message->to($email)->subject('Test Mail');
-                  });
-                  \Log::info('Basic mail test successful');
-              } catch (\Throwable $e) {
-                  \Log::error('Basic mail test failed: ' . $e->getMessage());
-              }
-              try {
-                  \Log::info('Sending contact user mail to: ' . $email);
-                  \Log::info('Mail contents: ' . json_encode($mailContents));
-                  Mail::to($email)->bcc($contactbcc)->send(new ContactMails($mailContents));
-                  \Log::info('Contact user mail sent successfully');
-              } catch (\Throwable $e) {
-                  \Log::error('Contact user mail failed: '.$e->getMessage());
-                  \Log::error('Stack trace: ' . $e->getTraceAsString());
+          // Send emails with better error handling
+          $emailErrors = [];
+
+          try {
+              // Send thank you email to customer
+              \Log::info('Sending contact thank you mail to: ' . $email);
+              \Mail::to($email)->send(new \App\Mail\ContactMails($mailContents));
+              \Log::info('Contact thank you mail sent successfully');
+          } catch (\Throwable $e) {
+              \Log::error('Contact thank you mail failed: '.$e->getMessage());
+              $emailErrors[] = 'User thank you email failed: ' . $e->getMessage();
+          }
+
+          try {
+              // Send notification email to admin
+              \Log::info('Sending contact admin mail to: ' . implode(', ', $emails));
+              \Mail::send('mails.contact-test', array(
+                'name' => $customerName,
+                'email' => $email,
+                'subject' => 'New Contact Form Submission - ' . config('app.name', 'SLIDESBUY'),
+                'form_message' => $customerMessage,
+                'userDisplayName' => $userDisplayName,
+                'isLoggedIn' => $isLoggedIn,
+              ), function($message) use ($emails, $contactbcc){
+                  $message->from(config('mail.from.address'), config('mail.from.name'));
+                  $message->to($emails)->bcc($contactbcc)->subject('New Contact Form Submission - ' . config('app.name', 'SLIDESBUY'));
+              });
+              \Log::info('Contact admin mail sent successfully');
+          } catch (\Throwable $e) {
+              \Log::error('Contact admin mail failed: '.$e->getMessage());
+              $emailErrors[] = 'Admin notification email failed: ' . $e->getMessage();
+          }
+
+          // Even if emails fail, return success since the message was saved
+          if ($request->ajax() || $request->wantsJson()) {
+              $message = 'Thank you for your message! We have received your inquiry and will get back to you soon.';
+
+              if (!empty($emailErrors)) {
+                  $message .= ' (Note: Some notification emails could not be sent, but your message was saved successfully.)';
+                  \Log::warning('Contact form submitted successfully but with email errors: ' . implode(', ', $emailErrors));
               }
 
-              try {
-                  \Log::info('Sending contact admin mail to: ' . implode(', ', $emails));
-                  \Mail::send('mails.contact', array(
-                    'name' => $customerName,
-                    'email' => $email,
-                    'subject' => $mailTemplates->subject_mail,
-                    'form_message' => $customerMessage,
-                    'userDisplayName' => $userDisplayName,
-                    'isLoggedIn' => $isLoggedIn,
-                  ), function($message) use ($emails,$request,$mailTemplates,$contactbcc){
-                      $message->from($request->get('email'));
-                      $message->to($emails, 'Hello Admin')->bcc($contactbcc)->subject($mailTemplates->subject_mail);
-                  });
-                  \Log::info('Contact admin mail sent successfully');
-              } catch (\Throwable $e) {
-                  \Log::error('Contact admin mail failed: '.$e->getMessage());
-                  \Log::error('Stack trace: ' . $e->getTraceAsString());
-              }
-          });
-
-                    if ($request->ajax() || $request->wantsJson()) {
               return response()->json([
                   'success' => true,
-                  'message' => 'Thank you for your message! We have received your inquiry and will get back to you soon. Your feedback is important to us.'
+                  'message' => $message
               ]);
           }
 
@@ -877,11 +904,12 @@ public function resendOtp(Request $request)
 
       } catch (\Exception $e) {
           \Log::error('Contact form error: ' . $e->getMessage());
+          \Log::error('Stack trace: ' . $e->getTraceAsString());
 
-                    if ($request->ajax() || $request->wantsJson()) {
+          if ($request->ajax() || $request->wantsJson()) {
               return response()->json([
                   'success' => false,
-                  'message' => 'We apologize, but there was an issue sending your message. Please try again or contact us directly if the problem persists.'
+                  'message' => 'We apologize, but there was an issue processing your message. Please try again or contact us directly if the problem persists. Error: ' . $e->getMessage()
               ]);
           }
 

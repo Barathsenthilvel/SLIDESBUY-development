@@ -11,6 +11,15 @@ class ContactMails extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $mail_data;
+    public $subject;
+    public $footer;
+    public $body;
+    public $customerName;
+    public $customerMessage;
+    public $userDisplayName;
+    public $isLoggedIn;
+
     /**
      * Create a new message instance.
      *
@@ -19,11 +28,11 @@ class ContactMails extends Mailable
     public function __construct($mailContents)
     {
         $this->mail_data = $mailContents;
-        $this->subject = $mailContents['title'];
-        $this->footer = $mailContents['footer'];
-        $this->body = $mailContents['body'];
-        $this->customerName = $mailContents['customerName'];
-        $this->customerMessage = $mailContents['customerMessage'];
+        $this->subject = $mailContents['title'] ?? 'Thank You for Contacting Us';
+        $this->footer = $mailContents['footer'] ?? 'Best regards, SLIDESBUY Team';
+        $this->body = $mailContents['body'] ?? 'Thank you for contacting us. We have received your message and will get back to you soon.';
+        $this->customerName = $mailContents['customerName'] ?? 'Customer';
+        $this->customerMessage = $mailContents['customerMessage'] ?? '';
         $this->userDisplayName = $mailContents['userDisplayName'] ?? 'Customer';
         $this->isLoggedIn = $mailContents['isLoggedIn'] ?? false;
     }
@@ -35,14 +44,16 @@ class ContactMails extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->subject)->markdown('mails.thank')->with([
-            'mail_data'=>$this->mail_data,
-            'footer'=>$this->footer,
-            'body'=>$this->body,
-            'customerName'=>$this->customerName,
-            'customerMessage'=>$this->customerMessage,
-            'userDisplayName'=>$this->userDisplayName,
-            'isLoggedIn'=>$this->isLoggedIn
-        ]);
+        return $this->subject($this->subject)
+                    ->view('mails.contact-thank')
+                    ->with([
+                        'mail_data' => $this->mail_data,
+                        'footer' => $this->footer,
+                        'body' => $this->body,
+                        'customerName' => $this->customerName,
+                        'customerMessage' => $this->customerMessage,
+                        'userDisplayName' => $this->userDisplayName,
+                        'isLoggedIn' => $this->isLoggedIn
+                    ]);
     }
 }

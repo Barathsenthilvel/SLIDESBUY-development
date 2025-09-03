@@ -102,18 +102,22 @@
                                                      </div>
 
 
-                                     <div class="form-group row">
-                                         <label class="col-2 col-form-label">Category Style1
-                                         <span class="text-danger">*</span></label>
-                                         <div class="col-3">
-                                             <label for="style_1">
-                                                <img style="width:255px;border:2px dashed #222;height: 255px;" src="" id="image1">
-                                                </label>
-                                            <input style="display: none" type="file"  accept="image/*" onchange="loadFile(event)" id="style_1" name="style_1" >
+                                                    <div class="form-group row">
+                                                        <label class="col-2 col-form-label">Category Style1
+                                                        <span class="text-danger">*</span></label>
+                                                        <div class="col-3">
+                                                            <label for="style_1">
+                                                                <img style="width:255px;border:2px dashed #222;height: 255px;" src="" id="image1">
+                                                                </label>
+                                                            <input style="display: none" type="file"  accept="image/*" onchange="loadFile(event)" id="style_1" name="style_1" >
 
-                                        <span class="text-danger">Required size: 306px × 196px</span>
-                                        </div>
-                                     </div>
+                                                        <span class="text-danger">Max size: 10MB | Min: 200x200px | Max: 5000x5000px (Big images supported)</span>
+                                                        </div>
+                                                    </div>
+
+
+
+
                                                     <div class="form-group row d-none">
                                                          <label class="col-2 col-form-label">Category Banner
                                                          <span class="text-danger">*</span></label>
@@ -136,7 +140,7 @@
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile1(event)"  id="style_3" name="style_3" >
 
-                                        <span class="text-danger">Required size: 306px × 196px</span>
+                                        <span class="text-danger">Max size: 2MB | Min: 100x100px | Max: 2000x2000px</span>
                                         </div>
                                      </div>
                                                     <div class="form-group row d-none">
@@ -233,12 +237,111 @@
         ClassicEditor.create( document.querySelector( '#ktckeditor' ) )
         .then( editor => { window.CKEditor1 = editor;} )
 		.catch( error => { console.error( error ); });
-    </script>
 
-    <script>
-        // Handle form submission with AJAX
-        $('#formCreate').on('submit', function(e) {
+
+
+
+        // Clear error messages when user starts typing
+        $('input, select, textarea').on('input change', function() {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        });
+
+        // Form validation before submission
+        function validateForm() {
+            var isValid = true;
+            var errorMessages = [];
+
+            // Clear previous validation errors
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            // Validate Category Name (required)
+            var categoryName = $('#category_name').val().trim();
+            if (categoryName === '') {
+                $('#category_name').addClass('is-invalid');
+                $('#category_name').after('<div class="invalid-feedback">Category Name is required</div>');
+                errorMessages.push('Category Name is required');
+                isValid = false;
+            } else if (categoryName.length < 2) {
+                $('#category_name').addClass('is-invalid');
+                $('#category_name').after('<div class="invalid-feedback">Category Name must be at least 2 characters</div>');
+                errorMessages.push('Category Name must be at least 2 characters');
+                isValid = false;
+            }
+
+            // Validate Parent Category (required)
+            var parentCategory = $('#parent_category_id').val();
+            if (parentCategory === '' || parentCategory === null) {
+                $('#parent_category_id').addClass('is-invalid');
+                $('#parent_category_id').after('<div class="invalid-feedback">Parent Category is required</div>');
+                errorMessages.push('Parent Category is required');
+                isValid = false;
+            }
+
+            // Validate Category URL (required)
+            var categoryUrl = $('#Category_url').val().trim();
+            if (categoryUrl === '') {
+                $('#Category_url').addClass('is-invalid');
+                $('#Category_url').after('<div class="invalid-feedback">Category URL is required</div>');
+                errorMessages.push('Category URL is required');
+                isValid = false;
+            } else if (categoryUrl.length < 2) {
+                $('#Category_url').addClass('is-invalid');
+                $('#Category_url').after('<div class="invalid-feedback">Category URL must be at least 2 characters</div>');
+                errorMessages.push('Category URL must be at least 2 characters');
+                isValid = false;
+            }
+
+            // Validate Category Style1 (required)
+            var style1File = $('#style_1')[0].files[0];
+            if (!style1File) {
+                $('#style_1').addClass('is-invalid');
+                $('#style_1').after('<div class="invalid-feedback">Category Style1 image is required</div>');
+                errorMessages.push('Category Style1 image is required');
+                isValid = false;
+            }
+
+            // Validate Category Style3 (required)
+            var style3File = $('#style_3')[0].files[0];
+            if (!style3File) {
+                $('#style_3').addClass('is-invalid');
+                $('#style_3').after('<div class="invalid-feedback">Category Style3 image is required</div>');
+                errorMessages.push('Category Style3 image is required');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Add validation to form submission
+        $('#formCreate').off('submit').on('submit', function(e) {
             e.preventDefault();
+
+            // Validate form before submission
+            if (!validateForm()) {
+                // Show validation errors in alert
+                var errorHtml = '<ul>';
+                $('.invalid-feedback').each(function() {
+                    errorHtml += '<li>' + $(this).text() + '</li>';
+                });
+                errorHtml += '</ul>';
+
+                $('.alert-danger .alert-body').html(errorHtml);
+                $('.alert-danger').show();
+                return false;
+            }
+
+            // Show loading indicator
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.text().trim();
+
+            // Prevent multiple submissions
+            if (submitBtn.prop('disabled')) {
+                return false;
+            }
+
+            submitBtn.prop('disabled', true).text('Creating...');
 
             // Clear previous error messages
             $('.alert-danger').hide();
@@ -254,6 +357,9 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     if(response.msg) {
                         $('.alert-success .alert-body').html(response.msg);
@@ -290,14 +396,15 @@
                         $('.alert-danger .alert-body').html('An error occurred. Please try again.');
                         $('.alert-danger').show();
                     }
+
+                    // Reset button after error
+                    submitBtn.prop('disabled', false).text('Submit');
+                },
+                complete: function() {
+                    // This will run after success or error
+                    // Button state is already handled in error callback
                 }
             });
-        });
-
-        // Clear error messages when user starts typing
-        $('input, select, textarea').on('input change', function() {
-            $(this).removeClass('is-invalid');
-            $(this).next('.invalid-feedback').remove();
         });
     </script>
 
@@ -365,15 +472,35 @@
                 image.onload = function () {
 
         var height = image.naturalHeight;
-    var width = image.naturalWidth;
-    if ((height == 196) && (width == 306 )) {
+        var width = image.naturalWidth;
+        var fileSize = event.target.files[0].size;
+        var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
+
+        // Check file size (max 10MB for big images)
+        if (fileSize > maxSize) {
+            alert("Image size must be less than 10MB");
+            $('#image1').attr('src','');
+            $('#style_1').val('');
+            return false;
+        }
+
+        // Check minimum dimensions (prevent tiny images)
+        if (width < 200 || height < 200) {
+            alert("Image dimensions should be at least 200x200 pixels for clear display");
+            $('#image1').attr('src','');
+            $('#style_1').val('');
+            return false;
+        }
+
+        // Check maximum dimensions (allow very large images up to 5000x5000)
+        if (width > 5000 || height > 5000) {
+            alert("Image dimensions should not exceed 5000x5000 pixels");
+            $('#image1').attr('src','');
+            $('#style_1').val('');
+            return false;
+        }
+
         return true;
-    }else{
-      alert("Image must be exactly 306x196 pixels");
-      $('#image1').attr('src','');
-      $('#style_1').val();
-      return false;
-    }
                 };
       var output = document.getElementById('image1');
       output.src = reader.result;
@@ -389,16 +516,35 @@
                 image.onload = function () {
 
         var height = image.naturalHeight;
-    var width = image.naturalWidth;
+        var width = image.naturalWidth;
+        var fileSize = event.target.files[0].size;
+        var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
 
-    if ((height == 196) && (width == 306)) {
+        // Check file size (max 10MB for big images)
+        if (fileSize > maxSize) {
+            alert("Image size must be less than 10MB");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
+        // Check minimum dimensions (prevent tiny images)
+        if (width < 200 || height < 200) {
+            alert("Image dimensions should be at least 200x200 pixels for clear display");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
+        // Check maximum dimensions (allow very large images up to 5000x5000)
+        if (width > 5000 || height > 5000) {
+            alert("Image dimensions should not exceed 5000x5000 pixels");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
         return true;
-        }else{
-      alert("Image must be exactly 306x196 pixels");
-      $('#image3').attr('src','');
-      $('#style_3').val();
-      return false;
-    }
                 };
       var output = document.getElementById('image3');
       output.src = reader.result;

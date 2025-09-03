@@ -533,7 +533,7 @@
                                         </div>
                                         <input type="file" name="image1" id="image1" class="upload_image" style="display:none;" accept="image/*">
                                     </div>
-                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                    <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                 </div>
                             </div>
 
@@ -547,7 +547,7 @@
                                         </div>
                                         <input type="file" name="image2" id="image2" class="upload_image" style="display:none;" accept="image/*">
                                     </div>
-                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                    <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -566,7 +566,7 @@
                                         </div>
                                         <input type="file" name="image3" id="image3" class="upload_image" style="display:none;" accept="image/*">
                                     </div>
-                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                    <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -585,7 +585,7 @@
                                         </div>
                                         <input type="file" name="image4" id="image4" class="upload_image" style="display:none;" accept="image/*">
                                     </div>
-                                    <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                    <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                 </div>
                                 <div class="col-2">
                                     <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -817,16 +817,38 @@ jQuery(document).ready(function() {
     });
 
 
-    // Client-side image dimension validation
+            // Client-side image dimension validation
     function validateImageDimensions(file, callback) {
         var img = new Image();
         img.onload = function() {
-            if (this.width === 856 && this.height === 550) {
-                callback(true);
-            } else {
-                alert('Image must be exactly 856×550 pixels. Current size: ' + this.width + '×' + this.height);
+            var width = this.width;
+            var height = this.height;
+            var fileSize = file.size;
+            var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
+
+            // Check file size (max 10MB for big images)
+            if (fileSize > maxSize) {
+                alert('Image size must be less than 10MB');
                 callback(false);
+                return;
             }
+
+            // Check minimum dimensions (prevent tiny images)
+            if (width < 200 || height < 200) {
+                alert('Image dimensions should be at least 200x200 pixels for clear display. Current size: ' + width + '×' + height);
+                callback(false);
+                return;
+            }
+
+            // Check maximum dimensions (allow very large images up to 5000x5000)
+            if (width > 5000 || height > 5000) {
+                alert('Image dimensions should not exceed 5000x5000 pixels. Current size: ' + width + '×' + height);
+                callback(false);
+                return;
+            }
+
+            // Success - image meets all requirements for big image upload
+            callback(true);
         };
         img.src = URL.createObjectURL(file);
     }

@@ -303,7 +303,7 @@
                                             @endif
                                             <input type="file" name="image1" id="image1" class="upload_image" style="display:none;" accept="image/*">
                                         </div>
-                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                        <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                     </div>
                                 </div>
 
@@ -322,7 +322,7 @@
                                             @endif
                                             <input type="file" name="image2" id="image2" class="upload_image" style="display:none;" accept="image/*">
                                         </div>
-                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                        <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -346,7 +346,7 @@
                                             @endif
                                             <input type="file" name="image3" id="image3" class="upload_image" style="display:none;" accept="image/*">
                                         </div>
-                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                        <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -370,7 +370,7 @@
                                             @endif
                                             <input type="file" name="image4" id="image4" class="upload_image" style="display:none;" accept="image/*">
                                         </div>
-                                        <span class="form-text text-muted">Image width and height: 856×550 pixels</span>
+                                        <span class="form-text text-muted">Min: 200x200px | Max: 5000x5000px | Max size: 10MB (Big images supported)</span>
                                     </div>
                                     <div class="col-lg-2 col-md-3">
                                         <span class="btn btn-light-danger font-weight-bold mr-2 deletSpan">
@@ -463,16 +463,38 @@
             width: 'resolve',
         });
 
-        // Image upload functionality with dimension validation
+                        // Image upload functionality with dimension validation
         function validateImageDimensions(file, callback) {
             var img = new Image();
             img.onload = function() {
-                if (this.width === 856 && this.height === 550) {
-                    callback(true);
-                } else {
-                    alert('Image must be exactly 856×550 pixels. Current size: ' + this.width + '×' + this.height);
+                var width = this.width;
+                var height = this.height;
+                var fileSize = file.size;
+                var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
+
+                // Check file size (max 10MB for big images)
+                if (fileSize > maxSize) {
+                    alert('Image size must be less than 10MB');
                     callback(false);
+                    return;
                 }
+
+                // Check minimum dimensions (prevent tiny images)
+                if (width < 200 || height < 200) {
+                    alert('Image dimensions should be at least 200x200 pixels for clear display. Current size: ' + width + '×' + height);
+                    callback(false);
+                    return;
+                }
+
+                // Check maximum dimensions (allow very large images up to 5000x5000)
+                if (width > 5000 || height > 5000) {
+                    alert('Image dimensions should not exceed 5000x5000 pixels. Current size: ' + width + '×' + height);
+                    callback(false);
+                    return;
+                }
+
+                // Success - image meets all requirements for big image upload
+                callback(true);
             };
             img.src = URL.createObjectURL(file);
         }
@@ -534,6 +556,96 @@
 
             // Clear the file input
             fileInput.val('');
+        });
+
+        // Form submission handler with proper CSRF token handling
+        $('#formEdit').off('submit').on('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading indicator
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.text().trim();
+
+            // Prevent multiple submissions
+            if (submitBtn.prop('disabled')) {
+                return false;
+            }
+
+            submitBtn.prop('disabled', true).text('Updating...');
+
+            // Clear previous error messages
+            $('.alert-danger').hide();
+            $('.alert-success').hide();
+
+            const formData = new FormData(this);
+            const url = this.action;
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    console.log('Success response:', data);
+                    if (data.success && data.redirect) {
+                        // Show success message
+                        $('.alert-success div').html(data.msg);
+                        $('.alert-success').show();
+
+                        // Redirect to the list page after a short delay
+                        setTimeout(function() {
+                            window.location.href = data.redirect;
+                        }, 1500);
+                    } else if (data.msg) {
+                        // Show success message
+                        $('.alert-success div').html(data.msg);
+                        $('.alert-success').show();
+
+                        // Reset button after success
+                        submitBtn.prop('disabled', false).text('Submit');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error response:', xhr.responseText);
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+
+                    var errorMsg = "Something went wrong!";
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.errors) {
+                            var errorHtml = '<ul>';
+                            $.each(response.errors, function(field, messages) {
+                                $.each(messages, function(index, message) {
+                                    errorHtml += '<li>' + message + '</li>';
+                                });
+                            });
+                            errorHtml += '</ul>';
+                            errorMsg = errorHtml;
+                        } else if (response.message) {
+                            errorMsg = response.message;
+                        }
+                    } catch (e) {
+                        // If parsing fails, use default error message
+                    }
+
+                    // Show error message
+                    $('.alert-danger div').html(errorMsg);
+                    $('.alert-danger').show();
+
+                    // Reset button after error
+                    submitBtn.prop('disabled', false).text('Submit');
+                },
+                complete: function() {
+                    // This will run after success or error
+                    // Button state is already handled in success/error callbacks
+                }
+            });
         });
     });
 </script>

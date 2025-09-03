@@ -39,13 +39,13 @@
                                             </div>
                                             <!--begin::Form-->
                                             <div class="alert alert-danger alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
+                                                <div class="alert-body"></div>
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
-                                                <div></div>
+                                                <div class="alert-body"></div>
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -109,7 +109,7 @@
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile(event)" value="{{ $data->style_1 != null ? $data->style_1 : '' }}" id="style_1" name="style_1" >
 
-                                        <span class="text-danger">Width:1000px and Height:629px</span>
+                                        <span class="text-danger">Max size: 10MB | Min: 200x200px | Max: 5000x5000px (Big images supported)</span>
                                         </div>
                                      </div>
 
@@ -138,7 +138,7 @@
                                                 </label>
                                             <input style="display: none" type="file"  accept="image/*" onchange="loadFile1(event)" value="{{ $data->style_1 != null ? $data->style_3 : '' }}" id="style_3" name="style_3">
 
-                                        <span class="text-danger">Width:600px and Height:600px</span>
+                                        <span class="text-danger">Max size: 10MB | Min: 200x200px | Max: 5000x5000px (Big images supported)</span>
                                         </div>
                                      </div>
 
@@ -237,31 +237,123 @@
         .then( editor => { window.CKEditor1 = editor;} )
 		.catch( error => { console.error( error ); });
     </script>
-    
-    <script>
-        // Handle form submission with AJAX for edit
-        $('#formEdit').on('submit', function(e) {
+
+
+{{--
+        // Clear error messages when user starts typing
+        $('input, select, textarea').on('input change', function() {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        });
+
+        // Form validation before submission
+        function validateForm() {
+            var isValid = true;
+            var errorMessages = [];
+
+            // Clear previous validation errors
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            // Validate Category Name (required)
+            var categoryName = $('#category_name').val().trim();
+            if (categoryName === '') {
+                $('#category_name').addClass('is-invalid');
+                $('#category_name').after('<div class="invalid-feedback">Category Name is required</div>');
+                errorMessages.push('Category Name is required');
+                isValid = false;
+            } else if (categoryName.length < 2) {
+                $('#category_name').addClass('is-invalid');
+                $('#category_name').after('<div class="invalid-feedback">Category Name must be at least 2 characters</div>');
+                errorMessages.push('Category Name must be at least 2 characters');
+                isValid = false;
+            }
+
+            // Validate Parent Category (required)
+            var parentCategory = $('#parent_category_id').val();
+            if (parentCategory === '' || parentCategory === null) {
+                $('#parent_category_id').addClass('is-invalid');
+                $('#parent_category_id').after('<div class="invalid-feedback">Parent Category is required</div>');
+                errorMessages.push('Parent Category is required');
+                isValid = false;
+            }
+
+            // Validate Category URL (required)
+            var categoryUrl = $('#Category_url').val().trim();
+            if (categoryUrl === '') {
+                $('#Category_url').addClass('is-invalid');
+                $('#Category_url').after('<div class="invalid-feedback">Category URL is required</div>');
+                errorMessages.push('Category URL is required');
+                isValid = false;
+            } else if (categoryUrl.length < 2) {
+                $('#Category_url').addClass('is-invalid');
+                $('#Category_url').after('<div class="invalid-feedback">Category URL must be at least 2 characters</div>');
+                errorMessages.push('Category URL must be at least 2 characters');
+                isValid = false;
+            }
+
+            // For edit form, images are optional (can keep existing ones)
+            // But if new images are selected, they should be valid
+            var style1File = $('#style_1')[0].files[0];
+            var style3File = $('#style_3')[0].files[0];
+
+            // Note: In edit form, images are not required as they can keep existing ones
+            // The backend validation will handle this
+
+            return isValid;
+        }
+
+        // Add validation to form submission
+        $('#formEdit').off('submit').on('submit', function(e) {
             e.preventDefault();
-            
+
+            // Validate form before submission
+            if (!validateForm()) {
+                // Show validation errors in alert
+                var errorHtml = '<ul>';
+                $('.invalid-feedback').each(function() {
+                    errorHtml += '<li>' + $(this).text() + '</li>';
+                });
+                errorHtml += '</ul>';
+
+                $('.alert-danger .alert-body').html(errorHtml);
+                $('.alert-danger').show();
+                return false;
+            }
+
+            // Show loading indicator
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.text().trim();
+
+            // Prevent multiple submissions
+            if (submitBtn.prop('disabled')) {
+                return false;
+            }
+
+            submitBtn.prop('disabled', true).text('Updating...');
+
             // Clear previous error messages
             $('.alert-danger').hide();
             $('.alert-success').hide();
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').remove();
-            
+
             var formData = new FormData(this);
-            
+
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     if(response.msg) {
                         $('.alert-success .alert-body').html(response.msg);
                         $('.alert-success').show();
-                        
+
                         // Redirect to category list after 2 seconds
                         setTimeout(function() {
                             window.location.href = '{{ route("admin-category") }}';
@@ -272,17 +364,17 @@
                     if(xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
                         var errorHtml = '<ul>';
-                        
+
                         $.each(errors, function(field, messages) {
                             $.each(messages, function(index, message) {
                                 errorHtml += '<li>' + message + '</li>';
                             });
-                            
+
                             // Add error class to input field
                             $('#' + field).addClass('is-invalid');
                             $('#' + field).after('<div class="invalid-feedback">' + messages[0] + '</div>');
                         });
-                        
+
                         errorHtml += '</ul>';
                         $('.alert-danger .alert-body').html(errorHtml);
                         $('.alert-danger').show();
@@ -290,16 +382,17 @@
                         $('.alert-danger .alert-body').html('An error occurred. Please try again.');
                         $('.alert-danger').show();
                     }
+
+                    // Reset button after error
+                    submitBtn.prop('disabled', false).text('Submit');
+                },
+                complete: function() {
+                    // This will run after success or error
+                    // Button state is already handled in error callback
                 }
             });
-        });
-        
-        // Clear error messages when user starts typing
-        $('input, select, textarea').on('input change', function() {
-            $(this).removeClass('is-invalid');
-            $(this).next('.invalid-feedback').remove();
-        });
-    </script>
+        }); --}}
+    {{-- </script> --}}
     <script>
         var objectB = new Object();
         var objectA = new Object();
@@ -365,14 +458,34 @@
 
         var height = image.naturalHeight;
     var width = image.naturalWidth;
-    if ((height == 629) && (width == 1000 )) {
-        return true;
-    }else{
-      alert("Kindly check image width and height");
+        var fileSize = event.target.files[0].size;
+        var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
+
+        // Check file size (max 10MB for big images)
+        if (fileSize > maxSize) {
+            alert("Image size must be less than 10MB");
+            $('#image1').attr('src','');
+            $('#style_1').val('');
+            return false;
+        }
+
+        // Check minimum dimensions (prevent tiny images)
+        if (width < 200 || height < 200) {
+            alert("Image dimensions should be at least 200x200 pixels for clear display");
+            $('#image1').attr('src','');
+            $('#style_1').val('');
+            return false;
+        }
+
+        // Check maximum dimensions (allow very large images up to 5000x5000)
+        if (width > 5000 || height > 5000) {
+            alert("Image dimensions should not exceed 5000x5000 pixels");
       $('#image1').attr('src','');
-      $('#style_1').val();
+            $('#style_1').val('');
       return false;
     }
+
+        return true;
                 };
       var output = document.getElementById('image1');
       output.src = reader.result;
@@ -389,15 +502,34 @@
 
         var height = image.naturalHeight;
     var width = image.naturalWidth;
-    if ((height == 600) && (width == 600)) {
-        return true;
+        var fileSize = event.target.files[0].size;
+                var maxSize = 10 * 1024 * 1024; // 10MB in bytes for big images
 
-    }else{
-      alert("Kindly check image width and height");
-      $('#image3').attr('src','');
-      $('#style_3').val();
-      return false;
-    }
+        // Check file size (max 10MB for big images)
+        if (fileSize > maxSize) {
+            alert("Image size must be less than 10MB");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
+        // Check minimum dimensions (prevent tiny images)
+        if (width < 200 || height < 200) {
+            alert("Image dimensions should be at least 200x200 pixels for clear display");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
+        // Check maximum dimensions (allow very large images up to 5000x5000)
+        if (width > 5000 || height > 5000) {
+            alert("Image dimensions should not exceed 5000x5000 pixels");
+            $('#image3').attr('src','');
+            $('#style_3').val('');
+            return false;
+        }
+
+        return true;
                 };
       var output = document.getElementById('image3');
       output.src = reader.result;

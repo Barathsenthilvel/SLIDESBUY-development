@@ -467,6 +467,7 @@ class ProductController extends Controller
         // Serve the file for download
         return Storage::disk('public')->download($filePath, $product->product_title . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
+
     public function store(Request $request){
     $attributeValues = [];
     $requestData = $request->all();
@@ -479,10 +480,10 @@ class ProductController extends Controller
         'basePrice'        => 'nullable',
         'skuCode'          => 'required|unique:products,product_sku,' . $request->input('skuCode'),
         'productTitle'     => 'required|unique:products,product_title,' . $request->input('productTitle'),
-        'image1'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-        'image2'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-        'image3'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-        'image4'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+        'image1'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+        'image2'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+        'image3'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+        'image4'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
         'document' => 'required|file|mimes:pdf,ppt,pptx|max:10240',
         'productDescription' => 'required'
     ];
@@ -500,20 +501,20 @@ class ProductController extends Controller
         'image1.required'           => 'Image 1 is required',
         'image1.image'              => 'Image 1 must be an image file',
         'image1.mimes'              => 'Image 1 must be a valid image format (jpeg, png, jpg, gif, webp)',
-        'image1.max'                => 'Image 1 size must not exceed 2MB',
-        'image1.dimensions'         => 'Image 1 must be exactly 856×550 pixels',
+        'image1.max'                => 'Image 1 size must not exceed 10MB',
+        'image1.dimensions'         => 'Image 1 must be between 200x200 and 5000x5000 pixels for big image support',
         'image2.image'              => 'Image 2 must be an image file',
         'image2.mimes'              => 'Image 2 must be a valid image format (jpeg, png, jpg, gif, webp)',
-        'image2.max'                => 'Image 2 size must not exceed 2MB',
-        'image2.dimensions'         => 'Image 2 must be exactly 856×550 pixels',
+        'image2.max'                => 'Image 2 size must not exceed 10MB',
+        'image2.dimensions'         => 'Image 2 must be between 200x200 and 5000x5000 pixels for big image support',
         'image3.image'              => 'Image 3 must be an image file',
         'image3.mimes'              => 'Image 3 must be a valid image format (jpeg, png, jpg, gif, webp)',
-        'image3.max'                => 'Image 3 size must not exceed 2MB',
-        'image3.dimensions'         => 'Image 3 must be exactly 856×550 pixels',
+        'image3.max'                => 'Image 3 size must not exceed 10MB',
+        'image3.dimensions'         => 'Image 3 must be between 200x200 and 5000x5000 pixels for big image support',
         'image4.image'              => 'Image 4 must be an image file',
         'image4.mimes'              => 'Image 4 must be a valid image format (jpeg, png, jpg, gif, webp)',
-        'image4.max'                => 'Image 4 size must not exceed 2MB',
-        'image4.dimensions'         => 'Image 4 must be exactly 856×550 pixels',
+        'image4.max'                => 'Image 4 size must not exceed 10MB',
+        'image4.dimensions'         => 'Image 4 must be between 200x200 and 5000x5000 pixels for big image support',
         'productDescription.required' => 'Product Description should be filled',
     ];
 
@@ -733,10 +734,10 @@ class ProductController extends Controller
             'basePrice'     => 'nullable',
             'skuCode'     => 'required|unique:products,product_sku,'.$id,
             'productTitle' => 'required|unique:products,product_title,'.$id,
-            'image1' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-            'image2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-            'image3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
-            'image4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048|dimensions:width=856,height=550',
+            'image1' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'image2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'image3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'image4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
             'productDescription' =>'required'
         ];
 
@@ -749,20 +750,20 @@ class ProductController extends Controller
             'productTitle.unique'            => 'Product Name already taken',
             'image1.image'                  => 'Image 1 must be an image file',
             'image1.mimes'                  => 'Image 1 must be a valid image format (jpeg, png, jpg, gif, webp)',
-            'image1.max'                    => 'Image 1 size must not exceed 2MB',
-            'image1.dimensions'             => 'Image 1 must be exactly 856×550 pixels',
+            'image1.max'                    => 'Image 1 size must not exceed 10MB',
+            'image1.dimensions'             => 'Image 1 must be between 200x200 and 5000x5000 pixels for big image support',
             'image2.image'                  => 'Image 2 must be an image file',
             'image2.mimes'                  => 'Image 2 must be a valid image format (jpeg, png, jpg, gif, webp)',
-            'image2.max'                    => 'Image 2 size must not exceed 2MB',
-            'image2.dimensions'             => 'Image 2 must be exactly 856×550 pixels',
+            'image2.max'                    => 'Image 2 size must not exceed 10MB',
+            'image2.dimensions'             => 'Image 2 must be between 200x200 and 5000x5000 pixels for big image support',
             'image3.image'                  => 'Image 3 must be an image file',
             'image3.mimes'                  => 'Image 3 must be a valid image format (jpeg, png, jpg, gif, webp)',
-            'image3.max'                    => 'Image 3 size must not exceed 2MB',
-            'image3.dimensions'             => 'Image 3 must be exactly 856×550 pixels',
+            'image3.max'                    => 'Image 3 size must not exceed 10MB',
+            'image3.dimensions'             => 'Image 3 must be between 200x200 and 5000x5000 pixels for big image support',
             'image4.image'                  => 'Image 4 must be an image file',
             'image4.mimes'                  => 'Image 4 must be a valid image format (jpeg, png, jpg, gif, webp)',
-            'image4.max'                    => 'Image 4 size must not exceed 2MB',
-            'image4.dimensions'             => 'Image 4 must be exactly 856×550 pixels',
+            'image4.max'                    => 'Image 4 size must not exceed 10MB',
+            'image4.dimensions'             => 'Image 4 must be between 200x200 and 5000x5000 pixels for big image support',
             'productDescription.required'    => 'Product Description should be filled',
         ];
 

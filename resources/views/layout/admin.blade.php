@@ -8,6 +8,7 @@
         <title>{{$StoreConfig->Store_Meta_Title}}</title>
         <meta name="description" content="{{ $StoreConfig->Store_Meta_Description}}" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
         <!--begin::Fonts-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
         <!--end::Fonts-->
@@ -2131,6 +2132,15 @@
         <!--begin::Global Theme Bundle(used by all pages)-->
         <script src="{{ URL::asset('assets/plugins/global/plugins.bundle.js') }}"></script>
         <script src="{{ URL::asset('assets/plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
+
+        <!-- CSRF Token Setup for AJAX -->
+        <script>
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        </script>
         <script src="{{ URL::asset('assets/js/scripts.bundle.js') }}"></script>
         <!--end::Global Theme Bundle-->
         <!--begin::Page Vendors(used by this page)-->

@@ -742,6 +742,8 @@
 <!--begin::Footer-->
 @endsection
 <script>
+
+$(document).ready(function() {
     // ========================================
     // GLOBAL CONFLICT PREVENTION
     // ========================================
@@ -824,6 +826,16 @@
             existingSuccess.remove();
         }
         input.classList.remove('is-valid');
+    }
+
+    // Clear field error message (alias for removeFieldError)
+    function clearFieldError(input) {
+        removeFieldError(input);
+    }
+
+    // Clear field success message (alias for removeFieldSuccess)
+    function clearFieldSuccess(input) {
+        removeFieldSuccess(input);
     }
 
     // Show floating success message
@@ -1006,7 +1018,7 @@
 
     // Test toaster function
     function testToaster() {
-        showSuccessToast('✅ Store Configuration Updated Successfully! All fields have been saved.');
+        showSuccessToastEnhanced('✅ Store Configuration Updated Successfully! All fields have been saved.', { showOnce: false });
     }
 
     // Show file requirements popup
@@ -1194,11 +1206,251 @@
     }
 
     // ========================================
+    // UNIFIED FORM VALIDATION & TOASTER SYSTEM
+    // ========================================
+
+    // Global toaster state management (show only once)
+    window.toasterState = {
+        successShown: false,
+        errorShown: false,
+        lastSuccessMessage: null,
+        lastErrorMessage: null
+    };
+
+    // Universal field validation rules
+    const validationRules = {
+        required: {
+            validate: (value) => value.trim() !== '',
+            message: 'This field is required'
+        },
+        email: {
+            validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            message: 'Please enter a valid email address'
+        },
+        minLength: (min) => ({
+            validate: (value) => value.length >= min,
+            message: `Minimum length is ${min} characters`
+        }),
+        maxLength: (max) => ({
+            validate: (value) => value.length <= max,
+            message: `Maximum length is ${max} characters`
+        }),
+        selectRequired: {
+            validate: (value) => value !== '' && value !== 'Select Currency' && value !== 'Select type',
+            message: 'Please select a valid option'
+        }
+    };
+
+    // Enhanced field validation function
+    function validateFieldEnhanced(field, rules = []) {
+        const value = field.value;
+        const fieldName = field.name || field.id;
+
+        // Clear previous errors
+        clearFieldError(field);
+
+        for (let rule of rules) {
+            if (typeof rule === 'string') {
+                rule = validationRules[rule];
+            }
+
+            if (rule && !rule.validate(value)) {
+                showFieldError(field, rule.message);
+                return false;
+            }
+        }
+
+        // Show success state for valid fields
+        showFieldSuccess(field);
+        return true;
+    }
+
+    // Enhanced form validation
+    function validateFormEnhanced(formId, fieldRules = {}) {
+        const form = document.getElementById(formId);
+        if (!form) return false;
+
+        let isValid = true;
+        const fields = form.querySelectorAll('input, select, textarea');
+
+        fields.forEach(field => {
+            const fieldName = field.name || field.id;
+            const rules = fieldRules[fieldName] || [];
+
+            // Add required rule if field has required attribute
+            if (field.hasAttribute('required') && !rules.includes('required')) {
+                if (field.tagName === 'SELECT') {
+                    rules.unshift('selectRequired');
+                } else {
+                    rules.unshift('required');
+                }
+            }
+
+            if (rules.length > 0 && !validateFieldEnhanced(field, rules)) {
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    }
+
+    // Enhanced success toaster (show only once)
+    function showSuccessToastEnhanced(message, options = {}) {
+        const defaultOptions = {
+            duration: 5000,
+            position: 'top-right',
+            showOnce: true
+        };
+
+        const config = { ...defaultOptions, ...options };
+
+        // Check if we should show this message only once
+        if (config.showOnce && window.toasterState.successShown &&
+            window.toasterState.lastSuccessMessage === message) {
+            console.log('Success toaster already shown for this message, skipping...');
+            return;
+        }
+
+        // Update state
+        window.toasterState.successShown = true;
+        window.toasterState.lastSuccessMessage = message;
+
+        console.log('Showing success toaster:', message);
+
+        // Try different toaster libraries in order of preference
+        if (typeof toastr !== 'undefined') {
+            toastr.success(message, 'Success!', {
+                timeOut: config.duration,
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-' + config.position
+            });
+        } else if (typeof $.notify !== 'undefined') {
+            $.notify(message, {
+                type: 'success',
+                delay: config.duration,
+                placement: {
+                    from: config.position.split('-')[0],
+                    align: config.position.split('-')[1]
+                }
+            });
+        } else {
+            // Fallback to custom toaster
+            showCustomToast(message, 'success', config);
+        }
+    }
+
+    // Enhanced error toaster (show only once)
+    function showErrorToastEnhanced(message, options = {}) {
+        const defaultOptions = {
+            duration: 7000,
+            position: 'top-right',
+            showOnce: true
+        };
+
+        const config = { ...defaultOptions, ...options };
+
+        // Check if we should show this message only once
+        if (config.showOnce && window.toasterState.errorShown &&
+            window.toasterState.lastErrorMessage === message) {
+            console.log('Error toaster already shown for this message, skipping...');
+            return;
+        }
+
+        // Update state
+        window.toasterState.errorShown = true;
+        window.toasterState.lastErrorMessage = message;
+
+        console.log('Showing error toaster:', message);
+
+        // Try different toaster libraries
+        if (typeof toastr !== 'undefined') {
+            toastr.error(message, 'Error!', {
+                timeOut: config.duration,
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-' + config.position
+            });
+        } else if (typeof $.notify !== 'undefined') {
+            $.notify(message, {
+                type: 'danger',
+                delay: config.duration,
+                placement: {
+                    from: config.position.split('-')[0],
+                    align: config.position.split('-')[1]
+                }
+            });
+        } else {
+            // Fallback to custom toaster
+            showCustomToast(message, 'error', config);
+        }
+    }
+
+    // Enhanced custom toaster implementation
+    function showCustomToast(message, type, config) {
+        const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+
+        const toastHtml = `
+            <div id="${toastId}" class="custom-toast" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 99999;
+                min-width: 300px;
+                max-width: 400px;
+                animation: slideInRight 0.5s ease-out;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            ">
+                <div style="display: flex; align-items: center;">
+                    <i class="fas ${icon}" style="margin-right: 10px; font-size: 18px;"></i>
+                    <div style="flex: 1;">
+                        <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong><br>
+                        ${message}
+                    </div>
+                    <button onclick="hideCustomToast('${toastId}')" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        margin-left: 10px;
+                        opacity: 0.8;
+                        padding: 0;
+                        width: 20px;
+                        height: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">&times;</button>
+                </div>
+            </div>
+        `;
+
+        try {
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+
+            // Auto-hide after specified duration
+            setTimeout(() => {
+                hideCustomToast(toastId);
+            }, config.duration);
+        } catch (e) {
+            console.error('Error adding custom toast to DOM:', e);
+        }
+    }
+
+    // ========================================
     // MAIN DOCUMENT READY FUNCTION
     // ========================================
 
-    $(document).ready(function() {
-        console.log('Document ready - initializing store config edit page');
+
+        console.log('=== UNIFIED FORM VALIDATION SYSTEM INITIALIZED ===');
 
         // Wait a bit for all libraries to load
         setTimeout(function() {
@@ -1209,13 +1461,25 @@
         }, 500);
 
         // ========================================
-        // INITIALIZE COMPONENTS
+        // STORE CONFIG FORM VALIDATION RULES
         // ========================================
 
-        // Initialize CKEditor for Store Meta Title
+        const storeConfigRules = {
+            'store_name': ['required', validationRules.minLength(2)],
+            'default_currency': ['selectRequired'],
+            'ownershiptype': ['selectRequired'],
+            'pricing_type': ['selectRequired'],
+            'CustomerIDPrefix': ['required', validationRules.maxLength(5)],
+            'productIdprefix': ['required', validationRules.maxLength(5)],
+            'Store_Meta_Title': ['required', validationRules.minLength(3)],
+            'Order_Emails_To': ['required', 'email'],
+            'Contact_Us_Emails_To': ['required', 'email'],
+            'Contact_Us_Emails_BCC': ['email']
+        };
 
-        //initializeCKEditor('#Store_Meta_Title', 'storeMetaTitleEditor');
-
+        // ========================================
+        // INITIALIZE COMPONENTS
+        // ========================================
 
         // Initialize Tagify for email fields
         initializeTagify('#Order_Emails_To', 'orderEmailsTo');
@@ -1224,11 +1488,11 @@
         initializeTagify('#Contact_Us_Emails_BCC', 'contactUsEmailsBCC');
 
         // ========================================
-        // FORM SUBMISSION HANDLING
+        // ENHANCED FORM SUBMISSION HANDLING
         // ========================================
 
         $('#formEdit').on('submit', function(e) {
-            console.log('Form submitted - starting validation');
+            console.log('Form submitted - starting enhanced validation');
             console.log('Form action:', $(this).attr('action'));
             console.log('Form method:', $(this).attr('method'));
 
@@ -1236,19 +1500,19 @@
             console.log('Updating CKEditor content');
             updateCKEditors();
 
-            // Validate form before submission
-            console.log('Starting form validation');
-            var isValid = validateForm();
-            console.log('Form validation result:', isValid);
+            // Enhanced form validation
+            console.log('Starting enhanced form validation');
+            var isValid = validateFormEnhanced('formEdit', storeConfigRules);
+            console.log('Enhanced form validation result:', isValid);
 
             if (!isValid) {
-                console.log('Form validation failed - preventing submission');
+                console.log('Enhanced form validation failed - preventing submission');
                 e.preventDefault();
-                showErrorToast('Please fix the validation errors before submitting.');
+                showErrorToastEnhanced('Please fix the validation errors before submitting.');
                 return false;
             }
 
-            console.log('Form validation passed - proceeding with submission');
+            console.log('Enhanced form validation passed - proceeding with submission');
 
             // Show loading state
             var submitBtn = $(this).find('button[type="submit"]');
@@ -1263,19 +1527,33 @@
             }, 10000);
 
             // Allow normal form submission - don't prevent default
-            console.log('Form validation passed, submitting normally');
+            console.log('Enhanced form validation passed, submitting normally');
             console.log('Form will submit to:', $(this).attr('action'));
 
             // Form will submit normally - no preventDefault() called
         });
 
         // ========================================
-        // REAL-TIME VALIDATION
+        // ENHANCED REAL-TIME VALIDATION
         // ========================================
 
-        // Add real-time validation for required fields
-        $('#formEdit [required]').on('blur change', function() {
-            validateField(this);
+        // Add enhanced real-time validation for all fields
+        $('#formEdit input, #formEdit select, #formEdit textarea').on('blur change', function() {
+            const fieldName = this.name || this.id;
+            const rules = storeConfigRules[fieldName] || [];
+
+            // Add required rule if field has required attribute
+            if (this.hasAttribute('required') && !rules.includes('required')) {
+                if (this.tagName === 'SELECT') {
+                    rules.unshift('selectRequired');
+                } else {
+                    rules.unshift('required');
+                }
+            }
+
+            if (rules.length > 0) {
+                validateFieldEnhanced(this, rules);
+            }
         });
 
         // ========================================
@@ -1294,10 +1572,10 @@
         $('.alert-danger').delay(10000).fadeOut();
 
         // ========================================
-        // SESSION MESSAGE HANDLING
+        // ENHANCED SESSION MESSAGE HANDLING (SHOW ONLY ONCE)
         // ========================================
 
-        // Show success message more prominently if it exists
+        // Show success message more prominently if it exists (only once)
         if ($('.alert-success').length > 0) {
             $('.alert-success').addClass('show');
             // Scroll to top to show the success message
@@ -1305,40 +1583,40 @@
                 scrollTop: $('.alert-success').offset().top - 100
             }, 500);
 
-            // Show toaster notification for success - with proper error handling and delay
+            // Show enhanced toaster notification for success (only once)
             setTimeout(function() {
                 try {
                     var successMessage = {!! json_encode(session('success')) !!};
                     console.log('Success message from session:', successMessage);
                     if (successMessage) {
-                        console.log('Calling showSuccessToast with message:', successMessage);
-                        showSuccessToast(successMessage);
+                        console.log('Calling enhanced showSuccessToast with message:', successMessage);
+                        showSuccessToastEnhanced(successMessage, { showOnce: true });
                     } else {
                         console.log('No success message found in session');
                         // Fallback message
-                        showSuccessToast('Store Configuration Updated Successfully!');
+                        showSuccessToastEnhanced('Store Configuration Updated Successfully!', { showOnce: true });
                     }
                 } catch (e) {
-                    console.warn('Error showing success toaster:', e);
+                    console.warn('Error showing enhanced success toaster:', e);
                     // Fallback to simple notification
                     if (typeof $.notify !== 'undefined') {
                         $.notify('Store Configuration Updated Successfully!', 'success');
                     } else {
-                        showSuccessToast('Store Configuration Updated Successfully!');
+                        showSuccessToastEnhanced('Store Configuration Updated Successfully!', { showOnce: true });
                     }
                 }
             }, 1000); // 1 second delay to ensure page is fully loaded
         }
 
-        // Show toaster notification for error if exists
+        // Show enhanced toaster notification for error if exists (only once)
         if ($('.alert-danger').length > 0) {
             try {
                 var errorMessage = {!! json_encode(session('error')) !!};
                 if (errorMessage) {
-                    showErrorToast(errorMessage);
+                    showErrorToastEnhanced(errorMessage, { showOnce: true });
                 }
             } catch (e) {
-                console.warn('Error showing error toaster:', e);
+                console.warn('Error showing enhanced error toaster:', e);
                 // Fallback to simple notification
                 if (typeof $.notify !== 'undefined') {
                     $.notify('An error occurred. Please check the form.', 'danger');
@@ -1360,7 +1638,7 @@
             console.error('Unhandled promise rejection:', e.reason);
         });
 
-        console.log('Store config edit page initialization completed');
+        console.log('=== ENHANCED STORE CONFIG FORM VALIDATION SYSTEM READY ===');
     });
 </script>
 

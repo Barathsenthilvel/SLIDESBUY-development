@@ -53,6 +53,7 @@ class CategoryController extends Controller
     $category=Category::with('subs')->where('status','1')->where('parent_category_id','0')->where('sub_category','0')->get();
 		return view('admin.category.create',compact('category'));
 	}
+
     public function edit($id){
 		$data=Category::findOrFail($id);
     $category=Category::with(['subs'=> function ($query) use($id) {
@@ -68,9 +69,9 @@ class CategoryController extends Controller
             'category_name' => 'required|unique:categories,category_name',
             'parent_category_id' => 'required',
             'Category_url' => 'required|unique:categories,Category_url',
-            // Enforce exact image dimensions of 306x196
-            'style_1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
-            'style_3' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
+            // Allow flexible image dimensions for big images
+            'style_1' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'style_3' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
             'hns_code' => 'nullable|string|max:50',
             'short_description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
@@ -87,14 +88,14 @@ class CategoryController extends Controller
             'Category_url.unique' => 'Category URL already exists',
             'style_1.required' => 'Category Style1 image is required',
             'style_1.image' => 'Category Style1 must be an image file',
-            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif)',
-            'style_1.max' => 'Category Style1 image size must not exceed 2MB',
+            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'style_1.max' => 'Category Style1 image size must not exceed 10MB',
             'style_3.required' => 'Category Style3 image is required',
             'style_3.image' => 'Category Style3 must be an image file',
-            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
-            'style_3.max' => 'Category Style3 image size must not exceed 2MB',
-            'style_1.dimensions' => 'Category Style1 image must be exactly 306x196 pixels',
-            'style_3.dimensions' => 'Category Style3 image must be exactly 306x196 pixels',
+            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'style_3.max' => 'Category Style3 image size must not exceed 10MB',
+            'style_1.dimensions' => 'Category Style1 image must be between 200x200 and 5000x5000 pixels for big image support',
+            'style_3.dimensions' => 'Category Style3 image must be between 200x200 and 5000x5000 pixels for big image support',
             'hns_code.max' => 'HSN Code must not exceed 50 characters',
             'meta_title.max' => 'Meta Title must not exceed 255 characters',
             'sort_order.integer' => 'Sorting Order must be a number'
@@ -157,9 +158,9 @@ class CategoryController extends Controller
             'category_name' => 'required|unique:categories,category_name,'.$id,
             'parent_category_id' => 'required',
             'Category_url' => 'required|unique:categories,Category_url,'.$id,
-            // Enforce exact image dimensions when provided
-            'style_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
-            'style_3' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:width=306,height=196',
+            // Allow flexible image dimensions for big images when provided
+            'style_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'style_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
             'hns_code' => 'nullable|string|max:50',
             'short_description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
@@ -175,13 +176,13 @@ class CategoryController extends Controller
             'Category_url.required' => 'Category URL is required',
             'Category_url.unique' => 'Category URL already exists',
             'style_1.image' => 'Category Style1 must be an image file',
-            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif)',
-            'style_1.max' => 'Category Style1 image size must not exceed 2MB',
+            'style_1.mimes' => 'Category Style1 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'style_1.max' => 'Category Style1 image size must not exceed 10MB',
             'style_3.image' => 'Category Style3 must be an image file',
-            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif)',
-            'style_3.max' => 'Category Style3 image size must not exceed 2MB',
-            'style_1.dimensions' => 'Category Style1 image must be exactly 306x196 pixels',
-            'style_3.dimensions' => 'Category Style3 image must be exactly 306x196 pixels',
+            'style_3.mimes' => 'Category Style3 must be a valid image format (jpeg, png, jpg, gif, webp)',
+            'style_3.max' => 'Category Style3 image size must not exceed 10MB',
+            'style_1.dimensions' => 'Category Style1 image must be between 200x200 and 5000x5000 pixels for big image support',
+            'style_3.dimensions' => 'Category Style3 image must be between 200x200 and 5000x5000 pixels for big image support',
             'hns_code.max' => 'HSN Code must not exceed 50 characters',
             'meta_title.max' => 'Meta Title must not exceed 255 characters',
             'sort_order.integer' => 'Sorting Order must be a number'

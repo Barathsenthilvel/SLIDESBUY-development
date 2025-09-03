@@ -75,6 +75,8 @@ class StoreController extends Controller
 
 
     public function update(Request $request,$id){
+
+        // dd($request->all());
         // Debug: Log the incoming request
         \Log::info('Store update request received', [
             'id' => $id,
@@ -83,10 +85,10 @@ class StoreController extends Controller
             'all_input' => $request->all()
         ]);
 
-        // Test: Check if we can access the method at all
+
         \Log::info('Update method accessed successfully');
 
-        // Test: Check if we can access basic request data
+
         \Log::info('Request data test:', [
             'url' => $request->url(),
             'full_url' => $request->fullUrl(),
@@ -131,23 +133,23 @@ class StoreController extends Controller
         $imageCustoms = [];
 
         if($request->file('logo')){
-            $imageRules['logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $imageRules['logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:10240';
             $imageCustoms['logo.image'] = 'Logo must be an image file.';
-            $imageCustoms['logo.mimes'] = 'Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 2MB.';
-            $imageCustoms['logo.max'] = 'Logo size must be less than 2MB.';
+            $imageCustoms['logo.mimes'] = 'Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 10MB.';
+            $imageCustoms['logo.max'] = 'Logo size must be less than 10MB.';
         }
 
         if($request->file('invert_logo')){
-            $imageRules['invert_logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+            $imageRules['invert_logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:10240';
             $imageCustoms['invert_logo.image'] = 'Invert Logo must be an image file.';
-            $imageCustoms['invert_logo.mimes'] = 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 2MB.';
-            $imageCustoms['invert_logo.max'] = 'Invert Logo size must be less than 2MB.';
+            $imageCustoms['invert_logo.mimes'] = 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 10MB.';
+            $imageCustoms['invert_logo.max'] = 'Invert Logo size must be less than 10MB.';
         }
 
         if($request->file('fav_icon')){
-            $imageRules['fav_icon'] = 'mimes:ico,png,jpg,jpeg,gif,svg|max:512';
-            $imageCustoms['fav_icon.mimes'] = 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file. Maximum size: 512KB.';
-            $imageCustoms['fav_icon.max'] = 'Favicon size must be less than 512KB.';
+            $imageRules['fav_icon'] = 'mimes:ico,png,jpg,jpeg,gif,svg|max:5120';
+            $imageCustoms['fav_icon.mimes'] = 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file. Maximum size: 5MB.';
+            $imageCustoms['fav_icon.max'] = 'Favicon size must be less than 5MB.';
         }
 
         // Merge all validation rules
@@ -307,13 +309,7 @@ class StoreController extends Controller
             \Log::info('Store update input data:', $cleanInput);
             \Log::info('Store configuration model before update:', $data->toArray());
 
-            // Check if the model is dirty (has changes)
-            \Log::info('Model is dirty:', ['isDirty' => $data->isDirty(), 'getDirty' => $data->getDirty()]);
 
-            // Log which fields will be updated
-            \Log::info('Fields to be updated:', array_keys($cleanInput));
-
-            // Log the current values vs new values for key fields
             foreach ($cleanInput as $field => $value) {
                 if (isset($data->$field)) {
                     \Log::info("Field: {$field}", [
@@ -355,11 +351,11 @@ class StoreController extends Controller
                                                             // Test: Log the success message being set
                     \Log::info('Setting success message in session');
 
-                    // Redirect back to edit page with success message
-                    $response = redirect()->back()->with('success', '✅ Store Configuration Updated Successfully! All fields have been saved.');
+                    // Redirect to list page with success message
+                    $response = redirect()->route('admin-store')->with('success', '✅ Store Configuration Updated Successfully! All fields have been saved.');
 
                     // Log the response
-                    \Log::info('Success response created - staying on edit page', ['response_type' => get_class($response)]);
+                    \Log::info('Success response created - redirecting to list page', ['response_type' => get_class($response)]);
 
                     return $response;
                 } else {

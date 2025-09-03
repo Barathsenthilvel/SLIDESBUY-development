@@ -34,18 +34,18 @@
 		<div class="d-flex flex-column flex-root">
 			<!--begin::Login-->
 			<div class="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-column-fluid bg-white" id="kt_login">
-				
+
 				<!--begin::Content-->
 				<div class="login-content flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
 					<!--begin::Content body-->
 					<div class="d-flex flex-column-fluid flex-center">
 						<!--begin::Signin-->
 						<div class="login-form login-signin">
-						  
+
                                 <a href="{{route('front.index')}}">
-                                    <img src="{{asset('assets/media/banner/'.$StoreConfig->logo)}}" alt="Logo" style="width: 150px;height: 100px;display: block;margin-left: auto;margin-right: auto;"/>
+                                    <img src="{{asset('assets/media/banner/'.$StoreConfig->logo)}}" alt="Logo" style="max-width: 224px;height: 100px;display: block;margin-left: auto;margin-right: auto;"/>
                                 </a>
-                            
+
 							<!--begin::Form-->
 							@if(count($errors) > 0 )
 							@foreach($errors->all() as $error)
@@ -223,14 +223,14 @@
 		<script >
 			$('#kt_login_forgots').on('click',function(e){
 				e.preventDefault();
-				
+
 				$('.login-signin').hide();
 				$('.login-forgot').show();
 			});
 
 			$('#kt_login_forgot_cancel').on('click',function(e){
 				e.preventDefault();
-				
+
 				$('.login-forgot').hide();
 				$('.login-signin').show();
 			});

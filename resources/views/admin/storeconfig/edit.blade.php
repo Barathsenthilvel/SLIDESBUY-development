@@ -190,6 +190,40 @@
         padding: 15px 20px;
         font-weight: 500;
     }
+
+    /* Custom toaster animations */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    /* Custom toaster styling */
+    .custom-toast {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .custom-toast button:hover {
+        opacity: 1 !important;
+    }
 </style>
 
 <!-- Prevent dropzone and other conflicting scripts from running -->
@@ -331,7 +365,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{route('admin-store-update',$data->id)}}" id="formEdit" enctype="multipart/form-data" onsubmit="return validateForm() && updateCKEditors();">
+                        <form method="POST" action="{{route('admin-store-update',$data->id)}}" id="formEdit" enctype="multipart/form-data">
                             <input type="hidden" id="id" value="{{ $data->id }}">
                             {{ csrf_field() }}
                             <div class="card-body">
@@ -453,20 +487,20 @@
                                                 <div class="col-md-4">
                                                     <strong>Logo & Invert Logo:</strong><br>
                                                     • Formats: JPEG, JPG, PNG, GIF, WebP<br>
-                                                    • Max Size: 2MB<br>
-                                                    • Dimensions: 128×80 pixels
+                                                    • Max Size: 10MB<br>
+                                                    • No dimension restrictions
                                                 </div>
                                                 <div class="col-md-4">
                                                     <strong>Favicon:</strong><br>
                                                     • Formats: ICO, PNG, JPG, JPEG, GIF, SVG<br>
-                                                    • Max Size: 512KB<br>
-                                                    • Dimensions: 43×38 pixels
+                                                    • Max Size: 5MB<br>
+                                                    • No dimension restrictions
                                                 </div>
                                                 <div class="col-md-4">
                                                     <strong>Tips:</strong><br>
                                                     • Use PNG for transparency<br>
                                                     • ICO format is best for favicons<br>
-                                                    • Keep file sizes small for faster loading
+                                                    • Higher resolution images recommended
                                                 </div>
                                             </div>
                                         </div>
@@ -512,7 +546,7 @@
                                     <label class="col-2 col-form-label">logo
                                         <span class="text-danger"></span></label>
                                     <div class="col-10">
-                                        <img class="file-preview" style="width:128px;height:80px;border:2px dashed #222;object-fit:cover;" id="logo_preview"
+                                        <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="logo_preview"
                                              src="{{ $data->logo && file_exists(public_path('assets/media/banner/'.$data->logo)) ? URL::asset('assets/media/banner/'.$data->logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TG9nbzwvdGV4dD4KPC9zdmc+Cg==' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="logo_old" value="{{ $data->logo }}">
@@ -524,10 +558,10 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <span class="form-text text-muted">Image width and height:128*80</span>
+                                        <span class="form-text text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
-                                            <strong>Max size:</strong> 2MB
+                                            <strong>Max size:</strong> 10MB
                                         </small>
                                     </div>
                                 </div>
@@ -535,7 +569,7 @@
                                     <label class="col-2 col-form-label">Invert Logo
                                         <span class="text-danger"></span></label>
                                     <div class="col-10">
-                                        <img class="file-preview" style="width:128px;height:80px;border:2px dashed #222;object-fit:cover;" id="invert_logo_preview"
+                                        <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="invert_logo_preview"
                                              src="{{ $data->invert_logo && file_exists(public_path('assets/media/banner/'.$data->invert_logo)) ? URL::asset('assets/media/banner/'.$data->invert_logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW52ZXJ0PC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="invert_logo_old" value="{{ $data->invert_logo }}">
@@ -547,10 +581,10 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <span class="text-muted">Image width and height:128*80</span>
+                                        <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
-                                            <strong>Max size:</strong> 2MB
+                                            <strong>Max size:</strong> 10MB
                                         </small>
                                     </div>
                                 </div>
@@ -558,7 +592,7 @@
                                     <label class="col-2 col-form-label">FavIcon
                                         <span class="text-danger"></span></label>
                                     <div class="col-10">
-                                        <img class="file-preview" id="fav_icon_preview" style="width:43px;height:38px;border:2px dashed #222;object-fit:cover;"
+                                        <img class="file-preview" id="fav_icon_preview" style="width:80px;height:80px;border:2px dashed #222;object-fit:contain;"
                                              src="{{ $data->fav_icon && file_exists(public_path('assets/media/banner/'.$data->fav_icon)) ? URL::asset('assets/media/banner/'.$data->fav_icon) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDMiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCA0MyAzOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQzIiBoZWlnaHQ9IjM4IiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjIxLjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2Yzc1N2QiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5GYXZpY29uPC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="fav_icon_old" value="{{ $data->fav_icon }}">
@@ -570,10 +604,10 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <span class="text-muted">Image width and height:43*38</span>
+                                        <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> ICO, PNG, JPG, JPEG, GIF, SVG |
-                                            <strong>Max size:</strong> 512KB
+                                            <strong>Max size:</strong> 5MB
                                         </small>
                                     </div>
                                 </div>
@@ -582,6 +616,7 @@
                                     <label class="col-2 col-form-label">Store Meta Title
                                         <span class="text-danger">*</span></label>
                                     <div class="col-10">
+                                        {{-- @dd( $data->Store_Meta_Title); --}}
                                         <input class="form-control" type="text" value="{{ $data->Store_Meta_Title }}"
                                             id="Store_Meta_Title" name="Store_Meta_Title" />
                                     </div>
@@ -686,6 +721,7 @@
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Cancel</button>
+                                <button type="button" class="btn btn-info ml-2" onclick="testToaster()">Test Toaster</button>
                             </div>
                         </form>
                         <!--end::Form-->
@@ -705,7 +741,6 @@
 
 <!--begin::Footer-->
 @endsection
-@push('script')
 <script>
     // ========================================
     // GLOBAL CONFLICT PREVENTION
@@ -829,16 +864,161 @@
         }
     }
 
+    // Show success toaster notification
+    function showSuccessToast(message) {
+        console.log('showSuccessToast called with message:', message);
+        console.log('toastr available:', typeof toastr !== 'undefined');
+        console.log('$.notify available:', typeof $.notify !== 'undefined');
+
+        // Try different toaster libraries
+        if (typeof toastr !== 'undefined') {
+            console.log('Using toastr for success message');
+            toastr.success(message, 'Success!', {
+                timeOut: 5000,
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right'
+            });
+        } else if (typeof $.notify !== 'undefined') {
+            console.log('Using $.notify for success message');
+            $.notify(message, {
+                type: 'success',
+                delay: 5000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+        } else {
+            console.log('Using custom toaster for success message');
+            // Fallback to custom toaster
+            showCustomToast(message, 'success');
+        }
+
+        // Ultimate fallback - if nothing else works, show a simple alert
+        setTimeout(function() {
+            if (document.querySelector('.custom-toast') === null &&
+                document.querySelector('.notifyjs-bootstrap-success') === null &&
+                document.querySelector('.toast') === null) {
+                console.log('No toaster found, showing fallback alert');
+                alert('✅ ' + message);
+            }
+        }, 2000);
+    }
+
+    // Show error toaster notification
+    function showErrorToast(message) {
+        if (typeof toastr !== 'undefined') {
+            toastr.error(message, 'Error!', {
+                timeOut: 7000,
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right'
+            });
+        } else if (typeof $.notify !== 'undefined') {
+            $.notify(message, {
+                type: 'danger',
+                delay: 7000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                }
+            });
+        } else {
+            // Fallback to custom toaster
+            showCustomToast(message, 'error');
+        }
+    }
+
+    // Custom toaster implementation
+    function showCustomToast(message, type) {
+        console.log('showCustomToast called with:', message, type);
+        var toastId = 'toast-' + Date.now();
+        var bgColor = type === 'success' ? '#28a745' : '#dc3545';
+        var icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+
+        var toastHtml = `
+            <div id="${toastId}" class="custom-toast" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 99999;
+                min-width: 300px;
+                max-width: 400px;
+                animation: slideInRight 0.5s ease-out;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            ">
+                <div style="display: flex; align-items: center;">
+                    <i class="fas ${icon}" style="margin-right: 10px; font-size: 18px;"></i>
+                    <div style="flex: 1;">
+                        <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong><br>
+                        ${message}
+                    </div>
+                    <button onclick="hideCustomToast('${toastId}')" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        margin-left: 10px;
+                        opacity: 0.8;
+                        padding: 0;
+                        width: 20px;
+                        height: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">&times;</button>
+                </div>
+            </div>
+        `;
+
+        try {
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+            console.log('Custom toast added to DOM with ID:', toastId);
+
+            // Auto-hide after 5 seconds
+            setTimeout(function() {
+                hideCustomToast(toastId);
+            }, 5000);
+        } catch (e) {
+            console.error('Error adding custom toast to DOM:', e);
+        }
+    }
+
+    // Hide custom toaster
+    function hideCustomToast(toastId) {
+        var toast = document.getElementById(toastId);
+        if (toast) {
+            toast.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(function() {
+                if (toast && toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }
+    }
+
+    // Test toaster function
+    function testToaster() {
+        showSuccessToast('✅ Store Configuration Updated Successfully! All fields have been saved.');
+    }
+
     // Show file requirements popup
     function showFileRequirements(fieldType) {
         var requirements = '';
         switch(fieldType) {
             case 'logo':
             case 'invert_logo':
-                requirements = 'Logo Requirements:\n• Formats: JPEG, JPG, PNG, GIF, WEBP\n• Max Size: 2MB\n• Dimensions: 128×80 pixels (exact)';
+                requirements = 'Logo Requirements:\n• Formats: JPEG, JPG, PNG, GIF, WEBP\n• Max Size: 10MB\n• No dimension restrictions - upload high resolution images';
                 break;
             case 'fav_icon':
-                requirements = 'Favicon Requirements:\n• Formats: ICO, PNG, JPG, JPEG, GIF, SVG\n• Max Size: 512KB\n• Dimensions: 43×38 pixels (exact)';
+                requirements = 'Favicon Requirements:\n• Formats: ICO, PNG, JPG, JPEG, GIF, SVG\n• Max Size: 5MB\n• No dimension restrictions - upload high resolution images';
                 break;
             default:
                 requirements = 'Please check the file requirements below the input field.';
@@ -857,20 +1037,10 @@
             var fileType = file.type;
             var fieldName = input.name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-            // Determine required dimensions based on field name
-            var requiredWidth, requiredHeight;
-            if (input.name === 'fav_icon') {
-                requiredWidth = 43;
-                requiredHeight = 38;
-            } else {
-                requiredWidth = 128;
-                requiredHeight = 80;
-            }
-
-            // Validate file size
-            var maxSize = (input.name === 'fav_icon') ? 512 * 1024 : 2 * 1024 * 1024; // 512KB for favicon, 2MB for logos
+            // Validate file size (no dimension restrictions)
+            var maxSize = (input.name === 'fav_icon') ? 5 * 1024 * 1024 : 10 * 1024 * 1024; // 5MB for favicon, 10MB for logos
             if (fileSize > maxSize) {
-                showFieldError(input, fieldName + ' file size must be under ' + (maxSize / 1024).toFixed(0) + 'KB. Current size: ' + (fileSize / 1024).toFixed(1) + 'KB');
+                showFieldError(input, fieldName + ' file size must be under ' + (maxSize / (1024 * 1024)).toFixed(0) + 'MB. Current size: ' + (fileSize / (1024 * 1024)).toFixed(1) + 'MB');
                 input.value = '';
                 return;
             }
@@ -892,18 +1062,12 @@
                 img.onload = function() {
                     var previewElement = document.getElementById(previewId);
                     if (previewElement) {
-                        // Validate dimensions
-                        if (img.width !== requiredWidth || img.height !== requiredHeight) {
-                            showFieldError(input, fieldName + ' dimensions must be exactly ' + requiredWidth + '×' + requiredHeight + ' pixels.\n\nCurrent dimensions: ' + img.width + '×' + img.height + ' pixels');
-                            input.value = '';
-                            return;
-                        }
-
+                        // No dimension validation - accept any size
                         // All validations passed - show preview
                         previewElement.src = e.target.result;
                         previewElement.style.border = '2px solid #28a745'; // Green border for success
                         removeFieldError(input);
-                        var successMsg = fieldName + ' uploaded successfully!\nFormat: ' + file.name.split('.').pop().toUpperCase() + '\nSize: ' + (fileSize / 1024).toFixed(1) + 'KB\nDimensions: ' + img.width + '×' + img.height + ' pixels';
+                        var successMsg = fieldName + ' uploaded successfully!\nFormat: ' + file.name.split('.').pop().toUpperCase() + '\nSize: ' + (fileSize / (1024 * 1024)).toFixed(1) + 'MB\nDimensions: ' + img.width + '×' + img.height + ' pixels';
                         console.log(successMsg);
                         showFieldSuccess(input, fieldName + ' validation passed! ✓');
                     }
@@ -960,6 +1124,18 @@
         }
 
         return isValid;
+    }
+
+    // ========================================
+    // CKEDITOR UPDATE FUNCTION
+    // ========================================
+
+    function updateCKEditors() {
+        // Update CKEditor content if editors exist
+        if (typeof window.storeMetaTitleEditor !== 'undefined') {
+            window.storeMetaTitleEditor.updateSourceElement();
+        }
+        return true;
     }
 
     // ========================================
@@ -1024,12 +1200,22 @@
     $(document).ready(function() {
         console.log('Document ready - initializing store config edit page');
 
+        // Wait a bit for all libraries to load
+        setTimeout(function() {
+            console.log('Checking available toaster libraries...');
+            console.log('jQuery available:', typeof $ !== 'undefined');
+            console.log('toastr available:', typeof toastr !== 'undefined');
+            console.log('$.notify available:', typeof $.notify !== 'undefined');
+        }, 500);
+
         // ========================================
         // INITIALIZE COMPONENTS
         // ========================================
 
         // Initialize CKEditor for Store Meta Title
-        initializeCKEditor('#Store_Meta_Title', 'storeMetaTitleEditor');
+
+        //initializeCKEditor('#Store_Meta_Title', 'storeMetaTitleEditor');
+
 
         // Initialize Tagify for email fields
         initializeTagify('#Order_Emails_To', 'orderEmailsTo');
@@ -1042,74 +1228,45 @@
         // ========================================
 
         $('#formEdit').on('submit', function(e) {
-            console.log('Form submitted');
+            console.log('Form submitted - starting validation');
+            console.log('Form action:', $(this).attr('action'));
+            console.log('Form method:', $(this).attr('method'));
+
+            // Update CKEditor content before validation
+            console.log('Updating CKEditor content');
+            updateCKEditors();
 
             // Validate form before submission
-            if (!validateForm()) {
+            console.log('Starting form validation');
+            var isValid = validateForm();
+            console.log('Form validation result:', isValid);
+
+            if (!isValid) {
+                console.log('Form validation failed - preventing submission');
                 e.preventDefault();
-                showErrorMessage('Please fix the validation errors before submitting.');
+                showErrorToast('Please fix the validation errors before submitting.');
                 return false;
             }
+
+            console.log('Form validation passed - proceeding with submission');
 
             // Show loading state
             var submitBtn = $(this).find('button[type="submit"]');
             var originalText = submitBtn.text();
             submitBtn.text('Updating...').prop('disabled', true);
+            console.log('Submit button disabled and text changed');
 
             // Re-enable button after 10 seconds as fallback
             setTimeout(function() {
                 submitBtn.text(originalText).prop('disabled', false);
+                console.log('Submit button re-enabled after timeout');
             }, 10000);
 
-            // Add AJAX submission for better debugging
-            e.preventDefault();
+            // Allow normal form submission - don't prevent default
+            console.log('Form validation passed, submitting normally');
+            console.log('Form will submit to:', $(this).attr('action'));
 
-            // Try AJAX first, fallback to normal submission if it fails
-            try {
-                var formData = new FormData(this);
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    timeout: 15000, // 15 second timeout
-                    success: function(response) {
-                        console.log('Success response received');
-
-                        // Show success message immediately
-                        showSuccessMessage('✅ Store Configuration Updated Successfully! All fields have been saved.');
-
-                        // Reset form and enable button
-                        submitBtn.text(originalText).prop('disabled', false);
-
-                        // Clear any previous error messages
-                        $('.field-error-message').remove();
-                        $('.is-invalid').removeClass('is-invalid');
-
-                        // Show success notification for 5 seconds, then hide
-                        setTimeout(function() {
-                            hideSuccessMessage();
-                        }, 5000);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX failed, falling back to normal submission');
-
-                        // Fallback to normal form submission
-                        var form = document.getElementById('formEdit');
-                        form.removeEventListener('submit', arguments.callee);
-                        form.submit();
-                    }
-                });
-            } catch (e) {
-                console.error('AJAX error, falling back to normal submission:', e);
-
-                // Fallback to normal form submission
-                var form = document.getElementById('formEdit');
-                form.removeEventListener('submit', arguments.callee);
-                form.submit();
-            }
+            // Form will submit normally - no preventDefault() called
         });
 
         // ========================================
@@ -1148,16 +1305,44 @@
                 scrollTop: $('.alert-success').offset().top - 100
             }, 500);
 
-            // Show toaster notification for success
-            if (typeof $.notify !== 'undefined') {
-                $.notify("{{ session('success') }}", "success");
-            }
+            // Show toaster notification for success - with proper error handling and delay
+            setTimeout(function() {
+                try {
+                    var successMessage = {!! json_encode(session('success')) !!};
+                    console.log('Success message from session:', successMessage);
+                    if (successMessage) {
+                        console.log('Calling showSuccessToast with message:', successMessage);
+                        showSuccessToast(successMessage);
+                    } else {
+                        console.log('No success message found in session');
+                        // Fallback message
+                        showSuccessToast('Store Configuration Updated Successfully!');
+                    }
+                } catch (e) {
+                    console.warn('Error showing success toaster:', e);
+                    // Fallback to simple notification
+                    if (typeof $.notify !== 'undefined') {
+                        $.notify('Store Configuration Updated Successfully!', 'success');
+                    } else {
+                        showSuccessToast('Store Configuration Updated Successfully!');
+                    }
+                }
+            }, 1000); // 1 second delay to ensure page is fully loaded
         }
 
         // Show toaster notification for error if exists
         if ($('.alert-danger').length > 0) {
-            if (typeof $.notify !== 'undefined') {
-                $.notify("{{ session('error') }}", "error");
+            try {
+                var errorMessage = {!! json_encode(session('error')) !!};
+                if (errorMessage) {
+                    showErrorToast(errorMessage);
+                }
+            } catch (e) {
+                console.warn('Error showing error toaster:', e);
+                // Fallback to simple notification
+                if (typeof $.notify !== 'undefined') {
+                    $.notify('An error occurred. Please check the form.', 'danger');
+                }
             }
         }
 
@@ -1178,4 +1363,4 @@
         console.log('Store config edit page initialization completed');
     });
 </script>
-@endpush
+

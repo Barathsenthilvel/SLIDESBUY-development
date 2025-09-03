@@ -64,6 +64,18 @@
             opacity: 1;
         }
     }
+
+    /* Custom toaster animation */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
 </style>
                     <!--end::Header-->
                     <!--begin::Content-->
@@ -122,6 +134,16 @@
                                     </div>
                                 @endif
 
+                                <!-- Test Toaster Button -->
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-info btn-sm" onclick="showToast('Test Success Message!', 'success')">
+                                        <i class="fas fa-bell"></i> Test Success Toaster
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-sm ml-2" onclick="showToast('Test Error Message!', 'error')">
+                                        <i class="fas fa-exclamation-triangle"></i> Test Error Toaster
+                                    </button>
+                                </div>
+
                                 <!--begin::Card-->
                                 <div class="card card-custom gutter-b">
                                     <div class="card-header flex-wrap py-3">
@@ -174,11 +196,89 @@
  @endsection
  @push('script')
      <script type="text/javascript">
+        // Simple, reliable toaster function
+        function showToast(message, type) {
+            console.log('showToast called:', message, type);
+
+            // Remove any existing toasts
+            $('.custom-toast').remove();
+
+            var bgColor = type === 'success' ? '#28a745' : '#dc3545';
+            var icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            var title = type === 'success' ? 'Success!' : 'Error!';
+
+            var toastHtml = `
+                <div class="custom-toast" style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${bgColor};
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 99999;
+                    min-width: 300px;
+                    max-width: 400px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    animation: slideInRight 0.5s ease-out;
+                ">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas ${icon}" style="margin-right: 10px; font-size: 18px;"></i>
+                        <div style="flex: 1;">
+                            <strong>${title}</strong><br>
+                            ${message}
+                        </div>
+                        <button onclick="$(this).closest('.custom-toast').fadeOut()" style="
+                            background: none;
+                            border: none;
+                            color: white;
+                            font-size: 18px;
+                            cursor: pointer;
+                            margin-left: 10px;
+                            opacity: 0.8;
+                            padding: 0;
+                            width: 20px;
+                            height: 20px;
+                        ">&times;</button>
+                    </div>
+                </div>
+            `;
+
+            $('body').append(toastHtml);
+
+            // Auto-hide after 5 seconds
+            setTimeout(function() {
+                $('.custom-toast').fadeOut();
+            }, 5000);
+        }
+
         $(function(){
+            console.log('Store config list page loaded');
+            console.log('jQuery available:', typeof $ !== 'undefined');
+            console.log('$.notify available:', typeof $.notify !== 'undefined');
+
             // Show toaster notification if success message exists
             @if(session('success'))
-                // Show toaster notification
-                $.notify("{{ session('success') }}", "success");
+                console.log('Success session found');
+                try {
+                    var successMessage = {!! json_encode(session('success')) !!};
+                    console.log('Success message:', successMessage);
+
+                    if (successMessage) {
+                        // Try Bootstrap Notify first
+                        if (typeof $.notify !== 'undefined') {
+                            console.log('Using $.notify for success');
+                            $.notify(successMessage, "success");
+                        } else {
+                            console.log('$.notify not available, using custom toast');
+                            showToast(successMessage, 'success');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error showing success toaster:', e);
+                    showToast('Store Configuration Updated Successfully!', 'success');
+                }
 
                 // Auto-hide success alert after 5 seconds
                 setTimeout(function() {
@@ -187,8 +287,25 @@
             @endif
 
             @if(session('error'))
-                // Show toaster notification
-                $.notify("{{ session('error') }}", "error");
+                console.log('Error session found');
+                try {
+                    var errorMessage = {!! json_encode(session('error')) !!};
+                    console.log('Error message:', errorMessage);
+
+                    if (errorMessage) {
+                        // Try Bootstrap Notify first
+                        if (typeof $.notify !== 'undefined') {
+                            console.log('Using $.notify for error');
+                            $.notify(errorMessage, "error");
+                        } else {
+                            console.log('$.notify not available, using custom toast');
+                            showToast(errorMessage, 'error');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error showing error toaster:', e);
+                    showToast('An error occurred. Please try again.', 'error');
+                }
 
                 // Auto-hide error alert after 8 seconds
                 setTimeout(function() {

@@ -81,7 +81,7 @@
                                 </li> --}}
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Total</span>
-                                    <span class="text">₹{{ number_format($orderDetails['total'], 2) }}</span>
+                                    <span class="text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($orderDetails['total'], 2) }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -97,7 +97,7 @@
                                 </li>
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">{{ $product['name'] }}</span>
-                                    <span class="text">₹{{ number_format($product['price'] - ($product['discount_price'] ?? 0), 2) }}</span>
+                                    <span class="text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product['price'] - ($product['discount_price'] ?? 0), 2) }}</span>
                                 </li>
                                 {{-- <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Project Management Dashboard </span>

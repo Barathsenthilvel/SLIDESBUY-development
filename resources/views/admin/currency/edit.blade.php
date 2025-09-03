@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -36,7 +36,9 @@
                                         <div class="card card-custom gutter-b example example-compact">
                                             <div class="card-header">
                                                 <h3 class="card-title">Edit Currency</h3>
-                                               
+                                                <div class="alert alert-info">
+                                                    <strong>Note:</strong> Changes to currency symbols will automatically update all price displays throughout the website when this currency is set as the default in Store Configuration.
+                                                </div>
                                             </div>
                                             <!--begin::Form-->
                                             @if(count($errors) > 0 )
@@ -69,7 +71,7 @@
                                                 <div class="card-body">
                                                    <div class="form-group row">
                                                         <label class="col-2 col-form-label">Currency Title<span class="text-danger">*</span></label>
-                                                        
+
                                                         <div class="col-10">
                                                             <input class="form-control" type="text" value="{{$data->currency_title}}" id="currencyTitle" name="currencyTitle" />
                                                         </div>
@@ -77,7 +79,7 @@
 
                                                     <div class="form-group row">
                                                         <label class="col-2 col-form-label">Currency Symbol<span class="text-danger">*</span></label>
-                                                        
+
                                                         <div class="col-10">
                                                             <input class="form-control" type="text" value="{{$data->currency_symbol }}" id="currencySymbol" name="currencySymbol" />
                                                         </div>
@@ -85,7 +87,7 @@
 
                                                     <div class="form-group row">
                                                         <label class="col-2 col-form-label">Currency Price<span class="text-danger">*</span></label>
-                                                        
+
                                                         <div class="col-10">
                                                             <input class="form-control" type="text" value="{{$data->currency_price }}" id="currencyPrice" name="currencyPrice" />
                                                         </div>
@@ -101,9 +103,9 @@
                                             <!--end::Form-->
                                         </div>
                                         <!--end::Card-->
-                                                        
+
                                     </div>
-                                  
+
                                 </div>
                             </div>
                             <!--end::Container-->
@@ -113,7 +115,7 @@
 
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection                     
+ @endsection
 
  @push('script')
 

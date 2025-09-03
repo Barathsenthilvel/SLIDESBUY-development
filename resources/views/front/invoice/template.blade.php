@@ -149,9 +149,9 @@
             @foreach($cart->singleorder as $item)
             <tr>
                 <td>{{ $item['name'] }}</td>
-                <td>₹{{ number_format($item['price'], 2) }}</td>
-                <td>₹{{ number_format($item['coupon_amount'] ?? 0, 2) }}</td>
-                <td>₹{{ number_format($item['price'] - ($item['coupon_amount'] ?? 0), 2) }}</td>
+                <td>{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($item['price'], 2) }}</td>
+                <td>{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($item['coupon_amount'] ?? 0, 2) }}</td>
+                <td>{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($item['price'] - ($item['coupon_amount'] ?? 0), 2) }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -160,17 +160,17 @@
     <div class="total-section">
         <div class="total-row">
             <span class="total-label">Subtotal:</span>
-            <span class="total-value">₹{{ number_format($cart->totalPrice, 2) }}</span>
+            <span class="total-value">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($cart->totalPrice, 2) }}</span>
         </div>
         @if(isset($cart->coupon_amount) && $cart->coupon_amount > 0)
         <div class="total-row">
             <span class="total-label">Discount:</span>
-            <span class="total-value">-₹{{ number_format($cart->coupon_amount, 2) }}</span>
+            <span class="total-value">-{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($cart->coupon_amount, 2) }}</span>
         </div>
         @endif
         <div class="total-row grand-total">
             <span class="total-label">Total:</span>
-            <span class="total-value">₹{{ number_format($order->total, 2) }}</span>
+            <span class="total-value">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($order->total, 2) }}</span>
         </div>
     </div>
 

@@ -64,7 +64,7 @@
                         <!-- Credit card form tabs -->
                         <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3 navmob" style="display: flex;justify-content: space-between;">
                     @if($Address->country_id == 100 && false)
-						<label class="container1" for="CODradio">Cash On Delivery + ₹ {{ $Cart->CODAmount}}
+						<label class="container1" for="CODradio">Cash On Delivery + {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }} {{ $Cart->CODAmount}}
 						  <input type="radio" name="radio" id="CODradio" value="COD" onchange='paymenttype(event);'>
 						  <span class="checkmark"></span>
 						</label>
@@ -99,7 +99,7 @@
 
                             <form action="{{route('user.cash')}}" method="post" id="COD">
                                 @csrf
-                                <input type="submit" value="Cash On Delivery ₹ {{$Cart->grandTotal + $Cart->CODAmount}}"  class="placeorder-btn btn-block">
+                                <input type="submit" value="Cash On Delivery {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }} {{$Cart->grandTotal + $Cart->CODAmount}}"  class="placeorder-btn btn-block">
                             </form>
 
                             <form action="{!!route('user.razorpayReturn')!!}" method="POST" id="upi">
@@ -107,7 +107,8 @@
                                 <script src="https://checkout.razorpay.com/v1/checkout.js"
                                         data-key="{{ env('RAZOR_KEY') }}"
                                         data-amount="{{$Cart->grandTotal*100}}"
-                                        data-buttontext="Pay ₹ {{$Cart->grandTotal}}"
+                                        data-currency="{{ $currentCurrency ? $currentCurrency->currency_title : 'INR' }}"
+                                        data-buttontext="Pay {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }} {{$Cart->grandTotal}}"
                                         data-name="{{$Address->name.' '.$Address->last}}"
                                         data-description="Payment with Tuljamart"
                                         data-image="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"

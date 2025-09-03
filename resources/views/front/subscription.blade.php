@@ -62,13 +62,13 @@
 
                                         <div class="price-display">
                                             <div class="original-price-small">
-                                                <span class="text-decoration-line-through text-muted">₹{{ $originalPrice }}</span>
+                                                <span class="text-decoration-line-through text-muted">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $originalPrice }}</span>
                                             </div>
                                             <div class="discounted-price-large">
-                                                <span class="text-success fw-bold">₹{{ number_format($discountedPrice, 2) }}</span>
+                                                <span class="text-success fw-bold">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($discountedPrice, 2) }}</span>
                                                 <span class="discount-badge-attractive">
                                                     @if($plan->discount_type === 'flat')
-                                                        SAVE ₹{{ $plan->discount }}
+                                                        SAVE {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $plan->discount }}
                                                     @elseif($plan->discount_type === 'percentage')
                                                         SAVE {{ $plan->discount }}%
                                                     @endif
@@ -76,7 +76,7 @@
                                             </div>
                                         </div>
                                     @else
-                                        ₹{{ $plan->price }}
+                                        {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $plan->price }}
                                     @endif
                                     <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span>
                                 </h3>
@@ -104,7 +104,7 @@
                                     @if($plan->discount && $plan->discount > 0)
                                         <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount:
                                             @if($plan->discount_type === 'flat')
-                                                ₹{{ $plan->discount }} OFF
+                                                {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $plan->discount }} OFF
                                             @elseif($plan->discount_type === 'percentage')
                                                 {{ $plan->discount }}% OFF
                                             @endif
@@ -1075,11 +1075,17 @@ jQuery(document).ready(function ($) {
 
         $('.plan-validity').text(planData.validity + ' days');
 
+        // Get current currency symbol
+        var currencySymbol = '₹'; // Default fallback
+        @if($currentCurrency)
+            currencySymbol = '{{ $currentCurrency->currency_symbol }}';
+        @endif
+
         // Show/hide discount section
         if (planData.discount > 0) {
             $('.plan-discount-item').show();
             if (planData.discountType === 'flat') {
-                $('.plan-discount').text('₹' + planData.discount + ' OFF');
+                $('.plan-discount').text(currencySymbol + planData.discount + ' OFF');
             } else if (planData.discountType === 'percentage') {
                 $('.plan-discount').text(planData.discount + '% OFF');
             }
@@ -1091,17 +1097,17 @@ jQuery(document).ready(function ($) {
         let discountedPrice = calculateDiscountedPrice(planData.price, planData.discountType, planData.discount);
 
         // Display final price (discounted or original)
-        $('.plan-price-final').text('₹' + discountedPrice.toFixed(2));
+        $('.plan-price-final').text(currencySymbol + discountedPrice.toFixed(2));
 
         // Show original price and discount if applicable
         if (planData.discount > 0) {
             $('.original-price-small').show();
-            $('.plan-price-original').text('₹' + planData.price.toFixed(2));
+            $('.plan-price-original').text(currencySymbol + planData.price.toFixed(2));
             $('.discount-badge-attractive').show();
 
             // Show discount badge
             if (planData.discountType === 'flat') {
-                $('.discount-badge-attractive').text('SAVE ₹' + planData.discount);
+                $('.discount-badge-attractive').text('SAVE ' + currencySymbol + planData.discount);
             } else if (planData.discountType === 'percentage') {
                 $('.discount-badge-attractive').text('SAVE ' + planData.discount + '%');
             }

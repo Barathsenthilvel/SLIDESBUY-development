@@ -14,7 +14,7 @@
             <div>
                 <h3 class="section-heading__title"> Trending Slides</h3>
                 <p class="section-heading__desc font-18">
-                    Handpicked trending items, updated regularly.
+                Explore what’s hot in slide design now.
                 </p>
             </div>
             <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300">

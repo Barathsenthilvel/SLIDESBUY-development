@@ -357,7 +357,7 @@ public function register(Request $request)
 
     try {
         // Send OTP email
-        Mail::to($request->email)->send(new SendOtpMail($otp));
+        Mail::to($request->email)->send(new SendOtpMail($otp, $request->name));
 
         // Store OTP in database
         OtpVerification::updateOrCreate(
@@ -529,7 +529,7 @@ public function resendOtp(Request $request)
 
     // ✅ Send OTP Email
     try {
-        Mail::to($email)->send(new \App\Mail\SendOtpMail($otp));
+        Mail::to($email)->send(new \App\Mail\SendOtpMail($otp, $registerData['name']));
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,

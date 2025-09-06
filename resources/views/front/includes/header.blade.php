@@ -279,8 +279,8 @@ if(auth()->check()){
 </div>
 <!-- ==================== Mobile Menu End Here ==================== -->
 
-<main>
-{{-- <main class="change-gradient"> --}}
+<!-- <main> -->
+ <main class="change-gradient">
     <!-- ============================ Sale Offer Start =========================== -->
 <div class="sale-offer ">
     <div class="container container-full ">
@@ -296,9 +296,9 @@ if(auth()->check()){
 
             </div>
             <div class="sale-offer__discount flx-align gap-2">
-                <span class="sale-offer__text text-heading text-capitalize">New Year Flash Sale Offer</span>
-                <strong class="sale-offer__qty text-heading font-heading">45% OFF</strong>
-                <a href="#" class="btn btn-sm btn-white pill fw-500">Shop Now</a>
+                <span class="sale-offer__text text-heading text-capitalize">Enjoy Premium Plans at </span>
+                <strong class="sale-offer__qty text-heading font-heading">~50% OFF</strong>
+                <a href="{{ route('login.form') }}" class="btn btn-sm btn-white pill fw-500">Signup</a>
             </div>
             <div class="sale-offer__button">
                 <button type="submit" class="sale-offer__close text-heading"><i class="las la-times"></i></button>

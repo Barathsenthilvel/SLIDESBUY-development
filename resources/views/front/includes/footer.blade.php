@@ -137,10 +137,10 @@
                             <a target="_blank" href="https://www.youtube.com/@Tulja-BestieBeans" class="social-icon-list__link flx-center"> <i class="fab fa-twitter"></i></a>
                         </li>
                         <li class="social-icon-list__item">
-                            <a target="_blank" href="https://www.instagram.com/tulja_bestie_beans/" class="social-icon-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
+                            <a target="_blank" href="https://www.linkedin.com/company/slidesbuy/" class="social-icon-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
                         </li>
                         <li class="social-icon-list__item">
-                            <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-pinterest-p"></i></a>
+                            <a href="https://pin.it/32Sat9vs1" class="social-icon-list__link flx-center"> <i class="fab fa-pinterest-p"></i></a>
                         </li>
                         <li class="social-icon-list__item">
                             <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-youtube"></i></a>
@@ -233,23 +233,23 @@
                                 <img  src={{ asset(' assets/images/logo/slidesbuy.png') }} alt="Logo" class="dark-version">
                             </a>
                         </div>
-                        <p class="footer-widget__desc">Lorem consultancy elitsed do eiusmod tempor inci didunt ut labore dolore magna aliqua sed do eiusmod.</p>
+                        <p class="footer-widget__desc">Your trusted source for premium PowerPoint & Google Slides templates.</p>
                         <div class="footer-widget__social">
                             <ul class="social-icon-list">
     <li class="social-icon-list__item">
         <a href="https://www.facebook.com" class="social-icon-list__link flx-center"><i class="fab fa-facebook-f"></i></a>
     </li>
+    <!-- <li class="social-icon-list__item"> -->
+        <!-- <a href="https://www.twitter.com" class="social-icon-list__link flx-center"> <i class="fab fa-twitter"></i></a> -->
+    <!-- </li> -->
     <li class="social-icon-list__item">
-        <a href="https://www.twitter.com" class="social-icon-list__link flx-center"> <i class="fab fa-twitter"></i></a>
+        <a href="https://www.linkedin.com/company/slidesbuy/" class="social-icon-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
     </li>
     <li class="social-icon-list__item">
-        <a href="https://www.linkedin.com" class="social-icon-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
+        <a href="https://pin.it/32Sat9vs1" class="social-icon-list__link flx-center"> <i class="fab fa-pinterest-p"></i></a>
     </li>
     <li class="social-icon-list__item">
-        <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-pinterest-p"></i></a>
-    </li>
-    <li class="social-icon-list__item">
-        <a href="https://www.pinterest.com" class="social-icon-list__link flx-center"> <i class="fab fa-youtube"></i></a>
+        <a href="https://www.instagram.com/slidesbuy/" class="social-icon-list__link flx-center"> <i class="fab fa-instagram"></i></a>
     </li>
 </ul>
                         </div>

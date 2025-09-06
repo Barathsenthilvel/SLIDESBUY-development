@@ -224,6 +224,81 @@
     .custom-toast button:hover {
         opacity: 1 !important;
     }
+
+    /* Loading spinner styles */
+    .form-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-loading-content {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 300px;
+        width: 90%;
+    }
+
+    .form-loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .form-loading-text {
+        color: #333;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .form-loading-subtext {
+        color: #666;
+        font-size: 14px;
+        margin: 10px 0 0 0;
+    }
+
+    /* Button loading state */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn-loading .btn-text {
+        opacity: 0.7;
+    }
+
+    .btn-loading .btn-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 </style>
 
 <!-- Prevent dropzone and other conflicting scripts from running -->
@@ -365,6 +440,15 @@
                             </div>
                         @endif
 
+                        <!-- Loading Overlay -->
+                        <div id="formLoadingOverlay" class="form-loading-overlay">
+                            <div class="form-loading-content">
+                                <div class="form-loading-spinner"></div>
+                                <p class="form-loading-text">Updating Store Configuration...</p>
+                                <p class="form-loading-subtext">Please wait while we save your changes</p>
+                            </div>
+                        </div>
+
                         <form method="POST" action="{{route('admin-store-update',$data->id)}}" id="formEdit" enctype="multipart/form-data">
                             <input type="hidden" id="id" value="{{ $data->id }}">
                             {{ csrf_field() }}
@@ -482,25 +566,28 @@
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <div class="file-guidelines">
-                                            <h6><i class="fas fa-info-circle"></i> File Upload Guidelines</h6>
+                                            <h6><i class="fas fa-info-circle"></i> File Upload Guidelines <span class="text-danger">* Required Fields</span></h6>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <strong>Logo & Invert Logo:</strong><br>
+                                                    <strong>Logo & Invert Logo: <span class="text-danger">*</span></strong><br>
                                                     • Formats: JPEG, JPG, PNG, GIF, WebP<br>
                                                     • Max Size: 10MB<br>
-                                                    • No dimension restrictions
+                                                    • No dimension restrictions<br>
+                                                    • <strong>Required for store branding</strong>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <strong>Favicon:</strong><br>
+                                                    <strong>Favicon: <span class="text-danger">*</span></strong><br>
                                                     • Formats: ICO, PNG, JPG, JPEG, GIF, SVG<br>
                                                     • Max Size: 5MB<br>
-                                                    • No dimension restrictions
+                                                    • No dimension restrictions<br>
+                                                    • <strong>Required for browser tabs</strong>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <strong>Tips:</strong><br>
                                                     • Use PNG for transparency<br>
                                                     • ICO format is best for favicons<br>
-                                                    • Higher resolution images recommended
+                                                    • Higher resolution images recommended<br>
+                                                    • <strong>All three files are mandatory</strong>
                                                 </div>
                                             </div>
                                         </div>
@@ -544,20 +631,13 @@
 
                                 <div class="form-group row">
                                     <label class="col-2 col-form-label">logo
-                                        <span class="text-danger"></span></label>
+                                        <span class="text-danger">*</span></label>
                                     <div class="col-10">
                                         <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="logo_preview"
                                              src="{{ $data->logo && file_exists(public_path('assets/media/banner/'.$data->logo)) ? URL::asset('assets/media/banner/'.$data->logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TG9nbzwvdGV4dD4KPC9zdmc+Cg==' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="logo_old" value="{{ $data->logo }}">
-                                                                                <div class="input-group">
-                                            <input type="file" name="logo" id="logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'logo_preview')" class="form-control">
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-info btn-sm" onclick="showFileRequirements('logo')" title="Show file requirements">
-                                                    <i class="fas fa-question-circle"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                                                                <input type="file" name="logo" id="logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'logo_preview')" class="form-control" required>
                                         <span class="form-text text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
@@ -567,20 +647,13 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-2 col-form-label">Invert Logo
-                                        <span class="text-danger"></span></label>
+                                        <span class="text-danger">*</span></label>
                                     <div class="col-10">
                                         <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="invert_logo_preview"
                                              src="{{ $data->invert_logo && file_exists(public_path('assets/media/banner/'.$data->invert_logo)) ? URL::asset('assets/media/banner/'.$data->invert_logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW52ZXJ0PC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="invert_logo_old" value="{{ $data->invert_logo }}">
-                                                                                <div class="input-group">
-                                            <input type="file" name="invert_logo" id="invert_logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'invert_logo_preview')" class="form-control">
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-info btn-sm" onclick="showFileRequirements('invert_logo')" title="Show file requirements">
-                                                    <i class="fas fa-question-circle"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                                                                <input type="file" name="invert_logo" id="invert_logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'invert_logo_preview')" class="form-control" required>
                                         <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
@@ -590,20 +663,13 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-2 col-form-label">FavIcon
-                                        <span class="text-danger"></span></label>
+                                        <span class="text-danger">*</span></label>
                                     <div class="col-10">
                                         <img class="file-preview" id="fav_icon_preview" style="width:80px;height:80px;border:2px dashed #222;object-fit:contain;"
                                              src="{{ $data->fav_icon && file_exists(public_path('assets/media/banner/'.$data->fav_icon)) ? URL::asset('assets/media/banner/'.$data->fav_icon) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDMiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCA0MyAzOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQzIiBoZWlnaHQ9IjM4IiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjIxLjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2Yzc1N2QiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5GYXZpY29uPC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="fav_icon_old" value="{{ $data->fav_icon }}">
-                                                                                <div class="input-group">
-                                            <input type="file" name="fav_icon" id="fav_icon" accept=".ico,.png,.jpg,.jpeg,.gif,.svg" onchange="previewImage(this, 'fav_icon_preview')" class="form-control">
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-info btn-sm" onclick="showFileRequirements('fav_icon')" title="Show file requirements">
-                                                    <i class="fas fa-question-circle"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                                                                <input type="file" name="fav_icon" id="fav_icon" accept=".ico,.png,.jpg,.jpeg,.gif,.svg" onchange="previewImage(this, 'fav_icon_preview')" class="form-control" required>
                                         <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> ICO, PNG, JPG, JPEG, GIF, SVG |
@@ -719,9 +785,12 @@
                                 </div> --}}
                             </div>
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                <button type="submit" class="btn btn-primary mr-2" id="submitBtn">
+                                    <span class="btn-text">Submit</span>
+                                    <div class="btn-spinner" style="display: none;"></div>
+                                </button>
                                 <button type="reset" class="btn btn-secondary">Cancel</button>
-                                <button type="button" class="btn btn-info ml-2" onclick="testToaster()">Test Toaster</button>
+                              
                             </div>
                         </form>
                         <!--end::Form-->
@@ -782,6 +851,38 @@ $(document).ready(function() {
                 console.warn('Error destroying dropzone instance:', e);
             }
         });
+    }
+
+    // ========================================
+    // LOADING FUNCTIONS
+    // ========================================
+
+    // Show loading overlay
+    function showLoadingOverlay() {
+        console.log('Showing loading overlay');
+        $('#formLoadingOverlay').css('display', 'flex');
+        $('body').css('overflow', 'hidden'); // Prevent scrolling
+    }
+
+    // Hide loading overlay
+    function hideLoadingOverlay() {
+        console.log('Hiding loading overlay');
+        $('#formLoadingOverlay').css('display', 'none');
+        $('body').css('overflow', ''); // Restore scrolling
+    }
+
+    // Show button loading state
+    function showButtonLoading(button) {
+        button.addClass('btn-loading').prop('disabled', true);
+        button.find('.btn-text').text('Updating...');
+        button.find('.btn-spinner').show();
+    }
+
+    // Hide button loading state
+    function hideButtonLoading(button, originalText) {
+        button.removeClass('btn-loading').prop('disabled', false);
+        button.find('.btn-text').text(originalText);
+        button.find('.btn-spinner').hide();
     }
 
     // ========================================
@@ -1021,22 +1122,7 @@ $(document).ready(function() {
         showSuccessToastEnhanced('✅ Store Configuration Updated Successfully! All fields have been saved.', { showOnce: false });
     }
 
-    // Show file requirements popup
-    function showFileRequirements(fieldType) {
-        var requirements = '';
-        switch(fieldType) {
-            case 'logo':
-            case 'invert_logo':
-                requirements = 'Logo Requirements:\n• Formats: JPEG, JPG, PNG, GIF, WEBP\n• Max Size: 10MB\n• No dimension restrictions - upload high resolution images';
-                break;
-            case 'fav_icon':
-                requirements = 'Favicon Requirements:\n• Formats: ICO, PNG, JPG, JPEG, GIF, SVG\n• Max Size: 5MB\n• No dimension restrictions - upload high resolution images';
-                break;
-            default:
-                requirements = 'Please check the file requirements below the input field.';
-        }
-        alert(requirements);
-    }
+    // Removed showFileRequirements function - no longer needed
 
     // ========================================
     // IMAGE PREVIEW AND VALIDATION
@@ -1238,6 +1324,15 @@ $(document).ready(function() {
         selectRequired: {
             validate: (value) => value !== '' && value !== 'Select Currency' && value !== 'Select type',
             message: 'Please select a valid option'
+        },
+        fileRequired: {
+            validate: (value) => {
+                if (typeof value === 'string') {
+                    return value.trim() !== '';
+                }
+                return value && value.files && value.files.length > 0;
+            },
+            message: 'This file is required'
         }
     };
 
@@ -1252,10 +1347,16 @@ $(document).ready(function() {
         for (let rule of rules) {
             if (typeof rule === 'string') {
                 rule = validationRules[rule];
-            }
+x            }
 
             if (rule && !rule.validate(value)) {
-                showFieldError(field, rule.message);
+                // Customize error message for file fields
+                let errorMessage = rule.message;
+                if (field.type === 'file') {
+                    const fieldLabel = fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    errorMessage = fieldLabel + ' is required.';
+                }
+                showFieldError(field, errorMessage);
                 return false;
             }
         }
@@ -1474,7 +1575,10 @@ $(document).ready(function() {
             'Store_Meta_Title': ['required', validationRules.minLength(3)],
             'Order_Emails_To': ['required', 'email'],
             'Contact_Us_Emails_To': ['required', 'email'],
-            'Contact_Us_Emails_BCC': ['email']
+            'Contact_Us_Emails_BCC': ['email'],
+            'logo': ['fileRequired'],
+            'invert_logo': ['fileRequired'],
+            'fav_icon': ['fileRequired']
         };
 
         // ========================================
@@ -1496,6 +1600,9 @@ $(document).ready(function() {
             console.log('Form action:', $(this).attr('action'));
             console.log('Form method:', $(this).attr('method'));
 
+            // Prevent default form submission
+            e.preventDefault();
+
             // Update CKEditor content before validation
             console.log('Updating CKEditor content');
             updateCKEditors();
@@ -1507,30 +1614,100 @@ $(document).ready(function() {
 
             if (!isValid) {
                 console.log('Enhanced form validation failed - preventing submission');
-                e.preventDefault();
                 showErrorToastEnhanced('Please fix the validation errors before submitting.');
                 return false;
             }
 
-            console.log('Enhanced form validation passed - proceeding with submission');
+            console.log('Enhanced form validation passed - proceeding with AJAX submission');
 
-            // Show loading state
+            // Get submit button and original text
             var submitBtn = $(this).find('button[type="submit"]');
-            var originalText = submitBtn.text();
-            submitBtn.text('Updating...').prop('disabled', true);
-            console.log('Submit button disabled and text changed');
+            var originalText = submitBtn.find('.btn-text').text();
+            
+            // Show loading states
+            showLoadingOverlay();
+            showButtonLoading(submitBtn);
+            console.log('Loading states activated');
 
-            // Re-enable button after 10 seconds as fallback
-            setTimeout(function() {
-                submitBtn.text(originalText).prop('disabled', false);
-                console.log('Submit button re-enabled after timeout');
-            }, 10000);
-
-            // Allow normal form submission - don't prevent default
-            console.log('Enhanced form validation passed, submitting normally');
-            console.log('Form will submit to:', $(this).attr('action'));
-
-            // Form will submit normally - no preventDefault() called
+            // Prepare form data
+            var formData = new FormData(this);
+            
+            // Submit via AJAX
+            $.ajax({
+                method: "POST",
+                url: $(this).attr('action'),
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                timeout: 30000, // 30 second timeout
+                success: function(response) {
+                    console.log('AJAX Success Response:', response);
+                    
+                    // Hide loading states
+                    hideLoadingOverlay();
+                    hideButtonLoading(submitBtn, originalText);
+                    
+                    if (response.success && response.msg) {
+                        // Show success toaster
+                        showSuccessToastEnhanced(response.msg, { showOnce: false });
+                        
+                        // Scroll to top
+                        $('html, body').animate({
+                            scrollTop: 0
+                        }, 500);
+                        
+                        // Hide any existing error alerts
+                        $('.alert-danger').hide();
+                        
+                        // Show success alert
+                        $('.alert-success').html('<div class="d-flex align-items-center"><i class="fas fa-check-circle mr-2"></i><div><strong>Success:</strong> ' + response.msg + '</div></div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>').show();
+                        
+                    } else {
+                        showErrorToastEnhanced('Update completed but no success message received.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error:', xhr, status, error);
+                    
+                    // Hide loading states
+                    hideLoadingOverlay();
+                    hideButtonLoading(submitBtn, originalText);
+                    
+                    var errorMessage = 'Something went wrong. Please try again.';
+                    
+                    if (xhr.responseJSON) {
+                        if (xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        } else if (xhr.responseJSON.errors) {
+                            var errorList = '';
+                            $.each(xhr.responseJSON.errors, function(field, messages) {
+                                errorList += '<li>' + messages[0] + '</li>';
+                            });
+                            errorMessage = '<ul>' + errorList + '</ul>';
+                        }
+                    }
+                    
+                    // Handle timeout specifically
+                    if (status === 'timeout') {
+                        errorMessage = 'Request timed out. Please try again.';
+                    }
+                    
+                    // Show error toaster
+                    showErrorToastEnhanced(errorMessage, { showOnce: false });
+                    
+                    // Scroll to top
+                    $('html, body').animate({
+                        scrollTop: 0
+                    }, 500);
+                    
+                    // Hide any existing success alerts
+                    $('.alert-success').hide();
+                    
+                    // Show error alert
+                    $('.alert-danger').html('<div class="d-flex align-items-center"><i class="fas fa-exclamation-triangle mr-2"></i><div><strong>Error:</strong> ' + errorMessage + '</div></div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>').show();
+                }
+            });
         });
 
         // ========================================

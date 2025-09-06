@@ -167,8 +167,8 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-7">
                         <div class="breadcrumb-one-content">
-                            <h3 class="breadcrumb-one-content__title text-center mb-3 text-capitalize">58,000+ Slides available for purchase</h3>
-                            <p class="breadcrumb-one-content__desc text-center text-black-three">Explore the best premium themes and plugins available for sale. Our unique collection is hand-curated by experts. Find and buy the perfect premium theme.</p>
+                            <h3 class="breadcrumb-one-content__title text-center mb-3 text-capitalize">Create Powerful Presentations with ready made templates</h3>
+                            <p class="breadcrumb-one-content__desc text-center text-black-three">Download ready-made, fully editable Power point slides and save hours  of design work. finish faster, present better.</p>
 
 
 

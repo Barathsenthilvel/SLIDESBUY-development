@@ -9,11 +9,21 @@
         <meta name="keywords" content="{{ $StoreConfig->Store_Meta_Keywords }}" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <base href="{{ url('/') }}/">
-        <link href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" rel="icon">
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+        @if(!empty($StoreConfig->fav_icon) && file_exists(public_path('assets/media/banner/'.$StoreConfig->fav_icon)))
+            <link rel="shortcut icon" href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" type="image/x-icon">
+            <link rel="icon" href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" type="image/x-icon">
+            {{-- Debug: Favicon loaded from database --}}
+            <script>console.log('Favicon loaded from database: {{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}');</script>
+        @else
+            <!-- Fallback favicon -->
+            <link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}" type="image/x-icon">
+            {{-- Debug: Using fallback favicon. StoreConfig fav_icon: {{ $StoreConfig->fav_icon ?? 'null' }} --}}
+            {{-- Debug: File path: {{ public_path('assets/media/banner/'.($StoreConfig->fav_icon ?? '')) }} --}}
+            {{-- Debug: File exists: {{ file_exists(public_path('assets/media/banner/'.($StoreConfig->fav_icon ?? ''))) ? 'true' : 'false' }} --}}
+            <script>console.log('Using fallback favicon. StoreConfig fav_icon: {{ $StoreConfig->fav_icon ?? 'null' }}');</script>
+        @endif
 
-     <!-- Favicon -->
-<link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">

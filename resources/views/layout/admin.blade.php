@@ -28,7 +28,13 @@
         <link href="{{ URL::asset('assets/css/themes/layout/brand/dark.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ URL::asset('assets/css/themes/layout/aside/dark.css') }}" rel="stylesheet" type="text/css" />
         <!--end::Layout Themes-->
-        <link rel="shortcut icon" href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" />
+        @if(!empty($StoreConfig->fav_icon) && file_exists(public_path('assets/media/banner/'.$StoreConfig->fav_icon)))
+            <link rel="shortcut icon" href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" type="image/x-icon">
+            <link rel="icon" href="{{URL::asset('assets/media/banner/'.$StoreConfig->fav_icon)}}" type="image/x-icon">
+        @else
+            <!-- Fallback favicon -->
+            <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" type="image/x-icon">
+        @endif
         <link href="{{ URL::asset('assets/css/croppie.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ URL::asset('assets/css/nice-select.css')}}" rel="stylesheet" />
         <style>

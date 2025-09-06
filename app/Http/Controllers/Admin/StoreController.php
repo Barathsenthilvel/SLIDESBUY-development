@@ -98,6 +98,9 @@ class StoreController extends Controller
 
         $input = $request->all();
 
+        // Get existing store data to check for existing images
+        $existingData = Storeconfiguration::findOrFail($id);
+        
         // Validation rules for required fields
         $rules = [
             'store_name' => 'required|string|max:255',
@@ -110,10 +113,22 @@ class StoreController extends Controller
             'Order_Emails_To' => 'required|string',
             'Contact_Us_Emails_To' => 'required|string',
             'Contact_Us_Emails_BCC' => 'required|string',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'invert_logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'fav_icon' => 'required|mimes:ico,png,jpg,jpeg,gif,svg|max:5120',
+            'fav_icon' => 'nullable|mimes:ico,png,jpg,jpeg,gif,svg|max:5120',
         ];
+
+        // Add logo validation - required only if no existing logo
+        if (empty($existingData->logo) || !file_exists(public_path('assets/media/banner/'.$existingData->logo))) {
+            $rules['logo'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240';
+        } else {
+            $rules['logo'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240';
+        }
+
+        // Add invert_logo validation - required only if no existing invert_logo
+        if (empty($existingData->invert_logo) || !file_exists(public_path('assets/media/banner/'.$existingData->invert_logo))) {
+            $rules['invert_logo'] = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240';
+        } else {
+            $rules['invert_logo'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240';
+        }
 
       $customs = [
             'store_name.required' => 'Store Name is required.',
@@ -129,18 +144,23 @@ class StoreController extends Controller
             'Order_Emails_To.required' => 'Order Emails To is required.',
             'Contact_Us_Emails_To.required' => 'Contact Us Emails To is required.',
             'Contact_Us_Emails_BCC.required' => 'Contact Us Emails BCC is required.',
-            'logo.required' => 'Logo is required.',
             'logo.image' => 'Logo must be an image file.',
             'logo.mimes' => 'Logo must be a JPEG, PNG, JPG, GIF or WebP file.',
             'logo.max' => 'Logo size must be less than 10MB.',
-            'invert_logo.required' => 'Invert Logo is required.',
             'invert_logo.image' => 'Invert Logo must be an image file.',
             'invert_logo.mimes' => 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file.',
             'invert_logo.max' => 'Invert Logo size must be less than 10MB.',
-            'fav_icon.required' => 'Favicon is required.',
             'fav_icon.mimes' => 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file.',
             'fav_icon.max' => 'Favicon size must be less than 5MB.',
         ];
+
+        // Add conditional error messages for logo and invert_logo
+        if (empty($existingData->logo) || !file_exists(public_path('assets/media/banner/'.$existingData->logo))) {
+            $customs['logo.required'] = 'Logo is required.';
+        }
+        if (empty($existingData->invert_logo) || !file_exists(public_path('assets/media/banner/'.$existingData->invert_logo))) {
+            $customs['invert_logo.required'] = 'Invert Logo is required.';
+        }
 
         // All validation rules are now in the main $rules array
         $allRules = $rules;

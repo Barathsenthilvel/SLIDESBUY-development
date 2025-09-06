@@ -71,11 +71,16 @@ public function success($id)
     // dd($subscription);
     $plan = $subscription->plan;
 // dd( $plan);
+    // Calculate discount amount
+    $discountAmount = $subscription->price - $subscription->discount_price;
+
     $orderDetails = [
-        'order_no' => $subscription->id,
+        'order_no' => 'SUB-' . str_pad($subscription->id, 6, '0', STR_PAD_LEFT),
         'order_status' => $subscription->payment_status,
         'payment_method' => $subscription->payment_method,
         'date' => $subscription->created_at->format('Y-m-d'),
+        'subtotal' => $subscription->price,
+        'discount_amount' => $discountAmount,
         'discount_price' => $subscription->discount_price,
         'total' => $subscription->discount_price,
     ];
@@ -83,7 +88,12 @@ public function success($id)
     // dd(  $orderDetails);
 
     $productsPurchased = [
-        ['name' => $plan->name, 'price' => $plan->price],
+        [
+            'name' => $plan->name,
+            'price' => $subscription->price,
+            'discount_price' => $subscription->discount_price,
+            'discount_amount' => $discountAmount
+        ],
     ];
     // dd($productsPurchased);
 

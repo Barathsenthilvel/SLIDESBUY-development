@@ -18,7 +18,8 @@ class CurrencyHelper
 
         if ($storeConfig && $storeConfig->default_currency) {
             $currency = Currency::find($storeConfig->default_currency);
-            if ($currency) {
+            // Only return symbol for active currencies
+            if ($currency && $currency->status == 1) {
                 return $currency->currency_symbol;
             }
         }
@@ -37,7 +38,11 @@ class CurrencyHelper
         $storeConfig = Storeconfiguration::where('status', '1')->orderBy('id', 'ASC')->first();
 
         if ($storeConfig && $storeConfig->default_currency) {
-            return Currency::find($storeConfig->default_currency);
+            $currency = Currency::find($storeConfig->default_currency);
+            // Only return active currencies
+            if ($currency && $currency->status == 1) {
+                return $currency;
+            }
         }
 
         return null;

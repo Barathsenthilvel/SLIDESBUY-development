@@ -978,3 +978,8 @@ jQuery(document).ready(function() {
 		.catch( error => { console.error( error ); });
  </script>
 @endpush
+<style>
+ div#messageArea {
+    display: none !important;
+}
+</style>

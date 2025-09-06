@@ -12,11 +12,20 @@
                         <img src="{{ asset('storage/products/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $product->name }}</h5>
-                            <p class="card-text">₹{{ number_format($product->price, 2) }}</p>
-                            <button class="btn btn-danger wishlist-btn active"
-                                    data-id="{{ $product->id }}">
-                                <i class="fas fa-heart"></i> Remove from Wishlist
-                            </button>
+                            <p class="card-text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product->price, 2) }}</p>
+                            <div class="d-flex gap-2">
+                                <a href="{{ Auth::check() ? route('product.item', ['slug' => $product->slug]) : route('front.loginBlade') }}" class="btn btn-outline-light download-icon btn-icon btn-icon--sm pill">
+                                    <span class="icon">
+                                        <img src="../assets/images/icons/download.svg" alt="" class="white-version">
+                                        <img src="../assets/images/icons/download-white.svg" alt="" class="dark-version">
+                                    </span>
+                                </a>
+                                <a href="{{ route('product.item', ['slug' => $product->slug]) }}" class="btn btn-outline-light pill">View</a>
+                                <button class="btn btn-danger btn-sm wishlist-btn active"
+                                        data-id="{{ $product->id }}">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

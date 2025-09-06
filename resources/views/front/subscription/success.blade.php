@@ -44,10 +44,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="cart-thank__content text-center">
-                    <h2 class="cart-thank__title mb-48">Thank you for purchased this products!!</h2>
-                    <div class="cart-thank__img">
+                    <h2 class="cart-thank__title mb-48">Thank you for purchased this Slides!!</h2>
+                    {{-- <div class="cart-thank__img">
                         <img src="../assets/images/thumbs/thank-evenelope.png" alt="">
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -75,10 +75,16 @@
                                     <span class="text text-heading fw-500">Date:</span>
                                     <span class="text">{{ $orderDetails['date'] }}</span>
                                 </li>
-                                {{-- <li class="list-text__item flx-align flex-nowrap">
-                                    <span class="text text-heading fw-500">Discount:</span>
-                                    <span class="text">${{ number_format($orderDetails['discount_price'], 2) }}</span>
-                                </li> --}}
+                                <li class="list-text__item flx-align flex-nowrap">
+                                    <span class="text text-heading fw-500">Subtotal:</span>
+                                    <span class="text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($orderDetails['subtotal'], 2) }}</span>
+                                </li>
+                                @if($orderDetails['discount_amount'] > 0)
+                                <li class="list-text__item flx-align flex-nowrap">
+                                    <span class="text text-heading fw-500 text-success">Discount:</span>
+                                    <span class="text text-success">-{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($orderDetails['discount_amount'], 2) }}</span>
+                                </li>
+                                @endif
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Total</span>
                                     <span class="text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($orderDetails['total'], 2) }}</span>
@@ -97,7 +103,14 @@
                                 </li>
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">{{ $product['name'] }}</span>
-                                    <span class="text">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product['price'] - ($product['discount_price'] ?? 0), 2) }}</span>
+                                    <div class="text-right">
+                                        @if($product['discount_amount'] > 0)
+                                            <div class="text-decoration-line-through text-muted small">{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product['price'], 2) }}</div>
+                                            <div class="text-success fw-bold"> &nbsp;{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product['discount_price'], 2) }}</div>
+                                        @else
+                                            <div>{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($product['price'], 2) }}</div>
+                                        @endif
+                                    </div>
                                 </li>
                                 {{-- <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500">Project Management Dashboard </span>
@@ -115,10 +128,10 @@
                             <div class="flx-between gap-2">
                                 <p class="text">Please don't forget to rating</p>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ route('download.invoice', $orderDetails['order_no']) }}" class="btn btn-outline-main flx-align gap-2 pill">
+                                    {{-- <a href="{{ route('download.invoice', $orderDetails['order_no']) }}" class="btn btn-outline-main flx-align gap-2 pill">
                                         <span class="icon line-height-1 font-16"><i class="las la-download"></i></span>
                                         Download Invoice
-                                    </a>
+                                    </a> --}}
                                     <a href="{{ route('login') }}" class="btn btn-main flx-align gap-2 pill">
                                         Back To Home
                                         <span class="icon line-height-1 font-20"><i class="las la-arrow-right"></i></span>

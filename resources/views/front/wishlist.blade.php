@@ -114,7 +114,7 @@
 <!-- ============================ Breadcrumb End ================================== -->
 
 <!-- ============================ Wishlist Section Start ================================== -->
-<section class="wishlist-section section-padding">
+<section class="wishlist-section section-padding mb-3">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -170,7 +170,7 @@
 
                                                     @if (!empty($product->price))
                                                         <span class="product-item__prevPrice text-decoration-line-through">
-                                                            ${{ $product->price }}
+                                                            {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $product->price }}
                                                         </span>
                                     @endif
                                 </div>
@@ -194,9 +194,15 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <button type="button" class="btn btn-primary btn-sm" onclick="addToCart({{ $product->id }}, 1)">
-                                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                                                </button>
+                                                <div class="flx-align gap-2">
+                                                    <a href="{{ Auth::check() ? route('product.item', ['slug' => $product->slug]) : route('front.loginBlade') }}" class="btn btn-outline-light download-icon btn-icon btn-icon--sm pill">
+                                                        <span class="icon">
+                                                            <img src="../assets/images/icons/download.svg" alt="" class="white-version">
+                                                            <img src="../assets/images/icons/download-white.svg" alt="" class="dark-version">
+                                                        </span>
+                                                    </a>
+                                                    <a href="{{ route('product.item', ['slug' => $product->slug]) }}" class="btn btn-outline-light pill">View</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -250,35 +256,6 @@
 if (typeof jQuery !== 'undefined') {
     console.log('jQuery available in wishlist view');
 
-    function addToCart(productId, quantity) {
-        jQuery.ajax({
-            method: "GET",
-            url: "{{ route('user.add.card') }}",
-            data: {
-                quantity: quantity,
-                id: productId
-            },
-            success: function(data) {
-                // Update cart count
-                jQuery('.cart-count').text(data.totalitem);
-                jQuery('.dropdown-box').load("{{ route('user.render.card') }}");
-
-                // Show success message
-                if (window.toaster) {
-                    window.toaster.success('Added to Cart');
-                } else {
-                    alert('Added to Cart');
-                }
-            },
-            error: function() {
-                if (window.toaster) {
-                    window.toaster.error('Failed to add to cart');
-                } else {
-                    alert('Failed to add to cart');
-                }
-            }
-        });
-    }
 
     // Wishlist page: remove item without full page refresh
     jQuery(document).ready(function() {

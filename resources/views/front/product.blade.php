@@ -747,7 +747,7 @@
         </span>
     </div>
 @elseif ($activeSubscription && ($showDownloadCount ?? false))
-    <div class="mb-3">
+    <div class="mb-3 mt-3">
         <label class="fw-bold">Downloads Left</label>
         <div class="progress custom-progress">
             @php
@@ -799,7 +799,7 @@
     @if ($alreadyDownloaded)
         <div class="text-center w-100">
             <button class="btn btn-secondary w-100 w-sm-auto mb-3" disabled>
-                <img src="{{ asset('assets/images/icons/check-circle.svg') }}" alt="Downloaded" class="me-2">
+                <img src="{{ asset('assets/images/icons/download.svg') }}" alt="Download" class="me-2">
                 Already Downloaded
             </button>
             <div class="download-info">

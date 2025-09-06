@@ -183,7 +183,7 @@
 						</div>
 						</div>
 						@endif
-						
+
 						<div class="amountsplit-single">
 						<div class="row">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
@@ -206,7 +206,7 @@
 
 							</div>
 							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 text-right">
-								<div class="cartitem-value"><span><i class="fa fa-inr"></i>{{$cart->grandTotal}}</span></div>
+								<div class="cartitem-value"><span>{{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ number_format($cart->grandTotal, 2) }}</span></div>
 							</div>
 
 						</div>
@@ -250,12 +250,12 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window,document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
- fbq('init', '698472925993707'); 
+ fbq('init', '698472925993707');
 fbq('track', 'Purchase', {currency:
 "INR", value: 0});
 </script>
 <noscript>
- <img height="1" width="1" 
+ <img height="1" width="1"
 src="https://www.facebook.com/tr?id=698472925993707&ev=PageView
 &noscript=1"/>
 </noscript>

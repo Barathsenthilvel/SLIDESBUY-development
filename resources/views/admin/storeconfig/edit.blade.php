@@ -423,7 +423,7 @@
                                             <li>{{ $error }}</li>
                                         @endforeach
                                     </ul>
-                                    @if($errors->has('logo') || $errors->has('invert_logo') || $errors->has('fav_icon'))
+                                    {{-- @if($errors->has('logo') || $errors->has('invert_logo'))
                                         <div class="mt-2 p-2 bg-light border-left border-danger">
                                             <small class="text-danger">
                                                 <strong>💡 File Upload Tips:</strong><br>
@@ -432,7 +432,7 @@
                                                 • Check file size limits
                                             </small>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                 </div>
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -569,25 +569,32 @@
                                             <h6><i class="fas fa-info-circle"></i> File Upload Guidelines <span class="text-danger">* Required Fields</span></h6>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <strong>Logo & Invert Logo: <span class="text-danger">*</span></strong><br>
+                                                    <strong>Logo & Invert Logo:
+                                                        @if((empty($data->logo) || !file_exists(public_path('assets/media/banner/'.$data->logo))) ||
+                                                           (empty($data->invert_logo) || !file_exists(public_path('assets/media/banner/'.$data->invert_logo))))
+                                                            <span class="text-danger">*</span>
+                                                        @else
+                                                            <span class="text-muted">(Optional)</span>
+                                                        @endif
+                                                    </strong><br>
                                                     • Formats: JPEG, JPG, PNG, GIF, WebP<br>
                                                     • Max Size: 10MB<br>
                                                     • No dimension restrictions<br>
                                                     • <strong>Required for store branding</strong>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <strong>Favicon: <span class="text-danger">*</span></strong><br>
+                                                    <strong>Favicon: <span class="text-muted">(Optional)</span></strong><br>
                                                     • Formats: ICO, PNG, JPG, JPEG, GIF, SVG<br>
                                                     • Max Size: 5MB<br>
                                                     • No dimension restrictions<br>
-                                                    • <strong>Required for browser tabs</strong>
+                                                    • <strong>Optional for browser tabs</strong>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <strong>Tips:</strong><br>
                                                     • Use PNG for transparency<br>
                                                     • ICO format is best for favicons<br>
                                                     • Higher resolution images recommended<br>
-                                                    • <strong>All three files are mandatory</strong>
+                                                    • <strong>Logo and Invert Logo are required if not already uploaded</strong>
                                                 </div>
                                             </div>
                                         </div>
@@ -631,13 +638,18 @@
 
                                 <div class="form-group row">
                                     <label class="col-2 col-form-label">logo
-                                        <span class="text-danger">*</span></label>
+                                        @if(empty($data->logo) || !file_exists(public_path('assets/media/banner/'.$data->logo)))
+                                            <span class="text-danger">*</span>
+                                        @else
+                                        <span class="text-danger">*</span>
+                                        @endif
+                                    </label>
                                     <div class="col-10">
                                         <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="logo_preview"
                                              src="{{ $data->logo && file_exists(public_path('assets/media/banner/'.$data->logo)) ? URL::asset('assets/media/banner/'.$data->logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TG9nbzwvdGV4dD4KPC9zdmc+Cg==' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="logo_old" value="{{ $data->logo }}">
-                                                                                <input type="file" name="logo" id="logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'logo_preview')" class="form-control" required>
+                                                                                <input type="file" name="logo" id="logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'logo_preview')" class="form-control" >
                                         <span class="form-text text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
@@ -647,13 +659,18 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-2 col-form-label">Invert Logo
-                                        <span class="text-danger">*</span></label>
+                                        @if(empty($data->invert_logo) || !file_exists(public_path('assets/media/banner/'.$data->invert_logo)))
+                                            <span class="text-danger">*</span>
+                                        @else
+                                        <span class="text-danger">*</span>
+                                        @endif
+                                    </label>
                                     <div class="col-10">
                                         <img class="file-preview" style="width:200px;height:120px;border:2px dashed #222;object-fit:contain;" id="invert_logo_preview"
                                              src="{{ $data->invert_logo && file_exists(public_path('assets/media/banner/'.$data->invert_logo)) ? URL::asset('assets/media/banner/'.$data->invert_logo) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTI4IDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjY0IiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+SW52ZXJ0PC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="invert_logo_old" value="{{ $data->invert_logo }}">
-                                                                                <input type="file" name="invert_logo" id="invert_logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'invert_logo_preview')" class="form-control" required>
+                                                                                <input type="file" name="invert_logo" id="invert_logo" accept=".jpeg,.jpg,.png,.gif,.webp" onchange="previewImage(this, 'invert_logo_preview')" class="form-control" >
                                         <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> JPEG, JPG, PNG, GIF, WebP |
@@ -662,14 +679,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-2 col-form-label">FavIcon
-                                        <span class="text-danger">*</span></label>
+                                    <label class="col-2 col-form-label">FavIcon<span class="text-danger">*</span>
+                                       </label>
                                     <div class="col-10">
                                         <img class="file-preview" id="fav_icon_preview" style="width:80px;height:80px;border:2px dashed #222;object-fit:contain;"
                                              src="{{ $data->fav_icon && file_exists(public_path('assets/media/banner/'.$data->fav_icon)) ? URL::asset('assets/media/banner/'.$data->fav_icon) : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDMiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCA0MyAzOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQzIiBoZWlnaHQ9IjM4IiBmaWxsPSIjZjhmOWZhIi8+Cjx0ZXh0IHg9IjIxLjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2Yzc1N2QiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5GYXZpY29uPC90ZXh0Pgo8L3N2Zz4K' }}"
                                              onerror="handleImageError(this)">
                                         <input type="hidden" name="fav_icon_old" value="{{ $data->fav_icon }}">
-                                                                                <input type="file" name="fav_icon" id="fav_icon" accept=".ico,.png,.jpg,.jpeg,.gif,.svg" onchange="previewImage(this, 'fav_icon_preview')" class="form-control" required>
+                                                                                <input type="file" name="fav_icon" id="fav_icon" accept=".ico,.png,.jpg,.jpeg,.gif,.svg" onchange="previewImage(this, 'fav_icon_preview')" class="form-control">
                                         <span class="text-muted">No dimension restrictions - upload high resolution images</span>
                                         <br><small class="form-text text-info">
                                             <strong>Allowed formats:</strong> ICO, PNG, JPG, JPEG, GIF, SVG |
@@ -1119,7 +1136,7 @@ $(document).ready(function() {
 
     // Test toaster function
     function testToaster() {
-        showSuccessToastEnhanced('✅ Store Configuration Updated Successfully! All fields have been saved.', { showOnce: false });
+        showSuccessToastEnhanced('Store Configuration Updated Successfully! All fields have been saved.', { showOnce: false });
     }
 
     // Removed showFileRequirements function - no longer needed
@@ -1565,6 +1582,12 @@ x            }
         // STORE CONFIG FORM VALIDATION RULES
         // ========================================
 
+        // Check if existing images are present
+        const hasExistingLogo = document.querySelector('input[name="logo_old"]').value &&
+                               document.querySelector('input[name="logo_old"]').value.trim() !== '';
+        const hasExistingInvertLogo = document.querySelector('input[name="invert_logo_old"]').value &&
+                                     document.querySelector('input[name="invert_logo_old"]').value.trim() !== '';
+
         const storeConfigRules = {
             'store_name': ['required', validationRules.minLength(2)],
             'default_currency': ['selectRequired'],
@@ -1576,10 +1599,39 @@ x            }
             'Order_Emails_To': ['required', 'email'],
             'Contact_Us_Emails_To': ['required', 'email'],
             'Contact_Us_Emails_BCC': ['email'],
-            'logo': ['fileRequired'],
-            'invert_logo': ['fileRequired'],
-            'fav_icon': ['fileRequired']
         };
+
+        // Add logo validation only if no existing logo
+        if (!hasExistingLogo) {
+            storeConfigRules['logo'] = ['fileRequired'];
+        }
+
+        // Add invert_logo validation only if no existing invert_logo
+        if (!hasExistingInvertLogo) {
+            storeConfigRules['invert_logo'] = ['fileRequired'];
+        }
+
+        // Function to update validation rules dynamically
+        function updateValidationRules() {
+            const hasExistingLogo = document.querySelector('input[name="logo_old"]').value &&
+                                   document.querySelector('input[name="logo_old"]').value.trim() !== '';
+            const hasExistingInvertLogo = document.querySelector('input[name="invert_logo_old"]').value &&
+                                         document.querySelector('input[name="invert_logo_old"]').value.trim() !== '';
+
+            // Update logo validation
+            if (!hasExistingLogo) {
+                storeConfigRules['logo'] = ['fileRequired'];
+            } else {
+                delete storeConfigRules['logo'];
+            }
+
+            // Update invert_logo validation
+            if (!hasExistingInvertLogo) {
+                storeConfigRules['invert_logo'] = ['fileRequired'];
+            } else {
+                delete storeConfigRules['invert_logo'];
+            }
+        }
 
         // ========================================
         // INITIALIZE COMPONENTS
@@ -1717,6 +1769,12 @@ x            }
         // Add enhanced real-time validation for all fields
         $('#formEdit input, #formEdit select, #formEdit textarea').on('blur change', function() {
             const fieldName = this.name || this.id;
+
+            // Update validation rules for file fields
+            if (fieldName === 'logo' || fieldName === 'invert_logo') {
+                updateValidationRules();
+            }
+
             const rules = storeConfigRules[fieldName] || [];
 
             // Add required rule if field has required attribute

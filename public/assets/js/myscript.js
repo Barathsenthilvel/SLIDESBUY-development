@@ -93,37 +93,38 @@ $('#formCreate').submit(function(e){
     });
 });
 
-$('#formEdit').submit(function(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    $.ajax({
-        method:"POST",
-        url:$(this).prop('action'),
-        data:new FormData(e.target),
-        cache: false,
-        processData: false,
-        contentType: false,
-        success:function(data){
-            if(data.msg){
-                $('.alert-success>div').html('<p>'+data.msg+'</p>');
-                $('.alert-success').show();
-            }else{
-                var Ptag = "";
-                for(var error in data.errors) { Ptag +='<p>'+data.errors[error]+'</p>'; };
-                $('.alert-danger>div').html('');
-                $('.alert-danger>div').html(Ptag);
-                $('.alert-danger').show();
-            }
-            console.log(data);
-            window.scrollTo({top:0,behavior:'smooth'});
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
-        }
-    });
-});
+// Disabled - using enhanced form handler in edit.blade.php instead
+// $('#formEdit').submit(function(e){
+//     e.preventDefault();
+//     const formData = new FormData(e.target);
+//     $.ajax({
+//         method:"POST",
+//         url:$(this).prop('action'),
+//         data:new FormData(e.target),
+//         cache: false,
+//         processData: false,
+//         contentType: false,
+//         success:function(data){
+//             if(data.msg){
+//                 $('.alert-success>div').html('<p>'+data.msg+'</p>');
+//                 $('.alert-success').show();
+//             }else{
+//                 var Ptag = "";
+//                 for(var error in data.errors) { Ptag +='<p>'+data.errors[error]+'</p>'; };
+//                 $('.alert-danger>div').html('');
+//                 $('.alert-danger>div').html(Ptag);
+//                 $('.alert-danger').show();
+//             }
+//             console.log(data);
+//             window.scrollTo({top:0,behavior:'smooth'});
+//         },
+//         error:function(erroe){
+//             console.log(erroe);
+//             window.scrollTo({top:0,behavior:'smooth'});
+//             alert("Something is wrong");
+//         }
+//     });
+// });
 $('select:not([multiple])').not('.avoide').each(function( index ) {
    $(this).select2({ allowClear: true });
  });

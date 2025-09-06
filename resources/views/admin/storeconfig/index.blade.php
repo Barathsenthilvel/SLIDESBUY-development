@@ -135,14 +135,7 @@
                                 @endif
 
                                 <!-- Test Toaster Button -->
-                                <div class="mb-3">
-                                    <button type="button" class="btn btn-info btn-sm" onclick="showToast('Test Success Message!', 'success')">
-                                        <i class="fas fa-bell"></i> Test Success Toaster
-                                    </button>
-                                    <button type="button" class="btn btn-warning btn-sm ml-2" onclick="showToast('Test Error Message!', 'error')">
-                                        <i class="fas fa-exclamation-triangle"></i> Test Error Toaster
-                                    </button>
-                                </div>
+                                
 
                                 <!--begin::Card-->
                                 <div class="card card-custom gutter-b">

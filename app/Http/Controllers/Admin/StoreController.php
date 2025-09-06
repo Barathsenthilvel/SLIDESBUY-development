@@ -110,6 +110,9 @@ class StoreController extends Controller
             'Order_Emails_To' => 'required|string',
             'Contact_Us_Emails_To' => 'required|string',
             'Contact_Us_Emails_BCC' => 'required|string',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'invert_logo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+            'fav_icon' => 'required|mimes:ico,png,jpg,jpeg,gif,svg|max:5120',
         ];
 
       $customs = [
@@ -126,35 +129,22 @@ class StoreController extends Controller
             'Order_Emails_To.required' => 'Order Emails To is required.',
             'Contact_Us_Emails_To.required' => 'Contact Us Emails To is required.',
             'Contact_Us_Emails_BCC.required' => 'Contact Us Emails BCC is required.',
+            'logo.required' => 'Logo is required.',
+            'logo.image' => 'Logo must be an image file.',
+            'logo.mimes' => 'Logo must be a JPEG, PNG, JPG, GIF or WebP file.',
+            'logo.max' => 'Logo size must be less than 10MB.',
+            'invert_logo.required' => 'Invert Logo is required.',
+            'invert_logo.image' => 'Invert Logo must be an image file.',
+            'invert_logo.mimes' => 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file.',
+            'invert_logo.max' => 'Invert Logo size must be less than 10MB.',
+            'fav_icon.required' => 'Favicon is required.',
+            'fav_icon.mimes' => 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file.',
+            'fav_icon.max' => 'Favicon size must be less than 5MB.',
         ];
 
-        // Validation rules for image fields
-        $imageRules = [];
-        $imageCustoms = [];
-
-        if($request->file('logo')){
-            $imageRules['logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:10240';
-            $imageCustoms['logo.image'] = 'Logo must be an image file.';
-            $imageCustoms['logo.mimes'] = 'Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 10MB.';
-            $imageCustoms['logo.max'] = 'Logo size must be less than 10MB.';
-        }
-
-        if($request->file('invert_logo')){
-            $imageRules['invert_logo'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:10240';
-            $imageCustoms['invert_logo.image'] = 'Invert Logo must be an image file.';
-            $imageCustoms['invert_logo.mimes'] = 'Invert Logo must be a JPEG, PNG, JPG, GIF or WebP file. Maximum size: 10MB.';
-            $imageCustoms['invert_logo.max'] = 'Invert Logo size must be less than 10MB.';
-        }
-
-        if($request->file('fav_icon')){
-            $imageRules['fav_icon'] = 'mimes:ico,png,jpg,jpeg,gif,svg|max:5120';
-            $imageCustoms['fav_icon.mimes'] = 'Favicon must be an ICO, PNG, JPG, JPEG, GIF or SVG file. Maximum size: 5MB.';
-            $imageCustoms['fav_icon.max'] = 'Favicon size must be less than 5MB.';
-        }
-
-        // Merge all validation rules
-        $allRules = array_merge($rules, $imageRules);
-        $allCustoms = array_merge($customs, $imageCustoms);
+        // All validation rules are now in the main $rules array
+        $allRules = $rules;
+        $allCustoms = $customs;
 
                 // Validate all fields
         \Log::info('Validation rules:', $allRules);
@@ -167,6 +157,16 @@ class StoreController extends Controller
                 'errors' => $validator->errors()->toArray(),
                 'input' => $request->all()
             ]);
+            
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()->toArray(),
+                    'message' => 'Validation failed. Please check the form.'
+                ], 422);
+            }
+            
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -348,18 +348,30 @@ class StoreController extends Controller
                     }
                     \Log::info('Fields successfully saved:', $savedFields);
 
-                                                            // Test: Log the success message being set
-                    \Log::info('Setting success message in session');
+                    // Check if request is AJAX
+                    if ($request->ajax() || $request->wantsJson()) {
+                        \Log::info('Returning JSON success response for AJAX request');
+                        return response()->json([
+                            'success' => true,
+                            'msg' => '✅ Store Configuration Updated Successfully! All fields have been saved.',
+                            'data' => $savedFields
+                        ]);
+                    }
 
-                    // Redirect to list page with success message
-                    $response = redirect()->route('admin-store')->with('success', '✅ Store Configuration Updated Successfully! All fields have been saved.');
-
-                    // Log the response
-                    \Log::info('Success response created - redirecting to list page', ['response_type' => get_class($response)]);
-
-                    return $response;
+                    // For non-AJAX requests, redirect with success message
+                    \Log::info('Setting success message in session for non-AJAX request');
+                    return redirect()->route('admin-store-edit', $id)->with('success', '✅ Store Configuration Updated Successfully! All fields have been saved.');
                 } else {
                     \Log::error('Update returned false - no rows were affected');
+                    
+                    // Check if request is AJAX
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Failed to update store configuration.'
+                        ], 500);
+                    }
+                    
                     return redirect()->back()->with('error', 'Failed to update store configuration.')->withInput();
                 }
             } catch (\Illuminate\Database\QueryException $e) {

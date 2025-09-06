@@ -116,6 +116,17 @@ class FrontendController extends Controller
       $store = Storeconfiguration::where('id',1)->first();
       $categorys=Category::with(['subs','child'])->where('parent_category_id','0')->where('sub_category','0')->where('status','1')->get();
 
+      // Initialize variables early to prevent undefined variable errors
+      $shopCategory = collect();
+      $fronCategory = collect();
+      $trending = collect();
+      $trendingDownloadCounts = [];
+      $attributes = [];
+      $attributeValues = collect();
+      $downloadCounts = [];
+      $min = 0;
+      $max = 0;
+
       if (!empty($slug)) {
         $cat = Category::where('Category_url', $slug)->firstOrFail();
         $data['cat'] = $cat;
@@ -223,8 +234,8 @@ class FrontendController extends Controller
           });
 
         //   dd($attributeValues);
-        $shopCategory=Category::with('products')->where('status','1')->get();
-        $fronCategory= Category::with('subs')->where('status',1)->where('parent_category_id',0)->get();
+        $shopCategory = Category::with('products')->where('status','1')->get();
+        $fronCategory = Category::with('subs')->where('status',1)->where('parent_category_id',0)->get();
 
         $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         $trendingDownloadCounts = Product::getDownloadCounts($trending);
@@ -244,6 +255,17 @@ class FrontendController extends Controller
       $sort = ($request->sort)?$request->sort:'new';
       $attribute = $request->attribute;
       $page = ($request->page == null) ? 1:$request->page;
+
+      // Initialize variables early to prevent undefined variable errors
+      $shopCategory = collect();
+      $fronCategory = collect();
+      $trending = collect();
+      $categorys = collect();
+      $attributes = [];
+      $attributeValues = collect();
+      $downloadCounts = [];
+      $min = 0;
+      $max = 0;
       if (!empty($slug)) {
         $cat = Category::where('id', $slug)->first();
         if (!empty($slug1) && !empty($cat)) {
@@ -273,6 +295,10 @@ class FrontendController extends Controller
         }
         elseif($sort=='top_rated') {
           return $query->orderBy('review', 'DESC');
+        }
+        elseif($sort=='most_downloads') {
+          // For most downloads, we'll sort by download count after getting the data
+          return $query->orderBy('id', 'DESC');
         }
         elseif($sort=='A-Z') {
           return $query->orderBy('product_title', 'ASC');
@@ -306,15 +332,39 @@ class FrontendController extends Controller
         if($sort == 'L-H'){
           $products = (new Collection($products))->SortBy('manufacturerPrice');
         }
+        if($sort == 'most_downloads'){
+          // Get download counts first
+          $downloadCounts = Product::getDownloadCounts($products);
+          // Sort products by download count (descending)
+          $products = (new Collection($products))->sortByDesc(function($product) use ($downloadCounts) {
+              return $downloadCounts[$product->id] ?? 0;
+          });
+        }
 
-        // Get download counts as a separate array
-        $downloadCounts = Product::getDownloadCounts($products);
+        // Get download counts as a separate array (if not already done for most_downloads)
+        if($sort != 'most_downloads') {
+            $downloadCounts = Product::getDownloadCounts($products);
+        }
 
         $offset = ($page - 1)*$perpage;
         $products = new LengthAwarePaginator($products->slice($offset, $perpage), $products->count(), $perpage, $page);
 
         // Set the proper URL path for pagination
         $products->setPath(request()->url());
+
+        // Define missing variables needed for the view
+        $shopCategory = Category::with('products')->where('status','1')->get();
+        $fronCategory = Category::with('subs')->where('status',1)->where('parent_category_id',0)->get();
+        $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
+        $categorys = Category::with(['subs','child'])->where('parent_category_id','0')->where('sub_category','0')->where('status','1')->get();
+
+        // Get attributes and attribute values
+        $attributes = $this->sorts($Product);
+        $attributeValues = Attribute::where('status','1')->get();
+
+        // Get min and max prices
+        $max = Product::max('manufacturerPrice');
+        $min = Product::min('manufacturerPrice');
 
         // Debug: Check what we're passing to the view
         // dd($downloadCounts, $productIds->toArray());

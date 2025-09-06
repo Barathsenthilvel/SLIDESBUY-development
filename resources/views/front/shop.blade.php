@@ -91,6 +91,38 @@
         border-radius: 10px;
         margin-bottom: 20px;
     }
+
+    /* Prevent horizontal scroll issues */
+    .container, .container-two {
+        overflow-x: hidden;
+    }
+
+    /* Ensure tables don't cause horizontal scroll */
+    table {
+        width: 100%;
+        max-width: 100%;
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+
+    /* Responsive table wrapper */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure product grid doesn't overflow */
+    .list-grid-wrapper {
+        overflow: hidden;
+    }
+
+    /* Prevent download count text from breaking layout */
+    .product-item__sales {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
 </style>
 
 <script>
@@ -495,6 +527,27 @@ $(document).ready(function() {
         });
         $('#orderby').on('change',function(){
             sort = $(this).val();
+            page = null;
+            filter();
+        });
+
+        // Handle Newly Added tab click
+        $('#pills-product-tab').on('click', function() {
+            sort = 'new';
+            page = null;
+            filter();
+        });
+
+        // Handle Most Downloads tab click
+        $('#pills-bestRating-tab').on('click', function() {
+            sort = 'most_downloads';
+            page = null;
+            filter();
+        });
+
+        // Handle Top Rated tab click
+        $('#pills-trending-tab').on('click', function() {
+            sort = 'top_rated';
             page = null;
             filter();
         });

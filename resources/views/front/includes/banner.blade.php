@@ -16,12 +16,12 @@
                     <img src="assets/images/shapes/dots-sm-white.png" alt="" class="dotted-img d-xl-block d-none dark-version">
                     <div class="statistics-wrapper">
                         <div class="statistics style-three position-relative start-0 top-0 bg-white text-center">
-                            <h5 class="statistics__amount statistics__amount-two text-heading">85,000+</h5>
-                            <span class="statistics__text">Active Members</span>
+                            <h5 class="statistics__amount statistics__amount-two text-heading">100+</h5>
+                            <span class="statistics__text">Active User</span>
                         </div>
 
                         <div class="statistics style-three position-relative start-0 top-0 bg-white text-center">
-                            <h5 class="statistics__amount statistics__amount-two text-heading">5+ Million</h5>
+                            <h5 class="statistics__amount statistics__amount-two text-heading">1,000+ </h5>
                             <span class="statistics__text">Total Download</span>
                         </div>
                     </div>
@@ -30,22 +30,17 @@
 
             <div class="col-xl-6">
                 <div class="banner-two__content">
-                    <h1 class="banner-two__title text-center mb-3">858,990+ curated assets for download</h1>
-                    <p class="banner-two__desc text-center">Lorem ipsum dolor sit amet consectetur. Arcu vestibulum dictumst fermentum rhoncus. Velit dui a lorem in sagittis nisl lectus diam.</p>
+                    <h1 class="banner-two__title text-center mb-3">Create Powerful Presentions with Ready Made Templates</h1>
+                    <p class="banner-two__desc text-center">Download ready-made, fully editable Power point slides and save hours  of design work. finish faster, present better.</p>
 
                     <form action="#" class="search-box style-two">
                         <div class="search-box__select select-has-icon">
                             <select class="form-control form-control py-0 border-0 bg-transparent">
                                 <option value="1" selected disabled>All Categories</option>
-                                <option value="2">WordPress</option>
-                                <option value="3">Laravel</option>
-                                <option value="4">PHP</option>
-                                <option value="5">React</option>
-                                <option value="6">HTML</option>
-                                <option value="7">Figma</option>
+                                
                             </select>
                         </div>
-                        <input type="text" class="common-input common-input--lg pill shadow-sm" placeholder="Search theme, plugins &amp; more...">
+                        <input type="text" class="common-input common-input--lg pill shadow-sm" placeholder="Browse All Templates">
                         <button type="submit" class="btn btn-main btn-icon icon border-0">
                             <img src="../assets/images/icons/search.svg" alt="">
                         </button>
@@ -83,13 +78,13 @@
                     <img src="assets/images/shapes/dots-sm-white.png" alt="" class="dotted-img d-xl-block d-none dark-version">
                     <div class="statistics-wrapper style-right">
                         <div class="statistics style-three position-relative start-0 top-0 bg-white text-center">
-                            <h5 class="statistics__amount statistics__amount-two text-heading">35k+</h5>
-                            <span class="statistics__text">Themes and Plugin</span>
+                            <h5 class="statistics__amount statistics__amount-two text-heading">100+</h5>
+                            <span class="statistics__text">Editable Slides</span>
                         </div>
 
                         <div class="statistics style-three position-relative start-0 top-0 bg-white text-center">
-                            <h5 class="statistics__amount statistics__amount-two text-heading">24/7</h5>
-                            <span class="statistics__text">Customer Support</span>
+                            <h5 class="statistics__amount statistics__amount-two text-heading">500+</h5>
+                            <span class="statistics__text">Businesses</span>
                         </div>
                     </div>
                 </div>

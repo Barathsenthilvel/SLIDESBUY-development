@@ -41,16 +41,16 @@
             <div class="col-lg-5">
                 <div class="contact-info">
                     <h3 class="contact-info__title">Get in touch with us today</h3>
-                    <p class="contact-info__desc">Have a question, suggestion, or need assistance? We'd love to hear from you! Our dedicated team is here to help and will respond to your message within 24-48 hours.</p>
+                    <p class="contact-info__desc">Have questions or need support? Reach out to us anytime – we respond within 2-3 working days.</p>
 
                     <div class="contact-info__item-wrapper flx-between gap-4">
                         <div class="contact-info__item">
                             <span class="contact-info__text text-capitalize d-block mb-1">Give Us A Call</span>
-                            <a href="tel:+917904414156" class="contact-info__link font-24 fw-500 text-heading hover-text-main">+91 79044 14156</a>
+                            <a href="tel:+917904414156" class="contact-info__link font-24 fw-500 text-heading hover-text-main">+91-9994645424</a>
                         </div>
                         <div class="contact-info__item">
                             <span class="contact-info__text text-capitalize d-block mb-1">Send Us An Email</span>
-                            <a href="mailto:slidesbuy@gmail.com" class="contact-info__link font-24 fw-500 text-heading hover-text-main">slidesbuy@gmail.com</a>
+                            <a href="mailto:slidesbuy@gmail.com" class="contact-info__link font-24 fw-500 text-heading hover-text-main">support@slidesbuy.com</a>
                         </div>
                     </div>
 

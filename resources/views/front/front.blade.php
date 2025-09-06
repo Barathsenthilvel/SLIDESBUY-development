@@ -121,7 +121,7 @@
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
         </ul>
     </div>
-    <p class="testimonial-item__desc">“Great quality products - Flags, programs for exceptional capacities, birthday, and occasion welcome are largely still mainstream on paper.”</p>
+    <p class="testimonial-item__desc">“Fresh designs every time! The templates are professional, customizable, and make my presentations shine.”</p>
     <div class="testimonial-item__quote">
         <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
         <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
@@ -131,8 +131,8 @@
             <img src="assets/images/thumbs/client1.png" alt="">
         </div>
         <div class="client-info__content">
-            <h5 class="client-info__name mb-2">Michel John</h5>
-            <span class="client-info__designation text-heading fw-500">Market Expert</span>
+            <h5 class="client-info__name mb-2">Project Manager</h5>
+            <!-- <span class="client-info__designation text-heading fw-500">Market Expert</span> -->
         </div>
     </div>
 </div>
@@ -148,7 +148,7 @@
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
         </ul>
     </div>
-    <p class="testimonial-item__desc">“Great quality products - Flags, programs for exceptional capacities, birthday, and occasion welcome are largely still mainstream on paper.”</p>
+    <p class="testimonial-item__desc">“Super smooth download process and modern slides. Definitely worth the subscription!.”</p>
     <div class="testimonial-item__quote">
         <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
         <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
@@ -158,12 +158,13 @@
             <img src="assets/images/thumbs/client2.png" alt="">
         </div>
         <div class="client-info__content">
-            <h5 class="client-info__name mb-2">Ralph Edwards</h5>
-            <span class="client-info__designation text-heading fw-500">Analytis</span>
+            <h5 class="client-info__name mb-2">Startup Founder</h5>
+            <!-- <span class="client-info__designation text-heading fw-500">Analytis</span> -->
         </div>
     </div>
 </div>
-            <div class="testimonial-item hover-bg-main">
+
+<div class="testimonial-item hover-bg-main">
     <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
     <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
     <div class="testimonial-item__rating mb-3">
@@ -175,18 +176,45 @@
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
         </ul>
     </div>
-    <p class="testimonial-item__desc">“Great quality products - Flags, programs for exceptional capacities, birthday, and occasion welcome are largely still mainstream on paper.”</p>
+    <p class="testimonial-item__desc">“Great experience overall. The slides are polished and save me tons of time.”</p>
     <div class="testimonial-item__quote">
         <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
         <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
+            <img src="assets/images/thumbs/client2.png" alt="">
+        </div>
+        <div class="client-info__content">
+            <h5 class="client-info__name mb-2">Corporate Trainer</h5>
+            <!-- <span class="client-info__designation text-heading fw-500">Analytis</span> -->
+        </div>
+    </div>
+</div>
+            <div class="testimonial-item hover-bg-main">
+            <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
+            <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
+            <div class="testimonial-item__rating mb-3">
+                <ul class="star-rating">
+                    <li class="star-rating__item"><i class="fas fa-star"></i></li>
+                    <li class="star-rating__item"><i class="fas fa-star"></i></li>
+                    <li class="star-rating__item"><i class="fas fa-star"></i></li>
+                    <li class="star-rating__item"><i class="fas fa-star"></i></li>
+                    <li class="star-rating__item"><i class="fas fa-star"></i></li>
+                </ul>
+            </div>
+                 <p class="testimonial-item__desc">“Affordable and professional. Exactly what I needed for my client meetings.”</p>
+        <div class="testimonial-item__quote">
+            <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
+            <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
+        </div>
+    <div class="client-info d-flex align-items-center gap-3">
+        <div class="client-info__thumb">
             <img src="assets/images/thumbs/client3.png" alt="">
         </div>
         <div class="client-info__content">
-            <h5 class="client-info__name mb-2">Jacob Jones</h5>
-            <span class="client-info__designation text-heading fw-500">Market Expert</span>
+            <h5 class="client-info__name mb-2">Consulting Agency Owner</h5>        
+            <!-- <span class="client-info__designation text-heading fw-500">Market Expert</span> -->
         </div>
     </div>
 </div>

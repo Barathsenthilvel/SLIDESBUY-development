@@ -11,7 +11,7 @@
         <div class="section-heading style-left style-flex flx-between align-items-end gap-3">
             <div class="section-heading__inner w-lg">
                 <h3 class="section-heading__title">Our Best Pricing Plan</h3>
-                <p class="section-heading__desc">Every month we pick some best products for you. This month's best web themes & templates have arrived, chosen by our content specialists.</p>
+                <p class="section-heading__desc">Choose from flexible monthly, half-yearly, or yearly subscriptions. Get premium presentation templates at the best value.</p>
             </div>
             {{-- <div class="pricing-tabs">
                 <ul class="nav tab-gradient nav-pills mb-0" id="pills-tab-pricing" role="tablist">
@@ -82,7 +82,7 @@
                                 </h3>
                                 <p class="pricing-item__desc">Essential services to start your journey</p>
                                                                <a href="#"
-                                    class="btn btn-outline-light btn-lg pill w-100 btn-primary plan-details-btn"
+                                    class="btn btn-main pill plan-details-btn"
                                     data-id="{{ $plan->id }}"
                                     data-price="{{ $plan->price }}"
                                     data-name="{{ $plan->name }}"
@@ -98,7 +98,7 @@
                             </div>
                             <div class="pricing-item__lists">
                                 <ul class="text-list">
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads{{$plan->download_limit}} </li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads {{$plan->download_limit}} </li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
                                     @if($plan->discount && $plan->discount > 0)
@@ -774,19 +774,19 @@
 }
 
 /* Plan details button specific styling */
-.plan-details-btn {
+/* .plan-details-btn {
     background-color: hsl(253, 88%, 58%) !important;
     border-color: hsl(253, 88%, 58%) !important;
     color: white !important;
     transition: all 0.3s ease !important;
-}
+} */
 
-.plan-details-btn:hover {
+/* .plan-details-btn:hover {
     background-color: hsl(253, 88%, 48%) !important;
     border-color: hsl(253, 88%, 48%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 5px 15px rgba(253, 88%, 58%, 0.3) !important;
-}
+} */
 </style>
 
 <!-- Plan Details Modal -->

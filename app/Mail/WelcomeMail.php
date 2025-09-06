@@ -30,8 +30,9 @@ class WelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject("Welcome to SLIDESBUY - Your Account is Ready!")
-                    ->markdown('mails.welcome')
+        return $this->from('noreply@slidesbuy.com', 'Slidesbuy')
+                    ->subject("Welcome to Slidesbuy! 🎉")
+                    ->view('mails.welcome')
                     ->with(['userData' => $this->userData]);
     }
 }

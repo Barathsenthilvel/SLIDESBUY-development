@@ -697,15 +697,15 @@
     <ul class="sidebar-list">
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300 mb-2">
             <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
-            <span class="text">Quality verified</span>
+            <span class="text">Ready-made slides</span>
         </li>
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300 mb-2">
             <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
-            <span class="text">Use for a single project</span>
+            <span class="text">Easy to customize</span>
         </li>
         <li class="sidebar-list__item flx-align gap-2 font-14 fw-300">
             <span class="icon"><img src="{{ asset('assets/images/icons/check-cirlce.svg') }}" alt=""></span>
-            <span class="text">Non-paying users only</span>
+            <span class="text">For personal & business </span>
         </li>
     </ul>
 

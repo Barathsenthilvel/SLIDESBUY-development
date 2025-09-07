@@ -43,7 +43,7 @@
 						<div class="login-form login-signin">
 
                                 <a href="{{route('front.index')}}">
-                                    <img src="{{asset('assets/media/banner/'.$StoreConfig->logo)}}" alt="Logo" style="max-width: 224px;height: 100px;display: block;margin-left: auto;margin-right: auto;"/>
+                                    <img src="{{asset('assets/media/banner/'.$StoreConfig->logo)}}" alt="Logo" style="max-width: 224px;display: block;margin-left: auto;margin-right: auto;"/>
                                 </a>
 
 							<!--begin::Form-->
@@ -75,10 +75,10 @@
 							</div>
 
 							@endif
-							<form class="form" action="{{ route('admin.login.submit') }}" method="POST">
+							<form class="form mt-3" action="{{ route('admin.login.submit') }}" method="POST">
 								<!--begin::Title-->
 								{{ csrf_field() }}
-								<div class="pb-13 pt-lg-0 pt-5">
+								<div class="pb-13 pt-lg-0 pt-5 text-center">
 									<h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">Welcome to The {{$StoreConfig->Store_Meta_Title}}</h3>
 								</div>
 								<!--begin::Title-->

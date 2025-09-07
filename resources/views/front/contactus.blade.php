@@ -10,10 +10,10 @@
     <div class="breadcrumb-two">
         <img src="../assets/images/gradients/breadcrumb-gradient-bg.png" alt="" class="bg--gradient">
         <div class="container container-two">
-            <div class="row justify-content-center">
+            <div class="row">
                 <div class="col-lg-12">
-                    <div class="breadcrumb-two-content text-center">
-                        <ul class="breadcrumb-list flx-align gap-2 mb-2 justify-content-center">
+                    <div class="breadcrumb-two-content text-start">
+                        <ul class="breadcrumb-list flx-align gap-2 mb-2 justify-content-start">
                             <li class="breadcrumb-list__item font-14 text-body">
                                 <a href="{{ route('front.index') }}" class="breadcrumb-list__link text-body hover-text-main">Home</a>
                             </li>

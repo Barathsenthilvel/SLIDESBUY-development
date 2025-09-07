@@ -34,12 +34,12 @@
                     <p class="banner-two__desc text-center">Download ready-made, fully editable Power point slides and save hours  of design work. finish faster, present better.</p>
 
                     <form action="#" class="search-box style-two">
-                        <div class="search-box__select select-has-icon">
+                        {{-- <div class="search-box__select select-has-icon">
                             <select class="form-control form-control py-0 border-0 bg-transparent">
                                 <option value="1" selected disabled>All Categories</option>
-                                
+
                             </select>
-                        </div>
+                        </div> --}}
                         <input type="text" class="common-input common-input--lg pill shadow-sm" placeholder="Browse All Templates">
                         <button type="submit" class="btn btn-main btn-icon icon border-0">
                             <img src="../assets/images/icons/search.svg" alt="">

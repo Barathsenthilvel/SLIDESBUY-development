@@ -597,7 +597,7 @@
         </div>
 {{-- @dd($product->product_description); --}}
         {{-- description --}}
-        <div class="product-details__description">
+        <div class="product-details__description mt-5">
             <p>{{ strip_tags($product->product_description) }}</p>
         </div>
 

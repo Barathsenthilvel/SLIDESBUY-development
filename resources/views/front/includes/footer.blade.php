@@ -228,9 +228,9 @@
                 <div class="col-xl-3 col-sm-6">
                     <div class="footer-widget">
                         <div class="footer-widget__logo">
-                            <a href="index.html">
-                                <img  src={{ asset('assets/images/logo/slidesbuy.png') }} alt="Logo" class="white-version">
-                                <img  src={{ asset(' assets/images/logo/slidesbuy.png') }} alt="Logo" class="dark-version">
+                            <a href="{{ route('front.index') }}">
+                                <img  src={{ asset('assets/images/logo/newslides.png') }} alt="Logo" class="white-version">
+                                <img  src={{ asset('assets/images/logo/newslides.png') }} alt="Logo" class="dark-version">
                             </a>
                         </div>
                         <p class="footer-widget__desc">Your trusted source for premium PowerPoint & Google Slides templates.</p>
@@ -294,7 +294,7 @@
     <!-- bottom Footer Two -->
     <div class="bottom-footer-two">
         <div class="container container-two">
-            <div class="bottom-footer__inner flx-between gap-3">
+            <div class="bottom-footer__inner flx-center gap-3">
                 <p class="bottom-footer__text font-14"> Copyright © 2025 Slidesbuy, All rights reserved.</p>
                 <div class="footer-links">
                     <a href="#" class="footer-link font-14">Developed by - </a>

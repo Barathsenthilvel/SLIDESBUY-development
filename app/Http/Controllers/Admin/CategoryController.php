@@ -147,7 +147,11 @@ class CategoryController extends Controller
         $Category = new Category();
         $Category->fill($input)->save();
         $data1['msg'] = 'Category Added Successfully.';
-        return response()->json($data1);
+        // If request is AJAX, return JSON; otherwise redirect back with flash
+        if ($request->ajax()) {
+            return response()->json($data1);
+        }
+        return redirect()->back()->with('msg', $data1['msg']);
     }
 
     public function update(Request $request, $id){
@@ -251,8 +255,8 @@ class CategoryController extends Controller
         }
 
         $Category->fill($input)->save();
-        $data1['msg'] = 'Category Updated Successfully.';
-        return response()->json($data1);
+        // Always redirect back with flash message to avoid raw JSON showing in browser
+        return redirect()->back()->with('msg', 'Category Updated Successfully.');
     }
     public function status($id1,$id2)
     {

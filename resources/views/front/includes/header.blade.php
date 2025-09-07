@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Title -->
-    <title> Digital Market Place HTML Template</title>
+    <title>Slidesbuy</title>
     <!-- Favicon -->
 <!-- Favicon -->
 <link rel="shortcut icon" href="{{ asset('assets/images/logo/favicon-two.png') }}">
@@ -107,7 +107,11 @@
 }
 
 /* Ensure header sits above page content */
-.header { position: relative; z-index: 1500; }
+.header {
+
+    position: relative;
+    /* z-index: 1500;currentyle hide for modbile menu tetsig this css */
+ }
 
 /* Add mega menu styles */
 .mega-parent { position: static; }
@@ -133,6 +137,7 @@
 .nav-menu__item.mega-parent:hover > .mega-menu { display: block; }
 
 /* Keep classic submenu behavior for non-mega items */
+
 </style>
 <body>
 @php
@@ -167,15 +172,15 @@ if(auth()->check()){
 <!-- ==================== Scroll to Top End Here ==================== -->
 
 <!-- ==================== Mobile Menu Start Here ==================== -->
-<div class="mobile-menu d-lg-none d-block">
+<div class="mobile-menu d-lg-none d-block change-gradient">
     <button type="button" class="close-button"> <i class="las la-times"></i> </button>
     <div class="mobile-menu__inner">
         <a  href="{{ route('front.index') }}" class="mobile-menu__logo">
             {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="white-version"> --}}
             {{-- <img src="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"alt="Logo" class="dark-version"> --}}
 
-            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
-            <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="dark-version">
+            <img src="{{ asset('assets/images/logo/newslides.png') }}"alt=""  class="white-version">
+            <img src="{{ asset('assets/images/logo/newslides.png') }}"alt=""  class="dark-version">
 
 
 
@@ -223,7 +228,7 @@ if(auth()->check()){
 </ul>
             <div class="header-right__inner d-lg-none my-3 gap-1 d-flex flx-align">
                 @if(!auth()->check())
-                    <a href="{{ route('user.register') }}" class="btn btn-main pill">
+                    <a href="{{ route('front.loginBlade') }}" class="btn btn-main pill">
                         <span class="icon-left icon">
                         <img src="{{ asset('assets/images/icons/user.svg') }}" alt="">
                         </span>Create Account
@@ -237,7 +242,7 @@ if(auth()->check()){
                     <div class="user-profile">
                         <button class="user-profile__button flex-align">
                             <span class="user-profile__thumb">
-                                <img src="{{ asset('assets/images/icons/Avatar18.svg') }}"  class="cover-img" alt="">
+                                <img src="{{ asset('assets/images/icons/new-avatar.svg') }}"  class="cover-img" alt="">
                             </span>
                         </button>
                         <ul class="user-profile-dropdown">
@@ -282,23 +287,32 @@ if(auth()->check()){
 <!-- <main> -->
  <main class="change-gradient">
     <!-- ============================ Sale Offer Start =========================== -->
-<div class="sale-offer ">
+{{-- <div class="sale-offer ">
     <div class="container container-full ">
         <div class="sale-offer__content flx-between position-relative">
-            <div class="sale-offer__countdown">
 
-                <div class="countdown" data-date="14-10-2026" data-time="12:00">
-                    <div class="day"><span class="num"></span><span class="word"></span></div>
-                    <div class="hour"><span class="num"></span><span class="word"></span></div>
-                    <div class="min"><span class="num"></span><span class="word"></span></div>
-                    <div class="sec"><span class="num"></span><span class="word"></span></div>
-                </div>
-
-            </div>
             <div class="sale-offer__discount flx-align gap-2">
                 <span class="sale-offer__text text-heading text-capitalize">Enjoy Premium Plans at </span>
-                <strong class="sale-offer__qty text-heading font-heading">~50% OFF</strong>
                 <a href="{{ route('login.form') }}" class="btn btn-sm btn-white pill fw-500">Signup</a>
+                <strong class="sale-offer__qty text-heading font-heading">~50% OFF</strong>
+
+            </div>
+            <div class="sale-offer__button">
+                <button type="submit" class="sale-offer__close text-heading"><i class="las la-times"></i></button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+<div class="sale-offer ">
+    <div class="container container-full ">
+        <div class="sale-offer__content flx-center position-relative">
+
+            <div class="sale-offer__discount flx-align gap-2">
+                <span class="sale-offer__text text-heading text-capitalize">Enjoy Premium Plans at </span>
+                <a href="{{ route('login.form') }}" class="btn btn-sm  fw-500 btn btn-main pill">Signup</a>
+                <strong class="sale-offer__qty text-heading font-heading">~50% OFF</strong>
+
             </div>
             <div class="sale-offer__button">
                 <button type="submit" class="sale-offer__close text-heading"><i class="las la-times"></i></button>
@@ -315,13 +329,13 @@ if(auth()->check()){
             <div class="logo">
                 <a href="index.html" class="link white-version">
                     {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
-                      <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version">
+                      <img src="{{ asset('assets/images/logo/newslides.png') }}"alt=""  class="white-version">
                    {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version"> --}}
                 </a>
                 <a href="index.html" class="link dark-version">
                     {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
                       {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version"> --}}
-                <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version">
+                <img src="{{ asset('assets/images/logo/newslides.png') }}"alt="" class="dark-version">
                 </a>
             </div>
             <!-- Logo End  -->
@@ -419,7 +433,7 @@ if(auth()->check()){
            <div class="user-profile" id="desktopUserProfile">
             <button class="user-profile__button flex-align" id="desktopUserButton" type="button">
                 <span class="user-profile__thumb">
-                    <img src="{{ asset('assets/images/icons/Avatar18.svg') }}" class="cover-img" alt="">
+                    <img src="{{ asset('assets/images/icons/user.png') }}" class="cover-img" alt="">
                 </span>
             </button>
             <ul class="user-profile-dropdown" id="desktopUserDropdown">

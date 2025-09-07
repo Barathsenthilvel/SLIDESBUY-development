@@ -21,7 +21,7 @@
                         </ul>
 
                         <h3 class="breadcrumb-two-content__title mb-3 text-capitalize">Privacy Policy</h3>
-                        <p class="breadcrumb-two-content__desc font-16 text-body">Learn how we protect and handle your personal information</p>
+                        {{-- <p class="breadcrumb-two-content__desc font-16 text-body">Learn how we protect and handle your personal information</p> --}}
                     </div>
                 </div>
             </div>
@@ -34,49 +34,78 @@
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="disclaimer-wrapper mt-5 mb-5">
-                    <h4 class="disclaimer-title mb-4">1. General Information</h4>
-                    <p class="disclaimer-text mb-4">The information provided on this website is for general informational purposes only. While we strive to keep the information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on the website for any purpose.</p>
+                    {{-- <h4 class="disclaimer-title mb-2">Privacy Policy – Slidesbuy</h4> --}}
+                    <p class="text-muted mb-4">Last Updated: September 07, 2025</p>
+                    <p class="disclaimer-text mb-4">At Slidesbuy ("we," "our," or "us"), accessible at slidesbuy.com, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our website and services. By using our services, you consent to the practices described in this Privacy Policy.</p>
 
-                    <h4 class="disclaimer-title mb-4">2. No Professional Advice</h4>
-                    <p class="disclaimer-text mb-4">The information on this website is not intended to constitute professional advice. Any reliance you place on such information is therefore strictly at your own risk. We recommend consulting with qualified professionals for specific advice tailored to your situation.</p>
+                    <h5 class="mb-3">Information We Collect</h5>
+                    <ul class="mb-4">
+                        <li>Account Information: Email address, mobile number, and password provided during sign-up.</li>
+                        <li>Verification Data: One-time passwords (OTPs) sent to your registered email for verification.</li>
+                        <li>Payment Information: Payment details (such as transaction IDs, payment status) processed securely through Razorpay.</li>
+                        <li>Usage Data: Information about your interactions with our platform, such as pages visited, templates browsed, and downloads made.</li>
+                    </ul>
 
-                    <h4 class="disclaimer-title mb-4">3. Website Availability</h4>
-                    <p class="disclaimer-text mb-4">We do not guarantee that our website will be available at all times or that it will be free from errors or interruptions. We reserve the right to modify, suspend, or discontinue the website or any part of it at any time without notice.</p>
+                    <h5 class="mb-3">How We Use Your Information</h5>
+                    <ul class="mb-4">
+                        <li>Create and manage your Slidesbuy account.</li>
+                        <li>Process payments and provide access to subscribed content.</li>
+                        <li>Send OTPs and account-related communications.</li>
+                        <li>Improve our services, analyze trends, and enhance user experience.</li>
+                        <li>Ensure compliance with our Terms and Conditions.</li>
+                    </ul>
 
-                    <h4 class="disclaimer-title mb-4">4. External Links</h4>
-                    <p class="disclaimer-text mb-4">Our website may contain links to external websites that are not provided or maintained by us. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites. The inclusion of any links does not necessarily imply a recommendation or endorse the views expressed within them.</p>
+                    <h5 class="mb-3">Sharing of Information</h5>
+                    <p class="disclaimer-text mb-2">We do not sell or trade your personal data. We may share information only in the following cases:</p>
+                    <ul class="mb-4">
+                        <li>Payment Processing: With Razorpay, our secure payment gateway provider.</li>
+                        <li>Legal Compliance: If required by law, regulation, or court order.</li>
+                    </ul>
+                    <p class="disclaimer-text mb-4">Razorpay’s handling of your payment data is governed by their own Privacy Policy.</p>
 
-                    <h4 class="disclaimer-title mb-4">5. Product Information</h4>
-                    <p class="disclaimer-text mb-4">Product descriptions, specifications, and pricing information are provided for informational purposes only. We reserve the right to modify or discontinue products at any time. Product images are for illustration purposes and may not reflect the exact appearance of the actual product.</p>
+                    <h5 class="mb-3">Data Security</h5>
+                    <ul class="mb-4">
+                        <li>We use SSL encryption and industry-standard measures to protect your personal data.</li>
+                        <li>While we strive to ensure data security, no method of internet transmission or storage is 100% secure. We cannot guarantee absolute protection.</li>
+                    </ul>
 
-                    <h4 class="disclaimer-title mb-4">6. User-Generated Content</h4>
-                    <p class="disclaimer-text mb-4">We are not responsible for any user-generated content posted on our website, including comments, reviews, or other submissions. Users are solely responsible for the content they post, and we reserve the right to remove any content that violates our terms of service.</p>
+                    <h5 class="mb-3">Your Rights</h5>
+                    <p class="disclaimer-text mb-2">You have the right to:</p>
+                    <ul class="mb-4">
+                        <li>Request access to the personal information we hold about you.</li>
+                        <li>Request corrections if your information is inaccurate or incomplete.</li>
+                        <li>Request deletion of your account and personal data (subject to legal obligations).</li>
+                        <li>Opt out of receiving non-essential communications such as promotional emails.</li>
+                    </ul>
+                    <p class="disclaimer-text mb-4">To exercise these rights, contact us at support@slidesbuy.com.</p>
 
-                    <h4 class="disclaimer-title mb-4">7. Limitation of Liability</h4>
-                    <p class="disclaimer-text mb-4">In no event shall Slidesbuy, its directors, employees, partners, agents, suppliers, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of the website or any products or services.</p>
+                    <h5 class="mb-3">Data Retention</h5>
+                    <ul class="mb-4">
+                        <li>We retain your personal information only for as long as necessary to provide services or comply with legal obligations.</li>
+                        <li>If you delete your account, we will remove your data, except where law requires retention (e.g., for tax or compliance purposes).</li>
+                    </ul>
 
-                    <h4 class="disclaimer-title mb-4">8. Indemnification</h4>
-                    <p class="disclaimer-text mb-4">You agree to indemnify and hold harmless Slidesbuy and its affiliates from and against any claims, damages, obligations, losses, liabilities, costs, or debt arising from your use of the website or violation of any terms of service.</p>
+                    <h5 class="mb-3">Cookies and Tracking</h5>
+                    <ul class="mb-4">
+                        <li>We may use cookies and similar technologies to enhance user experience, remember preferences, and analyze website performance.</li>
+                        <li>You can manage or disable cookies in your browser settings, but some features of the site may not function properly without them.</li>
+                    </ul>
 
-                    <h4 class="disclaimer-title mb-4">9. Intellectual Property</h4>
-                    <p class="disclaimer-text mb-4">All content on this website, including but not limited to text, graphics, logos, images, audio clips, digital downloads, and software, is the property of Slidesbuy or its content suppliers and is protected by international copyright laws.</p>
+                    <h5 class="mb-3">Children’s Privacy</h5>
+                    <p class="disclaimer-text mb-4">Our services are not directed to individuals under the age of 18. If you are under 18, you may only use our services with the consent and supervision of a parent or legal guardian.</p>
 
-                    <h4 class="disclaimer-title mb-4">10. Privacy and Security</h4>
-                    <p class="disclaimer-text mb-4">While we implement reasonable security measures to protect your personal information, we cannot guarantee that our website will be completely secure. We are not responsible for any unauthorized access to or use of your personal information.</p>
+                    <h5 class="mb-3">International Users</h5>
+                    <p class="disclaimer-text mb-4">If you are accessing our services from outside India, you are responsible for ensuring compliance with local data protection laws. By using our services, you consent to the transfer and processing of your information in India.</p>
 
-                    <h4 class="disclaimer-title mb-4">11. Changes to Disclaimer</h4>
-                    <p class="disclaimer-text mb-4">We reserve the right to modify this disclaimer at any time. Changes will be effective immediately upon posting on the website. Your continued use of the website after any changes constitutes acceptance of the modified disclaimer.</p>
+                    <h5 class="mb-3">Changes to This Privacy Policy</h5>
+                    <p class="disclaimer-text mb-4">We may update this Privacy Policy from time to time. The updated version will be posted on our website with the “Last Updated” date. Continued use of our services after changes indicates acceptance of the revised policy.</p>
 
-                    <h4 class="disclaimer-title mb-4">12. Governing Law</h4>
-                    <p class="disclaimer-text mb-4">This disclaimer is governed by and construed in accordance with applicable laws. Any disputes arising from the use of this website shall be subject to the exclusive jurisdiction of the courts in the applicable jurisdiction.</p>
-
-                    <h4 class="disclaimer-title mb-4">13. Contact Information</h4>
-                    <p class="disclaimer-text mb-4">If you have any questions about this disclaimer or our website, please contact us at legal@slidesbuy.com or through our customer support channels.</p>
-
-                    <div class="disclaimer-notice mt-5 p-4 bg-light rounded">
-                        <h5 class="disclaimer-notice-title mb-3">Important Notice</h5>
-                        <p class="disclaimer-notice-text mb-0">By using our website, you acknowledge that you have read, understood, and agree to be bound by this disclaimer. If you do not agree with any part of this disclaimer, please do not use our website or services.</p>
-                    </div>
+                    <h5 class="mb-3">Contact Us</h5>
+                    <p class="disclaimer-text mb-1">If you have any questions about this Privacy Policy or how your data is handled, please contact us:</p>
+                    <ul class="mb-0">
+                        <li>Email: support@slidesbuy.com</li>
+                        <li>Website: slidesbuy.com</li>
+                    </ul>
                 </div>
             </div>
         </div>

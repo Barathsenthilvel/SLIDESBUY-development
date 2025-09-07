@@ -128,7 +128,7 @@
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/client1.png" alt="">
+            <img src="../assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Project Manager</h5>
@@ -155,7 +155,7 @@
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/client2.png" alt="">
+            <img src="assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Startup Founder</h5>
@@ -183,7 +183,7 @@
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/client2.png" alt="">
+            <img src="assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Corporate Trainer</h5>
@@ -210,10 +210,10 @@
         </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/client3.png" alt="">
+            <img src="assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
-            <h5 class="client-info__name mb-2">Consulting Agency Owner</h5>        
+            <h5 class="client-info__name mb-2">Consulting Agency Owner</h5>
             <!-- <span class="client-info__designation text-heading fw-500">Market Expert</span> -->
         </div>
     </div>

@@ -44,12 +44,21 @@
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
+                                            @if(session('msg'))
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <div class="alert-body">{{ session('msg') }}</div>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            @else
                                             <div class="alert alert-success alert-dismissible fade show" style="display:none" role="alert">
                                                 <div class="alert-body"></div>
                                                 <button type="button" class="close" aria-label="Close">
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
+                                            @endif
                             <form method="POST" action="{{route('admin-category-update',$data->id)}}"  enctype="multipart/form-data" id="formEdit" onsubmit="if(typeof CKEditor1 != 'undefined'){ CKEditor1.updateSourceElement(); }">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="id" id="id" value="{{ $data->id}}">

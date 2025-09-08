@@ -111,7 +111,7 @@
                                     <td>{{ $subscription->razorpay_payment_id ?? 'N/A' }}</td>
                                     <td><span class="badge-soft">{{ optional($subscription->plan)->name ?? 'N/A' }}</span></td>
                                     <td>{{ optional($subscription->plan)->download_limit ?? '—' }}</td>
-                                    <td>₹{{ $subscription->discount_price ?? $subscription->price ?? '0' }}</td>
+                                    <td>${{ $subscription->discount_price ?? $subscription->price ?? '0' }}</td>
                                     <td>{{ optional($subscription->created_at)->format('d M Y') }}</td>
                                     <td>{{ $subscription->expired_at ? \Carbon\Carbon::parse($subscription->expired_at)->format('d M Y') : 'N/A' }}</td>
                                     <td><span class="{{ $statusClass }}">{{ $statusText }}</span></td>

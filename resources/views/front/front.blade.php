@@ -99,7 +99,7 @@
 <!-- ======================= Testimonial Section Start ============================ -->
 <section class="testimonial padding-y-120 position-relative section-bg overflow-hidden">
 
-    <img src="assets/images/shapes/brush.png" alt="" class="element-brush">
+    <img src="../assets/images/shapes/brush.png" alt="" class="element-brush">
 
     <div class="container container-two">
         <div class="section-heading style-left style-flex flx-between align-items-end gap-3">
@@ -110,8 +110,8 @@
         </div>
         <div class="testimonial-slider">
             <div class="testimonial-item hover-bg-main">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
     <div class="testimonial-item__rating mb-3">
         <ul class="star-rating">
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
@@ -123,8 +123,8 @@
     </div>
     <p class="testimonial-item__desc">“Fresh designs every time! The templates are professional, customizable, and make my presentations shine.”</p>
     <div class="testimonial-item__quote">
-        <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
-        <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
+        <img src="../assets/images/icons/quote.svg" alt="" class="quote quote-white">
+        <img src="../assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
@@ -137,8 +137,8 @@
     </div>
 </div>
             <div class="testimonial-item hover-bg-main">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
     <div class="testimonial-item__rating mb-3">
         <ul class="star-rating">
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
@@ -150,12 +150,12 @@
     </div>
     <p class="testimonial-item__desc">“Super smooth download process and modern slides. Definitely worth the subscription!.”</p>
     <div class="testimonial-item__quote">
-        <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
-        <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
+        <img src="../assets/images/icons/quote.svg" alt="" class="quote quote-white">
+        <img src="../assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/account.png" alt="">
+            <img src="../assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Startup Founder</h5>
@@ -165,8 +165,8 @@
 </div>
 
 <div class="testimonial-item hover-bg-main">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
-    <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
+    <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
     <div class="testimonial-item__rating mb-3">
         <ul class="star-rating">
             <li class="star-rating__item"><i class="fas fa-star"></i></li>
@@ -178,12 +178,12 @@
     </div>
     <p class="testimonial-item__desc">“Great experience overall. The slides are polished and save me tons of time.”</p>
     <div class="testimonial-item__quote">
-        <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
-        <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
+        <img src="../assets/images/icons/quote.svg" alt="" class="quote quote-white">
+        <img src="../assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
     </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/account.png" alt="">
+            <img src="../assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Corporate Trainer</h5>
@@ -192,8 +192,8 @@
     </div>
 </div>
             <div class="testimonial-item hover-bg-main">
-            <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
-            <img src="assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
+            <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg white-version">
+            <img src="../assets/images/gradients/testimonial-bg.png" alt="" class="hover-bg dark-version">
             <div class="testimonial-item__rating mb-3">
                 <ul class="star-rating">
                     <li class="star-rating__item"><i class="fas fa-star"></i></li>
@@ -205,12 +205,12 @@
             </div>
                  <p class="testimonial-item__desc">“Affordable and professional. Exactly what I needed for my client meetings.”</p>
         <div class="testimonial-item__quote">
-            <img src="assets/images/icons/quote.svg" alt="" class="quote quote-white">
-            <img src="assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
+            <img src="../assets/images/icons/quote.svg" alt="" class="quote quote-white">
+            <img src="../assets/images/icons/quote-dark.svg" alt="" class="quote quote-dark">
         </div>
     <div class="client-info d-flex align-items-center gap-3">
         <div class="client-info__thumb">
-            <img src="assets/images/thumbs/account.png" alt="">
+            <img src="../assets/images/thumbs/account.png" alt="">
         </div>
         <div class="client-info__content">
             <h5 class="client-info__name mb-2">Consulting Agency Owner</h5>

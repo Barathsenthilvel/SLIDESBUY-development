@@ -95,7 +95,7 @@
                     <div class="col-lg-6">
                         <div class="thank-card">
                             @foreach($productsPurchased as $product)
-                            <h5 class="thank-card__title mb-3">Products you have purchased</h5>
+                            <h5 class="thank-card__title mb-3">Slides you have purchased</h5>
                             <ul class="list-text">
                                 <li class="list-text__item flx-align flex-nowrap">
                                     <span class="text text-heading fw-500 font-heading fw-700 font-18">Name</span>
@@ -123,7 +123,7 @@
                             </ul>
                             @endforeach
                             <div class="thank-card__thumb mt-64 mb-3">
-                                <img src="../assets/images/thumbs/rating-img.png" alt="">
+                                {{-- <img src="../assets/images/thumbs/rating-img.png" alt=""> --}}
                             </div>
                             <div class="flx-between gap-2">
                                 <p class="text">Please don't forget to rating</p>

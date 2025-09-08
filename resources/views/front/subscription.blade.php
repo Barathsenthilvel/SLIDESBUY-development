@@ -476,7 +476,7 @@
 }
 
 #loginRequiredModal .modal-header {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    /* background: linear-gradient(135deg, #007bff, #0056b3); */
     color: white;
     padding: 30px 24px 20px;
     border-bottom: none;
@@ -794,7 +794,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header align-items-center justify-content-center">
-                <img src="../assets/images/logo/slidesbuy.png" alt="Slidesbuy Logo" class="modal-logo">
+                <img src="../assets/images/logo/newslides.png" alt="Slidesbuy Logo" class="modal-logo">
                 <button type="button" class="btn-close" onclick="closeModal('planDetailsModal')" aria-label="Close">×</button>
             </div>
             <div class="modal-body">
@@ -837,8 +837,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('planDetailsModal')">Cancel</button>
-                <button type="button" class="btn btn-primary pay-now-btn">Pay Now</button>
+                <button type="button" class="btn btn-main pill" onclick="closeModal('planDetailsModal')">Cancel</button>
+                <button type="button" class="btn btn-main pill pay-now-btn">Pay Now</button>
             </div>
         </div>
     </div>
@@ -848,26 +848,31 @@
 <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header text-center border-0">
+            <div class="modal-header text-center border-0" style="
+            background-color: hsl(var(--main)) !important;
+            background: var(--main-gradient);
+        ">
                 <div class="w-100 text-center">
                     <img src="{{ asset('assets/images/logo/slidesbuy.png') }}" alt="Slidesbuy Logo" class="modal-logo mb-3" style="max-height: 60px;">
                     <h5 class="modal-title w-100">Hello User!</h5>
                 </div>
-                <button type="button" class="btn-close" onclick="closeModal('loginRequiredModal')" aria-label="Close" style="color: white; font-size: 24px;">×</button>
+                <button type="button" class="btn-close" onclick="closeModal('loginRequiredModal')" aria-label="Close" style="color: white !important; font-size: 24px;">×</button>
             </div>
             <div class="modal-body text-center">
                 <div class="login-required-content">
                     <div class="login-icon mb-4">
-                        <i class="fas fa-user-lock fa-3x text-primary"></i>
+                        <i class="fas fa-user-lock fa-3x" style="
+                        color: hsl(var(--main)) !important;
+                    "></i>
                     </div>
                     <h4 class="mb-3">Please Login to Proceed</h4>
                     <p class="text-muted mb-4">You need to be logged in to view plan details and make purchases.</p>
 
                     <div class="login-actions">
-                        <a href="{{ route('login.form') }}" class="btn btn-primary btn-lg me-3">
+                        <a href="{{ route('login.form') }}" class="btn btn-main pill me-3 me-3">
                             <i class="fas fa-sign-in-alt me-2"></i>Login
                         </a>
-                        <a href="{{ route('front.loginBlade') }}" class="btn btn-primary btn-lg me-3">
+                        <a href="{{ route('front.loginBlade') }}" class="btn btn-main pill me-3 me-3">
                             <i class="fas fa-user-plus me-2"></i>Register
                         </a>
                     </div>

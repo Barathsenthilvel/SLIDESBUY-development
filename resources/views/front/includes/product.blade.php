@@ -1,9 +1,9 @@
 
 
 
+{{-- padding-y-120  --}}
 
-
-<section class="arrival-product padding-y-120 section-bg position-relative z-index-1">
+<section class="arrival-product padding-y-100 section-bg position-relative z-index-1">
     <img src="../assets/images/gradients/product-gradient.png" alt="" class="bg--gradient white-version">
 
     <img src="../assets/images/shapes/element2.png" alt="" class="element one">
@@ -41,7 +41,7 @@
                                 $inWishlist = Auth::user()->wishlists()->where('product_id', $discountProduct->id)->exists();
                             }
                         @endphp
-                        <div class="col-6 col-md-3">
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                             <div class="product-item ">
                                 <div class="product-item__thumb d-flex">
                                     <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link w-100">

@@ -3532,12 +3532,12 @@ input[type=number] {
 }
 
 .search-box.style-two input {
-    padding-left: 170px;
+    padding-left: 44px;
 }
 
 @media screen and (max-width: 575px) {
     .search-box.style-two input {
-        padding-left: 128px;
+        padding-left: 44px;
     }
 }
 
@@ -5061,7 +5061,7 @@ input[type=number] {
 
 @media (min-width: 424px) and (max-width: 575px) {
     .product-item {
-        display: flex;
+        display: block;
     }
 }
 
@@ -5104,8 +5104,11 @@ input[type=number] {
 
 @media (max-width: 574px) {
     .product-item__thumb {
-        aspect-ratio: 4/3;
-        max-height: 180px;
+        /* aspect-ratio: auto;
+        max-height: none; */
+
+        aspect-ratio: auto;
+        max-height: none;
     }
 }
 
@@ -5130,6 +5133,13 @@ input[type=number] {
     height: 100%;
     object-fit: cover;
     object-position: center;
+}
+
+@media (max-width: 574px) {
+    .product-item__thumb img {
+        object-fit: contain;
+        height: auto;
+    }
 }
 
 .product-item__wishlist {

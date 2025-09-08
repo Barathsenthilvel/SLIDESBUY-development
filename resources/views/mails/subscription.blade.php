@@ -226,7 +226,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Amount Paid:</span>
-                    <span class="detail-value">₹{{ number_format($subscriptionData['discount_price'], 2) }}</span>
+                    <span class="detail-value">${{ number_format($subscriptionData['discount_price'], 2) }}</span>
                 </div>
 
                 @if($subscriptionData['discount_price'] != $subscriptionData['price'])

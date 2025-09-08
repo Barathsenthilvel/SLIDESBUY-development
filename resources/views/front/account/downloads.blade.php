@@ -66,6 +66,30 @@
         transform: translateX(5px);
         transition: all 0.3s ease;
     }
+
+    /* Responsive table: stack rows on small screens */
+    @media (max-width: 767.98px) {
+        .table-modern thead { display: none; }
+        .table-modern tbody tr { display: block; border-radius: 12px; overflow: hidden; }
+        .table-modern tbody td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px; border-top: 1px solid #f1f5f9; }
+        .table-modern tbody td:first-child { border-top: 0; }
+        .table-modern tbody td::before { content: attr(data-label); font-weight: 700; color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+        .btn-icon-only { width: 36px; height: 36px; }
+    }
+
+    /* Tablet: keep table, tighten spacing */
+    @media (min-width: 768px) and (max-width: 991.98px) {
+        .account-card { padding: 12px; }
+        .table-modern thead th { font-size: 11px; padding: 8px 10px; }
+        .table-modern tbody td { padding: 12px 10px; }
+        .btn-icon-only { width: 36px; height: 36px; }
+    }
+
+    /* Small laptops */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        .table-modern thead th { font-size: 12px; padding: 10px 12px; }
+        .table-modern tbody td { padding: 12px; }
+    }
 </style>
 
 <div class="container container-two py-4 account-wrapper">
@@ -87,7 +111,9 @@
         <div class="col-lg-9">
             <div class="account-card p-3">
                 <div class="table-responsive">
-                    <table class="table-modern">
+                    <table class="table-modern" style="
+                    font-size: 13px;
+                ">
                         <thead>
                             <tr>
                                 <th>Product</th>
@@ -110,7 +136,7 @@
                                     $left = max($limit - $downloadCount, 0);
                                 @endphp
                                 <tr>
-                                    <td>
+                                    <td data-label="Product">
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="fw-600">{{ $product->product_title ?? ('File #' . $productId) }}</span>
                                             @if($product && $product->is_free)
@@ -119,22 +145,22 @@
                                         </div>
                                         <div class="text-muted small">{{ optional($groupedDownloads->first())->created_at->format('d M Y') }}</div>
                                     </td>
-                                    <td><span class="badge-soft">{{ $plan->name ?? 'N/A' }}</span></td>
-                                    <td>{{ $downloadCount }}</td>
-                                    <td>{{ $left }}</td>
-                                    <td>
+                                    <td data-label="Plan"><span class="badge-soft">{{ $plan->name ?? 'N/A' }}</span></td>
+                                    <td data-label="Downloaded">{{ $downloadCount }}</td>
+                                    <td data-label="Left">{{ $left }}</td>
+                                    <td data-label="Download">
                                         <a href="{{ route('download.file', $productId) }}" class="btn  btn-icon-only" title="Download" style="background-color: #a547f1; color: #fff;">
                                             <i class="las la-download"></i>
                                         </a>
                                     </td>
-                                    <td>
+                                    <td data-label="Rating">
                                         @if(optional($product)->rating)
                                                 ⭐ {{ $product->rating }} / 5
                                             @else
                                             —
                                             @endif
                                     </td>
-                                    <td>
+                                    <td data-label="Action">
                                         <span class="text-muted small">Review coming soon</span>
                                     </td>
                                 </tr>

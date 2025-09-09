@@ -3,6 +3,18 @@
 
 {{-- padding-y-120  --}}
 
+<style>
+/* Ensure product titles are left-aligned on mobile and small screens */
+@media (max-width: 768px) {
+    .product-item__title {
+        text-align: left !important;
+    }
+    .product-item__title a {
+        text-align: left !important;
+    }
+}
+</style>
+
 <section class="arrival-product padding-y-100 section-bg position-relative z-index-1">
     <img src="../assets/images/gradients/product-gradient.png" alt="" class="bg--gradient white-version">
 

@@ -21,6 +21,17 @@
         color: #002b40;
     } --}}
 
+    <style>
+        /* Ensure product titles are left-aligned on mobile and small screens */
+        @media (max-width: 768px) {
+            .product-item__title {
+                text-align: left !important;
+            }
+            .product-item__title a {
+                text-align: left !important;
+            }
+        }
+        </style>
 
     <style>
     .custom-badge {
@@ -107,21 +118,57 @@
     }
 
     .list-grid-wrapper .product-item__thumb {
-        width: 94%;
+        width: 100%;
         height: auto;
         position: relative;
-        margin: 3% auto;
+        margin: 0;
+        padding: 15px;
+        background: #f8f9fa;
     }
 
     .list-grid-wrapper .product-item__thumb img {
         width: 100%;
-        height: 160px;
+        height: 180px;
         object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .list-grid-wrapper .product-item__content {
         width: 100%;
         padding: 15px;
+        background: #fff;
+    }
+
+    .list-grid-wrapper .product-item__wishlist {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .list-grid-wrapper .product-item__wishlist:hover {
+        background: #fff;
+        transform: scale(1.1);
+    }
+
+    .list-grid-wrapper .product-item__wishlist i {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .list-grid-wrapper .product-item__wishlist.active i {
+        color: #e74c3c;
     }
 
     .list-grid-wrapper .product-item__title {
@@ -200,12 +247,27 @@
         }
 
         .list-grid-wrapper .product-item__thumb {
-            width: 100%;
-            height: 200px;
+            padding: 10px;
+        }
+
+        .list-grid-wrapper .product-item__thumb img {
+            height: 160px;
         }
 
         .list-grid-wrapper .product-item__content {
             text-align: center;
+            padding: 12px;
+        }
+
+        .list-grid-wrapper .product-item__wishlist {
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+        }
+
+        .list-grid-wrapper .product-item__wishlist i {
+            font-size: 14px;
         }
     }
 </style>
@@ -434,7 +496,7 @@ if (Auth::check()) {
             </button>
                 </div>
                 <div class="product-item__content">
-                    <h6 class="product-item__title">
+                    <h6 class="product-item__title text-left">
                         <a href="{{ route('product.item', ['slug' => $discountProduct->slug]) }}" class="link">
                             {{ $discountProduct->product_title ?? 'SaaS dashboard digital products Title here' }}
                         </a>

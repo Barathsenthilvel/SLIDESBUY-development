@@ -92,10 +92,10 @@
         margin-bottom: 20px;
     }
 
-    /* Prevent horizontal scroll issues */
-    .container, .container-two {
+    /* Prevent horizontal scroll issues * to command fro account info/
+    /* .container, .container-two {
         overflow-x: hidden;
-    }
+    } */
 
     /* Ensure tables don't cause horizontal scroll */
     table {

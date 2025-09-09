@@ -1,6 +1,6 @@
-@extends('layout.admin') 
+@extends('layout.admin')
 
-@section('content')  
+@section('content')
                     <!--end::Header-->
                     <!--begin::Content-->
                     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -36,7 +36,7 @@
                                         <div class="card card-custom gutter-b example example-compact">
                                             <div class="card-header">
                                                 <h3 class="card-title">Edit Home Page Products</h3>
-                                               
+
                                             </div>
                                             <!--begin::Form-->
                                             <div class="alert alert-danger alert-dismissible fade show" style="display:none" role="alert">
@@ -51,17 +51,17 @@
                                                   <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            
+
                                             <form method="POST" action="{{route('admin-homeslider-update',$data->id)}}" onsubmit="return validation()" id="formEdit">
                                                 {{ csrf_field() }}
                                                 <div class="card-body">
                                                    <div class="form-group row">
-                                                        <label class="col-2 col-form-label">Title 
+                                                        <label class="col-2 col-form-label">Title
                                                         <span class="text-danger">*</span></label>
                                                         <div class="col-4">
                                                             <input class="form-control" type="text" value="{{$data->title}}" id="title" name="title" required/>
                                                         </div>
-                                                    </div>    
+                                                    </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Type
                                                          <span class="text-danger">*</span></label>
@@ -89,7 +89,7 @@
                                                             @endforeach
                                                         </select>
                                                         </div>
-                                                    </div>            
+                                                    </div>
                                                     <div class="form-group row">
                                                          <label class="col-2 col-form-label">Product
                                                          <span class="text-danger">*</span></label>
@@ -99,14 +99,14 @@
                                                                 @foreach ($product as $item)
                                                                     <option value="{{$item->id}}" {{ (array_key_exists($item->id,$product2))?'selected':'' }}>{{ $item->product_title }}</option>
                                                                 @endforeach
-                                                            </select> 
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group row">                                                         
+                                                    <div class="form-group row">
                                                         <div class="col-12" id="table">
                                                         </div>
-                                                    </div>         
-                                                </div> 
+                                                    </div>
+                                                </div>
                                                 <div class="card-footer">
                                                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-secondary">Cancel</button>
@@ -115,9 +115,9 @@
                                             <!--end::Form-->
                                         </div>
                                         <!--end::Card-->
-                                                        
+
                                     </div>
-                                  
+
                                 </div>
                             </div>
                             <!--end::Container-->
@@ -126,7 +126,7 @@
                     </div>
                     <!--end::Content-->
                     <!--begin::Footer-->
- @endsection                     
+ @endsection
 
  @push('script')
  <script>
@@ -164,7 +164,7 @@
             });
         }else{
             $("#choices-multiple-remove-button").html("");
-        }   
+        }
     }
 
 
@@ -183,5 +183,38 @@
     function arraypush(data){
         array2[data.dataset.id] = data.value;
     }
+
+    // AJAX submit to show success/error inline
+    $(document).on('submit', '#formEdit', function(e){
+        e.preventDefault();
+        var $form = $(this);
+        var url = $form.attr('action');
+        var formData = new FormData(this);
+        $(".alert-danger").hide().find('div').html('');
+        $(".alert-success").hide().find('div').html('');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            success: function(res){
+                if(res && res.msg){
+                    $(".alert-success").show().find('div').text(res.msg);
+                } else {
+                    $(".alert-success").show().find('div').text('Updated successfully.');
+                }
+            },
+            error: function(xhr){
+                var json = xhr.responseJSON || {};
+                var errors = json.errors || {};
+                var items = [];
+                Object.keys(errors).forEach(function(k){ items.push(errors[k]); });
+                var html = Array.isArray(items) ? items.join('<br>') : 'Something went wrong';
+                $(".alert-danger").show().find('div').html(html);
+            }
+        });
+    });
 </script>
  @endpush

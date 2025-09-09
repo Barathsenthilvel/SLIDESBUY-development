@@ -67,6 +67,12 @@
 }
 .user-profile:hover .user-profile-dropdown { display: block; }
 .user-profile-dropdown.open { display: block; }
+
+/* Ensure dropdown shows on both hover and click */
+.user-profile:hover .user-profile-dropdown,
+.user-profile-dropdown.open {
+    display: block !important;
+}
 .user-profile-dropdown .sidebar-list__item a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
 .user-profile-dropdown .sidebar-list__item a:hover { background: #f5f7fb; }
 
@@ -93,6 +99,22 @@
 .nav-submenu__link:hover {
     background: #f5f7fb;
     color: #6a42f1; /* theme purple */
+}
+
+/* Ensure mobile user dropdown is visible and not clipped */
+@media (max-width: 991.98px) {
+    .mobile-menu, .mobile-menu__inner { overflow: visible !important; }
+    .mobile-menu .user-profile { position: relative; }
+    .mobile-menu .user-profile-dropdown {
+        position: absolute;      /* avoid layout shift */
+        top: calc(100% + 8px);   /* sit just below the button */
+        right: auto;
+        left: 2px;              /* align to left side of button */
+        display: none;           /* controlled via .open */
+        min-width: 220px;
+        z-index: 9999;           /* above panel content */
+    }
+    .mobile-menu .user-profile-dropdown.open { display: block; }
 }
 
 /* Active page styling with » arrow */
@@ -255,7 +277,7 @@ if(auth()->check()){
                                     <span class="text">My Account</span>
                                 </a>
                             </li>
-
+{{--
                             <li class="sidebar-list__item">
                                 <a href="{{ route('account.profile') }}#profile" class="sidebar-list__link">
                                     <span class="sidebar-list__icon">
@@ -264,7 +286,7 @@ if(auth()->check()){
                                     </span>
                                     <span class="text">Settings</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="sidebar-list__item">
                                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();" class="sidebar-list__link">
                                     <span class="sidebar-list__icon">
@@ -523,7 +545,56 @@ document.addEventListener('DOMContentLoaded', function(){
       e.stopPropagation();
       dd.classList.toggle('open');
     });
-    document.addEventListener('click', function(){ dd.classList.remove('open'); });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e){
+      if (!btn.contains(e.target) && !dd.contains(e.target)) {
+        dd.classList.remove('open');
+      }
+    });
+  }
+
+  // Ensure My Account dropdown works on mobile (hamburger menu)
+  document.addEventListener('click', function(e){
+    const profileBtnMobile = e.target.closest('.mobile-menu .user-profile__button');
+    const anyMobileDropdown = document.querySelectorAll('.mobile-menu .user-profile-dropdown');
+
+    if (profileBtnMobile) {
+      e.stopPropagation();
+      const container = profileBtnMobile.closest('.user-profile');
+      const dropdown = container ? container.querySelector('.user-profile-dropdown') : null;
+      if (dropdown) {
+        anyMobileDropdown.forEach(function(d){ if (d !== dropdown) d.classList.remove('open'); });
+        dropdown.classList.toggle('open');
+      }
+      return;
+    }
+
+    // Prevent closing when clicking inside dropdown
+    if (e.target.closest('.mobile-menu .user-profile-dropdown')) {
+      return;
+    }
+
+    // Close if clicked outside
+    anyMobileDropdown.forEach(function(d){ d.classList.remove('open'); });
+  });
+
+  // Add hover support for desktop user profile
+  const desktopProfile = document.querySelector('#desktopUserProfile');
+  if (desktopProfile) {
+    const desktopDropdown = desktopProfile.querySelector('.user-profile-dropdown');
+
+    desktopProfile.addEventListener('mouseenter', function(){
+      if (desktopDropdown) {
+        desktopDropdown.classList.add('open');
+      }
+    });
+
+    desktopProfile.addEventListener('mouseleave', function(){
+      if (desktopDropdown) {
+        desktopDropdown.classList.remove('open');
+      }
+    });
   }
 });
 </script>

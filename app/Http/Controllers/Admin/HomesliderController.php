@@ -17,7 +17,7 @@ use App\Models\Storeconfiguration;
 
 class HomesliderController extends Controller
 {
- 
+
     public function datatables()
     {
          $datas = Homeslider::orderBy('id','desc')->get();
@@ -37,7 +37,7 @@ class HomesliderController extends Controller
                             })
                             ->addColumn('action', function(Homeslider $data) {
                                 return '<div class="action-list"><a href="' . route('admin-homeslider-edit',$data->id) . '"><i class="fas fa-edit"></i>Edit</a><a href="' . route('admin-homeslider-delete',$data->id) . '"  class="delete"><i class="fas fa-trash-alt"></i>Delete</a></div>';
-                            }) 
+                            })
                             ->rawColumns(['title','type','status','action'])
                             ->toJson(); //--- Returning Json Data To Client Side
     }
@@ -94,6 +94,7 @@ class HomesliderController extends Controller
        $data1['msg'] = 'Homeslider Add Successfully.';
        return response()->json($data1);
     }
+
     public function update(Request $request,$id){
 
         $input = $request->all();
@@ -122,6 +123,7 @@ class HomesliderController extends Controller
          $data1['msg'] = 'Homeslider Update Successfully.';
          return response()->json($data1);
     }
+
     public function status($id1,$id2)
     {
         $data = Homeslider::findOrFail($id1);
@@ -169,7 +171,7 @@ class HomesliderController extends Controller
             $array = explode('|',$value['product']);
             foreach ($array as $key1 => $value1) {
                 $A = explode(',',$value1);
-                if(!empty($A[0])){ 
+                if(!empty($A[0])){
                     $array1[] = $A[0];
                     $array2[]=$A;
                 }

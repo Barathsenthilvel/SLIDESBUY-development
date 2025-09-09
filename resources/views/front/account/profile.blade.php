@@ -51,6 +51,10 @@
         text-align: center;
         transition: all 0.3s ease;
         cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     .quick-action-card:hover {
         transform: translateY(-5px);
@@ -60,6 +64,17 @@
     .quick-action-card .icon { font-size: 2.5rem; color: #0b63f6; margin-bottom: 15px; }
     .quick-action-card .title { font-weight: 600; color: #334155; margin-bottom: 10px; }
     .quick-action-card .description { color: #64748b; font-size: 14px; }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .quick-action-card {
+            margin-bottom: 15px;
+            min-height: 180px;
+        }
+        .quick-action-card .icon { font-size: 2.2rem; margin-bottom: 12px; }
+        .quick-action-card .title { font-size: 16px; margin-bottom: 8px; }
+        .quick-action-card .description { font-size: 13px; }
+    }
 
     /* Active navigation styling */
     .account-nav .list-group-item.active {
@@ -139,8 +154,8 @@
                 <!-- Quick Actions -->
                 <h5 class="mb-3">Quick Actions</h5>
                 <div class="row g-3">
-                    <div class="col-md-4">
-                        <a href="{{ route('account.downloads') }}" class="text-decoration-none">
+                    <div class="col-12 col-md-4">
+                        <a href="{{ route('account.downloads') }}" class="text-decoration-none d-block h-100">
                             <div class="quick-action-card">
                                 <div class="icon">
                                     <i class="las la-download"></i>
@@ -150,8 +165,8 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{{ route('account.subscriptions') }}" class="text-decoration-none">
+                    <div class="col-12 col-md-4">
+                        <a href="{{ route('account.subscriptions') }}" class="text-decoration-none d-block h-100">
                             <div class="quick-action-card">
                                 <div class="icon">
                                     <i class="las la-credit-card"></i>
@@ -161,8 +176,8 @@
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{{ route('account.profile.edit') }}" class="text-decoration-none">
+                    <div class="col-12 col-md-4">
+                        <a href="{{ route('account.profile.edit') }}" class="text-decoration-none d-block h-100">
                             <div class="quick-action-card">
                                 <div class="icon">
                                     <i class="las la-user-edit"></i>

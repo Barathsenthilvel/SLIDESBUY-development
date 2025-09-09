@@ -37,8 +37,12 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:45',
+                'description' => 'required|string',
+                'access_content' => 'required|string|',
+                'content' => 'required|string|',
                 'price' => 'required|numeric|min:0',
                 'discount' => 'nullable|numeric|min:0',
                 'discount_type' => 'required|in:flat,percentage',
@@ -66,6 +70,9 @@ class PlanController extends Controller
 
     $request->validate([
         'name' => 'required|string',
+        'description' => 'required|string',
+        'access_content' => 'required|string',
+        'content' => 'required|string',
         'price' => 'required|numeric',
         'discount' => 'nullable|numeric',
         'discount_type' => 'required|in:flat,percentage',
@@ -75,9 +82,16 @@ class PlanController extends Controller
 
 
 
+    // dd($request->all());
+
+
+
     try {
        $plan->update($request->only([
         'name',
+        'description',
+        'access_content',
+        'content',
         'price',
         'discount',
         'discount_type',

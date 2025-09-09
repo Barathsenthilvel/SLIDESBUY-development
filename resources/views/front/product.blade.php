@@ -803,17 +803,17 @@
                 Already Downloaded
             </button>
             <div class="download-info">
-                <span class="text-muted d-block mb-2">
+                {{-- <span class="text-muted d-block mb-2">
                     <i class="fas fa-info-circle me-1"></i>
                     This file has already been downloaded to your device
                 </span>
                 <span class="text-primary d-block mb-2">
                     <i class="fas fa-folder-open me-1"></i>
                     Check your Downloads folder or browser's default download location
-                </span>
+                </span> --}}
                 <span class="text-success d-block">
                     <i class="fas fa-check me-1"></i>
-                    Please check your account downloads section - the file will be located there
+                    Good news! This slide is already yours — check it out in ‘My Downloads
                 </span>
             </div>
         </div>

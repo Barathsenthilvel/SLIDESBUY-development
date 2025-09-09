@@ -111,9 +111,7 @@
         <div class="col-lg-9">
             <div class="account-card p-3">
                 <div class="table-responsive">
-                    <table class="table-modern" style="
-                    font-size: 13px;
-                ">
+                    <table class="table-modern" style="font-size: 13px; ">
                         <thead>
                             <tr>
                                 <th>Product</th>

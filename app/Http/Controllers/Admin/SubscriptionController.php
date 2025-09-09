@@ -17,7 +17,8 @@ class SubscriptionController extends Controller
 
 	public function datatables(Request $request)
 	{
-		$subscriptions = Subscription::with('user', 'plan')->get();
+		// $subscriptions = Subscription::with('user', 'plan')->oderby('desc')->get();
+        $subscriptions = Subscription::with('user', 'plan')->orderBy('created_at', 'desc')->get();
 
 		// dd($subscriptions);
 		return DataTables::of($subscriptions)
@@ -56,7 +57,7 @@ class SubscriptionController extends Controller
 						}
 					}
 				}
-				return '₹' . number_format($final, 2);
+				return '$' . number_format($final, 2);
 			})
 			->addColumn('current_status', function ($subscription) {
 				$now = Carbon::now();

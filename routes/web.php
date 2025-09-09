@@ -744,6 +744,7 @@ Route::prefix('SubScribers')->group(function() {
           // Route::post('/update/{id}', 'Admin\PlanController@update')->name('admin-plan-update');
           Route::put('/update/{id}', 'Admin\PlanController@update')->name('admin-plans-update');
           Route::any('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
+          Route::post('/admin/store-cropimage', [PlanController ::class, 'storeCropImage'])->name('admin-store-cropimage');
 
         });
     });

@@ -15,6 +15,9 @@ class Plan extends Model
         'discount_type',
         'download_limit',
         'validity',
+        'description',
+        'access_content',
+        'content',
     ];
 
     public $timestamps = true;

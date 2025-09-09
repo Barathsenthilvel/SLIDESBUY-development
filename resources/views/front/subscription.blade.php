@@ -35,13 +35,16 @@
                         <div class="pricing-item box-shadow-lg hover-bg-main">
                             <img src="../assets/images/gradients/price-hover-bg.png" alt="" class="hover-bg">
                             <div class="pricing-item__top">
-                                <div class="flx-between flex-nowrap">
-                                    <span class="pricing-item__icon">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="pricing-item__icon me-3">
                                         <img src="../assets/images/icons/price-icon1.svg" alt="">
                                     </span>
+                                    <div class="flex-grow-1 text-center">
+                                        <h5 class="pricing-item__title mb-0">{{ $plan->name }} Plan</h5>
+                                    </div>
                                     <span class="popular-badge d-none"></span>
                                 </div>
-                                <h5 class="pricing-item__title mb-0 mt-2">{{ $plan->name }} Plan</h5>
+                                <p class="pricing-item__desc text-center">{{ $plan->description }}</p>
                             </div>
                             <div class="pricing-item__content">
                                 <h3 class="pricing-item__price mb-2">
@@ -80,7 +83,7 @@
                                     @endif
                                     <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span>
                                 </h3>
-                                <p class="pricing-item__desc">Essential services to start your journey</p>
+
                                                                <a href="#"
                                     class="btn btn-main pill plan-details-btn"
                                     data-id="{{ $plan->id }}"
@@ -98,10 +101,11 @@
                             </div>
                             <div class="pricing-item__lists">
                                 <ul class="text-list">
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> No .of Downloads {{$plan->download_limit}} </li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>All Content Acess Yes</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
-                                    @if($plan->discount && $plan->discount > 0)
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->download_limit}} template downloads </li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->access_content}}</li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->content}}</li>
+                                    {{-- @if($plan->discount && $plan->discount > 0)
                                         <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Discount:
                                             @if($plan->discount_type === 'flat')
                                                 {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $plan->discount }} OFF
@@ -109,7 +113,7 @@
                                                 {{ $plan->discount }}% OFF
                                             @endif
                                         </li>
-                                    @endif
+                                    @endif --}}
                                     {{-- <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Process management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Workflow management</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span> Team management</li> --}}

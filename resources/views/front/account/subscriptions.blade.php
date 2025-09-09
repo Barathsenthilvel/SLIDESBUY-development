@@ -65,6 +65,206 @@
         transform: translateX(5px);
         transition: all 0.3s ease;
     }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+        .account-wrapper {
+            padding: 15px 0;
+        }
+
+        .account-card {
+            padding: 15px !important;
+        }
+
+        /* Stack navigation and content vertically on mobile */
+        .row.g-3 {
+            flex-direction: column;
+        }
+
+        .col-lg-3 {
+            margin-bottom: 20px;
+            width: 100% !important;
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Ensure navigation container is visible */
+        .list-group.account-nav {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Make navigation horizontal on mobile */
+        .account-nav {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .account-nav .list-group-item {
+            flex: 0 0 auto !important;
+            min-width: 120px;
+            text-align: center;
+            border-left: none !important;
+            border-bottom: 3px solid transparent;
+            padding: 12px 8px !important;
+            font-size: 13px;
+            display: block !important;
+            background: transparent !important;
+            border-radius: 0 !important;
+        }
+
+        .account-nav .list-group-item.active {
+            border-left: none !important;
+            border-bottom-color: #0b63f6 !important;
+            background: #eef7ff !important;
+        }
+
+        .account-nav .list-group-item:hover:not(.active) {
+            background: #f8fafc !important;
+            transform: none !important;
+        }
+
+        /* Mobile card layout for subscriptions */
+        .table-modern {
+            display: none;
+        }
+
+        .subscription-cards {
+            display: block;
+        }
+
+        .subscription-card {
+            background: #fff;
+            border: 1px solid #eef1f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .subscription-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .subscription-number {
+            background: #eef7ff;
+            color: #0b63f6;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .subscription-status {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .subscription-status.active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .subscription-status.expired {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .subscription-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .subscription-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subscription-detail-label {
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .subscription-detail-value {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .subscription-plan {
+            background: #eef7ff;
+            color: #0b63f6;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Hide desktop table on mobile */
+        .table-responsive {
+            display: none;
+        }
+
+        /* Badge adjustments */
+        .badge-soft {
+            font-size: 11px;
+            padding: 4px 8px;
+        }
+
+        /* Button adjustments */
+        .btn-outline {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+
+    /* Desktop - show table, hide cards */
+    @media (min-width: 769px) {
+        .table-modern {
+            display: table !important;
+        }
+
+        .subscription-cards {
+            display: none !important;
+        }
+
+        .table-responsive {
+            display: block !important;
+        }
+    }
+
+    /* Tablet responsive */
+    @media (min-width: 769px) and (max-width: 991px) {
+        .table-modern {
+            font-size: 14px;
+        }
+
+        .table-modern thead th {
+            padding: 10px 8px;
+        }
+
+        .table-modern tbody td {
+            padding: 12px 8px;
+        }
+    }
 </style>
 
 <div class="container container-two py-4 account-wrapper">
@@ -72,7 +272,7 @@
         <h3 class="mb-0">My Subscriptions</h3>
     </div>
     <div class="row g-3">
-        <div class="col-lg-3">
+        <div class="col-12 col-lg-3">
             <div class="list-group account-nav shadow-sm rounded-3 overflow-hidden">
                 <a href="{{ route('account.profile') }}" class="list-group-item list-group-item-action">My Account</a>
                 <a href="{{ route('account.downloads') }}" class="list-group-item list-group-item-action">My Downloads</a>
@@ -83,8 +283,9 @@
             </div>
         </div>
 
-        <div class="col-lg-9">
+        <div class="col-12 col-lg-9">
             <div class="account-card p-3">
+                <!-- Desktop Table View -->
                 <div class="table-responsive">
                     <table class="table-modern">
                         <thead>
@@ -121,6 +322,53 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div class="subscription-cards">
+                    @forelse(($subscriptions ?? collect()) as $key => $subscription)
+                        @php
+                            $isExpired = $subscription->expired_at && \Carbon\Carbon::parse($subscription->expired_at)->isPast();
+                            $statusClass = $isExpired ? 'expired' : 'active';
+                            $statusText = $isExpired ? 'Expired' : 'Active';
+                        @endphp
+                        <div class="subscription-card">
+                            <div class="subscription-card-header">
+                                <span class="subscription-number">#{{ $key + 1 }}</span>
+                                <span class="subscription-status {{ $statusClass }}">{{ $statusText }}</span>
+                            </div>
+                            <div class="subscription-details">
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Plan</span>
+                                    <span class="subscription-plan">{{ optional($subscription->plan)->name ?? 'N/A' }}</span>
+                                </div>
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Price</span>
+                                    <span class="subscription-detail-value">${{ $subscription->discount_price ?? $subscription->price ?? '0' }}</span>
+                                </div>
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Purchased</span>
+                                    <span class="subscription-detail-value">{{ optional($subscription->created_at)->format('d M Y') }}</span>
+                                </div>
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Expires</span>
+                                    <span class="subscription-detail-value">{{ $subscription->expired_at ? \Carbon\Carbon::parse($subscription->expired_at)->format('d M Y') : 'N/A' }}</span>
+                                </div>
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Limit</span>
+                                    <span class="subscription-detail-value">{{ optional($subscription->plan)->download_limit ?? '—' }}</span>
+                                </div>
+                                <div class="subscription-detail">
+                                    <span class="subscription-detail-label">Transaction</span>
+                                    <span class="subscription-detail-value">{{ $subscription->razorpay_payment_id ?? 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center text-muted py-4">
+                            <p>No subscriptions found.</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

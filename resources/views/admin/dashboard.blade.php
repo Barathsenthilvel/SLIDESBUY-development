@@ -166,7 +166,7 @@
 													</svg>
 													<!--end::Svg Icon-->
 												</span>
-												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">₹{{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
+												<span class="card-title font-weight-bolder text-white font-size-h2 mb-0 mt-6 d-block">${{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
 												<span class="font-weight-bold text-white font-size-sm"><a style="color: #ffffff !important;" href="{{route('admin-subscriptionlist')}}">Subscription Revenue</a></span>
 											</div>
 											<!--end::Body-->

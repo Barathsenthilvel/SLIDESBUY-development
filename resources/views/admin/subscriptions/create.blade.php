@@ -91,6 +91,18 @@
                                     </div>
 
                                     <div class="form-group row">
+                                        <label class="col-2 col-form-label">Enter the Plan description <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-3">
+                                            <input type="text" name="description" class="form-control @error('description') is-invalid @enderror" required
+                                                placeholder="Enter a Plan description"   value="{{ old('description', $plan->description ?? '') }}">
+                                            @error('description')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
                                         <label class="col-2 col-form-label">Enter the Price <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-3">
@@ -137,6 +149,30 @@
                                             <input type="text" name="download_limit" class="form-control @error('download_limit') is-invalid @enderror" required
                                                 placeholder="Enter the Document download limit"  value="{{ old('download_limit', $plan->download_limit ?? '') }}">
                                             @error('download_limit')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Enter the Access content  <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-3">
+                                            <input type="text" name="access_content" class="form-control @error('access_content') is-invalid @enderror" required
+                                                placeholder="Enter a Plan access_content"   value="{{ old('access_content', $plan->access_content  ?? '') }}">
+                                            @error('access_content')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-2 col-form-label">Enter the Plan Content  <span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-3">
+                                            <input type="text" name="content" class="form-control @error('content') is-invalid @enderror" required
+                                                placeholder="Enter a Plan content"   value="{{ old('content', $plan->content ?? '') }}">
+                                            @error('content')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

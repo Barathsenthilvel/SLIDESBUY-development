@@ -108,7 +108,7 @@
                 <!-- View All Items Button - Only show when products exist -->
                 @if($products->count() > 0)
                 <div class="text-center mt-64">
-                    <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300">
+                    <a href="{{ route('front.getCategory') }}" class="btn btn-main btn-lg pill fw-300 mb-5">
                         View All Items
                     </a>
                 </div>

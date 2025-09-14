@@ -54,10 +54,11 @@
         flex-direction: column;
     }
 
-    .list-grid-wrapper .product-item__thumb {
+    /* command for slide list view resposnive border spacces
+     .list-grid-wrapper .product-item__thumb {
         width: 100%;
         height: auto;
-    }
+    } */
 
     .list-grid-wrapper .product-item__content {
         width: 100%;
@@ -185,28 +186,230 @@
         <!-- Filter Form at Top -->
         <div class="row mb-4">
             <div class="col-12">
-                <!-- Filter Tab -->
-                <div class="filter-tab gap-3 flx-between mb-4">
-                    <button type="button" class="filter-tab__button btn btn-outline-light pill d-flex align-items-center active">
-                        <span class="icon icon-left">
-                            <img src="{{ asset('assets/images/icons/filter.svg') }}" alt="">
-                        </span>
-                        <span class="font-18 fw-500">Filters</span>
-                    </button>
+                <!-- Modern Filter & Sort Interface -->
+                <div class="modern-filter-container mb-4">
+                    <div class="row g-3 align-items-center">
+                        <!-- Filter Button - Mobile First -->
+                        <div class="col-12 col-md-auto">
+                            <div class="filter-section">
+                                <button type="button" class="modern-filter-btn" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false">
+                                    <svg class="filter-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
+                                    </svg>
+                                    <span class="filter-text">Filters</span>
+                                    {{-- <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6,9 12,15 18,9"></polyline>
+                                    </svg> --}}
+                                </button>
+                            </div>
+                        </div>
 
-                    <ul class="nav common-tab nav-pills mb-0 gap-lg-2 gap-1 ms-lg-auto" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-product-tab" data-bs-toggle="pill" data-bs-target="#pills-product" type="button" role="tab" aria-controls="pills-product" aria-selected="true">Newly Added</button>
-                        </li>
+                        <!-- Sort Options - Mobile Dropdown -->
+                        <div class="col-12 col-md-auto ms-md-auto">
+                            <div class="sort-section">
+                                <!-- Mobile Dropdown -->
+                                <div class="mobile-sort d-md-none">
+                                    <div class="custom-select-wrapper">
+                                        <select class="form-select modern-select" id="mobileSortSelect">
+                                            <option value="newest">Newly Added</option>
+                                            <option value="downloads">Most Downloads</option>
+                                            <option value="rated">Top Rated</option>
+                                        </select>
+                                        <div class="custom-arrow">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6,9 12,15 18,9"></polyline>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-bestRating-tab" data-bs-toggle="pill" data-bs-target="#pills-bestRating" type="button" role="tab" aria-controls="pills-bestRating" aria-selected="false" tabindex="-1">Most Downloads</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false" tabindex="-1">Top Rated</button>
-                        </li>
-                    </ul>
+                                <!-- Desktop Tabs -->
+                                <div class="desktop-sort d-none d-md-block">
+                                    <div class="sort-tabs">
+                                        <button class="sort-tab active" data-sort="newest" id="pills-product-tab" data-bs-toggle="pill" data-bs-target="#pills-product" type="button" role="tab" aria-controls="pills-product" aria-selected="true">
+
+                                            <span class="sort-text">Newly Added</span>
+                                        </button>
+                                        <button class="sort-tab" data-sort="downloads" id="pills-bestRating-tab" data-bs-toggle="pill" data-bs-target="#pills-bestRating" type="button" role="tab" aria-controls="pills-bestRating" aria-selected="false" tabindex="-1">
+
+                                            <span class="sort-text">Most Downloads</span>
+                                        </button>
+                                        <button class="sort-tab" data-sort="rated" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false" tabindex="-1">
+
+                                            <span class="sort-text">Top Rated</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Filter Panel -->
+                    {{-- <div class="collapse filter-panel mt-3" id="filterCollapse">
+                        <div class="card filter-card">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <h6 class="filter-title mb-3">🔍 Filter Products</h6>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-3">
+                                        <label class="form-label">Search by Tag</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <path d="m21 21-4.35-4.35"></path>
+                                                </svg>
+                                            </span>
+                                            <input type="text" class="form-control" placeholder="Enter tag...">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-3">
+                                        <label class="form-label">Price Range</label>
+                                        <select class="form-select">
+                                            <option>All Prices</option>
+                                            <option>Under $10</option>
+                                            <option>$10 - $25</option>
+                                            <option>$25 - $50</option>
+                                            <option>Over $50</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-3">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select">
+                                            <option>All Categories</option>
+                                            <option>Business</option>
+                                            <option>Education</option>
+                                            <option>Technology</option>
+                                            <option>Creative</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6 col-lg-3">
+                                        <label class="form-label">Rating</label>
+                                        <select class="form-select">
+                                            <option>All Ratings</option>
+                                            <option>⭐⭐⭐⭐⭐ 5 Stars</option>
+                                            <option>⭐⭐⭐⭐ 4+ Stars</option>
+                                            <option>⭐⭐⭐ 3+ Stars</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="filter-actions">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm">Clear All</button>
+                                            <button type="button" class="btn btn-primary btn-sm">Apply Filters</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> --}}
                 </div>
+
+                <!-- JavaScript for Modern Filter Interface -->
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Mobile sort dropdown functionality
+                    const mobileSortSelect = document.getElementById('mobileSortSelect');
+                    const desktopSortTabs = document.querySelectorAll('.sort-tab');
+
+                    if (mobileSortSelect) {
+                        mobileSortSelect.addEventListener('change', function() {
+                            const selectedValue = this.value;
+                            const targetTab = document.querySelector(`[data-sort="${selectedValue}"]`);
+
+                            if (targetTab) {
+                                // Remove active class from all tabs
+                                desktopSortTabs.forEach(tab => tab.classList.remove('active'));
+
+                                // Add active class to selected tab
+                                targetTab.classList.add('active');
+
+                                // Trigger click event on the tab
+                                targetTab.click();
+                            }
+                        });
+                    }
+
+                    // Desktop sort tabs functionality
+                    desktopSortTabs.forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            // Remove active class from all tabs
+                            desktopSortTabs.forEach(t => t.classList.remove('active'));
+
+                            // Add active class to clicked tab
+                            this.classList.add('active');
+
+                            // Update mobile dropdown if it exists
+                            if (mobileSortSelect) {
+                                const sortValue = this.getAttribute('data-sort');
+                                mobileSortSelect.value = sortValue;
+                            }
+                        });
+                    });
+
+                    // Filter panel toggle animation
+                    const filterBtn = document.querySelector('.modern-filter-btn');
+                    const filterPanel = document.getElementById('filterCollapse');
+
+                    if (filterBtn && filterPanel) {
+                        filterBtn.addEventListener('click', function() {
+                            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+                            // Add smooth animation class
+                            if (!isExpanded) {
+                                filterPanel.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                            }
+                        });
+                    }
+
+                    // Filter form interactions
+                    const filterInputs = document.querySelectorAll('.filter-card .form-control, .filter-card .form-select');
+                    filterInputs.forEach(input => {
+                        input.addEventListener('focus', function() {
+                            this.parentElement.classList.add('focused');
+                        });
+
+                        input.addEventListener('blur', function() {
+                            this.parentElement.classList.remove('focused');
+                        });
+                    });
+
+                    // Clear all filters functionality
+                    const clearBtn = document.querySelector('.filter-actions .btn-outline-secondary');
+                    if (clearBtn) {
+                        clearBtn.addEventListener('click', function() {
+                            filterInputs.forEach(input => {
+                                if (input.type === 'text') {
+                                    input.value = '';
+                                } else if (input.tagName === 'SELECT') {
+                                    input.selectedIndex = 0;
+                                }
+                            });
+                        });
+                    }
+
+                    // Apply filters functionality
+                    const applyBtn = document.querySelector('.filter-actions .btn-primary');
+                    if (applyBtn) {
+                        applyBtn.addEventListener('click', function() {
+                            // Add loading state
+                            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Applying...';
+                            this.disabled = true;
+
+                            // Simulate filter application (replace with actual logic)
+                            setTimeout(() => {
+                                this.innerHTML = 'Apply Filters';
+                                this.disabled = false;
+
+                                // Close filter panel
+                                if (filterPanel && filterPanel.classList.contains('show')) {
+                                    filterBtn.click();
+                                }
+                            }, 1000);
+                        });
+                    }
+                });
+                </script>
 
                 <!-- Filter Form -->
                 {{-- <form action="#" class="filter-form pb-4" style="display: block;">

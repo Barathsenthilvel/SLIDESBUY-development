@@ -69,10 +69,10 @@
 .user-profile-dropdown.open { display: block; }
 
 /* Ensure dropdown shows on both hover and click */
-.user-profile:hover .user-profile-dropdown,
+/* .user-profile:hover .user-profile-dropdown,
 .user-profile-dropdown.open {
     display: block !important;
-}
+} */
 .user-profile-dropdown .sidebar-list__item a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; }
 .user-profile-dropdown .sidebar-list__item a:hover { background: #f5f7fb; }
 

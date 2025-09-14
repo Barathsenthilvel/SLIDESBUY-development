@@ -37,7 +37,7 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:45',
                 'description' => 'required|string',

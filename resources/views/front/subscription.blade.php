@@ -94,7 +94,9 @@
                                     data-validity="{{ $plan->validity }}"
                                     data-download-limit="{{ $plan->download_limit ?? 0 }}"
                                     data-downloads="{{ $plan->download_limit == 0 ? 'Unlimited' : $plan->download_limit . ' downloads' }}"
-                                    data-description="{{ $plan->description ?? 'Essential services to start your journey' }}">
+                                    data-description="{{ $plan->description ?? 'Essential services to start your journey' }}"
+                                    data-access-content="{{ $plan->access_content ?? 'Full access to all content' }}"
+                                    data-content="{{ $plan->content ?? 'Premium content and features' }}">
                                     Get Started
                                     </a>
 
@@ -814,18 +816,23 @@
                         </div>
 
                         <div class="detail-item">
-                            <span class="detail-label">Description:</span>
+                            <span class="detail-label">Plan Description:</span>
                             <span class="detail-value plan-description"></span>
                         </div>
 
-                                                <div class="detail-item">
-                            <span class="detail-label">Downloads:</span>
-                            <span class="detail-value plan-downloads"></span>
+                        <div class="detail-item">
+                            <span class="detail-label">Access Content:</span>
+                            <span class="detail-value plan-access-content"></span>
                         </div>
 
                         <div class="detail-item">
-                            <span class="detail-label">Content Access:</span>
-                            <span class="detail-value plan-content-access">All Content Access Yes</span>
+                            <span class="detail-label">Plan Content:</span>
+                            <span class="detail-value plan-content"></span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">Downloads:</span>
+                            <span class="detail-value plan-downloads"></span>
                         </div>
 
                         <div class="detail-item">
@@ -969,7 +976,9 @@ jQuery(document).ready(function ($) {
             validity: button.data('validity'),
             downloadLimit: parseInt(button.data('download-limit')) || 0,
             downloads: button.data('downloads'),
-            description: button.data('description')
+            description: button.data('description'),
+            accessContent: button.data('access-content'),
+            content: button.data('content')
         };
 
         // Populate modal with plan details
@@ -1073,7 +1082,11 @@ jQuery(document).ready(function ($) {
         // Hide plan name per requirement; keep internal data if needed
         $('.plan-name').text('');
         $('.plan-name-hero').text('');
-        $('.plan-description').text(planData.description);
+
+        // Populate all plan details
+        $('.plan-description').text(planData.description || 'No description available');
+        $('.plan-access-content').text(planData.accessContent || 'Full access to all content');
+        $('.plan-content').text(planData.content || 'Premium content and features');
 
         // Set downloads text
         if (planData.downloadLimit == 0) {

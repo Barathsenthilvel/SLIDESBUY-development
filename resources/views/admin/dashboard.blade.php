@@ -272,7 +272,7 @@
 										<div class="card card-custom gutter-b">
 											<div class="card-header">
 												<div class="card-title">
-													<h3 class="card-label">Order</h3>
+													<h3 class="card-label">Subscription Graph View</h3>
 												</div>
 											</div>
 											<div class="card-body">
@@ -304,7 +304,7 @@
 																</span>
 															</div>
 															<div class="d-flex flex-column">
-																<span class="text-dark font-weight-bold font-size-h4">₹{{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
+																<span class="text-dark font-weight-bold font-size-h4">${{number_format($dashboad['TotalSubscriptionRevenue'], 2)}}</span>
 																<span class="text-muted font-size-sm">Total Revenue</span>
 															</div>
 														</div>
@@ -659,7 +659,7 @@
 																		</span>
 																	</td>
 																	<td class="text-center">
-																		<span class="text-muted font-weight-bold">₹{{ number_format($subscription->discount_price, 2) }}</span>
+																		<span class="text-muted font-weight-bold">${{ number_format($subscription->discount_price, 2) }}</span>
 																	</td>
 																	<td class="text-center">
 																		@if($subscription->is_active && (!$subscription->expired_at || $subscription->expired_at > now()))
@@ -831,7 +831,7 @@ var CustomKTWidgets = function () {
 				name: 'Order Count',
 				data: NumberOrders
 			},{
-				name: 'Subscription Amount (₹)',
+				name: 'Subscription Amount ($)',
 				data: SubscriptionAmountsForOrderGraph
 			}],
 			chart: {
@@ -858,7 +858,7 @@ var CustomKTWidgets = function () {
 			},
 			yaxis: {
 				title: {
-					text: 'Count / ₹'
+					text: 'Count / $'
 				}
 			},
 			fill: {
@@ -925,7 +925,7 @@ $("#Year").change(function(){
 				data: NetSales
 			},
 			{
-				name: 'Orders',
+				name: 'Subscriptions Graph View',
 				data: total
 			}],
 			xaxis: {

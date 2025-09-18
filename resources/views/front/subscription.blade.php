@@ -103,8 +103,11 @@
                             </div>
                             <div class="pricing-item__lists">
                                 <ul class="text-list">
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} </li>
-                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->download_limit}} template downloads </li>
+                                    <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>Validity {{$plan->validity}} Days </li>
+                                    <li class="text-list__item text-heading">
+                                        <span class="icon"><i class="fas fa-check"></i></span>
+                                        {{ $plan->download_limit == 0 ? 'Unlimited downloads' : $plan->download_limit . ' template downloads' }}
+                                    </li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->access_content}}</li>
                                     <li class="text-list__item text-heading"><span class="icon"><i class="fas fa-check"></i></span>{{$plan->content}}</li>
                                     {{-- @if($plan->discount && $plan->discount > 0)

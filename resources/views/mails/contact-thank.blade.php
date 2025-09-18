@@ -93,12 +93,12 @@
 
             <div class="contact-info">
                 <strong>Need immediate assistance?</strong><br>
-                • Call us: <span class="highlight">+91 79044 14156</span><br>
+                • Call us: <span class="highlight">+91-9994645424</span><br>
                 • Email us: <span class="highlight">slidesbuy@gmail.com</span><br>
                 • Visit our website: <a href="{{ route('front.index') }}" style="color: #007bff;">{{ config('app.url') }}</a>
             </div>
 
-            <p>In the meantime, you might find answers to common questions in our <a href="{{ route('front.FAQ') }}" style="color: #007bff;">FAQ section</a> or <a href="{{ route('front.about') }}" style="color: #007bff;">About Us</a> page.</p>
+            {{-- <p>In the meantime, you might find answers to common questions in our <a href="{{ route('front.FAQ') }}" style="color: #007bff;">FAQ section</a> or <a href="{{ route('front.about') }}" style="color: #007bff;">About Us</a> page.</p> --}}
         </div>
 
         <div class="footer">

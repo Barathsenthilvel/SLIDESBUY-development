@@ -580,22 +580,22 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // Add hover support for desktop user profile
-  const desktopProfile = document.querySelector('#desktopUserProfile');
-  if (desktopProfile) {
-    const desktopDropdown = desktopProfile.querySelector('.user-profile-dropdown');
+//   const desktopProfile = document.querySelector('#desktopUserProfile');
+//   if (desktopProfile) {
+//     const desktopDropdown = desktopProfile.querySelector('.user-profile-dropdown');
 
-    desktopProfile.addEventListener('mouseenter', function(){
-      if (desktopDropdown) {
-        desktopDropdown.classList.add('open');
-      }
-    });
+//     desktopProfile.addEventListener('mouseenter', function(){
+//       if (desktopDropdown) {
+//         desktopDropdown.classList.add('open');
+//       }
+//     });
 
-    desktopProfile.addEventListener('mouseleave', function(){
-      if (desktopDropdown) {
-        desktopDropdown.classList.remove('open');
-      }
-    });
-  }
+//     desktopProfile.addEventListener('mouseleave', function(){
+//       if (desktopDropdown) {
+//         desktopDropdown.classList.remove('open');
+//       }
+//     });
+//   }
 });
 </script>
 

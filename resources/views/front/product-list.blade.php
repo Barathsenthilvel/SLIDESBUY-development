@@ -239,6 +239,8 @@
 
 
 
+
+
     /* Responsive adjustments */
     /* @media (max-width: 768px) {
         .list-grid-wrapper .product-item {
@@ -462,6 +464,21 @@ if (Auth::check()) {
 
     <!-- Product Content Area -->
     <div class="col-12">
+        {{-- @if(request('search') || request('q'))
+            <!-- Search Results Header -->
+            <div class="search-results-header mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="mb-1">Search Results</h3>
+                        <p class="text-muted mb-0">Found {{ $products->total() }} results for "<strong>{{ request('search') ?: request('q') }}</strong>"</p>
+                    </div>
+                    <a href="{{ route('front.getCategory') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-times me-1"></i> Clear Search
+                    </a>
+                </div>
+            </div>
+        @endif --}}
+
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-product" role="tabpanel" aria-labelledby="pills-product-tab" tabindex="0">
                 <div class="row gy-4 list-grid-wrapper">
@@ -513,6 +530,8 @@ if (Auth::check()) {
                             <span class="badge {{ $isFree ? 'bg-success' : 'bg-primary' }}">{{ $isFree ? 'Free' : 'Paid' }}</span>
                         </div>
                     </div>
+
+
                     <div class="product-item__bottom flx-between gap-2">
                         <div>
                             {{-- @dd($discountProduct->downloads_count); --}}
@@ -568,8 +587,6 @@ if (Auth::check()) {
 
 <script>
 $(document).ready(function() {
-
-
     // Filter form toggle
     $('.filter-tab__button').on('click', function() {
         $('.filter-form').slideToggle();
@@ -579,6 +596,18 @@ $(document).ready(function() {
     // Clear filter buttons
     $('.filter-form button[type="reset"]').on('click', function() {
         $(this).closest('.col-sm-4, .col-xs-6').find('input, select').val('');
+    });
+
+    // Initialize AJAX filtering if parent page has the functions
+    if (typeof initializeAjaxFiltering === 'function') {
+        initializeAjaxFiltering();
+    }
+
+    // Handle filter changes for AJAX updates
+    $('input[type="checkbox"], input[type="radio"]').on('change', function() {
+        if (typeof applyFilters === 'function') {
+            applyFilters();
+        }
     });
 });
 </script>

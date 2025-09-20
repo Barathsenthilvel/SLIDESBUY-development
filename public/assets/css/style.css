@@ -1,9 +1,9 @@
 /*================================================
 Template name: Martfy Multipurpose eCommerce HTML Template
 Version: 1.0.0
-Author: SITLBD 
+Author: SITLBD
 Author url: https://www.sitlbd.com/
-Developer: Najmul Huda Eimon   
+Developer: Najmul Huda Eimon
 
 
 [Table of Content]
@@ -10987,3 +10987,328 @@ footer {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+/* Custom Search Results Header Styles for Mobile Responsiveness */
+.search-results-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+}
+
+.search-results-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 20px 15px;
+    margin: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    width: 100%;
+}
+
+.search-title {
+    font-size: 1.1rem !important;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.search-count {
+    font-size: 0.9rem !important;
+    margin-bottom: 15px !important;
+}
+
+.search-actions .btn {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 576px) {
+    .search-results-header {
+        padding: 15px 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+
+    .search-title {
+        font-size: 1rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .search-title strong {
+        display: block !important;
+        margin-top: 5px;
+        word-break: break-word;
+    }
+
+    .search-count {
+        font-size: 0.8rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .search-actions .btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 577px) and (max-width: 768px) {
+    .search-results-header {
+        padding: 18px 15px;
+    }
+
+    .search-title {
+        font-size: 1.2rem !important;
+    }
+
+    .search-count {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* Desktop and larger screens */
+@media (min-width: 769px) {
+    .search-results-section {
+        padding: 30px 0;
+    }
+
+    .search-results-header {
+        padding: 25px 20px;
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+    .search-title {
+        font-size: 1.4rem !important;
+    }
+
+    .search-count {
+        font-size: 1rem !important;
+    }
+
+    .search-actions .btn {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+}
+
+/* Large desktop screens */
+@media (min-width: 1200px) {
+    .search-results-header {
+        max-width: 900px;
+        padding: 30px 25px;
+    }
+
+    .search-title {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Product Count and Filter Styles */
+.results-summary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 1px solid #dee2e6;
+    border-radius: 8px !important;
+}
+
+.result-count {
+    font-weight: bold;
+    color: #0d6efd;
+    font-size: 1.1em;
+}
+
+.category-count {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
+.category-name {
+    font-weight: 500;
+    color: #495057;
+}
+
+.filter-option {
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.25rem;
+}
+
+.filter-option:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.filter-option input[type="checkbox"]:checked + label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.filter-option input[type="checkbox"]:checked + label .category-count {
+    background: linear-gradient(135deg, #198754 0%, #157347 100%);
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+}
+
+/* Active filter badges */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+    color: #000 !important;
+}
+
+/* Desktop Sidebar Filter Styles */
+.desktop-sidebar-filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+}
+
+.sidebar-filter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.sidebar-filter-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+.desktop-sidebar-filter.show .sidebar-filter-panel {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+}
+
+.sidebar-header h5 {
+    color: #495057;
+    font-weight: 600;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+.sidebar-actions {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 20px;
+    border-top: 1px solid #dee2e6;
+    margin: 0 -20px -20px -20px;
+}
+
+/* Mobile and Desktop Filter Behavior */
+@media (max-width: 991.98px) {
+    .desktop-sidebar-filter {
+        display: none !important;
+    }
+    
+    .filter-panel {
+        display: none;
+    }
+    
+    .filter-panel.show {
+        display: block !important;
+    }
+    
+    .modern-filter-btn {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .filter-panel {
+        display: none !important;
+    }
+    
+    .modern-filter-btn {
+        display: flex !important;
+    }
+    
+    .desktop-sidebar-filter {
+        display: none;
+    }
+}
+
+/* Ensure filter button is properly styled and hidden on desktop */
+.modern-filter-btn {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .modern-filter-btn {
+        display: flex !important;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        color: #495057;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .modern-filter-btn:hover {
+        background: #f8f9fa;
+        border-color: #0d6efd;
+        color: #0d6efd;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+}

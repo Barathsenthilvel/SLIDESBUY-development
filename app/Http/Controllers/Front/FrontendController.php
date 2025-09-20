@@ -101,7 +101,7 @@ class FrontendController extends Controller
           $relatedProducts[] = Product::where('id',$related_products)->where('status',1)->get();
         }
         }
-      return view('front.shop-detail',compact('product','relatedProducts','fronCategory'));
+      return view('front.product',compact('product','relatedProducts','fronCategory'));
     }
 
     public function getCategory(Request $request,$slug=null,$slug1=null){
@@ -111,7 +111,8 @@ class FrontendController extends Controller
       $minprice = $request->min;
       $maxprice = $request->max;
       $cate = $request->cate;
-      $search = $request->search;
+      $search = $request->search ?? $request->q; // Support both 'search' and 'q' parameters
+      $query = $search; // Set query variable for the view
 
       $store = Storeconfiguration::where('id',1)->first();
       $categorys=Category::with(['subs','child'])->where('parent_category_id','0')->where('sub_category','0')->where('status','1')->get();
@@ -127,6 +128,44 @@ class FrontendController extends Controller
       $min = 0;
       $max = 0;
 
+      // Initialize filter variables early
+      $allCategories = Category::where('status', '1')->get();
+      $allAttributes = Attribute::where('status', '1')
+          ->whereNotNull('attribute_values')
+          ->where('attribute_values', '!=', '')
+          ->get()
+          ->map(function($attribute) {
+              $values = array_filter(array_map('trim', explode(',', $attribute->attribute_values)));
+              $attribute->parsed_values = $values;
+              return $attribute;
+          });
+
+      // Get all unique tags from products
+      $allTags = collect();
+      $productsForTags = Product::where('status', '1')
+          ->whereNotNull('attribute_values')
+          ->where('attribute_values', '!=', '')
+          ->get();
+
+      foreach($productsForTags as $product) {
+          if ($product->attribute_values) {
+              $values = explode(',', $product->attribute_values);
+              foreach($values as $value) {
+                  $value = trim($value);
+                  if (!empty($value) && !$allTags->contains($value)) {
+                      $allTags->push($value);
+                  }
+              }
+          }
+      }
+
+      // Initialize filter arrays
+      $categoryFilter = [];
+      $attributeFilter = [];
+      $tagFilter = '';
+      $priceTypeFilter = '';
+      $sortBy = 'newest';
+
       if (!empty($slug)) {
         $cat = Category::where('Category_url', $slug)->firstOrFail();
         $data['cat'] = $cat;
@@ -138,14 +177,21 @@ class FrontendController extends Controller
       }
 
       if($search){
-        $fil = Category::where('category_name','LIKE',"%{$search}%")->pluck('id')->toArray();
-        $product = Product::when($fil,function($query, $fil){
-          foreach ($fil as $key => $value) {
-            return $query->orwhere('category','LIKE',"%{$value}%");
+        // Search in categories first
+        $categoryIds = Category::where('category_name','LIKE',"%{$search}%")->pluck('id')->toArray();
+
+        $product = Product::where(function($query) use ($search, $categoryIds) {
+          // Search in product titles
+          $query->where('product_title','LIKE',"%{$search}%")
+                ->orWhere('product_description','LIKE',"%{$search}%")
+                ->orWhere('product_sku','LIKE',"%{$search}%");
+
+          // Search in categories
+          if(!empty($categoryIds)) {
+            foreach ($categoryIds as $categoryId) {
+              $query->orWhere('category','LIKE',"%{$categoryId}%");
+            }
           }
-        })
-        ->when($search, function ($query, $search) {
-          return $query->orwhere('product_title','like' ,"%{$search}%");
         });
       }else{
       $product = Product::when($cat,function($query, $cat){
@@ -182,7 +228,7 @@ class FrontendController extends Controller
             //     $temp[$key]->temp_price = ($price->isoffer)?$price->offer:$price->price;
             // }
 
-            $perpage = 6;
+            $perpage = 12;
             $page = $request->get('page', 1);
             if(isset($request->max) && isset($request->min)){
                 //  $temp = (new Collection($temp))->filter(function ($item) use($minprice,$maxprice) {
@@ -239,15 +285,35 @@ class FrontendController extends Controller
 
         $trending = Product::where('status','1')->where('trending',1)->orderBy('id','desc')->limit('4')->get();
         $trendingDownloadCounts = Product::getDownloadCounts($trending);
-        if(!empty($request->ajax)){
-          return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','attributes','attributeValues','cat','subcat','downloadCounts','trendingDownloadCounts'));
+        // Variables are already initialized at the beginning of the method
+
+        // Get wishlist product IDs for current user
+        $wishlistProductIds = [];
+        if (auth()->check()) {
+            $wishlistProductIds = auth()->user()->wishlists()->pluck('product_id')->toArray();
         }
-      return view('front.shop',compact('products','shopCategory','fronCategory','min','max','trending','categorys','attributes','attributeValues','cat','subcat','downloadCounts','trendingDownloadCounts'));
+
+        // Get category names for products
+        $productCategoryNames = [];
+        foreach($products as $product) {
+            $categoryNames = '';
+            if ($product->category) {
+                $categoryIds = explode('|', $product->category);
+                $productCategories = Category::whereIn('id', $categoryIds)->get();
+                $categoryNames = $productCategories->pluck('category_name')->implode(', ');
+            }
+            $productCategoryNames[$product->id] = $categoryNames;
+        }
+
+        if(!empty($request->ajax)){
+          return view('front.shop',compact('query', 'products', 'allCategories', 'allAttributes', 'allTags', 'productCategoryNames', 'downloadCounts', 'wishlistProductIds', 'categoryFilter', 'attributeFilter', 'tagFilter', 'priceTypeFilter', 'sortBy', 'shopCategory','fronCategory','min','max','trending','attributes','attributeValues','cat','subcat','trendingDownloadCounts'));
+        }
+      return view('front.shop',compact('query', 'products', 'allCategories', 'allAttributes', 'allTags', 'productCategoryNames', 'downloadCounts', 'wishlistProductIds', 'categoryFilter', 'attributeFilter', 'tagFilter', 'priceTypeFilter', 'sortBy', 'shopCategory','fronCategory','min','max','trending','categorys','attributes','attributeValues','cat','subcat','trendingDownloadCounts'));
     }
     public function filter(Request $request,$slug=null,$slug1=null){
         // dd($request->all());
       $store = Storeconfiguration::where('id',1)->first();
-       $perpage = 6;
+       $perpage = 12;
       $cat = null;
       $subcat = null;
       $minprice = $request->min;
@@ -518,6 +584,22 @@ class FrontendController extends Controller
         $User = User::where('phone',$request->phone)->first();
         if($User) return response()->json(['status'=>true]);
         return response()->json(['status'=>false]);
+    }
+
+    public function search(Request $request){
+        $query = trim($request->get('q', ''));
+
+        if (empty($query)) {
+            return redirect()->route('front.index')->with('error', 'Please enter a search term.');
+        }
+
+        // Validate query length
+        if (strlen($query) < 2) {
+            return redirect()->route('front.index')->with('error', 'Search term must be at least 2 characters long.');
+        }
+
+        // Redirect to product list page with search parameters
+        return redirect()->route('front.getCategory', ['search' => $query]);
     }
 
 

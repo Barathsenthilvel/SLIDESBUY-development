@@ -103,6 +103,9 @@ Route::post('/submitReview/{order}/', 'Front\ProductController@reviewinorder')->
 Route::get('/loadreview/{id}', 'Front\ProductController@loadreview')->name('load.review');
 Route::get('/quickview/{id}', 'Front\ProductController@quickview')->name('quickview');
 
+// Search routes for product list filtering
+Route::get('/search-products', 'Front\SearchController@searchProducts')->name('front.search.products');
+Route::get('/search-suggestions', 'Front\SearchController@searchSuggestions')->name('front.search.suggestions');
 
 // Route::get('/login', 'Front\UserController@index')->name('user.login');
 // Route::post('/login', 'Front\UserController@login')->name('front.login');

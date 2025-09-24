@@ -28,6 +28,7 @@ class ResetPasswordNotification extends Notification
     /**
      * Build the mail representation of the notification.
      */
+
     public function toMail($notifiable)
     {
         $resetUrl = url(route('password.reset', [
@@ -41,7 +42,7 @@ class ResetPasswordNotification extends Notification
             ->line('We received a request to reset your password.') // 🔸 Custom Message
             ->action('Click here to reset your password', $resetUrl) // 🔸 Custom Button text
             ->line('If you didn’t request a password reset, no further action is required.') // 🔸 Extra line
-            ->salutation('Regards, Your App Team'); // 🔸 Closing
+            ->salutation('Regards, SlidesBuy'); // 🔸 Closing
     }
 
 //     public function toMail($notifiable)

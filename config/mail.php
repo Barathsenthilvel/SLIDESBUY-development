@@ -84,7 +84,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@slidesbuy.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'support@slidesbuy.com'),
         'name' => env('MAIL_FROM_NAME', 'Slidesbuy'),
     ],
 

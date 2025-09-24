@@ -945,14 +945,14 @@
             <span class="details">{{ $product->product_sku }}</span>
         </li>
         <li class="meta-attribute__item">
-            <span class="name">Categories</span>
+            <span class="name">Categoriessssss</span>
             <span class="details">
                 @php
                     $categories = $product->getcategort();
                 @endphp
                 @if($categories->count() > 0)
                     @foreach($categories as $key => $category)
-                        <a href="{{ url('category/' . $category->Category_url) }}"
+                        <a href="{{ url('shop/' . $category->Category_url) }}"
                            class="hover-text-decoration-underline">
                             {{ $category->category_name }}{{ !$loop->last ? ',' : '' }}
                         </a>

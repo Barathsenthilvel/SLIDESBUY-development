@@ -349,12 +349,12 @@ if(auth()->check()){
         <nav class="header-inner flx-between">
             <!-- Logo Start -->
             <div class="logo">
-                <a href="index.html" class="link white-version">
+                <a href="{{ route('login') }}" class="link white-version">
                     {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
                       <img src="{{ asset('assets/images/logo/newslides.png') }}"alt=""  class="white-version">
                    {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt="" class="dark-version"> --}}
                 </a>
-                <a href="index.html" class="link dark-version">
+                <a href="{{ route('login') }}" class="link dark-version">
                     {{-- <img src="assets/images/logo/slidesbuy.png" alt="Logo"> --}}
                       {{-- <img src="{{ asset('assets/images/logo/slidesbuy.png') }}"alt=""  class="white-version"> --}}
                 <img src="{{ asset('assets/images/logo/newslides.png') }}"alt="" class="dark-version">

@@ -30,7 +30,7 @@ class WelcomeMail extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@slidesbuy.com', 'Slidesbuy')
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
                     ->subject("Welcome to Slidesbuy! 🎉")
                     ->view('mails.welcome')
                     ->with(['userData' => $this->userData]);

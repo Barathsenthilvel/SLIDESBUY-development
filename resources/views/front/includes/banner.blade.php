@@ -85,7 +85,7 @@
 
             <div class="col-xl-6">
                 <div class="banner-two__content">
-                    <h1 class="banner-two__title text-center mb-3">Create Powerful Presentions with Ready Made Templates</h1>
+                    <h1 class="banner-two__title text-center mb-3">Create Powerful Presentations with Ready Made Templates</h1>
                     <p class="banner-two__desc text-center">Download ready-made, fully editable Power point slides and save hours  of design work. finish faster, present better.</p>
 
                     <form action="{{ route('front.search.products') }}" method="GET" class="search-box style-two position-relative">

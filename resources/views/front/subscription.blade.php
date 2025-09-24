@@ -81,6 +81,15 @@
                                     @else
                                         {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }}{{ $plan->price }}
                                     @endif
+                                    <div class="inr-below text-center mt-1">
+                                        @if($loop->iteration == 1)
+                                            <span class="price-inr">₹442.93 INR</span>
+                                        @elseif($loop->iteration == 2)
+                                            <span class="price-inr">₹1,774.37 INR</span>
+                                        @elseif($loop->iteration == 3)
+                                            <span class="price-inr">₹2,662.00 INR</span>
+                                        @endif
+                                    </div>
                                     <span class="text font-14 text-body font-body fw-400">{{ $plan->validity }} /days</span>
                                 </h3>
 

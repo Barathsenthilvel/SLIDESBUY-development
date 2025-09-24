@@ -20,7 +20,7 @@ class SendOtpMail extends Mailable
 
     public function build()
     {
-        return $this->from('noreply@slidesbuy.com', 'Slidesbuy')
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
                     ->subject('Your OTP Code - Slidesbuy')
                     ->view('mails.otp')
                     ->with(['userName' => $this->userName]);

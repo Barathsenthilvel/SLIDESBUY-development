@@ -94,7 +94,7 @@
             <div class="contact-info">
                 <strong>Need immediate assistance?</strong><br>
                 • Call us: <span class="highlight">+91-9994645424</span><br>
-                • Email us: <span class="highlight">slidesbuy@gmail.com</span><br>
+                • Email us: <span class="highlight">support@slidesbuy.com</span><br>
                 • Visit our website: <a href="{{ route('front.index') }}" style="color: #007bff;">{{ config('app.url') }}</a>
             </div>
 

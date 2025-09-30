@@ -269,7 +269,7 @@
             </div>
 
             <!-- Features Section -->
-            <div class="features">
+            {{-- <div class="features">
                 <h3>🚀 What You Can Do Now:</h3>
 
                 <div class="feature-item">
@@ -291,7 +291,7 @@
                     <div class="feature-icon">🎯</div>
                     <div class="feature-text">Priority customer support</div>
                 </div>
-            </div>
+            </div> --}}
 
             <p class="message">
                 Ready to start creating amazing presentations? Click the button below to explore our premium collection:

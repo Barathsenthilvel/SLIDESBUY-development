@@ -471,8 +471,8 @@
                             <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
                             <span class="star-rating__item font-11"><i class="fas fa-star"></i></span>
                         </span>
-                        <span class="star-rating__text text-body"> 5.0</span>
-                        <span class="star-rating__text text-body"> (180)</span>
+                        <span class="star-rating__text text-body">0</span>
+                        {{-- <span class="star-rating__text text-body"> (180)</span> --}}
                     </span>
                   </button>
                 </li>
@@ -571,6 +571,16 @@
                class="screenshot-btn btn btn-white pill px-sm-5"
                data-images='@json($images)'>
                 Screenshot
+            </button>
+
+            {{-- Document Verification Button --}}
+            <button type="button"
+               id="verifyDocumentBtn"
+               class="btn btn-info pill px-sm-5"
+               data-product-id="{{ $product->id }}"
+               title="Check if document is recently uploaded">
+                <i class="fas fa-file-check me-2"></i>
+                Verify Document
             </button>
 
 {{-- Wishlist button moved to product image area --}}
@@ -1115,6 +1125,65 @@ jQuery(document).ready(function ($) {
     });
 
     // Wishlist handled globally in container.blade.php
+
+    // Document verification functionality
+    $('#verifyDocumentBtn').on('click', function() {
+        const $btn = $(this);
+        const productId = $btn.data('product-id');
+        const originalText = $btn.html();
+
+        // Show loading state
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Verifying...');
+
+        // Call the verification function
+        window.checkRecentDocuments(productId).done(function(response) {
+            if (response && response.file_exists) {
+                // Document exists and is verified
+                $btn.removeClass('btn-info').addClass('btn-success').html('<i class="fas fa-check me-2"></i>Verified');
+
+                // Show success message
+                if (window.toaster) {
+                    window.toaster.success('Document verified successfully! Last modified: ' + response.last_modified);
+                } else {
+                    alert('Document verified successfully! Last modified: ' + response.last_modified);
+                }
+
+                // Reset button after 3 seconds
+                setTimeout(function() {
+                    $btn.prop('disabled', false).removeClass('btn-success').addClass('btn-info').html(originalText);
+                }, 3000);
+            } else {
+                // Document not found or verification failed
+                $btn.removeClass('btn-info').addClass('btn-danger').html('<i class="fas fa-times me-2"></i>Not Found');
+
+                // Show error message
+                if (window.toaster) {
+                    window.toaster.error('Document not found or verification failed. Please contact support.');
+                } else {
+                    alert('Document not found or verification failed. Please contact support.');
+                }
+
+                // Reset button after 3 seconds
+                setTimeout(function() {
+                    $btn.prop('disabled', false).removeClass('btn-danger').addClass('btn-info').html(originalText);
+                }, 3000);
+            }
+        }).fail(function(xhr) {
+            // Handle AJAX error
+            $btn.removeClass('btn-info').addClass('btn-warning').html('<i class="fas fa-exclamation-triangle me-2"></i>Error');
+
+            if (window.toaster) {
+                window.toaster.error('Error verifying document. Please try again.');
+            } else {
+                alert('Error verifying document. Please try again.');
+            }
+
+            // Reset button after 3 seconds
+            setTimeout(function() {
+                $btn.prop('disabled', false).removeClass('btn-warning').addClass('btn-info').html(originalText);
+            }, 3000);
+        });
+    });
 
 
 

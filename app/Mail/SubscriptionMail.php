@@ -34,7 +34,8 @@ class SubscriptionMail extends Mailable
      */
     public function build()
     {
-        return $this->subject("🎉 Subscription Confirmed - Welcome to SLIDESBUY Premium!")
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
+                    ->subject("🎉 Subscription Confirmed - Welcome to SLIDESBUY Premium!")
                     ->markdown('mails.subscription')
                     ->with([
                         'subscriptionData' => $this->subscriptionData,

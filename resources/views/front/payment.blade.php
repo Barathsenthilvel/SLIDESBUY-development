@@ -26,6 +26,7 @@
         </div>
     </div>
 </section>
+
 <section class="myorder-section commonaccount-section orderstyle">
     <div class="container">
 		<div class="row">
@@ -105,12 +106,12 @@
                             <form action="{!!route('user.razorpayReturn')!!}" method="POST" id="upi">
                                 @csrf
                                 <script src="https://checkout.razorpay.com/v1/checkout.js"
-                                        data-key="{{ env('RAZOR_KEY') }}"
+                                        data-key="{{ config('app.razor_key') }}"
                                         data-amount="{{$Cart->grandTotal*100}}"
-                                        data-currency="{{ $currentCurrency ? $currentCurrency->currency_title : 'INR' }}"
-                                        data-buttontext="Pay {{ $currentCurrency ? $currentCurrency->currency_symbol : '₹' }} {{$Cart->grandTotal}}"
+                                        data-currency="USD"
+                                        data-buttontext="Pay $ {{$Cart->grandTotal}}"
                                         data-name="{{$Address->name.' '.$Address->last}}"
-                                        data-description="Payment with Tuljamart"
+                                        data-description="Payment with Sidesbuy"
                                         data-image="{{URL::asset('assets/media/banner/'.$StoreConfig->logo)}}"
                                         data-prefill.name="{{$Address->name.' '.$Address->last}}"
                                         data-prefill.email="{{$Address->email}}"

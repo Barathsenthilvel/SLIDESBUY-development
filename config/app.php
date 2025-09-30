@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'tuljamart'),
+    'name' => env('APP_NAME', 'Slidesbuy'),
 
     /*
     |--------------------------------------------------------------------------
@@ -107,6 +107,9 @@ return [
     */
 
     'faker_locale' => 'en_US',
+
+    // Razorpay public key exposed to views via config
+    'razor_key' => env('RAZOR_KEY', env('RAZORPAY_KEY', '')),
 
     /*
     |--------------------------------------------------------------------------

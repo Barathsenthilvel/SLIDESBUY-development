@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -36,21 +38,22 @@ class Handler extends ExceptionHandler
     }
 
 
-// public function render($request, Throwable $exception)
-// {
-//     if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
-//         if ($request->ajax()) {
-//             return response()->json([
-//                 'success' => false,
-//                 'message' => 'Session expired. Please login again.'
-//             ], 419);
-//         }
+public function render($request, Throwable $exception)
+{
+    if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Session expired. Please refresh the page and try again.',
+                'error_type' => 'csrf_mismatch'
+            ], 419);
+        }
 
-//         return redirect()->route('login.form')->with('error', 'Your session has expired. Please login again.');
-//     }
+        return redirect()->back()->with('error', 'Your session has expired. Please refresh the page and try again.');
+    }
 
-//     return parent::render($request, $exception);
-// }
+    return parent::render($request, $exception);
+}
 
 
 }

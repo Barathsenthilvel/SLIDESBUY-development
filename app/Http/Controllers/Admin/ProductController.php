@@ -19,6 +19,7 @@ use Validator;
 
 use Illuminate\Support\Str;
 use DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -738,6 +739,7 @@ class ProductController extends Controller
             'image2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
             'image3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
             'image4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240|dimensions:min_width=200,min_height=200,max_width=5000,max_height=5000',
+            'document' => 'nullable|file|mimes:pdf,ppt,pptx|max:10240',
             'productDescription' =>'required'
         ];
 
@@ -764,6 +766,8 @@ class ProductController extends Controller
             'image4.mimes'                  => 'Image 4 must be a valid image format (jpeg, png, jpg, gif, webp)',
             'image4.max'                    => 'Image 4 size must not exceed 10MB',
             'image4.dimensions'             => 'Image 4 must be between 200x200 and 5000x5000 pixels for big image support',
+            'document.mimes'                => 'Document must be a PDF or PPT/PPTX file',
+            'document.max'                  => 'Document size must not exceed 10MB',
             'productDescription.required'    => 'Product Description should be filled',
         ];
 
@@ -811,6 +815,20 @@ class ProductController extends Controller
             $image4 = $fileName;
         }
 
+        // Handle document upload for update
+        $documentPath = $data->document; // Keep existing document if no new one uploaded
+        if ($request->hasFile('document')) {
+            // Delete old document if it exists
+            if ($data->document && \Storage::disk('public')->exists($data->document)) {
+                \Storage::disk('public')->delete($data->document);
+                \Log::info('Old document deleted: ' . $data->document);
+            }
+
+            $file = $request->file('document');
+            $documentPath = $file->store('documents', 'public'); // Store in storage/app/public/documents
+            \Log::info('New document stored: ' . $documentPath);
+        }
+
         // Process attributes
         $attributes = $request['attributes'] ?? [];
         $attributeValues = [];
@@ -852,6 +870,7 @@ class ProductController extends Controller
         $data->image3 = $image3;
         $data->image4 = $image4;
         // $data->image5 = $image5;
+        $data->document = $documentPath;
         $data->similar_products = (empty($requestData['similarProducts'])) ? '' : implode(',', (array)$requestData['similarProducts']);
         $data->related_products = (empty($requestData['relatedProducts'])) ? '' : implode(',', (array)$requestData['relatedProducts']);
         $data->user_id = Auth::user()->id;
@@ -1083,6 +1102,23 @@ class ProductController extends Controller
                 'message' => 'Failed to fetch new arrivals'
             ]);
         }
+    }
+
+    public function verifyFileUpdate($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $filePath = storage_path('app/public/' . $product->document);
+        
+        if (file_exists($filePath)) {
+            return response()->json([
+                'file_exists' => true,
+                'last_modified' => date('Y-m-d H:i:s', filemtime($filePath)),
+                'file_size' => filesize($filePath),
+                'file_path' => $product->document
+            ]);
+        }
+        
+        return response()->json(['file_exists' => false]);
     }
 
 }

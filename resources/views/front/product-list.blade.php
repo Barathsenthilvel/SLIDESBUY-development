@@ -57,8 +57,9 @@
 
     /* Grid View Styles (Default) */
     .list-grid-wrapper .product-item {
-        height: auto;
+        height: 100%;
         flex-direction: column;
+        display: flex;
         background: #fff;
         border-radius: 8px;
         overflow: hidden;
@@ -138,6 +139,9 @@
         width: 100%;
         padding: 15px;
         background: #fff;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .list-grid-wrapper .product-item__wishlist {
@@ -177,6 +181,11 @@
         margin-bottom: 10px;
         color: #2c3e50;
         line-height: 1.3;
+        min-height: 2.6em; /* Approximately 2 lines of text */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .list-grid-wrapper .product-item__author {
@@ -229,7 +238,13 @@
 
     .list-grid-wrapper .star-rating__item {
         font-size: 0.7rem;
-        color: #ffc107;
+        /* color: #ffc107; */
+        color: #acacac;
+    }
+
+    /* Push bottom section to bottom */
+    .list-grid-wrapper .product-item__bottom {
+        margin-top: auto;
     }
 
     .list-grid-wrapper .star-rating__text {

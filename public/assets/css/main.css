@@ -4310,7 +4310,8 @@ input[type=number] {
 
 .star-rating__item {
     font-size: 0.875rem;
-    color: #FFA944;
+    /* color: #FFA944; */
+    color: #acacac;
 }
 
 /* =============================== Star Rating Css End =============================== */

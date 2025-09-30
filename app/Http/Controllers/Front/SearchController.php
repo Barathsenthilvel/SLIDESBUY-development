@@ -150,9 +150,9 @@ class SearchController extends Controller
                             ->whereColumn('product_id', 'products.id')
                     ])->orderBy('total_downloads', 'desc');
                     break;
-                case 'rating':
-                    $productsQuery->orderBy('average_rating', 'desc');
-                    break;
+                // case 'rating':
+                //     $productsQuery->orderBy('average_rating', 'desc');
+                    // break;
                 case 'newest':
                 default:
                     $productsQuery->orderBy('created_at', 'desc');
@@ -214,9 +214,9 @@ class SearchController extends Controller
                         ->whereColumn('product_id', 'products.id')
                 ])->orderBy('total_downloads', 'desc');
                 break;
-            case 'rating':
-                $productsQuery->orderBy('average_rating', 'desc');
-                break;
+            // case 'rating':
+            //     $productsQuery->orderBy('average_rating', 'desc');
+            //     break;
             case 'newest':
             default:
                 $productsQuery->orderBy('created_at', 'desc');

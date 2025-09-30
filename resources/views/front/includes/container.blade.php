@@ -130,6 +130,77 @@
     <script src="{{ asset('assets/js/marquee.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
+    <!-- CSRF Token and AJAX Setup -->
+    <script>
+        // Setup CSRF token for all AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Global error handler for CSRF token mismatch
+        $(document).ajaxError(function(event, xhr, settings) {
+            if (xhr.status === 419) {
+                // CSRF token mismatch - refresh the page
+                if (window.toaster) {
+                    window.toaster.error('Session expired. Please refresh the page and try again.');
+                } else {
+                    alert('Session expired. Please refresh the page and try again.');
+                }
+                // Optionally refresh the page after a short delay
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000);
+            }
+        });
+
+        // Function to refresh CSRF token
+        window.refreshCSRFToken = function() {
+            return $.get('{{ route("refresh-csrf") }}').done(function(data) {
+                if (data.token) {
+                    $('meta[name="csrf-token"]').attr('content', data.token);
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': data.token
+                        }
+                    });
+                }
+            });
+        };
+
+        // Function to check recently uploaded documents
+        window.checkRecentDocuments = function(productId) {
+            if (!productId) {
+                console.error('Product ID is required for document verification');
+                return $.Deferred().reject('Product ID is required');
+            }
+
+            return $.ajax({
+                url: '/product/' + productId + '/verify-file',
+                method: 'GET',
+                success: function(response) {
+                    if (response.file_exists) {
+                        console.log('Document verified:', response);
+                        return response;
+                    } else {
+                        console.log('Document not found or verification failed');
+                        return null;
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error checking document:', xhr);
+                    return null;
+                }
+            });
+        };
+
+        // Auto-refresh CSRF token every 30 minutes
+        setInterval(function() {
+            window.refreshCSRFToken();
+        }, 30 * 60 * 1000);
+    </script>
+
     <!-- jQuery Ready Check -->
     <script>
         // Ensure jQuery is loaded before running other scripts

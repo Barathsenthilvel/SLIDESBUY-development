@@ -124,6 +124,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe/{plan}','Front\SubscriptionController@subscribe')->name('subscribe.post');
     Route::get('/subscription/{id}','Front\RazorpayPaymentController@show')->name('subscription.show');
     Route::post('/payment','Front\RazorpayPaymentController@payment')->name('razorpay.payment');
+    Route::post('/subscription/order','Front\RazorpayPaymentController@createOrder')->name('subscription.createOrder');
     //subscription get data
     Route::get('/subscription/success/{id}','Front\SubscriptionController@success')->name('subscription.success');
     Route::get('download/{product}', 'Front\ProductController@download')->name('download.product');
@@ -150,6 +151,20 @@ Route::get('/download-file/{product}', 'Front\AccountController@download')->name
 Route::get('/product/{product}/download','Front\ProductController@downloaddocuments')
     ->middleware('auth')
     ->name('product.download');
+
+// CSRF token refresh route
+Route::get('/refresh-csrf', function() {
+    return response()->json(['token' => csrf_token()]);
+})->name('refresh-csrf');
+
+// Document verification route for frontend users
+Route::get('/product/{product}/verify-file', 'Front\ProductController@verifyDocument')
+    ->name('product.verify-file');
+
+// Test page for CSRF and document verification
+Route::get('/test-csrf', function() {
+    return view('front.test-csrf');
+})->name('test-csrf');
 
 Route::get('/download/invoice/{orderNo}', 'Front\CheckoutController@downloadInvoice')
     ->middleware('auth')
@@ -747,7 +762,7 @@ Route::prefix('SubScribers')->group(function() {
           // Route::post('/update/{id}', 'Admin\PlanController@update')->name('admin-plan-update');
           Route::put('/update/{id}', 'Admin\PlanController@update')->name('admin-plans-update');
           Route::any('/delete/{id}', 'Admin\PlanController@destroy')->name('admin-plans-destroy');
-          Route::post('/admin/store-cropimage', [PlanController ::class, 'storeCropImage'])->name('admin-store-cropimage');
+          Route::post('/admin/store-cropimage', 'Admin\PlanController@storeCropImage')->name('admin-store-cropimage');
 
         });
     });

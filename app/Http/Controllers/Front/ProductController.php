@@ -766,4 +766,46 @@ protected function authorizeDownload($product)
         ));
     }
 
+    /**
+     * Verify if a product's document exists and get its metadata
+     * This method is accessible to frontend users
+     */
+    public function verifyDocument($productId)
+    {
+        try {
+            $product = Product::findOrFail($productId);
+            
+            // Check if product has a document
+            if (empty($product->document)) {
+                return response()->json([
+                    'file_exists' => false,
+                    'message' => 'No document associated with this product'
+                ]);
+            }
+            
+            $filePath = storage_path('app/public/' . $product->document);
+            
+            if (file_exists($filePath)) {
+                return response()->json([
+                    'file_exists' => true,
+                    'last_modified' => date('Y-m-d H:i:s', filemtime($filePath)),
+                    'file_size' => filesize($filePath),
+                    'file_path' => $product->document,
+                    'product_title' => $product->product_title
+                ]);
+            }
+            
+            return response()->json([
+                'file_exists' => false,
+                'message' => 'Document file not found on server'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'file_exists' => false,
+                'message' => 'Error verifying document: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

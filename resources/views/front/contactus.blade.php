@@ -50,7 +50,7 @@
                         </div>
                         <div class="contact-info__item">
                             <span class="contact-info__text text-capitalize d-block mb-1">Send Us An Email</span>
-                            <a href="mailto:slidesbuy@gmail.com" class="contact-info__link font-24 fw-500 text-heading hover-text-main">support@slidesbuy.com</a>
+                            <a href="mailto:support@slidesbuy.com" class="contact-info__link font-24 fw-500 text-heading hover-text-main">support@slidesbuy.com</a>
                         </div>
                     </div>
 

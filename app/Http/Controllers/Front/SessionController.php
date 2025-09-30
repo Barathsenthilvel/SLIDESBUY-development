@@ -19,11 +19,13 @@ class SessionController extends Controller
         // Save OTP in session
         session(['otp' => $otp, 'otp_email' => $request->email]);
 
-        // Send OTP Mail
-        Mail::raw("Your OTP code is: $otp", function ($message) use ($request) {
-            $message->to($request->email)
-                    ->subject('Your OTP Code');
-        });
+        // Send styled OTP email using the Mailable that renders mails.otp
+        try {
+            \Mail::to($request->email)
+                ->send(new \App\Mail\SendOtpMail($otp, $request->input('name')));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to send OTP: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'OTP sent successfully!');
     }

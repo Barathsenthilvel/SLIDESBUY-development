@@ -72,8 +72,9 @@
 
     /* Grid View (Default) */
     .list-grid-wrapper .product-item {
-        height: auto;
+        height: 100%;
         flex-direction: column;
+        display: flex;
     }
 
     /* command for slide list view resposnive border spacces
@@ -84,6 +85,24 @@
 
     .list-grid-wrapper .product-item__content {
         width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Ensure consistent title height */
+    .list-grid-wrapper .product-item__title {
+        min-height: 2.6em; /* Approximately 2 lines of text */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.3;
+    }
+
+    /* Push bottom section to bottom */
+    .list-grid-wrapper .product-item__bottom {
+        margin-top: auto;
     }
 
     /* Responsive adjustments */
@@ -764,7 +783,7 @@
                     <div class="col-lg-7">
                         <div class="breadcrumb-one-content">
                             <h3 class="breadcrumb-one-content__title text-center mb-3 text-capitalize">Create Powerful Presentations with ready made templates</h3>
-                            <p class="breadcrumb-one-content__desc text-center text-black-three">Download ready-made, fully editable Power point slides and save hours  of design work. finish faster, present better.</p>
+                            <p class="breadcrumb-one-content__desc text-center text-black-three">Download ready-made, fully editable Power point templates  and save hours  of design work. finish faster, present better.</p>
 
                             @if(isset($query) && !empty($query))
                             <!-- Search Results Header -->

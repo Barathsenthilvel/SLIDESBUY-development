@@ -264,7 +264,8 @@ class CheckoutController extends Controller{
         $Cart->deliveryextra = false;
         $Cart->total();
         $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
-        $response = $api->order->create(array('amount' => $Cart->grandTotal*100, 'currency' => 'INR'));
+        // Force USD currency for Razorpay order. Ensure amount is in cents (smallest unit)
+        $response = $api->order->create(array('amount' => $Cart->grandTotal*100, 'currency' => 'USD'));
         // dd($response);
         session()->put('Address',$Address);
         session()->put('cart',$Cart);
